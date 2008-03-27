@@ -1,0 +1,42 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Selecteer Nieuwsbrief om te verzenden{% endblock %}
+
+{% block breadcrumbs %}
+	<div class="breadcrumbs"><a href="/admin">Voorpagina</a> › Nieuwsbrief verzenden</div>
+{% endblock %}
+
+{% block content %}
+
+	<h1>Selecteer een Nieuwsbrief</h1>
+	
+	{% if form %}
+		<form method="post" action="">
+		{% if form.newsletter.errors %}<ul class="errorlist">{{ form.newsletter.errors }}</ul>{% endif %}
+		{{ form.newsletter }}
+		<input type="submit" value="Voorvertoning"/>
+		</form>
+	{% endif %}
+	
+	{% if sendform %}
+	<br/>
+	<h1>Preview</h1>
+		
+		<h3>HTML</h3>
+		<iframe src ="/admin/mailinglist/send_newsletter/preview/html/{{ newsletter.id }}" width="720px" height="720px"></iframe>
+		
+		<h3>Tekst</h3>
+		<iframe src ="/admin/mailinglist/send_newsletter/preview/txt/{{ newsletter.id }}" width="720px" height="720px"></iframe>
+
+		<br/>
+		<br/>
+		
+		<form method="post" action="/admin/mailinglist/send_newsletter/send/">		
+			<input type='hidden' name='newsletter_id' value='{{ newsletter.id }}' />			
+			<input type="submit" value="Verzenden" class="default" />
+		</form>
+		
+	{% endif%}
+
+{% endblock %}
+

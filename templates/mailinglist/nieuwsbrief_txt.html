@@ -1,0 +1,18 @@
+++++++++++++++++++++
+++++++++++++++++++++
+
+{{ general.title }} - {{ general.edition}}
+
+ART & TECHNOLOGY             
+{{ date|date:"j F Y" }}
+
+++++++++++++++++++++
+++++++++++++++++++++
+
+{% for article in newsletter.article_set.all %}
+{{ article.title|striptags }}
+{{ article.text|striptags }}
+
+++++++++++++++++++++
+{% endfor %}
+{{ general.sender|striptags }}
