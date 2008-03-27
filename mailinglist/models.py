@@ -1,20 +1,36 @@
-from django.db import models
-from django import newforms as forms
-from random import sample
-from django.template.defaultfilters import slugify
+import os, sha, random
 
-import os
-import Image
+from datetime import datetime
+
+#import Image
+
+from django.db import models
+from django.template.defaultfilters import slugify
 from django.template import Library
+from django.utils.translation import ugettext_lazy as _
+
+from django.contrib.sites.models import Site
+from django.contrib.sites.managers import CurrentSiteManager
+
 from django.conf import settings
 
-## ALGEMENE GEGEVENS
-class GeneralSettings(models.Model):
-    domain = models.CharField(max_length=200, verbose_name='Domein')
-    title = models.CharField(max_length=200, verbose_name='Nieuwsbrief titel')
-    email = models.EmailField(verbose_name='E-mail', help_text='from / sender: ...@...')
-    sender = models.TextField(verbose_name='Post-adres')
-    edition = models.PositiveIntegerField(default=1, verbose_name='Editie')
+def make_activation_code():
+    return sha.new(sha.new(str(random.random())).hexdigest()[:5]+str(datetime.now().microsecond)).hexdigest()
+
+class Newsletter(models.Model):
+    site = models.ManyToManyField('sites.Site')
+    
+    title = models.CharField(max_length=200, verbose_name=_('newsletter title'))
+    slug = models.SlugField(db_index=True,prepopulate_from=('title',),unique=True)
+    
+    email = models.EmailField(verbose_name=_('e-mail'), help_text=_('Sender e-mail'))
+    sender = models.CharField(max_length=200, verbose_name=_('sender'), help_text=_('Sender name'))
+    
+    visible = models.BooleanField(default=True, verbose_name=_('visible'))
+
+    # Use this to automatically filter the current site
+    on_site = CurrentSiteManager()
+
     def __unicode__(self):
         return self.title
 
@@ -22,99 +38,84 @@ class GeneralSettings(models.Model):
         list_display = ('title',)
 
     class Meta:
-        verbose_name = "Instellingen"
-        verbose_name_plural = "Instellingen"
+        verbose_name = _('newsletter')
+        verbose_name_plural = _('newsletters')
 
+class Subscription(models.Model):
+    newsletter = models.ForeignKey('Newsletter')
 
-class ExSubscriber(models.Model):
-    email = models.EmailField(verbose_name='E-mail')
+    activated = models.BooleanField(default=False, verbose_name=_('activated'))
+    activation_code = models.CharField(verbose_name=_('activation code'), max_length=40, default=make_activation_code())
+    
+    subscribe_date = models.DateTimeField(verbose_name=_("subscribe date"), auto_now_add=True)
+    unsubscribe_date = models.DateTimeField(verbose_name=_("unsubscribe date"), null=True, blank=True)
+
+    unsubscribed = models.BooleanField(default=False, verbose_name=_('unsubscribed'))
+    
+    name = models.CharField(max_length=30, blank=True, null=True, verbose_name=_('name'), help_text=_('optional'))
+    email = models.EmailField(verbose_name=_('e-mail'), db_index=True)
+
     def __unicode__(self):
-        return self.email
+        return "%s, %s" % (self.email, self.newsletter)
 
     class Admin:
-        list_display = ('email', )
-        search_fields = ['email',]
+        list_display = ('email', 'newsletter', 'subscribe_date')
 
     class Meta:
-        verbose_name = "Ex-abonnee"
-        verbose_name_plural = "Ex-abonnees"
+        verbose_name = _('subscription')
+        verbose_name_plural = _('subscriptions')
         
-        
-## ABONNEES
-class Subscriber(models.Model):
-    active = models.BooleanField(default=False, verbose_name='Actief')
-    email = models.EmailField(verbose_name='E-mail', unique=True)
-    verification_code = models.CharField(max_length=8, verbose_name="Verificatie-code", editable=False)
-    def __unicode__(self):
-        return self.email
-
-    class Admin:
-        list_display = ('email', 'active')
-        search_fields = ['email',]
-
-    class Meta:
-        verbose_name = "Abonnee"
-        verbose_name_plural = "Abonnees"
-
-    def save(self):
-        self.verification_code = ''.join(sample("abcdefghijklmnopqrstuvw0123456789", 8))
-        super(Subscriber, self).save()
-        # Hier moet eigenlijk nog een bevestiging, maar weet niet hoe ik http responses kan renderen vanuit models. (lijkt me niet de bedoeling)
-#       Dit werkt, user wordt niet opgeslagen. Maar 'messagelist' geeft wel de melding
-#           try: ExSubscriber.objects.get(email=self.email): 
-#             print "User excists in ex"
-#             pass
-#         except ExSubscriberDoesNotExcist: 
-#             print "User doesn't excist in excist"
-#             super(Subscriber, self).save()
-        
-    def delete(self):
-        ExSubscriber(email=self.email).save()
-        super(Subscriber, self).delete()
-
-
 ## - Bestand
-class File(models.Model):
-    title = models.CharField(max_length=200, verbose_name='titel')
-    file = models.FileField(upload_to='files', help_text="Maximaal 3 Megabyte (MB).")
-    url = models.CharField(max_length=600, verbose_name='url', editable=False, null=True, blank=True)
+# class File(models.Model):
+#     title = models.CharField(max_length=200, verbose_name=_('title'))
+#     file = models.FileField(upload_to='files', help_text=_('Maximal size is 3 Megabytes (MB).'))
+#     url = models.CharField(max_length=600, verbose_name=_('url'), editable=False, null=True, blank=True)
+# 
+#     def __unicode__(self):
+#         return self.title
+# 
+#     class Admin:
+#         list_display = ('title', 'url')
+#         search_fields = ['title', 'file', 'url']
+#         
+#     def get_absolute_url(self):
+#         return "/static/%s" %self.file
+# 
+#     class Meta:
+#         verbose_name = _('file')
+#         verbose_name_plural = _('files')
+# 
+#     def save(self):
+#         settings = Newsletter.objects.all()[0] ## .title .sender .edition .email .domain
+#         self.url = "%s/static/%s" %(general.site, self.file)
+#         super(File,self).save()
 
-    def __unicode__(self):
-        return self.title
 
-    class Admin:
-        list_display = ('title', 'url')
-        search_fields = ['title', 'file', 'url']
-        
-    def get_absolute_url(self):
-        return "/static/%s" %self.file
-
-    class Meta:
-        verbose_name = "Bestand"
-        verbose_name_plural = "Bestanden"
-
-    def save(self):
-        general = GeneralSettings.objects.all()[0] ## .title .sender .edition .email .domain
-        self.url = "%s/static/%s" %(general.domain, self.file)
-        super(File,self).save()
-
-
-## - Article
 class Article(models.Model):
-    sortorder =  models.PositiveIntegerField(core=True, help_text='Sortering bepaalt de volgorde van de artikelen.', verbose_name='Sortering')
-    title = models.CharField(max_length=200, verbose_name='titel', core=True)
-    text = models.TextField(core=True, verbose_name='Tekst')
+    sortorder =  models.PositiveIntegerField(core=True, help_text=_('Sort order determines the order in which articles are concatenated in a post.'), verbose_name=_('sort order'))
+    
+    # Article's core
+    title = models.CharField(max_length=200, verbose_name=_('title'), core=True)
+    text = models.TextField(core=True, verbose_name=_('text'))
+    
+    url = models.URLField(verbose_name=_('link'), blank=True, null=True)
+    
+    # Make this a foreign key for added elegance
     image = models.ImageField(upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True, verbose_name='afbeelding', help_text='xxx')
     thumb = models.CharField(max_length=600, verbose_name='Thumbnail url', editable=False, null=True, blank=True)
-    newsletter = models.ForeignKey('NewsLetter', edit_inline=models.TABULAR, num_in_admin=1, verbose_name='Nieuwsbrief') #STACKED TABULAR    
+    
+    # Post this article is associated with
+    post = models.ForeignKey('Publication', edit_inline=models.TABULAR, num_in_admin=1, verbose_name='Nieuwsbrief') #STACKED TABULAR    
+    
     class Meta:
         ordering = ('sortorder',)
-        verbose_name = "Artiekel"
-        verbose_name_plural = "Artikelen"
+        verbose_name = _('article')
+        verbose_name_plural = _('articles')
 
     def __unicode__(self):
         return self.title
-        
+    
+    # This belongs elsewhere
     def thumbnail(self):
         """
         Display thumbnail-size image of ImageField named src
@@ -131,77 +132,43 @@ class Article(models.Model):
     thumbnail.short_description = 'thumbnail'
     thumbnail.allow_tags = True
 
+class Publication(models.Model):
+    title = models.CharField(max_length=200, verbose_name=_('title'))
 
-## - Nieuwsbrief - Maken
-class NewsLetter(models.Model):
-    work_title = models.CharField(max_length=200, verbose_name='Werktitel', help_text='Alleen als referentie, bijvoorbeeld: "Nieuwsbrief, januari 2008".', unique=True)
+    newsletter = models.ForeignKey('Newsletter')
 
     def __unicode__(self):
-        return self.work_title
+        return self.title
 
     class Admin:
         js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
-        pass
         #search_fields = ['work_title',]
         #fields = ((None, {'fields': ('work_title'), 'classes': 'wide extrapretty'}),)
 
     class Meta:
-        verbose_name = "Nieuwsbrief - Maken"
-        verbose_name_plural = "Nieuwsbrief - Maken"
+        verbose_name = _('publication')
+        verbose_name_plural = _('publications')
 
-
-## - Nieuwsbrief - Verzenden
-class Send_NewsLetter(models.Model):
-    class Admin:
-        pass
+class Mailing(models.Model):
     class Meta:
-        verbose_name = "Nieuwsbrief - Verzenden"
-        verbose_name_plural = "Nieuwsbrief - Verzenden"
+        verbose_name = _('mailing')
+        verbose_name_plural = _('mailings')
         
-
-## - Nieuwsbrief - Archief
-class NewsLetter_Archive(models.Model):
-    title =  models.CharField(max_length=200, verbose_name='Titel')
-    slug =  models.SlugField(max_length=300, verbose_name='Slug', blank=True, null=True) #editable=False,
-    publish = models.BooleanField(default=True, verbose_name='Publiseer in archief')
-    print_run = models.PositiveIntegerField(verbose_name='Oplage', blank=True, null=True) #editable=False, 
-    edition = models.PositiveIntegerField(verbose_name='Editie', blank=True, null=True) #editable=False, 
-    send_date = models.DateField(verbose_name='Datum verstuurd', blank=True, null=True) #editable=False, 
-    html =  models.TextField(verbose_name='HTML') #editable=False, 
-    txt =  models.TextField(verbose_name='Tekst') #editable=False, 
     class Admin:
-        list_display = ('title', 'publish', 'send_date', 'print_run')
-        search_fields = ['html']
-        #fields = ((None, {'fields': ('edition'), 'classes': 'wide extrapretty'}),)
-
-    class Meta:
-        verbose_name = "Nieuwsbrief - Archief"
-        verbose_name_plural = "Nieuwsbrief - Archief"
+        list_display = ('newsletter', 'publication', 'publish_date', 'publish', 'sent')
+        
+    newsletter = models.ForeignKey('Newsletter')
     
-    def get_absolute_url(self):
-        return "/archive/%s/%s/%s/%s" % (self.send_date.year, self.send_date.month, self.send_date.day, self.slug)
+    publication = models.ForeignKey('Publication')
+    
+    subscriptions = models.ManyToManyField('Subscription')
+
+    publish_date = models.DateField(verbose_name=_('publication date'), blank=True, null=True) 
+    publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'))
+
+    sent = models.BooleanField(default=False, verbose_name=_('sent'))
 
     def save(self):
-        self.slug = slugify(self.title)
-        super(NewsLetter_Archive,self).save()
+        self.newsletter = self.publication.newsletter
+        super(Mailing, self).save()
         
-        
-## FORMULIER, AAN- EN AFMELDEN
-class SubsriberForm(forms.Form):
-    subscriber_email = forms.EmailField(label='e-mail', required=True) #help_text="Wilt u onze nieuwsbrief ontvangen? Vul dan hier uw e-mailadres in!"
-
-
-## FORMULIER, BEVESTIGEN
-class ConfirmForm(forms.Form):
-    mail = forms.EmailField(required=True)
-    code = forms.CharField(required=True)
-
-
-## Nieuwsbrief Preview Formulier
-class NewsLetter_Preview_Form(forms.Form):
-    newsletter = forms.ModelChoiceField(queryset=NewsLetter.objects.all(), label='')
-
-
-## Nieuwsbrief Verzend Formulier    
-class NewsLetter_Send_Form(forms.Form):
-    newsletter_id = forms.CharField(required=True)

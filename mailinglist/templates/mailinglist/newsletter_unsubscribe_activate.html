@@ -1,0 +1,16 @@
+{% extends "mailinglist/common.html" %}
+{% load i18n %}
+{% block title %}{% trans "Newsletter subscribe" %}{% endblock title %}
+{% block body %}
+<form enctype="multipart/form-data" method="post" action=".">
+<table>
+    <tr>
+        <th>{% trans "Newsletter" %} {{ newsletter.title }}</th>
+    </tr>
+    {{ form.as_table }}
+</table>
+<input name="submit" value="{% trans "Upload" %}" type="submit" />
+</form>
+{% endblock body %}
+
+
