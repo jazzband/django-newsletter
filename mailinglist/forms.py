@@ -24,7 +24,7 @@ class SubscribeForm(forms.ModelForm):
         
         # Send an activation email
 
-class ActivateForm(forms.ModelForm):
+class SubscribeActivateForm(forms.ModelForm):
     class Meta:
         model = Subscription
         fields = ('name', 'email')
@@ -42,15 +42,22 @@ class ActivateForm(forms.ModelForm):
         instance = super(ActivateForm, self).save(commit)
         
     user_activation_code = forms.CharField(label=_("activation code"), max_length=40)
-
         
 class UnsubscribeForm(forms.ModelForm):
     class Meta:
         model = Subscription
         fields = ('email',)
+    
+    def save(self, commit=True):
+        # No need to actually save, just send the user a confirmation email for unsubscription
+        pass
         
 class UnsubscribeActivateForm(forms.ModelForm):
     class Meta:
         model = Subscription
         fields = ('email', 'activation_code')
 
+    def save(self, commit=True):
+        self.instance.ubsubscribed = True
+        super(UnsubscribeActivateForm, self).save(commit)
+        

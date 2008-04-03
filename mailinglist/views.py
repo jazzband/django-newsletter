@@ -32,22 +32,27 @@ def newsletter(request, newsletter_slug):
         
     return object_detail(request, newsletters, slug=newsletter_slug)
     
-def subscribe(request, newsletter_slug):
+def subscribe(request, newsletter_slug, subscription_id=None):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
+    if subscription_id:
+        my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, email__exact=email)
+    else:
+        my_subscription = None
+    
     if request.POST:
-        form = SubscribeForm(request.POST, newsletter=my_newsletter)
+        form = SubscribeForm(request.POST, newsletter=my_newsletter, instance=my_subscription)
         if form.is_valid():
             form.save()
     else:
-        form = SubscribeForm(newsletter=my_newsletter)
+        form = SubscribeForm(newsletter=my_newsletter, instance=my_subscription)
     
     env = { 'newsletter' : my_newsletter,
             'form' : form }
 
     return render_to_response("mailinglist/newsletter_subscribe.html", env)
     
-def activate(request, newsletter_slug, subscription_id, activation_code=None):
+def subscribe_activate(request, newsletter_slug, subscription_id, activation_code=None):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, id=subscription_id)
     
@@ -57,20 +62,24 @@ def activate(request, newsletter_slug, subscription_id, activation_code=None):
         my_initial = None
     
     if request.POST:
-        form = ActivateForm(request.POST, instance=my_subscription, initial=my_initial)
+        form = SubscribeActivateForm(request.POST, instance=my_subscription, initial=my_initial)
         if form.is_valid():
             form.save()
     else:
-        form = ActivateForm(instance=my_subscription, initial=my_initial)
+        form = SubscribeActivateForm(instance=my_subscription, initial=my_initial)
 
     env = { 'newsletter' : my_newsletter,
             'form' : form }
     
-    return render_to_response("mailinglist/newsletter_activate.html", env)
+    return render_to_response("mailinglist/newsletter_subscribe_activate.html", env)
 
-def unsubscribe(request, newsletter_slug, email):
+def unsubscribe(request, newsletter_slug, subscription_id=None):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
-    my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, email__exact=email)
+    
+    if subscription_id:
+        my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, email__exact=email)
+    else:
+        my_subscription = None
 
     if request.POST:
         form = UnsubscribeForm(request.POST, instance=my_subscription)
@@ -85,9 +94,13 @@ def unsubscribe(request, newsletter_slug, email):
     return render_to_response("mailinglist/newsletter_unsubscribe.html", env)
 
 
-def unsubscribe_activate(request, newsletter_slug, email, activation_code):
+def unsubscribe_activate(request, newsletter_slug, subscription_id=None):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
-    my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, email__exact=email)
+
+    if subscription_id:
+        my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, email__exact=email)
+    else:
+        my_subscription = None
 
     if request.POST:
         form = UnsubscribeActivateForm(request.POST, instance=my_subscription)

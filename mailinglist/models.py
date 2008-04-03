@@ -59,7 +59,8 @@ class Subscription(models.Model):
         return "%s, %s" % (self.email, self.newsletter)
 
     class Admin:
-        list_display = ('email', 'newsletter', 'subscribe_date')
+        list_display = ('email', 'newsletter', 'subscribe_date', 'activated')
+        list_filter = ['newsletter',]
 
     class Meta:
         verbose_name = _('subscription')
