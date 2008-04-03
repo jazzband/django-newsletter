@@ -26,13 +26,13 @@ class Newsletter(models.Model):
     email = models.EmailField(verbose_name=_('e-mail'), help_text=_('Sender e-mail'))
     sender = models.CharField(max_length=200, verbose_name=_('sender'), help_text=_('Sender name'))
     
-    visible = models.BooleanField(default=True, verbose_name=_('visible'))
+    visible = models.BooleanField(default=True, verbose_name=_('visible'), db_index=True)
 
     # Use this to automatically filter the current site
     on_site = CurrentSiteManager()
 
     def __unicode__(self):
-        return self.title
+        return _("newsletter %(title)s") % {'title' :self.title}
 
     class Admin:
         list_display = ('title',)
@@ -44,19 +44,19 @@ class Newsletter(models.Model):
 class Subscription(models.Model):
     newsletter = models.ForeignKey('Newsletter')
 
-    activated = models.BooleanField(default=False, verbose_name=_('activated'))
+    activated = models.BooleanField(default=False, verbose_name=_('activated'),db_index=True)
     activation_code = models.CharField(verbose_name=_('activation code'), max_length=40, default=make_activation_code())
     
     subscribe_date = models.DateTimeField(verbose_name=_("subscribe date"), auto_now_add=True)
     unsubscribe_date = models.DateTimeField(verbose_name=_("unsubscribe date"), null=True, blank=True)
 
-    unsubscribed = models.BooleanField(default=False, verbose_name=_('unsubscribed'))
+    unsubscribed = models.BooleanField(default=False, verbose_name=_('unsubscribed'), db_index=True)
     
     name = models.CharField(max_length=30, blank=True, null=True, verbose_name=_('name'), help_text=_('optional'))
     email = models.EmailField(verbose_name=_('e-mail'), db_index=True)
 
     def __unicode__(self):
-        return "%s, %s" % (self.email, self.newsletter)
+        return _("subscription of %(email)s to %(newsletter)s") % {'email':self.email, 'newsletter':self.newsletter}
 
     class Admin:
         list_display = ('email', 'newsletter', 'subscribe_date', 'activated')
@@ -93,7 +93,7 @@ class Subscription(models.Model):
 
 
 class Article(models.Model):
-    sortorder =  models.PositiveIntegerField(core=True, help_text=_('Sort order determines the order in which articles are concatenated in a post.'), verbose_name=_('sort order'))
+    sortorder =  models.PositiveIntegerField(core=True, help_text=_('Sort order determines the order in which articles are concatenated in a post.'), verbose_name=_('sort order'), db_index=True)
     
     # Article's core
     title = models.CharField(max_length=200, verbose_name=_('title'), core=True)
@@ -114,7 +114,7 @@ class Article(models.Model):
         verbose_name_plural = _('articles')
 
     def __unicode__(self):
-        return self.title
+        return "article %(title)" % {'title':self.title}
     
     # This belongs elsewhere
     def thumbnail(self):
@@ -139,12 +139,12 @@ class Publication(models.Model):
     newsletter = models.ForeignKey('Newsletter')
 
     def __unicode__(self):
-        return self.title
+        return _("publication %(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
 
     class Admin:
         js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
         #search_fields = ['work_title',]
-        #fields = ((None, {'fields': ('work_title'), 'classes': 'wide extrapretty'}),)
+        #fields = ((None, {'fields': ('title'), 'classes': 'wide extrapretty'}),)
 
     class Meta:
         verbose_name = _('publication')
@@ -157,7 +157,10 @@ class Mailing(models.Model):
         
     class Admin:
         list_display = ('newsletter', 'publication', 'publish_date', 'publish', 'sent')
-        
+    
+    def __unicode__(self):
+        return _("mailing of %(newsletter)s on %(publish_date)s") % {'newsletter':self.newsletter, 'publish_date':self.publish_date}
+    
     newsletter = models.ForeignKey('Newsletter')
     
     publication = models.ForeignKey('Publication')
@@ -165,7 +168,7 @@ class Mailing(models.Model):
     subscriptions = models.ManyToManyField('Subscription')
 
     publish_date = models.DateField(verbose_name=_('publication date'), blank=True, null=True) 
-    publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'))
+    publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'), db_index=True)
 
     sent = models.BooleanField(default=False, verbose_name=_('sent'))
 

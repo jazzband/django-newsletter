@@ -16,6 +16,12 @@ from django.contrib.sites.models import Site
 from mailinglist.models import *
 from mailinglist.forms import *
 
+def get_subscription(subscription_id):
+    if subscription_id:
+        return get_object_or_404(Subscription, id=subscription_id)
+
+    return None
+    
 def newsletter_list(request):
     newsletters = Newsletter.on_site.filter(visible=True)
 
@@ -32,13 +38,12 @@ def newsletter(request, newsletter_slug):
         
     return object_detail(request, newsletters, slug=newsletter_slug)
     
-def subscribe(request, newsletter_slug, subscription_id=None):
+def subscribe_request(request, newsletter_slug, subscription_id=None):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
-    if subscription_id:
-        my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, email__exact=email)
-    else:
-        my_subscription = None
+    my_subscription = get_subscription(subscription_id)
+
+    print 'subscribe request', my_subscription
     
     if request.POST:
         form = SubscribeForm(request.POST, newsletter=my_newsletter, instance=my_subscription)
@@ -52,41 +57,37 @@ def subscribe(request, newsletter_slug, subscription_id=None):
 
     return render_to_response("mailinglist/newsletter_subscribe.html", env)
     
-def subscribe_activate(request, newsletter_slug, subscription_id, activation_code=None):
+def subscribe_update(request, newsletter_slug, subscription_id=None, activation_code=None):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
-    my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, id=subscription_id)
     
-    if activation_code:
-        my_initial = {'user_activation_code':activation_code}
-    else:
-        my_initial = None
+    my_subscription = get_subscription(subscription_id)
+    
+    print 'subscribe update', my_subscription
     
     if request.POST:
-        form = SubscribeActivateForm(request.POST, instance=my_subscription, initial=my_initial)
+        form = SubscribeActivateForm(request.POST, newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
         if form.is_valid():
             form.save()
     else:
-        form = SubscribeActivateForm(instance=my_subscription, initial=my_initial)
+        form = SubscribeActivateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
 
     env = { 'newsletter' : my_newsletter,
             'form' : form }
     
     return render_to_response("mailinglist/newsletter_subscribe_activate.html", env)
 
-def unsubscribe(request, newsletter_slug, subscription_id=None):
+def unsubscribe_request(request, newsletter_slug, subscription_id=None):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
-    if subscription_id:
-        my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, email__exact=email)
-    else:
-        my_subscription = None
+    my_subscription = get_subscription(subscription_id)
+    print 'unsubscribe request', my_subscription
 
     if request.POST:
-        form = UnsubscribeForm(request.POST, instance=my_subscription)
+        form = UnsubscribeForm(request.POST, newsletter=my_newsletter, instance=my_subscription)
         if form.is_valid():
             form.save()
     else:
-        form = UnsubscribeForm(instance=my_subscription)
+        form = UnsubscribeForm(newsletter=my_newsletter, instance=my_subscription)
 
     env = { 'newsletter' : my_newsletter,
             'form' : form }
@@ -94,20 +95,23 @@ def unsubscribe(request, newsletter_slug, subscription_id=None):
     return render_to_response("mailinglist/newsletter_unsubscribe.html", env)
 
 
-def unsubscribe_activate(request, newsletter_slug, subscription_id=None):
+def unsubscribe_update(request, newsletter_slug, subscription_id=None, activation_code=None):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
 
-    if subscription_id:
-        my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, email__exact=email)
+    my_subscription = get_subscription(subscription_id)
+    print 'unsubscribe update', my_subscription
+
+    if activation_code:
+        my_initial = {'user_activation_code':activation_code}
     else:
-        my_subscription = None
+        my_initial = None
 
     if request.POST:
-        form = UnsubscribeActivateForm(request.POST, instance=my_subscription)
+        form = UnsubscribeActivateForm(request.POST, newsletter=my_newsletter, instance=my_subscription)
         if form.is_valid():
             form.save()
     else:
-        form = UnsubscribeActivateForm(instance=my_subscription)
+        form = UnsubscribeActivateForm(newsletter=my_newsletter, instance=my_subscription)
 
     env = { 'newsletter' : my_newsletter,
             'form' : form }
