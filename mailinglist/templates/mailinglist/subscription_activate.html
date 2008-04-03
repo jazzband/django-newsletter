@@ -1,24 +1,25 @@
 {% extends "mailinglist/common.html" %}
 {% load i18n %}
 {% block title %}{% trans "Newsletter" %} {{ newsletter.title }} {{ action }} {% trans "activate" %}{% endblock title %}
+
 {% block body %}
 <h1>{% trans "Newsletter" %} {{ newsletter.title }} {{ action }} {% trans "activate" %}</h1>
 {% if form.is_valid %}
-{% ifequal action "subscribe" %}
-{% trans "Your subscription has succesfully been activated." %}
-{% endifequal %}
-{% ifequal action "unsubscribe" %}
-{% trans "You have succesfully been unsubscribed." %}
-{% endifequal %}
-{% ifequal action "update" %}
-{% trans "Your subscription has succesfully been updated." %}
-{% endifequal}
+    {% ifequal action "subscribe" %}
+        {% trans "Your subscription has succesfully been activated." %}
+    {% endifequal %}
+    {% ifequal action "unsubscribe" %}
+        {% trans "You have succesfully been unsubscribed." %}
+    {% endifequal %}
+    {% ifequal action "update" %}
+        {% trans "Your subscription has succesfully been updated." %}
+    {% endifequal %}
 {% else %}
 <form enctype="multipart/form-data" method="post" action=".">
 <table>
     {{ form.as_table }}
 </table>
-<input name="submit" value="{% trans action %}|title" type="submit" />
+<input name="submit" value="{% trans action %}" type="submit" />
 </form>
 {% endif %}
 {% endblock body %}
