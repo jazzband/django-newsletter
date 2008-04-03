@@ -2,12 +2,16 @@
 {% load i18n %}
 {% block title %}{% trans "Newsletter subscribe" %}{% endblock title %}
 {% block body %}
-<form enctype="multipart/form-data" method="post" action=".">
 <h1>{% trans "Newsletter subscribe" %} {{ newsletter.title }}</h1>
+{% if form.is_valid %}
+{% trans "Your subscription was succesfully received and an activation email has been sent to you. In that email you will find a link which you need to follow in order to activate your subscription." %}
+{% else %}
+<form enctype="multipart/form-data" method="post" action=".">
 <table>
     {{ form.as_table }}
 </table>
 <input name="submit" value="{% trans "Subscribe" %}" type="submit" />
 </form>
+{% endif %}
 {% endblock body %}
 
