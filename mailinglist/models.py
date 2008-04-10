@@ -70,15 +70,15 @@ class EmailTemplates(models.Model):
         list_display = ('newsletter','action')
 
     class Meta:
-        verbose_name = _('email template')
-        verbose_name_plural = _('email templates')
+        verbose_name = _('e-mail template')
+        verbose_name_plural = _('e-mail templates')
         
     newsletter = models.ForeignKey('Newsletter')
     
     action = models.CharField(max_length=5) #; choice between 'subscribe', 'unsubscribe' and 'update'
     
     subject = models.CharField(max_length=255, verbose_name=_('subject'))
-    email = models.TextField(verbose_name=_('email'))
+    email = models.TextField(verbose_name=_('e-mail'))
 
 class Subscription(models.Model):
     newsletter = models.ForeignKey('Newsletter')

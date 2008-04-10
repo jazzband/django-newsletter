@@ -1,0 +1,278 @@
+# Django newsletter, Dutch translation
+# Copyright (C) 200
+# This file is distributed under the same license as the 'Django newsletter' package.
+# Mathijs de Bruin <mathijs@visualspace.nl>
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: django-newsletter\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-04-10 12:28+0200\n"
+"PO-Revision-Date: 2008-04-10 12:28+0200\n"
+"Last-Translator: Mathijs de Bruin <mathijs@visualspace.nl>\n"
+"Language-Team: Dutch <mathijs@visualspace.nl>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: forms.py:13
+#, fuzzy
+msgid "The e-mail address you specified has not been subscribed to."
+msgstr "Het door u opgegeven e-mail adres is nog niet geabboneerd."
+
+#: forms.py:52
+#, fuzzy
+msgid "Your e-mail address has already been subscribed to."
+msgstr "Uw e-mail adres is al geabboneerd."
+
+#: forms.py:79
+msgid "The validation code supplied by you does not match."
+msgstr "De verificatiecode die door u is opgegeven komt niet overeen."
+
+#: forms.py:81
+msgid "Activation code"
+msgstr "Verificatiecode"
+
+#: forms.py:89 forms.py:105
+#, fuzzy
+msgid "The subscription has not yet been activated."
+msgstr "Uw abbonement is nog niet geactiveerd."
+
+#: forms.py:108
+#, fuzzy
+msgid "This e-mail address has not been subscribed to."
+msgstr "Er is geen abbonement voor dit email adres."
+
+#: models.py:29
+msgid "newsletter title"
+msgstr "Nieuwsbrief titel"
+
+#: models.py:32 models.py:81 models.py:95
+msgid "e-mail"
+msgstr ""
+
+#: models.py:32
+msgid "Sender e-mail"
+msgstr "E-mail verzender"
+
+#: models.py:33
+msgid "sender"
+msgstr "verzender"
+
+#: models.py:33
+msgid "Sender name"
+msgstr "Naam verzender"
+
+#: models.py:35
+msgid "visible"
+msgstr "zichtbaar"
+
+#: models.py:47
+msgid "newsletter"
+msgstr "nieuwsbrief"
+
+#: models.py:48
+msgid "newsletters"
+msgstr "nieuwsbrieven"
+
+#: models.py:73
+msgid "e-mail template"
+msgstr "e-mail sjabloon"
+
+#: models.py:74
+msgid "e-mail templates"
+msgstr "e-mail sjablonen"
+
+#: models.py:80
+msgid "subject"
+msgstr "onderwerp"
+
+#: models.py:86
+msgid "activated"
+msgstr "geactiveerd"
+
+#: models.py:87
+msgid "activation code"
+msgstr "activatiecode"
+
+#: models.py:89
+msgid "subscribe date"
+msgstr "abboneerdatum"
+
+#: models.py:90
+msgid "unsubscribe date"
+msgstr "opzegdatum"
+
+#: models.py:92
+msgid "unsubscribed"
+msgstr "opgezegd"
+
+#: models.py:94
+msgid "name"
+msgstr "naam"
+
+#: models.py:94
+msgid "optional"
+msgstr "optioneel"
+
+#: models.py:97
+msgid "IP address"
+msgstr "IP adres"
+
+#: models.py:100
+#, python-format
+msgid "%(email)s to %(newsletter)s"
+msgstr "%(email)s aan %(newsletter)s"
+
+#: models.py:107
+msgid "subscription"
+msgstr "abbonement"
+
+#: models.py:108
+msgid "subscriptions"
+msgstr "abbonementen"
+
+#: models.py:192
+msgid ""
+"Sort order determines the order in which articles are concatenated in a post."
+msgstr ""
+"Sorteer volgorde bepaald de volgorde waarin artikelen in een bericht achter "
+"elkaar gezet worden."
+
+#: models.py:192
+msgid "sort order"
+msgstr "sorteer volgorde"
+
+#: models.py:195 models.py:233
+msgid "title"
+msgstr "titel"
+
+#: models.py:196
+msgid "text"
+msgstr "tekst"
+
+#: models.py:198
+msgid "link"
+msgstr "koppeling"
+
+#: models.py:209
+msgid "article"
+msgstr "artikel"
+
+#: models.py:210
+msgid "articles"
+msgstr "artikelen"
+
+#: models.py:238
+#, python-format
+msgid "%(title)s in %(newsletter)s"
+msgstr ""
+
+#: models.py:246 models.py:247
+msgid "message"
+msgstr "bericht"
+
+#: models.py:251
+msgid "submission"
+msgstr "zending"
+
+#: models.py:252
+msgid "submissions"
+msgstr "zendingen"
+
+#: models.py:258
+#, python-format
+msgid "%(newsletter)s on %(publish_date)s"
+msgstr "%(newsletter)s op %(publish_date)s"
+
+#: models.py:266
+msgid "publication date"
+msgstr "publicatiedatum"
+
+#: models.py:267
+msgid "publish"
+msgstr "publiceer"
+
+#: models.py:267
+msgid "Publish in archive."
+msgstr "Publiceer in archief."
+
+#: models.py:269
+msgid "sent"
+msgstr "verzonden"
+
+#: templates/mailinglist/common.html:4
+#: templates/mailinglist/newsletter_detail.html:7
+#: templates/mailinglist/newsletter_list.html:7
+#: templates/mailinglist/subscription_activate.html:3
+#: templates/mailinglist/subscription_activate.html:6
+msgid "Newsletter"
+msgstr "Nieuwsbrief"
+
+#: templates/mailinglist/mailing_archive.html:3
+#: templates/mailinglist/mailing_archive.html:7
+msgid "Newsletter archive"
+msgstr "Nieuwsbrief archief"
+
+#: templates/mailinglist/newsletter_detail.html:3
+msgid "Newsletter detail"
+msgstr "Nieuwsbrief detail"
+
+#: templates/mailinglist/newsletter_list.html:3
+msgid "Newsletter list"
+msgstr "Nieuwsbrieven lijst"
+
+#: templates/mailinglist/subscription_activate.html:3
+#: templates/mailinglist/subscription_activate.html:6
+msgid "activate"
+msgstr "activeer"
+
+#: templates/mailinglist/subscription_activate.html:9
+msgid "Your subscription has succesfully been activated."
+msgstr "Uw abbonement is met succes geactiveerd."
+
+#: templates/mailinglist/subscription_activate.html:12
+msgid "You have succesfully been unsubscribed."
+msgstr "Uw abbonement is met succes beÃ«indigd."
+
+#: templates/mailinglist/subscription_activate.html:15
+msgid "Your subscription has succesfully been updated."
+msgstr ""
+
+#: templates/mailinglist/subscription_subscribe.html:3
+#: templates/mailinglist/subscription_subscribe.html:5
+msgid "Newsletter subscribe"
+msgstr ""
+
+#: templates/mailinglist/subscription_subscribe.html:7
+msgid ""
+"Your subscription was succesfully received and an activation email has been "
+"sent to you. In that email you will find a link which you need to follow in "
+"order to activate your subscription."
+msgstr ""
+"Uw verzoek is succesvol ontvangen en een activatiemail is naar u verzonden, "
+"waarin u een link vind waarmee u uw abbonement kunt activeren."
+
+#: templates/mailinglist/subscription_subscribe.html:13
+msgid "Subscribe"
+msgstr "Abboneer"
+
+#: templates/mailinglist/subscription_unsubscribe.html:3
+#: templates/mailinglist/subscription_unsubscribe.html:5
+msgid "Newsletter unsubscribe"
+msgstr "Zeg nieuwsbrief up"
+
+#: templates/mailinglist/subscription_unsubscribe.html:7
+msgid ""
+"Your unsubscription request has succesfully been received. An email has been "
+"sent to you with a link you need to follow in order to confirm your "
+"unsubscription."
+msgstr ""
+"Uw verzoek tot beÃ«indiing van uw abbonement is succesvol ontvangen. Een e-"
+"mail is naar u vestuurd met daarin een link waarmee u uw opzegging dient te "
+"bevestigen."
+
+#: templates/mailinglist/subscription_unsubscribe.html:13
+msgid "Unsubscribe"
+msgstr "Opzeggen"

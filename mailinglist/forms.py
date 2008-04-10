@@ -10,7 +10,7 @@ def getSubscriptionFromEmail(mynewsletter, myemail):
         try:
             instance = Subscription.objects.get(newsletter__id=mynewsletter.id, email__exact=myemail)
         except Subscription.DoesNotExist:
-            raise ValidationError(_("The email address you specified has not been subscribed to."))
+            raise ValidationError(_("The e-mail address you specified has not been subscribed to."))
         
         return instance
 
@@ -49,7 +49,7 @@ class SubscribeForm(NewsletterForm):
         try:
             subscription = Subscription.objects.get(email__exact=value)
             if subscription.activated == True:
-                raise ValidationError(_("Your email address has already been subscribed to."))
+                raise ValidationError(_("Your e-mail address has already been subscribed to."))
             else:
                 self.instance = subscription
                 
@@ -86,7 +86,7 @@ class UpdateForm(NewsletterForm):
 
     def clean(self):
         if not self.instance.activated:
-            ValidationError(_('Your subscription has not yet been activated.'))
+            ValidationError(_("The subscription has not yet been activated."))
 
         return super(UpdateForm, self).clean()
         
@@ -105,7 +105,7 @@ class UnsubscribeForm(UpdateForm):
                 raise ValidationError(_("The subscription has not yet been activated."))
                 
         except Subscription.DoesNotExist:
-                raise ValidationError(_("This email address has not been subscribed to."))
+                raise ValidationError(_("This e-mail address has not been subscribed to."))
 
         return value  
         
