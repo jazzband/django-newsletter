@@ -62,26 +62,44 @@ class Newsletter(models.Model):
         return ('mailinglist.views.unsubscribe_request', (),
                 {'newsletter_slug': self.newsletter.slug })
 
-class EmailTemplates(models.Model):
+class EmailTemplate(models.Model):
+    ACTION_CHOICES = (
+        ('subscribe', _('Subscribe')),
+        ('unsubscribe', _('Unsubscribe')),
+        ('update', _('Update'))
+    )
+    
     def __unicode__(self):
-        return "%s %s" % (self.newsletter, self.action)
+        return u"%s %s" % (self.newsletter, self.action)
+
+    def admin_newsletter(self):
+        if not self.newsletter:
+            return _('Default')
+        else:
+            return self.newsletter
+    admin_newsletter.short_description = _('newsletter')
 
     class Admin:
-        list_display = ('newsletter','action')
+        list_display = ('admin_newsletter','action')
+        list_display_links = ('admin_newsletter','action')
+        
+        save_as = True
 
     class Meta:
         verbose_name = _('e-mail template')
         verbose_name_plural = _('e-mail templates')
         
-    newsletter = models.ForeignKey('Newsletter')
+        unique_together = ("newsletter", "action")
+            
+    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), blank=True, null=True, db_index=True)
     
-    action = models.CharField(max_length=5) #; choice between 'subscribe', 'unsubscribe' and 'update'
+    action = models.CharField(max_length=16, choices=ACTION_CHOICES, db_index=True, radio_admin=True, verbose_name=_('action'))
     
     subject = models.CharField(max_length=255, verbose_name=_('subject'))
     email = models.TextField(verbose_name=_('e-mail'))
 
 class Subscription(models.Model):
-    newsletter = models.ForeignKey('Newsletter')
+    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
 
     activated = models.BooleanField(default=False, verbose_name=_('activated'),db_index=True)
     activation_code = models.CharField(verbose_name=_('activation code'), max_length=40, default=make_activation_code())
@@ -97,7 +115,7 @@ class Subscription(models.Model):
     ip = models.IPAddressField(_("IP address"), blank=True, null=True)
 
     def __unicode__(self):
-        return _("%(email)s to %(newsletter)s") % {'email':self.email, 'newsletter':self.newsletter}
+        return _(u"%(email)s to %(newsletter)s") % {'email':self.email, 'newsletter':self.newsletter}
 
     class Admin:
         list_display = ('email', 'newsletter', 'subscribe_date', 'activated', 'unsubscribed')
@@ -109,7 +127,12 @@ class Subscription(models.Model):
         unique_together = ('email','newsletter')
         
     def send_activation_email(self, action):
-        myemail = EmailTemplates.get(action__exact=action, newsletter=self.newsletter)
+        assert action in ['subscribe', 'unsubscribe', 'update'], 'Unknown action'
+        try:
+            myemail = EmailTemplate.objects.get(action__exact=action, newsletter=self.newsletter)
+        except EmailTemplate.DoesNotExist:
+            # If no specific template exists, use the default
+            myemail = EmailTemplate.objects.get(action__exact=action, newsletter__isnull=True)
         
         subjecttemplate = Template(myemail.subject)
         emailtemplate = Template(myemail.email)
@@ -235,7 +258,7 @@ class Message(models.Model):
     newsletter = models.ForeignKey('Newsletter')
 
     def __unicode__(self):
-        return _("%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
+        return _(u"%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
 
     class Admin:
         js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
@@ -250,12 +273,13 @@ class Submission(models.Model):
     class Meta:
         verbose_name = _('submission')
         verbose_name_plural = _('submissions')
-        
+                
     class Admin:
         list_display = ('newsletter', 'publication', 'publish_date', 'publish', 'sent')
+        save_as = True
     
     def __unicode__(self):
-        return _("%(newsletter)s on %(publish_date)s") % {'newsletter':self.newsletter, 'publish_date':self.publish_date}
+        return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.newsletter, 'publish_date':self.publish_date}
     
     newsletter = models.ForeignKey('Newsletter')
     

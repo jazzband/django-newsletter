@@ -110,11 +110,14 @@ def subscribe_activate(request, newsletter_slug, subscription_id=None):
         my_initial = None
     
     if request.POST:
-        form = SubscribeActivateForm(request.POST, newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
+        form = ActivateForm(request.POST, newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
         if form.is_valid():
-            form.save()
+            instance = form.save(commit=False)
+            instance.activated = True
+            instance.unsubscribed = False
+            instance.save()
     else:
-        form = SubscribeActivateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
+        form = ActivateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
 
     env = { 'newsletter' : my_newsletter,
             'form' : form }
@@ -136,7 +139,9 @@ def unsubscribe_activate(request, newsletter_slug, subscription_id=None):
     if request.POST:
         form = UnsubscribeActivateForm(request.POST, newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
         if form.is_valid():
-            form.save()
+            instance = form.save(commit=False)
+            instance.unsubscribed = True
+            instance.save()
     else:
         form = UnsubscribeActivateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
 

@@ -48,7 +48,7 @@ class SubscribeForm(NewsletterForm):
         # Set our instance on the basis of the email field, or raise a validationerror
         try:
             subscription = Subscription.objects.get(email__exact=value)
-            if subscription.activated == True:
+            if subscription.activated == True and subscription.unsubscribed == False:
                 raise ValidationError(_("Your e-mail address has already been subscribed to."))
             else:
                 self.instance = subscription
@@ -60,7 +60,7 @@ class SubscribeForm(NewsletterForm):
     
     def save(self, commit=True):
         instance = super(SubscribeForm, self).save(commit)
-        instance.send_activation_email(action='subcribe')
+        instance.send_activation_email(action='subscribe')
         return instance
 
 class ActivateForm(NewsletterForm):        
@@ -77,6 +77,9 @@ class ActivateForm(NewsletterForm):
         print self.instance.activation_code
         if user_activation_code != self.instance.activation_code:
             raise ValidationError(_('The validation code supplied by you does not match.'))
+
+    def save(self, commit=True):
+        return super(ActivateForm, self).save(commit)
           
     user_activation_code = forms.CharField(label=_("Activation code"), max_length=40)
     
@@ -87,6 +90,9 @@ class UpdateForm(NewsletterForm):
     def clean(self):
         if not self.instance.activated:
             ValidationError(_("The subscription has not yet been activated."))
+            
+        if self.instance.unsubscribed:
+            ValidationError(_("The subscription has been unsubscribed. To update your information, please subscribe again."))
 
         return super(UpdateForm, self).clean()
         
@@ -110,6 +116,6 @@ class UnsubscribeForm(UpdateForm):
         return value  
         
     def save(self, commit=True):
-        self.instance.send_activation_email(action='unsubcribe')
+        self.instance.send_activation_email(action='unsubscribe')
         return self.instance
 
