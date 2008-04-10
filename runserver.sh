@@ -4,6 +4,6 @@ use-django r7367
 if [[ $1 == "shell" ]]; then
 	python manage.py shell
 else
-	screen python manage.py runserver devel.visualspace.nl:9456
+	screen python manage.py runserver devel.visualspace.nl:9457
 fi
 

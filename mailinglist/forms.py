@@ -47,7 +47,7 @@ class SubscribeForm(NewsletterForm):
 
         # Set our instance on the basis of the email field, or raise a validationerror
         try:
-            subscription = Subscription.objects.get(email__exact=value)
+            subscription = Subscription.objects.get(email__exact=value, newsletter=self.instance.newsletter)
             if subscription.activated == True and subscription.unsubscribed == False:
                 raise ValidationError(_("Your e-mail address has already been subscribed to."))
             else:

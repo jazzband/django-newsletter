@@ -36,6 +36,7 @@ class Newsletter(models.Model):
 
     # Use this to automatically filter the current site
     on_site = CurrentSiteManager()
+    objects = on_site # To make stuff consistent
 
     def __unicode__(self):
         return self.title
@@ -61,6 +62,10 @@ class Newsletter(models.Model):
     def unsubscribe_url(self):
         return ('mailinglist.views.unsubscribe_request', (),
                 {'newsletter_slug': self.newsletter.slug })
+                
+    def get_subscribers(self):
+        print 'looking up subscribers for %s' % self
+        return Subscription.objects.filter(newsletter=self, unsubscribed=False, activated=True)
 
 class EmailTemplate(models.Model):
     ACTION_CHOICES = (
@@ -115,7 +120,7 @@ class Subscription(models.Model):
     ip = models.IPAddressField(_("IP address"), blank=True, null=True)
 
     def __unicode__(self):
-        return _(u"%(email)s to %(newsletter)s") % {'email':self.email, 'newsletter':self.newsletter}
+        return _(u"%(name)s <%(email)s> to %(newsletter)s") % {'name':self.name, 'email':self.email, 'newsletter':self.newsletter}
 
     class Admin:
         list_display = ('email', 'newsletter', 'subscribe_date', 'activated', 'unsubscribed')
@@ -255,7 +260,7 @@ class Article(models.Model):
 class Message(models.Model):
     title = models.CharField(max_length=200, verbose_name=_('title'))
 
-    newsletter = models.ForeignKey('Newsletter')
+    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
 
     def __unicode__(self):
         return _(u"%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
@@ -267,7 +272,10 @@ class Message(models.Model):
 
     class Meta:
         verbose_name = _('message')
-        verbose_name_plural = _('message')
+        verbose_name_plural = _('message') 
+
+from django.db.models import signals
+from django.dispatch import dispatcher
 
 class Submission(models.Model):
     class Meta:
@@ -275,24 +283,29 @@ class Submission(models.Model):
         verbose_name_plural = _('submissions')
                 
     class Admin:
-        list_display = ('newsletter', 'publication', 'publish_date', 'publish', 'sent')
+        list_display = ('admin_newsletter', 'publication', 'publish_date', 'publish', 'sent')
+        list_display_links = ['publication',]
+        date_hierarchy = 'publish_date'
         save_as = True
     
     def __unicode__(self):
-        return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.newsletter, 'publish_date':self.publish_date}
-    
-    newsletter = models.ForeignKey('Newsletter')
-    
-    publication = models.ForeignKey('Message')
-    
-    subscriptions = models.ManyToManyField('Subscription')
+        return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.admin_newsletter(), 'publish_date':self.publish_date}
 
-    publish_date = models.DateField(verbose_name=_('publication date'), blank=True, null=True) 
+    def admin_newsletter(self):
+        if not self.publication.newsletter:
+            return _('None')
+        else:
+            return self.publication.newsletter
+    admin_newsletter.short_description = _('newsletter')
+    
+    publication = models.ForeignKey('Message', verbose_name=_('message'))
+    
+    # todo: smart jquery script to make this default
+    subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), filter_interface=models.HORIZONTAL)
+
+    publish_date = models.DateTimeField(verbose_name=_('publication date'), blank=True, null=True, default=datetime.now(), db_index=True) 
     publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'), db_index=True)
 
-    sent = models.BooleanField(default=False, verbose_name=_('sent'))
+    sent = models.BooleanField(default=False, verbose_name=_('sent'), db_index=True)
 
-    def save(self):
-        self.newsletter = self.publication.newsletter
-        super(Submission, self).save()
         
