@@ -287,6 +287,7 @@ class Submission(models.Model):
         list_display_links = ['publication',]
         date_hierarchy = 'publish_date'
         save_as = True
+        #js = ['/static/admin/scripts/subscriber_lookup.js',]
     
     def __unicode__(self):
         return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.admin_newsletter(), 'publish_date':self.publish_date}

@@ -9,9 +9,10 @@ urlpatterns = patterns('',
 
     (r'^$', 'django.views.generic.simple.redirect_to',{'url': '/mailinglist/'}),
     (r'^mailinglist/', include('newsletter.mailinglist.urls')),    
-	
+    (r'^admin/mailinglist/', include('newsletter.mailinglist.admin_urls')),
+
     # Admin
-     (r'^admin/', include('django.contrib.admin.urls')),
+    (r'^admin/', include('django.contrib.admin.urls')),
      
  
 )
