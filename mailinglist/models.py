@@ -13,7 +13,7 @@ from django.template import Template, Context
 #from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-from django.core.mail import send_mail
+from django.core.mail import send_mail, send_mass_mail, EmailMultiAlternatives, SMTPConnection
 
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
@@ -130,6 +130,12 @@ class Subscription(models.Model):
         verbose_name = _('subscription')
         verbose_name_plural = _('subscriptions')
         unique_together = ('email','newsletter')
+    
+    def get_recipient(self):
+        if self.name:
+            return u'%s <%s>' % (self.name, self.email)
+
+        return self.name
         
     def send_activation_email(self, action):
         assert action in ['subscribe', 'unsubscribe', 'update'], 'Unknown action'
@@ -298,7 +304,38 @@ class Submission(models.Model):
         else:
             return self.publication.newsletter
     admin_newsletter.short_description = _('newsletter')
-    
+
+    def submit(self):
+        assert self.publish_date < datetime.now(), 'Something smells fishy; submission time in future.'
+
+        self.sending = True
+        self.save()
+
+        newsletter = self.publication.newsletter
+        sender = u'%s <%s>' % (newsletter.sender, newsletter.email)
+
+        conn = SMTPConnection()
+        
+        subject = 'onderwerp'
+        text_content = 'inhoud'
+
+        for subscription in self.subscriptions.filter(activated=True, unsubscribed=False):
+            message = EmailMultiAlternatives(subject, text_content, from_email=sender, to=[subscription.get_recipient()], connection=conn)
+            message.send()
+        #EmailMultiAlternatives
+        #send_mass_mail(datatuple, fail_silently=False,
+        #    auth_user=None, auth_password=None):
+
+        self.sending = False
+        self.sent = True
+        self.save()
+
+    @classmethod
+    def submit_queue(cls):
+        todo = cls.objects.filter(sent=False, sending=False, publish_date__lt=datetime.now())
+        for submission in todo:
+            submission.submit()
+
     publication = models.ForeignKey('Message', verbose_name=_('message'))
     
     # todo: smart jquery script to make this default
@@ -308,5 +345,6 @@ class Submission(models.Model):
     publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'), db_index=True)
 
     sent = models.BooleanField(default=False, verbose_name=_('sent'), db_index=True)
+    sending = models.BooleanField(default=False, verbose_name=_('sending'), db_index=True, editable=False)
 
         
