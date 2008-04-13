@@ -4,7 +4,7 @@
 <html lang="nl">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
-	<title>{{ general.title }} - {{ general.edition}}</title>
+	<title>{{ newsletter.title }} - {{ message.title }}</title>
 	
 	<style type="text/css">
 		<!--
@@ -171,15 +171,15 @@ em { font-style: italic; }
 
 	<div id="header">
 		<div id="titles">
-			<h1>{{ general.title }}</h1>
+			<h1>{{ message.newsletter.title }} - {{ message.title }}</h1>
 			<h2>ART & TECHNOLOGY</h2>
 		</div>
-		<p id="edition_and_date"><span id="edition">{{ general.edition}}</span><span id="date">{{ date|date:"Y m j" }}</span></p>
+		<p id="edition_and_date"><span id="date">{{ date|date:"Y m j" }}</span></p>
 	</div>
 	
 	<div id="articles">
 	
-		{% for article in newsletter.article_set.all %}
+		{% for article in message.article_set.all %}
 		<div class="article">
 	
 			<div class="image">

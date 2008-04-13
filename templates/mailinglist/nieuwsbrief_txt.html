@@ -1,7 +1,7 @@
 ++++++++++++++++++++
 ++++++++++++++++++++
 
-{{ general.title }} - {{ general.edition}}
+{{ message.newsletter.title }} - {{ message.title }}
 
 ART & TECHNOLOGY             
 {{ date|date:"j F Y" }}
@@ -9,7 +9,7 @@ ART & TECHNOLOGY
 ++++++++++++++++++++
 ++++++++++++++++++++
 
-{% for article in newsletter.article_set.all %}
+{% for article in message.article_set.all %}
 {{ article.title|striptags }}
 {{ article.text|striptags }}
 
