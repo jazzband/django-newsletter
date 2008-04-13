@@ -18,12 +18,16 @@ def thumb(file, size='200x200'):
     if not os.path.exists(miniature_filename):
         print 'resizing %s to %s' % (basename, size)
         filename = os.path.join(settings.MEDIA_ROOT, file)
-        image = Image.open(filename)
-        image.thumbnail([x, y], Image.ANTIALIAS) # generate a thumbnail
-        if format == "jpg" or "JPG" or "jpeg" or "JPEG":
-            image.save(miniature_filename, image.format, quality=100)
-        else:
-            image.save(miniature_filename, image.format)
+        try:
+            image = Image.open(filename)
+            image.thumbnail([x, y], Image.ANTIALIAS) # generate a thumbnail
+            if format == "jpg" or "JPG" or "jpeg" or "JPEG":
+                image.save(miniature_filename, image.format, quality=100)
+            else:
+                image.save(miniature_filename, image.format)
+        except Exception, inst:
+            print 'Soft-fail: ' % inst
+
     return miniature_url
 
 register.filter(thumb)

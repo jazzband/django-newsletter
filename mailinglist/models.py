@@ -300,9 +300,11 @@ class Message(models.Model):
     class Admin:
         js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
         save_as = True
-        save_on_top = True
-        #search_fields = ['work_title',]
-        #fields = ((None, {'fields': ('title'), 'classes': 'wide extrapretty'}),)
+        #save_on_top = True
+        search_fields = ['title',]
+        #fields = (('Artikelen', {'fields' : ('title',), 'classes' : 'wide extrapretty', }),)
+        #Note: find some way to fix this bullcrap
+
 
     class Meta:
         verbose_name = _('message')
@@ -339,20 +341,28 @@ class Submission(models.Model):
         self.sending = True
         self.save()
 
-        newsletter = self.publication.newsletter
-        sender = u'%s <%s>' % (newsletter.sender, newsletter.email)
+        try:
+            newsletter = self.publication.newsletter
+            sender = u'%s <%s>' % (newsletter.sender, newsletter.email)
+    
+            conn = SMTPConnection()
+            
+            subject = u"%s - %s" % (self.publication.newsletter.title, self.publication.title)
+            text_content = self.publication.render_text(self.publish_date)
+            html_content = self.publication.render_html(self.publish_date)
 
-        conn = SMTPConnection()
+            for subscription in self.subscriptions.filter(activated=True, unsubscribed=False):
+                message = EmailMultiAlternatives(subject, text_content, from_email=sender, to=[subscription.get_recipient()], connection=conn)
+                message.attach_alternative(html_content, "text/html")
+                message.send()
+            
+            conn.close()
+
+        except Exception, inst:
+            self.sending = False
+            self.save()
+            raise inst
         
-        subject = 'onderwerp'
-        text_content = 'inhoud'
-
-        for subscription in self.subscriptions.filter(activated=True, unsubscribed=False):
-            message = EmailMultiAlternatives(subject, text_content, from_email=sender, to=[subscription.get_recipient()], connection=conn)
-            message.send()
-        #EmailMultiAlternatives
-        #send_mass_mail(datatuple, fail_silently=False,
-        #    auth_user=None, auth_password=None):
 
         self.sending = False
         self.sent = True
@@ -373,6 +383,6 @@ class Submission(models.Model):
     publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'), db_index=True)
 
     sent = models.BooleanField(default=False, verbose_name=_('sent'), db_index=True)
-    sending = models.BooleanField(default=False, verbose_name=_('sending'), db_index=True, editable=False)
+    sending = models.BooleanField(default=False, verbose_name=_('sending'), db_index=True, editable=True)
 
         
