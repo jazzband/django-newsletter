@@ -18,15 +18,6 @@ from django.contrib.sites.models import Site
 from mailinglist.models import *
 from mailinglist.forms import *
 
-from django.core import serializers
-from django.contrib.admin.views.decorators import staff_member_required
-
-@staff_member_required
-def json_subscribers(request, myid):
-    message = get_object_or_404(Message, id=myid)
-
-    return HttpResponse(serializers.serialize("json", message.newsletter.get_subscribers(), fields=()), mimetype='application/json')
-
 def newsletter_list(request):
     newsletters = Newsletter.on_site.filter(visible=True)
 

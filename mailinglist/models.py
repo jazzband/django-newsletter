@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models import permalink
 
 from django.template.defaultfilters import slugify
-from django.template import Template, Context
+from django.template import Template, Context, loader #loader should be removed later on
 
 #from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
@@ -271,8 +271,36 @@ class Message(models.Model):
     def __unicode__(self):
         return _(u"%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
 
+    def render_text(self, date=None):
+        if not date:
+            date = datetime.now()
+            
+        c = Context({ 'message' : self,
+                      'date' : date })
+        return loader.get_template('mailinglist/nieuwsbrief_txt.html').render(c)
+        # What does this do!?
+        #txt = BeautifulStoneSoup(txt, convertEntities=BeautifulStoneSoup.HTML_ENTITIES).contents[0]
+    
+    def render_html(self, date=None):
+        if not date:
+            date = datetime.now()
+
+        c = Context({ 'message' : self,
+                      'date' : date })
+        return loader.get_template('mailinglist/nieuwsbrief_html.html').render(c)
+        
+    @permalink
+    def text_preview_url(self):
+        return ('mailinglist.admin_views.text_preview', (self.id, ), {})
+
+    @permalink
+    def html_preview_url(self):
+        return ('mailinglist.admin_views.html_preview', (self.id, ), {})
+        
     class Admin:
         js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
+        save_as = True
+        save_on_top = True
         #search_fields = ['work_title',]
         #fields = ((None, {'fields': ('title'), 'classes': 'wide extrapretty'}),)
 

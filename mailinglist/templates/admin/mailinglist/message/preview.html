@@ -1,0 +1,25 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block title %}{% trans "Message preview" %}{{ block.super }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="../../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../">{% trans "Message" %}</a> &rsaquo;
+     <a href="../">{{ message|truncatewords:"18" }}</a> &rsaquo;
+     {% trans "Preview" %}
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <h1>Preview {{ message }}</h1>
+            
+    <h4>{% trans "HTML" %}</h4>
+    <iframe src ="{{ message.html_preview_url }}" width="720px" height="720px"></iframe>
+    
+    <h4>{% trans "Text" %}</h4>
+    <iframe src ="{{ message.text_preview_url }}" width="720px" height="720px"></iframe>
+</div>
+{% endblock %}
