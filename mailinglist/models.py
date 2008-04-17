@@ -66,12 +66,16 @@ class Newsletter(models.Model):
     def get_subscribers(self):
         print 'looking up subscribers for %s' % self
         return Subscription.objects.filter(newsletter=self, unsubscribed=False, activated=True)
+        
+    def get_sender(self):
+        return u'%s <%s>' % (self.sender, self.email)        
 
 class EmailTemplate(models.Model):
     ACTION_CHOICES = (
         ('subscribe', _('Subscribe')),
         ('unsubscribe', _('Unsubscribe')),
-        ('update', _('Update'))
+        ('update', _('Update')),
+        ('message', _('Message')),
     )
     
     def __unicode__(self):
@@ -83,6 +87,20 @@ class EmailTemplate(models.Model):
         else:
             return self.newsletter
     admin_newsletter.short_description = _('newsletter')
+
+    @classmethod
+    def get_templates(cls, action, newsletter):
+        assert action in ['subscribe', 'unsubscribe', 'update', 'message'], 'Unknown action'
+        try:
+            myemail = cls.objects.get(action__exact=action, newsletter__id=newsletter.id)
+        except EmailTemplate.DoesNotExist:
+            # If no specific template exists, use the default
+            myemail = cls.objects.get(action__exact=action, newsletter__isnull=True)
+
+        if myemail.html:            
+            return (Template(myemail.subject), Template(myemail.text), Template(myemail.html))
+        else:
+            return (Template(myemail.subject), Template(myemail.text), None)                            
 
     class Admin:
         list_display = ('admin_newsletter','action')
@@ -101,7 +119,11 @@ class EmailTemplate(models.Model):
     action = models.CharField(max_length=16, choices=ACTION_CHOICES, db_index=True, radio_admin=True, verbose_name=_('action'))
     
     subject = models.CharField(max_length=255, verbose_name=_('subject'))
-    email = models.TextField(verbose_name=_('e-mail'))
+    
+    text = models.TextField(verbose_name=_('Text'), help_text=_('Plain text e-mail message'))
+    
+    html = models.TextField(verbose_name=_('HTML'), help_text=_('HTML e-mail alternative.'), null=True, blank=True)
+
 
 class Subscription(models.Model):
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
@@ -139,22 +161,20 @@ class Subscription(models.Model):
         
     def send_activation_email(self, action):
         assert action in ['subscribe', 'unsubscribe', 'update'], 'Unknown action'
-        try:
-            myemail = EmailTemplate.objects.get(action__exact=action, newsletter=self.newsletter)
-        except EmailTemplate.DoesNotExist:
-            # If no specific template exists, use the default
-            myemail = EmailTemplate.objects.get(action__exact=action, newsletter__isnull=True)
-        
-        subjecttemplate = Template(myemail.subject)
-        emailtemplate = Template(myemail.email)
-        
+
+        (subject_template, email_template, html_template) = EmailTemplate.get_templates(action, self.newsletter)
+        # TODO: HTML mail alternative        
         c = Context({'subscription' : self, 'current_site' : Site.objects.get_current()})
         
-        send_mail(subjecttemplate.render(c),
-                  emailtemplate.render(c),
-                  '%s <%s>' % (self.newsletter.sender, self.newsletter.email), 
-                  [self.email], 
-                  fail_silently=False)    
+        message = EmailMultiAlternatives(subject_template.render(c), 
+                                         text_template.render(c), 
+                                         from_email=newsletter.get_sender(), 
+                                         to=[self.email], 
+                                         connection=conn)
+        if html_template:
+            message.attach_alternative(html_template.render(c), "text/html")
+        
+        message.send()
 
 #     @permalink
 #     def update_url(self):
@@ -352,18 +372,27 @@ class Submission(models.Model):
         self.save()
 
         try:
-            newsletter = self.publication.newsletter
-            sender = u'%s <%s>' % (newsletter.sender, newsletter.email)
-    
+            (subject_template, text_template, html_template) = EmailTemplate.get_templates('text_message', self.publication.newsletter)
+                                        
             conn = SMTPConnection()
             
-            subject = u"%s - %s" % (self.publication.newsletter.title, self.publication.title)
-            text_content = self.publication.render_text(self.publish_date)
-            html_content = self.publication.render_html(self.publish_date)
+            #subject = u"%s - %s" % (self.publication.newsletter.title, self.publication.title)
+            #text_content = self.publication.render_text(self.publish_date)
+            #html_content = self.publication.render_html(self.publish_date)
 
             for subscription in self.subscriptions.filter(activated=True, unsubscribed=False):
-                message = EmailMultiAlternatives(subject, text_content, from_email=sender, to=[subscription.get_recipient()], connection=conn)
-                message.attach_alternative(html_content, "text/html")
+                c = Context({'subscription' : subscription, 
+                             'current_site' : Site.objects.get_current(),
+                             'submission' : self })
+
+                message = EmailMultiAlternatives(subject_template.render(c), 
+                                                 text_template.render(c), 
+                                                 from_email=self.publication.newsletter.get_sender(), 
+                                                 to=[subscription.get_recipient()], 
+                                                 connection=conn)
+                if html_template:
+                    message.attach_alternative(html_template.render(c), "text/html")
+                    
                 message.send()
             
             conn.close()
