@@ -17,7 +17,10 @@ tinyMCE.init({
 	verify_html : true,
 
 	browsers : "msie,gecko,opera",
-	entity_encoding : "raw"
+	entity_encoding : "raw",
+
+    width : "450",
+    height : "350"
 	
 });
 

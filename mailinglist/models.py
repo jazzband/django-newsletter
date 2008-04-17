@@ -261,13 +261,13 @@ class Article(models.Model):
     url = models.URLField(verbose_name=_('link'), blank=True, null=True)
     
     # Make this a foreign key for added elegance
-    image = models.ImageField(upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True, verbose_name='afbeelding', help_text='xxx')
-    thumb = models.CharField(max_length=600, verbose_name='Thumbnail url', editable=False, null=True, blank=True)
+    image = models.ImageField(upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True, verbose_name=_('image'), help_text='xxx')
+    thumb = models.CharField(max_length=600, verbose_name=_('thumbnail url'), editable=False, null=True, blank=True)
     
-    remove = models.BooleanField(default=False, verbose_name=_('delete'))
+    remove = models.BooleanField(default=False, verbose_name=_('Remove'))
 
     # Post this article is associated with
-    post = models.ForeignKey('Message', edit_inline=models.TABULAR, num_in_admin=1, verbose_name='Nieuwsbrief') #STACKED TABULAR    
+    post = models.ForeignKey('Message', edit_inline=models.TABULAR, num_in_admin=1, verbose_name=_('message')) #STACKED TABULAR    
     
     class Meta:
         ordering = ('sortorder',)
@@ -291,7 +291,7 @@ class Article(models.Model):
         thumb_height = self.get_image_height() / ratio
         return '<img src="%s" width="%s" height="%s"/>' % (self.image, thumb_width, thumb_height)
 
-    thumbnail.short_description = 'thumbnail'
+    thumbnail.short_description = _('thumbnail')
     thumbnail.allow_tags = True
 
     def save(self):
