@@ -29,12 +29,26 @@ def message_preview(request, myid):
 @staff_member_required
 def html_preview(request, myid):
     message = get_object_or_404(Message, id=myid)
-    
-    return HttpResponse(message.render_html())
+
+    (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', message.newsletter)
+
+    c = Context({'message' : message, 
+                 'site' : Site.objects.get_current(),
+                 'newsletter' : message.newsletter,
+                 'date' : datetime.now()})
+                 
+    return HttpResponse(html_template.render(c))
 
 @staff_member_required
 def text_preview(request, myid):
     message = get_object_or_404(Message, id=myid)
-    
-    return HttpResponse(message.render_text(), mimetype='text/plain')
+
+    (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', message.newsletter)
+
+    c = Context({'message' : message, 
+                 'site' : Site.objects.get_current(),
+                 'newsletter' : message.newsletter,
+                 'date' : datetime.now()})
+                 
+    return HttpResponse(text_template.render(c), mimetype='text/plain')
     

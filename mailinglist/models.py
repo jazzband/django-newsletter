@@ -5,7 +5,9 @@ from datetime import datetime
 #import Image
 
 from django.db import models
-from django.db.models import permalink
+from django.db.models import permalink, signals
+
+from django.dispatch import dispatcher
 
 from django.template.defaultfilters import slugify
 from django.template import Template, Context, loader #loader should be removed later on
@@ -63,12 +65,16 @@ class Newsletter(models.Model):
         return ('mailinglist.views.unsubscribe_request', (),
                 {'newsletter_slug': self.newsletter.slug })
                 
-    def get_subscribers(self):
-        print 'looking up subscribers for %s' % self
-        return Subscription.objects.filter(newsletter=self, unsubscribed=False, activated=True)
-        
     def get_sender(self):
-        return u'%s <%s>' % (self.sender, self.email)        
+        return u'%s <%s>' % (self.sender, self.email)
+        
+    def get_subscribers(self):
+        if settings.DEBUG:
+            print 'Looking up subscribers for %s' % self
+            print  Subscription.objects.filter(newsletter=self, activated=True, unsubscribed=False)
+
+        return Subscription.objects.filter(newsletter=self, unsubscribed=False, activated=True)
+
 
 class EmailTemplate(models.Model):
     ACTION_CHOICES = (
@@ -79,7 +85,7 @@ class EmailTemplate(models.Model):
     )
     
     def __unicode__(self):
-        return u"%s %s" % (self.newsletter, self.action)
+        return u"%s '%s'" % (self.admin_newsletter(), self.get_action_display())
 
     def admin_newsletter(self):
         if not self.newsletter:
@@ -90,7 +96,7 @@ class EmailTemplate(models.Model):
 
     @classmethod
     def get_templates(cls, action, newsletter):
-        assert action in ['subscribe', 'unsubscribe', 'update', 'message'], 'Unknown action'
+        assert action in ['subscribe', 'unsubscribe', 'update', 'message'], 'Unknown action %s' % action
         try:
             myemail = cls.objects.get(action__exact=action, newsletter__id=newsletter.id)
         except EmailTemplate.DoesNotExist:
@@ -105,6 +111,8 @@ class EmailTemplate(models.Model):
     class Admin:
         list_display = ('admin_newsletter','action')
         list_display_links = ('admin_newsletter','action')
+        # newsletter belongs here but we have to fix a way to do 'defaults processing' ;)
+        list_filter = ('action',)
         
         save_as = True
 
@@ -120,7 +128,7 @@ class EmailTemplate(models.Model):
     
     subject = models.CharField(max_length=255, verbose_name=_('subject'))
     
-    text = models.TextField(verbose_name=_('Text'), help_text=_('Plain text e-mail message'))
+    text = models.TextField(verbose_name=_('Text'), help_text=_('Plain text e-mail message. Available objects: date, subscription, site, submission, newsletter and message.'))
     
     html = models.TextField(verbose_name=_('HTML'), help_text=_('HTML e-mail alternative.'), null=True, blank=True)
 
@@ -146,7 +154,7 @@ class Subscription(models.Model):
 
     class Admin:
         list_display = ('email', 'newsletter', 'subscribe_date', 'activated', 'unsubscribed')
-        list_filter = ['newsletter',]
+        list_filter = ('newsletter','activated', 'unsubscribed')
 
     class Meta:
         verbose_name = _('subscription')
@@ -162,15 +170,16 @@ class Subscription(models.Model):
     def send_activation_email(self, action):
         assert action in ['subscribe', 'unsubscribe', 'update'], 'Unknown action'
 
-        (subject_template, email_template, html_template) = EmailTemplate.get_templates(action, self.newsletter)
+        (subject_template, text_template, html_template) = EmailTemplate.get_templates(action, self.newsletter)
         # TODO: HTML mail alternative        
-        c = Context({'subscription' : self, 'current_site' : Site.objects.get_current()})
+        c = Context({'subscription' : self, 
+                     'site' : Site.objects.get_current(),
+                     'date' : self.subscribe_date })
         
         message = EmailMultiAlternatives(subject_template.render(c), 
                                          text_template.render(c), 
-                                         from_email=newsletter.get_sender(), 
-                                         to=[self.email], 
-                                         connection=conn)
+                                         from_email=self.newsletter.get_sender(), 
+                                         to=[self.email])
         if html_template:
             message.attach_alternative(html_template.render(c), "text/html")
         
@@ -298,24 +307,6 @@ class Message(models.Model):
 
     def __unicode__(self):
         return _(u"%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
-
-    def render_text(self, date=None):
-        if not date:
-            date = datetime.now()
-            
-        c = Context({ 'message' : self,
-                      'date' : date })
-        return loader.get_template('mailinglist/nieuwsbrief_txt.html').render(c)
-        # What does this do!?
-        #txt = BeautifulStoneSoup(txt, convertEntities=BeautifulStoneSoup.HTML_ENTITIES).contents[0]
-    
-    def render_html(self, date=None):
-        if not date:
-            date = datetime.now()
-
-        c = Context({ 'message' : self,
-                      'date' : date })
-        return loader.get_template('mailinglist/nieuwsbrief_html.html').render(c)
         
     @permalink
     def text_preview_url(self):
@@ -328,20 +319,19 @@ class Message(models.Model):
     class Admin:
         js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
         save_as = True
+        list_display = ('title', 'newsletter')
+        list_display_links  = ('title',)
+        list_filter = ('newsletter', )
+
         #save_on_top = True
-        search_fields = ['title',]
+        search_fields = ('title',)
         #fields = (('Artikelen', {'fields' : ('title',), 'classes' : 'wide extrapretty', }),)
         #Note: find some way to fix this bullcrap
 
 
     class Meta:
         verbose_name = _('message')
-        verbose_name_plural = _('message') 
-
-
-
-from django.db.models import signals
-from django.dispatch import dispatcher
+        verbose_name_plural = _('message')
 
 class Submission(models.Model):
     class Meta:
@@ -349,62 +339,56 @@ class Submission(models.Model):
         verbose_name_plural = _('submissions')
                 
     class Admin:
-        list_display = ('admin_newsletter', 'publication', 'publish_date', 'publish', 'sent')
-        list_display_links = ['publication',]
+        list_display = ('newsletter', 'message', 'publish_date', 'publish', 'sent')
+        list_display_links = ['message',]
         date_hierarchy = 'publish_date'
+        list_filter = ('newsletter', 'publish', 'sent')
         save_as = True
         #js = ['/static/admin/scripts/subscriber_lookup.js',]
     
     def __unicode__(self):
-        return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.admin_newsletter(), 'publish_date':self.publish_date}
-
-    def admin_newsletter(self):
-        if not self.publication.newsletter:
-            return _('None')
-        else:
-            return self.publication.newsletter
-    admin_newsletter.short_description = _('newsletter')
+        return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.newsletter, 'publish_date':self.publish_date}
 
     def submit(self):
+        print _(u"Submitting %(submission)s") % {'submission':self}
         assert self.publish_date < datetime.now(), 'Something smells fishy; submission time in future.'
 
         self.sending = True
         self.save()
 
         try:
-            (subject_template, text_template, html_template) = EmailTemplate.get_templates('text_message', self.publication.newsletter)
+            (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', self.message.newsletter)
                                         
             conn = SMTPConnection()
-            
-            #subject = u"%s - %s" % (self.publication.newsletter.title, self.publication.title)
-            #text_content = self.publication.render_text(self.publish_date)
-            #html_content = self.publication.render_html(self.publish_date)
-
+    
             for subscription in self.subscriptions.filter(activated=True, unsubscribed=False):
                 c = Context({'subscription' : subscription, 
-                             'current_site' : Site.objects.get_current(),
-                             'submission' : self })
-
+                             'site' : Site.objects.get_current(),
+                             'submission' : self,
+                             'message' : self.message,
+                             'newsletter' : self.newsletter,
+                             'date' : self.publish_date })
+    
                 message = EmailMultiAlternatives(subject_template.render(c), 
                                                  text_template.render(c), 
-                                                 from_email=self.publication.newsletter.get_sender(), 
+                                                 from_email=self.newsletter.get_sender(), 
                                                  to=[subscription.get_recipient()], 
                                                  connection=conn)
                 if html_template:
                     message.attach_alternative(html_template.render(c), "text/html")
                     
                 message.send()
-            
-            conn.close()
+    
+            # For some reason this is not working. Bug!?        
+            #conn.close()
 
         except Exception, inst:
             self.sending = False
             self.save()
             raise inst
         
-
         self.sending = False
-        self.sent = True
+        #self.sent = True
         self.save()
 
     @classmethod
@@ -412,8 +396,14 @@ class Submission(models.Model):
         todo = cls.objects.filter(sent=False, sending=False, publish_date__lt=datetime.now())
         for submission in todo:
             submission.submit()
+            
+    def save(self):
+        self.newsletter = self.message.newsletter
+        
+        return super(Submission, self).save()
 
-    publication = models.ForeignKey('Message', verbose_name=_('message'))
+    newsletter = models.ForeignKey('Newsletter', verbose_name=_('nieuwsbrief'), editable=False)
+    message = models.ForeignKey('Message', verbose_name=_('message'))
     
     # todo: smart jquery script to make this default
     subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), filter_interface=models.HORIZONTAL)
@@ -423,5 +413,3 @@ class Submission(models.Model):
 
     sent = models.BooleanField(default=False, verbose_name=_('sent'), db_index=True)
     sending = models.BooleanField(default=False, verbose_name=_('sending'), db_index=True, editable=True)
-
-        
