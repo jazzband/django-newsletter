@@ -4,7 +4,7 @@ from django import newforms as forms
 from django.newforms import widgets
 from django.newforms.util import ValidationError, ErrorList
 
-from models import *
+from models import Subscription
 
 def getSubscriptionFromEmail(mynewsletter, myemail):
         try:
@@ -65,7 +65,6 @@ class SubscribeForm(NewsletterForm):
 
 class ActivateForm(NewsletterForm):        
     class Meta:
-        model = Subscription
         fields = (None,)
         
     def clean_user_activation_code(self):
