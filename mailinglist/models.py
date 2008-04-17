@@ -388,7 +388,7 @@ class Submission(models.Model):
             raise inst
         
         self.sending = False
-        #self.sent = True
+        self.sent = True
         self.save()
 
     @classmethod
@@ -409,7 +409,7 @@ class Submission(models.Model):
     subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), filter_interface=models.HORIZONTAL)
 
     publish_date = models.DateTimeField(verbose_name=_('publication date'), blank=True, null=True, default=datetime.now(), db_index=True) 
-    publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'), db_index=True)
+    publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish on website.'), db_index=True)
 
-    sent = models.BooleanField(default=False, verbose_name=_('sent'), db_index=True)
+    sent = models.BooleanField(default=False, verbose_name=_('sent'), db_index=True, editable=False)
     sending = models.BooleanField(default=False, verbose_name=_('sending'), db_index=True, editable=False)
