@@ -24,7 +24,7 @@ def make_activation_code():
     return sha.new(sha.new(str(random.random())).hexdigest()[:5]+str(datetime.now().microsecond)).hexdigest()
 
 class Newsletter(models.Model):
-    site = models.ManyToManyField('sites.Site')
+    site = models.ManyToManyField(Site)
     
     title = models.CharField(max_length=200, verbose_name=_('newsletter title'))
     slug = models.SlugField(db_index=True,prepopulate_from=('title',),unique=True)
@@ -235,6 +235,8 @@ class Article(models.Model):
     image = models.ImageField(upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True, verbose_name='afbeelding', help_text='xxx')
     thumb = models.CharField(max_length=600, verbose_name='Thumbnail url', editable=False, null=True, blank=True)
     
+    remove = models.BooleanField(default=False, verbose_name=_('delete'))
+
     # Post this article is associated with
     post = models.ForeignKey('Message', edit_inline=models.TABULAR, num_in_admin=1, verbose_name='Nieuwsbrief') #STACKED TABULAR    
     
@@ -262,6 +264,12 @@ class Article(models.Model):
 
     thumbnail.short_description = 'thumbnail'
     thumbnail.allow_tags = True
+
+    def save(self):
+        if self.remove:
+            self.delete()
+        else:
+            super(Article, self).save()
 
 class Message(models.Model):
     title = models.CharField(max_length=200, verbose_name=_('title'))
@@ -309,6 +317,8 @@ class Message(models.Model):
     class Meta:
         verbose_name = _('message')
         verbose_name_plural = _('message') 
+
+
 
 from django.db.models import signals
 from django.dispatch import dispatcher
