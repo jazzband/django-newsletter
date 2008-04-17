@@ -1,7 +1,10 @@
 var JsonSubscribers = {
-    init: function(inputname) {
+    init: function(inputname, add) {
         inp = document.getElementById(inputname)
         addEvent(inp, "change", function(e) { JsonSubscribers.setSubscribers(inp.value); });
+        if (add==true && inp.value != "") {
+            JsonSubscribers.setSubscribers(inp.value);
+        }
     },
     
     setSubscribers: function(id) {
@@ -17,7 +20,7 @@ var JsonSubscribers = {
                     var from_box = document.getElementById('id_subscriptions_from');
                     for (var i = 0; (option = from_box.options[i]); i++) {
                         for (j=0;(object = objects[j]);j++) {
-                            if (object.pk == parseInt(option.value)) {
+                            if (object.pk.toString() == option.value) {
                                 option.selected = true;
                             }
                         }

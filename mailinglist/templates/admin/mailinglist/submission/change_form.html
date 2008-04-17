@@ -5,5 +5,5 @@
     <script src="/static/admin/scripts/subscriber_lookup.js" type="text/javascript"></script>
 {% endblock %}
 
-{% block after_related_objects %}{{ block.super }}<script type="text/javascript">JsonSubscribers.init('id_message');</script>{% endblock %}
+{% block after_related_objects %}{{ block.super }}<script type="text/javascript">addEvent(window, "load", function(e) { JsonSubscribers.init('id_message'{% if add %}, add=true{% endif %}); });</script>{% endblock %}
 

@@ -412,4 +412,4 @@ class Submission(models.Model):
     publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'), db_index=True)
 
     sent = models.BooleanField(default=False, verbose_name=_('sent'), db_index=True)
-    sending = models.BooleanField(default=False, verbose_name=_('sending'), db_index=True, editable=True)
+    sending = models.BooleanField(default=False, verbose_name=_('sending'), db_index=True, editable=False)
