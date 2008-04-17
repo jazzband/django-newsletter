@@ -73,8 +73,6 @@ class ActivateForm(NewsletterForm):
         value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('user_activation_code'))
         user_activation_code = myfield.clean(value)
         
-        print user_activation_code
-        print self.instance.activation_code
         if user_activation_code != self.instance.activation_code:
             raise ValidationError(_('The validation code supplied by you does not match.'))
 
