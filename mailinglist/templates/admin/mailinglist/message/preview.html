@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load i18n %}
-{% block title %}{% trans "Message preview" %}{{ block.super }}{% endblock %}
+{% block title %}{% trans "Preview message" %}{{ block.super }}{% endblock %}
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
@@ -13,13 +13,16 @@
 
 
 {% block content %}
+<h1>{% trans "Preview message" %}</h1>
 <div id="content-main">
-    <h1>Preview {{ message }}</h1>
-            
+  <ul class="object-tools">
+    <li><a href="../">{% trans "Change" %}</a></li>
+    <li><a href="../submit/">{% trans "Submit" %}</a></li>
+  </ul>
     <h4>{% trans "HTML" %}</h4>
-    <iframe src ="{{ message.html_preview_url }}" width="720px" height="720px"></iframe>
+    <iframe src ="{{ message.html_preview_url }}" width="960px" height="720px"></iframe>
     
     <h4>{% trans "Text" %}</h4>
-    <iframe src ="{{ message.text_preview_url }}" width="720px" height="720px"></iframe>
+    <iframe src ="{{ message.text_preview_url }}" width="960px" height="720px"></iframe>
 </div>
 {% endblock %}
