@@ -1,11 +1,13 @@
 from django.shortcuts import get_object_or_404, render_to_response
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from django.core import serializers
 from django.contrib.admin.views.decorators import staff_member_required
 
 from django.template import RequestContext
+
+from django.utils.translation import ugettext as _
 
 from mailinglist.models import *
 
@@ -51,4 +53,19 @@ def text_preview(request, myid):
                  'date' : datetime.now()})
                  
     return HttpResponse(text_template.render(c), mimetype='text/plain')
+
+@staff_member_required
+def submit(request, myid):
+    submission = get_object_or_404(Submission, id=myid)
     
+    if submission.sent or submission.prepared:
+        request.user.message_set.create(message=_('Message already submitted.'))
+        
+        return HttpResponseRedirect('../')
+        
+    submission.prepared=True
+    submission.save()
+    
+    request.user.message_set.create(message=_('Your message is being submitted.'))
+    
+    return HttpResponseRedirect('../../')
