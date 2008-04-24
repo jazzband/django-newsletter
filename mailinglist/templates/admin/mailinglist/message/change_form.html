@@ -8,6 +8,7 @@
   {% if has_absolute_url %}<li><a href="../../../r/{{ content_type_id }}/{{ obje
 ct_id }}/" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
   <li><a href="preview/">{% trans "Preview" %}</a></li>
+  <li><a href="../../../submission/add/?message_id={{ message.id }}">{% trans "Prepare submission" %}</a></li>
   </ul>
 {% endif %}{% endif %}
 {% endblock %}

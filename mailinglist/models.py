@@ -339,12 +339,21 @@ class Submission(models.Model):
         verbose_name_plural = _('submissions')
                 
     class Admin:
-        list_display = ('newsletter', 'message', 'publish_date', 'publish', 'sent')
+        list_display = ('newsletter', 'message', 'publish_date', 'publish', 'sent', 'admin_sending')
         list_display_links = ['message',]
         date_hierarchy = 'publish_date'
         list_filter = ('newsletter', 'publish', 'sent')
         save_as = True
         #js = ['/static/admin/scripts/subscriber_lookup.js',]
+    
+    def admin_sending(self):
+        if self.sending:
+            # This URL reference is ugly. I know.
+            return u'<img src="/static/admin/images/scanner.gif" width="16" height="9" alt="%s"/>' % _('Submitting')
+        else:
+            return ''
+    admin_sending.short_description = ''
+    admin_sending.allow_tags = True
     
     def __unicode__(self):
         return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.newsletter, 'publish_date':self.publish_date}
@@ -393,7 +402,7 @@ class Submission(models.Model):
 
     @classmethod
     def submit_queue(cls):
-        todo = cls.objects.filter(sent=False, sending=False, publish_date__lt=datetime.now())
+        todo = cls.objects.filter(prepared=True, sent=False, sending=False, publish_date__lt=datetime.now())
         for submission in todo:
             submission.submit()
             
@@ -411,5 +420,6 @@ class Submission(models.Model):
     publish_date = models.DateTimeField(verbose_name=_('publication date'), blank=True, null=True, default=datetime.now(), db_index=True) 
     publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish on website.'), db_index=True)
 
+    prepared = models.BooleanField(default=False, verbose_name=_('prepared'), db_index=True, editable=False)
     sent = models.BooleanField(default=False, verbose_name=_('sent'), db_index=True, editable=False)
     sending = models.BooleanField(default=False, verbose_name=_('sending'), db_index=True, editable=False)

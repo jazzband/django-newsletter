@@ -17,7 +17,7 @@
 <div id="content-main">
   <ul class="object-tools">
     <li><a href="../">{% trans "Change" %}</a></li>
-    <li><a href="../submit/">{% trans "Submit" %}</a></li>
+    <li><a href="../../../submission/add/?message_id={{ message.id }}">{% trans "Prepare submission" %}</a></li>
   </ul>
     <h4>{% trans "HTML" %}</h4>
     <iframe src ="{{ message.html_preview_url }}" width="960px" height="720px"></iframe>
