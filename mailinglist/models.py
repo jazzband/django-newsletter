@@ -347,7 +347,7 @@ class Submission(models.Model):
         #js = ['/static/admin/scripts/subscriber_lookup.js',]
     
     def admin_sending(self):
-        if self.prepared or self.sending:
+        if not self.sent and (self.prepared or self.sending):
             # This URL reference is ugly. I know.
             return u'<img src="/static/admin/images/scanner.gif" width="16" height="9" alt="%s"/>' % _('Submitting')
         else:
