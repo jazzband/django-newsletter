@@ -9,10 +9,12 @@ var SubmitInterface = {
     
     process: function() {
         if (SubmitInterface.changed) {
-            result = confirm('The submission has been changed. It has to be saved before you can submit. Click OK to proceed with saving, click cancel to continue editing.');
+            result = confirm(gettext('The submission has been changed. It has to be saved before you can submit. Click OK to proceed with saving, click cancel to continue editing.'));
             if (result) {
                 document.forms[0]._continue.click();
             }
+        } else {
+            window.location = 'submit/';
         }
     }
 };
