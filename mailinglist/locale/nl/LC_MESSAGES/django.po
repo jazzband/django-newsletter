@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the 'Django newsletter' package.
 # Mathijs de Bruin <mathijs@visualspace.nl>
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-08 16:15+0200\n"
+"POT-Creation-Date: 2008-05-08 16:50+0200\n"
 "PO-Revision-Date: 2008-04-10 12:28+0200\n"
 "Last-Translator: Mathijs de Bruin <mathijs@visualspace.nl>\n"
 "Language-Team: Dutch <mathijs@visualspace.nl>\n"
@@ -18,19 +17,17 @@ msgstr ""
 
 #: admin_views.py:70
 msgid "Submission already sent."
-msgstr ""
+msgstr "Zending is al verzonden."
 
 #: admin_views.py:77
 msgid "Your submission is being sent."
-msgstr ""
+msgstr "Uw zending wordt verzonden."
 
 #: forms.py:13
-#, fuzzy
 msgid "The e-mail address you specified has not been subscribed to."
 msgstr "Het door u opgegeven e-mail adres is nog niet geabonneerd."
 
 #: forms.py:52
-#, fuzzy
 msgid "Your e-mail address has already been subscribed to."
 msgstr "Uw e-mail adres is al geabonneerd."
 
@@ -43,7 +40,6 @@ msgid "Activation code"
 msgstr "Verificatiecode"
 
 #: forms.py:89 forms.py:108
-#, fuzzy
 msgid "The subscription has not yet been activated."
 msgstr "Uw abonnement is nog niet geactiveerd."
 
@@ -51,10 +47,10 @@ msgstr "Uw abonnement is nog niet geactiveerd."
 msgid ""
 "The subscription has been unsubscribed. To update your information, please "
 "subscribe again."
-msgstr ""
+msgstr "Uw abonnement is beëindigd. Om uw informatie aan te passen dient u zich "
+"opnieuw te abonneren."
 
 #: forms.py:111
-#, fuzzy
 msgid "This e-mail address has not been subscribed to."
 msgstr "Er is geen abonnement voor dit email adres."
 
@@ -83,6 +79,7 @@ msgid "visible"
 msgstr "zichtbaar"
 
 #: models.py:50 models.py:95 models.py:125 models.py:137 models.py:306
+#: models.py:446
 msgid "newsletter"
 msgstr "nieuwsbrief"
 
@@ -92,7 +89,7 @@ msgstr "nieuwsbrieven"
 
 #: models.py:81 templates/mailinglist/subscription_subscribe.html:13
 msgid "Subscribe"
-msgstr "abonneer"
+msgstr "Abonneer"
 
 #: models.py:82 templates/mailinglist/subscription_unsubscribe.html:13
 msgid "Unsubscribe"
@@ -100,16 +97,15 @@ msgstr "Opzeggen"
 
 #: models.py:83
 msgid "Update"
-msgstr ""
+msgstr "Aanpassen"
 
 #: models.py:84 templates/admin/mailinglist/message/preview.html:8
-#, fuzzy
 msgid "Message"
 msgstr "Bericht"
 
 #: models.py:92
 msgid "Default"
-msgstr ""
+msgstr "Standaard"
 
 #: models.py:120
 msgid "e-mail template"
@@ -128,7 +124,6 @@ msgid "subject"
 msgstr "onderwerp"
 
 #: models.py:131 templates/admin/mailinglist/message/preview.html:25
-#, fuzzy
 msgid "Text"
 msgstr "Tekst"
 
@@ -136,16 +131,16 @@ msgstr "Tekst"
 msgid ""
 "Plain text e-mail message. Available objects: date, subscription, site, "
 "submission, newsletter and message."
-msgstr ""
+msgstr "Gewone text e-mail bericht. Beschikbare objecten zijn: date, subscription, "
+"site, submission, newsletter en message."
 
 #: models.py:133 templates/admin/mailinglist/message/preview.html:22
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: models.py:133
-#, fuzzy
 msgid "HTML e-mail alternative."
-msgstr "e-mail sjabloon"
+msgstr "HTML e-mail alternatief."
 
 #: models.py:139
 msgid "activated"
@@ -180,8 +175,7 @@ msgid "IP address"
 msgstr "IP adres"
 
 #: models.py:153
-#, fuzzy, python-format
-msgid "%(name)s <%(email)s> to %(newsletter)s"
+msgid "%(name)s <%(email)s> to %(newslgstr "
 msgstr "%(email)s aan %(newsletter)s"
 
 #: models.py:160
@@ -216,7 +210,6 @@ msgid "link"
 msgstr "koppeling"
 
 #: models.py:264
-#, fuzzy
 msgid "image"
 msgstr "afbeelding"
 
@@ -225,7 +218,6 @@ msgid "thumbnail url"
 msgstr ""
 
 #: models.py:267
-#, fuzzy
 msgid "remove"
 msgstr "verwijder"
 
@@ -251,7 +243,6 @@ msgid "%(title)s in %(newsletter)s"
 msgstr ""
 
 #: models.py:334
-#, fuzzy
 msgid "messages"
 msgstr "berichten"
 
@@ -264,23 +255,20 @@ msgid "submissions"
 msgstr "zendingen"
 
 #: models.py:366
-#, fuzzy
 msgid "Sent."
-msgstr "verzonden"
+msgstr "Verzonden."
 
 #: models.py:369
-#, fuzzy
-msgid "Later submission."
-msgstr "zending"
+msgid "Delayed submission."
+msgstr "Wordt later verzonden."
 
 #: models.py:371
-msgid "Submitting..."
-msgstr ""
+msgid "Submitting."
+msgstr "Wordt nu verzonden."
 
 #: models.py:373
-#, fuzzy
 msgid "Not sent."
-msgstr "verzonden"
+msgstr "Niet verzonden."
 
 #: models.py:377
 #, python-format
@@ -288,13 +276,8 @@ msgid "%(newsletter)s on %(publish_date)s"
 msgstr "%(newsletter)s op %(publish_date)s"
 
 #: models.py:380
-#, fuzzy, python-format
 msgid "Submitting %(submission)s"
-msgstr "zendingen"
-
-#: models.py:446
-msgid "nieuwsbrief"
-msgstr ""
+msgstr "Verzenden van %(submission)s"
 
 #: models.py:450
 msgid ""
@@ -317,26 +300,24 @@ msgid "publish"
 msgstr "publiceer"
 
 #: models.py:453
-#, fuzzy
-msgid "Publish on website."
+msgid "Publish in archive."
 msgstr "Publiceer in archief."
 
 #: models.py:455
 msgid "prepared"
-msgstr ""
+msgstr "voorbereid"
 
 #: models.py:456
 msgid "sent"
 msgstr "verzonden"
 
 #: models.py:457
-#, fuzzy
 msgid "sending"
-msgstr "verzender"
+msgstr "verzenden"
 
 #: management/commands/submit.py:9
 msgid "Submitting queued newsletter mailings"
-msgstr ""
+msgstr "Bezig met versturen van klaarstaande zendingen"
 
 #: templates/admin/mailinglist/message/change_form.html:7
 #: templates/admin/mailinglist/submission/change_form.html:13
@@ -355,27 +336,24 @@ msgstr "Voorvertonen"
 
 #: templates/admin/mailinglist/message/preview.html:3
 #: templates/admin/mailinglist/message/preview.html:16
-#, fuzzy
 msgid "Preview message"
-msgstr "bericht"
+msgstr "Voorvertoning bericht"
 
 #: templates/admin/mailinglist/message/preview.html:7
 msgid "Home"
 msgstr ""
 
 #: templates/admin/mailinglist/message/preview.html:19
-#, fuzzy
 msgid "Change"
-msgstr "Verander:"
+msgstr "Verander"
 
 #: templates/admin/mailinglist/message/preview.html:20
-#, fuzzy
 msgid "Create submission"
-msgstr "zending"
+msgstr "Maak zending aan"
 
 #: templates/admin/mailinglist/submission/change_form.html:16
 msgid "Submit"
-msgstr ""
+msgstr "Verzend"
 
 #: templates/mailinglist/common.html:4
 #: templates/mailinglist/newsletter_detail.html:7
@@ -413,7 +391,7 @@ msgstr "Uw abonnement is met succes beëindigd."
 
 #: templates/mailinglist/subscription_activate.html:15
 msgid "Your subscription has succesfully been updated."
-msgstr ""
+msgstr "Uw abonnement is succesvol aangepast."
 
 #: templates/mailinglist/subscription_subscribe.html:3
 #: templates/mailinglist/subscription_subscribe.html:5
@@ -451,10 +429,3 @@ msgstr "Huidig:"
 #: templates/widget/image.html:4
 msgid "Change:"
 msgstr "Verander:"
-
-#~ msgid "None"
-#~ msgstr "Geen"
-
-#, fuzzy
-#~ msgid "Delete"
-#~ msgstr "verwijder"

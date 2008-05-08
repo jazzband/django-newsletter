@@ -1,7 +1,7 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Django newsletter, Dutch translation
+# Copyright (C) 200
+# This file is distributed under the same license as the 'Django newsletter' package.
+# Mathijs de Bruin <mathijs@visualspace.nl>
 #
 #, fuzzy
 msgid ""
@@ -21,5 +21,5 @@ msgid ""
 "The submission has been changed. It has to be saved before you can submit. "
 "Click OK to proceed with saving, click cancel to continue editing."
 msgstr ""
-"De zending is verandert. Hij moet opgeslagen worden voordat u kunt verzenden. "
+"De zending is veranderd. Hij moet opgeslagen worden voordat u kunt verzenden. "
 "Klik op OK om de zending op te slaan, klik op annuleren om verder te gaan met bewerken."

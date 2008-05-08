@@ -14,6 +14,7 @@ from django.template import Template, Context, loader #loader should be removed 
 
 #from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
 
 from django.core.mail import send_mail, send_mass_mail, EmailMultiAlternatives, SMTPConnection
 
@@ -363,14 +364,14 @@ class Submission(models.Model):
     def admin_status_text(self):
         if self.prepared:
             if self.sent:
-                return _("Sent.")
+                return ugettext("Sent.")
             else:
                 if self.publish_date > datetime.now():
-                    return _("Later submission.")
+                    return ugettext("Delayed submission.")
                 else:
-                    return _("Submitting...")
+                    return ugettext("Submitting.")
         else:
-            return _("Not sent.")
+            return ugettext("Not sent.")
     admin_status_text.short_description = 'Status'
     
     def __unicode__(self):
@@ -443,14 +444,14 @@ class Submission(models.Model):
         
         return super(Submission, self).save()
 
-    newsletter = models.ForeignKey('Newsletter', verbose_name=_('nieuwsbrief'), editable=False)
+    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), editable=False)
     message = models.ForeignKey('Message', verbose_name=_('message'))
     
     # todo: smart jquery script to make this default
     subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), filter_interface=models.HORIZONTAL)
 
     publish_date = models.DateTimeField(verbose_name=_('publication date'), blank=True, null=True, default=datetime.now(), db_index=True) 
-    publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish on website.'), db_index=True)
+    publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'), db_index=True)
 
     prepared = models.BooleanField(default=False, verbose_name=_('prepared'), db_index=True, editable=False)
     sent = models.BooleanField(default=False, verbose_name=_('sent'), db_index=True, editable=False)

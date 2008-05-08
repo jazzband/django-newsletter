@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-08 16:15+0200\n"
+"POT-Creation-Date: 2008-05-08 17:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -256,11 +256,11 @@ msgid "Sent."
 msgstr ""
 
 #: models.py:369
-msgid "Later submission."
+msgid "Delayed submission."
 msgstr ""
 
 #: models.py:371
-msgid "Submitting..."
+msgid "Submitting."
 msgstr ""
 
 #: models.py:373
@@ -300,7 +300,7 @@ msgid "publish"
 msgstr ""
 
 #: models.py:453
-msgid "Publish on website."
+msgid "Publish in archive."
 msgstr ""
 
 #: models.py:455
