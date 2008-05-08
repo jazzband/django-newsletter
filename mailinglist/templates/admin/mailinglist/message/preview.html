@@ -25,4 +25,12 @@
     <h4>{% trans "Text" %}</h4>
     <iframe src ="{{ message.text_preview_url }}" width="960px" height="720px"></iframe>
 </div>
+<br/>
+<br/>
+
+<form method="get" action="../../../submission/add/">		
+    <input type="hidden" name="message_id" value="{{ message.id }}" />			
+    <input type="submit" value="{% trans "Prepare Submission" %}" class="default" />
+</form>
+
 {% endblock %}

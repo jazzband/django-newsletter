@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-17 11:52+0200\n"
+"POT-Creation-Date: 2008-04-17 17:25+0200\n"
 "PO-Revision-Date: 2008-04-10 12:28+0200\n"
 "Last-Translator: Mathijs de Bruin <mathijs@visualspace.nl>\n"
 "Language-Team: Dutch <mathijs@visualspace.nl>\n"
@@ -26,216 +26,250 @@ msgstr "Het door u opgegeven e-mail adres is nog niet geabonneerd."
 msgid "Your e-mail address has already been subscribed to."
 msgstr "Uw e-mail adres is al geabonneerd."
 
-#: forms.py:79
+#: forms.py:76
 msgid "The validation code supplied by you does not match."
 msgstr "De verificatiecode die door u is opgegeven komt niet overeen."
 
-#: forms.py:84
+#: forms.py:81
 msgid "Activation code"
 msgstr "Verificatiecode"
 
-#: forms.py:92 forms.py:111
+#: forms.py:89 forms.py:108
 #, fuzzy
 msgid "The subscription has not yet been activated."
 msgstr "Uw abonnement is nog niet geactiveerd."
 
-#: forms.py:95
+#: forms.py:92
 msgid ""
 "The subscription has been unsubscribed. To update your information, please "
 "subscribe again."
 msgstr ""
 
-#: forms.py:114
+#: forms.py:111
 #, fuzzy
 msgid "This e-mail address has not been subscribed to."
 msgstr "Er is geen abonnement voor dit email adres."
 
-#: models.py:29
+#: models.py:31
 msgid "newsletter title"
 msgstr "Nieuwsbrief titel"
 
-#: models.py:32 models.py:104 models.py:118
+#: models.py:34 models.py:148
 msgid "e-mail"
 msgstr ""
 
-#: models.py:32
+#: models.py:34
 msgid "Sender e-mail"
 msgstr "E-mail verzender"
 
-#: models.py:33
+#: models.py:35
 msgid "sender"
 msgstr "verzender"
 
-#: models.py:33
+#: models.py:35
 msgid "Sender name"
 msgstr "Naam verzender"
 
-#: models.py:35
+#: models.py:37
 msgid "visible"
 msgstr "zichtbaar"
 
-#: models.py:48 models.py:85 models.py:99 models.py:107 models.py:277
-#: models.py:346
+#: models.py:50 models.py:95 models.py:125 models.py:137 models.py:306
 msgid "newsletter"
 msgstr "nieuwsbrief"
 
-#: models.py:49
+#: models.py:51
 msgid "newsletters"
 msgstr "nieuwsbrieven"
 
-#: models.py:72 templates/mailinglist/subscription_subscribe.html:13
+#: models.py:81 templates/mailinglist/subscription_subscribe.html:13
 msgid "Subscribe"
 msgstr "abonneer"
 
-#: models.py:73 templates/mailinglist/subscription_unsubscribe.html:13
+#: models.py:82 templates/mailinglist/subscription_unsubscribe.html:13
 msgid "Unsubscribe"
 msgstr "Opzeggen"
 
-#: models.py:74
+#: models.py:83
 msgid "Update"
 msgstr ""
 
-#: models.py:82
+#: models.py:84 templates/admin/mailinglist/message/preview.html:8
+#, fuzzy
+msgid "Message"
+msgstr "Bericht"
+
+#: models.py:92
 msgid "Default"
 msgstr ""
 
-#: models.py:94
+#: models.py:120
 msgid "e-mail template"
 msgstr "e-mail sjabloon"
 
-#: models.py:95
+#: models.py:121
 msgid "e-mail templates"
 msgstr "e-mail sjablonen"
 
-#: models.py:101
+#: models.py:127
 msgid "action"
 msgstr "actie"
 
-#: models.py:103
+#: models.py:129
 msgid "subject"
 msgstr "onderwerp"
 
-#: models.py:109
+#: models.py:131 templates/admin/mailinglist/message/preview.html:22
+#, fuzzy
+msgid "Text"
+msgstr "Tekst"
+
+#: models.py:131
+msgid ""
+"Plain text e-mail message. Available objects: date, subscription, site, "
+"submission, newsletter and message."
+msgstr ""
+
+#: models.py:133 templates/admin/mailinglist/message/preview.html:19
+msgid "HTML"
+msgstr ""
+
+#: models.py:133
+#, fuzzy
+msgid "HTML e-mail alternative."
+msgstr "e-mail sjabloon"
+
+#: models.py:139
 msgid "activated"
 msgstr "geactiveerd"
 
-#: models.py:110
+#: models.py:140
 msgid "activation code"
 msgstr "activatiecode"
 
-#: models.py:112
+#: models.py:142
 msgid "subscribe date"
 msgstr "abonneerdatum"
 
-#: models.py:113
+#: models.py:143
 msgid "unsubscribe date"
 msgstr "opzegdatum"
 
-#: models.py:115
+#: models.py:145
 msgid "unsubscribed"
 msgstr "opgezegd"
 
-#: models.py:117
+#: models.py:147
 msgid "name"
 msgstr "naam"
 
-#: models.py:117
+#: models.py:147
 msgid "optional"
 msgstr "optioneel"
 
-#: models.py:120
+#: models.py:150
 msgid "IP address"
 msgstr "IP adres"
 
-#: models.py:123
+#: models.py:153
 #, fuzzy, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
 msgstr "%(email)s aan %(newsletter)s"
 
-#: models.py:130
+#: models.py:160
 msgid "subscription"
 msgstr "abonnement"
 
-#: models.py:131
+#: models.py:161
 msgid "subscriptions"
 msgstr "abonnementen"
 
-#: models.py:226
+#: models.py:255
 msgid ""
 "Sort order determines the order in which articles are concatenated in a post."
 msgstr ""
 "Sorteer volgorde bepaald de volgorde waarin artikelen in een bericht achter "
 "elkaar gezet worden."
 
-#: models.py:226
+#: models.py:255
 msgid "sort order"
 msgstr "sorteer volgorde"
 
-#: models.py:229 models.py:275
+#: models.py:258 models.py:304
 msgid "title"
 msgstr "titel"
 
-#: models.py:230
+#: models.py:259
 msgid "text"
 msgstr "tekst"
 
-#: models.py:232
+#: models.py:261
 msgid "link"
 msgstr "koppeling"
 
-#: models.py:235
+#: models.py:264
 #, fuzzy
 msgid "image"
 msgstr "afbeelding"
 
-#: models.py:236
+#: models.py:265
 msgid "thumbnail url"
 msgstr ""
 
-#: models.py:238
+#: models.py:267
 #, fuzzy
-msgid "Remove"
+msgid "remove"
 msgstr "verwijder"
 
-#: models.py:241 models.py:318 models.py:319 models.py:387
+#: models.py:270 models.py:333 models.py:406
 msgid "message"
 msgstr "bericht"
 
-#: models.py:245
+#: models.py:274
 msgid "article"
 msgstr "artikel"
 
-#: models.py:246
+#: models.py:275
 msgid "articles"
 msgstr "artikelen"
 
-#: models.py:265
+#: models.py:294
 msgid "thumbnail"
 msgstr "voorbeeld"
 
-#: models.py:280
+#: models.py:309
 #, python-format
 msgid "%(title)s in %(newsletter)s"
 msgstr ""
 
-#: models.py:328
+#: models.py:334
+#, fuzzy
+msgid "messages"
+msgstr "berichten"
+
+#: models.py:338
 msgid "submission"
 msgstr "zending"
 
-#: models.py:329
+#: models.py:339
 msgid "submissions"
 msgstr "zendingen"
 
-#: models.py:339
+#: models.py:350
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
 msgstr "%(newsletter)s op %(publish_date)s"
 
-#: models.py:343
-msgid "None"
-msgstr "Geen"
+#: models.py:353
+#, fuzzy, python-format
+msgid "Submitting %(submission)s"
+msgstr "zendingen"
 
-#: models.py:390
+#: models.py:405
+msgid "nieuwsbrief"
+msgstr ""
+
+#: models.py:409
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
@@ -243,27 +277,27 @@ msgstr ""
 "Als u er geen selecteerd, zal het systeem automatisch de abbonees voor u "
 "opzoeken."
 
-#: models.py:390
+#: models.py:409
 msgid "recipients"
 msgstr "geaddresseerden"
 
-#: models.py:392
+#: models.py:411
 msgid "publication date"
 msgstr "publicatiedatum"
 
-#: models.py:393
+#: models.py:412
 msgid "publish"
 msgstr "publiceer"
 
-#: models.py:393
+#: models.py:412
 msgid "Publish in archive."
 msgstr "Publiceer in archief."
 
-#: models.py:395
+#: models.py:414
 msgid "sent"
 msgstr "verzonden"
 
-#: models.py:396
+#: models.py:415
 #, fuzzy
 msgid "sending"
 msgstr "verzender"
@@ -272,7 +306,15 @@ msgstr "verzender"
 msgid "Submitting queued newsletter mailings"
 msgstr ""
 
-#: templates/admin/mailinglist/message/change_form.html:4
+#: templates/admin/mailinglist/message/change_form.html:7
+msgid "History"
+msgstr ""
+
+#: templates/admin/mailinglist/message/change_form.html:8
+msgid "View on site"
+msgstr ""
+
+#: templates/admin/mailinglist/message/change_form.html:9
 #: templates/admin/mailinglist/message/preview.html:10
 msgid "Preview"
 msgstr "Voorvertonen"
@@ -285,19 +327,10 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: templates/admin/mailinglist/message/preview.html:8
+#: templates/admin/mailinglist/message/preview.html:30
 #, fuzzy
-msgid "Message"
-msgstr "Bericht"
-
-#: templates/admin/mailinglist/message/preview.html:19
-msgid "HTML"
-msgstr ""
-
-#: templates/admin/mailinglist/message/preview.html:22
-#, fuzzy
-msgid "Text"
-msgstr "Tekst"
+msgid "Prepare Submission"
+msgstr "zending"
 
 #: templates/mailinglist/common.html:4
 #: templates/mailinglist/newsletter_detail.html:7
@@ -354,7 +387,7 @@ msgstr ""
 #: templates/mailinglist/subscription_unsubscribe.html:3
 #: templates/mailinglist/subscription_unsubscribe.html:5
 msgid "Newsletter unsubscribe"
-msgstr "Zeg nieuwsbrief up"
+msgstr "Zeg nieuwsbrief op"
 
 #: templates/mailinglist/subscription_unsubscribe.html:7
 msgid ""
@@ -373,6 +406,9 @@ msgstr "Huidig:"
 #: templates/widget/image.html:4
 msgid "Change:"
 msgstr "Verander:"
+
+#~ msgid "None"
+#~ msgstr "Geen"
 
 #, fuzzy
 #~ msgid "Delete"

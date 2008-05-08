@@ -264,7 +264,7 @@ class Article(models.Model):
     image = models.ImageField(upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True, verbose_name=_('image'), help_text='xxx')
     thumb = models.CharField(max_length=600, verbose_name=_('thumbnail url'), editable=False, null=True, blank=True)
     
-    remove = models.BooleanField(default=False, verbose_name=_('Remove'))
+    remove = models.BooleanField(default=False, verbose_name=_('remove'))
 
     # Post this article is associated with
     post = models.ForeignKey('Message', edit_inline=models.TABULAR, num_in_admin=1, verbose_name=_('message')) #STACKED TABULAR    
@@ -331,7 +331,7 @@ class Message(models.Model):
 
     class Meta:
         verbose_name = _('message')
-        verbose_name_plural = _('message')
+        verbose_name_plural = _('messages')
 
 class Submission(models.Model):
     class Meta:
