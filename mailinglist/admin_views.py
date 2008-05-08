@@ -15,7 +15,7 @@ from mailinglist.models import *
 def json_subscribers(request, myid):
     message = get_object_or_404(Message, id=myid)
 
-    json = serializers.serialize("json", message.newsletter.get_subscribers(), fields=())
+    json = serializers.serialize("json", message.newsletter.get_subscriptions(), fields=())
     return HttpResponse(json, mimetype='application/json')
 
 @staff_member_required
@@ -27,6 +27,14 @@ def message_preview(request, myid):
         { 'message' : message },
         RequestContext(request, {}),
     )
+
+@staff_member_required
+def message_submit(request, myid):
+    message = get_object_or_404(Message, id=myid)
+    
+    submission = Submission.from_message(message)
+    
+    return HttpResponseRedirect('../../../submission/%s/' % message.id)
 
 @staff_member_required
 def html_preview(request, myid):
@@ -59,13 +67,13 @@ def submit(request, myid):
     submission = get_object_or_404(Submission, id=myid)
     
     if submission.sent or submission.prepared:
-        request.user.message_set.create(message=_('Message already submitted.'))
+        request.user.message_set.create(message=_('Submission already sent.'))
         
         return HttpResponseRedirect('../')
         
     submission.prepared=True
     submission.save()
     
-    request.user.message_set.create(message=_('Your message is being submitted.'))
+    request.user.message_set.create(message=_('Your submission is being sent.'))
     
     return HttpResponseRedirect('../../')

@@ -17,7 +17,7 @@
 <div id="content-main">
   <ul class="object-tools">
     <li><a href="../">{% trans "Change" %}</a></li>
-    <li><a href="../../../submission/add/?message_id={{ message.id }}">{% trans "Prepare submission" %}</a></li>
+    <li><a href="../submit/">{% trans "Create submission" %}</a></li>
   </ul>
     <h4>{% trans "HTML" %}</h4>
     <iframe src ="{{ message.html_preview_url }}" width="960px" height="720px"></iframe>
@@ -27,10 +27,5 @@
 </div>
 <br/>
 <br/>
-
-<form method="get" action="../../../submission/add/">		
-    <input type="hidden" name="message_id" value="{{ message.id }}" />			
-    <input type="submit" value="{% trans "Prepare Submission" %}" class="default" />
-</form>
 
 {% endblock %}

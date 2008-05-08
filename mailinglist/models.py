@@ -68,7 +68,7 @@ class Newsletter(models.Model):
     def get_sender(self):
         return u'%s <%s>' % (self.sender, self.email)
         
-    def get_subscribers(self):
+    def get_subscriptions(self):
         if settings.DEBUG:
             print 'Looking up subscribers for %s' % self
             print  Subscription.objects.filter(newsletter=self, activated=True, unsubscribed=False)
@@ -339,21 +339,39 @@ class Submission(models.Model):
         verbose_name_plural = _('submissions')
                 
     class Admin:
-        list_display = ('newsletter', 'message', 'publish_date', 'publish', 'sent', 'admin_sending')
+        list_display = ('newsletter', 'message', 'publish_date', 'publish', 'admin_status_text', 'admin_status')
         list_display_links = ['message',]
         date_hierarchy = 'publish_date'
         list_filter = ('newsletter', 'publish', 'sent')
         save_as = True
-        #js = ['/static/admin/scripts/subscriber_lookup.js',]
     
-    def admin_sending(self):
-        if not self.sent and (self.prepared or self.sending):
-            # This URL reference is ugly. I know.
-            return u'<img src="/static/admin/images/scanner.gif" width="16" height="9" alt="%s"/>' % _('Submitting')
+    def admin_status(self):
+        if self.prepared:
+            if self.sent:
+                return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text())
+            else:
+                if self.publish_date > datetime.now():
+                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text())
+                else:
+                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/submitting.gif', self.admin_status_text())
         else:
-            return ''
-    admin_sending.short_description = ''
-    admin_sending.allow_tags = True
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text())
+        
+    admin_status.short_description = ''
+    admin_status.allow_tags = True
+
+    def admin_status_text(self):
+        if self.prepared:
+            if self.sent:
+                return _("Sent.")
+            else:
+                if self.publish_date > datetime.now():
+                    return _("Later submission.")
+                else:
+                    return _("Submitting...")
+        else:
+            return _("Not sent.")
+    admin_status_text.short_description = 'Status'
     
     def __unicode__(self):
         return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.newsletter, 'publish_date':self.publish_date}
@@ -405,7 +423,21 @@ class Submission(models.Model):
         todo = cls.objects.filter(prepared=True, sent=False, sending=False, publish_date__lt=datetime.now())
         for submission in todo:
             submission.submit()
-            
+    
+    @classmethod
+    def from_message(cls, message):
+        submission = cls()
+        submission.message = message
+        submission.newsletter = message.newsletter
+        submission.save()
+        submission.subscriptions = message.newsletter.get_subscriptions()
+        
+        print submission
+        print submission.prepared
+        print submission.sent
+        print submission.sending
+        return submission
+    
     def save(self):
         self.newsletter = self.message.newsletter
         
