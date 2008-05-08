@@ -77,12 +77,12 @@ class Newsletter(models.Model):
         return Subscription.objects.filter(newsletter=self, unsubscribed=False, activated=True)
 
     @classmethod
-    def get_default(cls):
+    def get_default_id(cls):
         objs = cls.objects.all()
-        if objs.count() == 0:
-            return None
+        if objs.count() == 1:
+            return objs[0].id
         else:
-            return objs[0]
+            return None
 
 class EmailTemplate(models.Model):
     ACTION_CHOICES = (
@@ -311,7 +311,7 @@ class Article(models.Model):
 class Message(models.Model):
     title = models.CharField(max_length=200, verbose_name=_('title'))
 
-    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), default=Newsletter.get_default().id)
+    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), default=Newsletter.get_default_id())
     
     date_create = models.DateTimeField(verbose_name=_('created'), auto_now_add=True, editable=False) 
     date_modify = models.DateTimeField(verbose_name=_('modified'), auto_now=True, editable=False) 
@@ -326,7 +326,7 @@ class Message(models.Model):
     @permalink
     def html_preview_url(self):
         return ('mailinglist.admin_views.html_preview', (self.id, ), {})
-        
+  
     class Admin:
         js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
         save_as = True
@@ -340,10 +340,17 @@ class Message(models.Model):
         #fields = (('Artikelen', {'fields' : ('title',), 'classes' : 'wide extrapretty', }),)
         #Note: find some way to fix this bullcrap
 
-
     class Meta:
         verbose_name = _('message')
         verbose_name_plural = _('messages')
+
+    @classmethod        
+    def get_default_id(cls):
+        objs = cls.objects.all().order_by('-date_create')
+        if objs.count() == 0:
+            return None
+        else:
+            return objs[0].id
 
 class Submission(models.Model):
     class Meta:
@@ -384,7 +391,7 @@ class Submission(models.Model):
         else:
             return ugettext("Not sent.")
     admin_status_text.short_description = 'Status'
-    
+ 
     def __unicode__(self):
         return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.newsletter, 'publish_date':self.publish_date}
 
@@ -443,11 +450,6 @@ class Submission(models.Model):
         submission.newsletter = message.newsletter
         submission.save()
         submission.subscriptions = message.newsletter.get_subscriptions()
-        
-        print submission
-        print submission.prepared
-        print submission.sent
-        print submission.sending
         return submission
     
     def save(self):
@@ -456,9 +458,8 @@ class Submission(models.Model):
         return super(Submission, self).save()
 
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), editable=False)
-    message = models.ForeignKey('Message', verbose_name=_('message'))
+    message = models.ForeignKey('Message', verbose_name=_('message'), default=Message.get_default_id())
     
-    # todo: smart jquery script to make this default
     subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), filter_interface=models.HORIZONTAL)
 
     publish_date = models.DateTimeField(verbose_name=_('publication date'), blank=True, null=True, default=datetime.now(), db_index=True) 
