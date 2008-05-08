@@ -76,6 +76,13 @@ class Newsletter(models.Model):
 
         return Subscription.objects.filter(newsletter=self, unsubscribed=False, activated=True)
 
+    @classmethod
+    def get_default(cls):
+        objs = cls.objects.all()
+        if objs.count() == 0:
+            return None
+        else:
+            return objs[0]
 
 class EmailTemplate(models.Model):
     ACTION_CHOICES = (
@@ -304,7 +311,10 @@ class Article(models.Model):
 class Message(models.Model):
     title = models.CharField(max_length=200, verbose_name=_('title'))
 
-    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
+    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), default=Newsletter.get_default().id)
+    
+    date_create = models.DateTimeField(verbose_name=_('created'), auto_now_add=True, editable=False) 
+    date_modify = models.DateTimeField(verbose_name=_('modified'), auto_now=True, editable=False) 
 
     def __unicode__(self):
         return _(u"%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
@@ -320,9 +330,10 @@ class Message(models.Model):
     class Admin:
         js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
         save_as = True
-        list_display = ('title', 'newsletter')
+        list_display = ('title', 'newsletter', 'date_create', 'date_modify')
         list_display_links  = ('title',)
         list_filter = ('newsletter', )
+        date_hierarchy = 'date_create'
 
         #save_on_top = True
         search_fields = ('title',)
