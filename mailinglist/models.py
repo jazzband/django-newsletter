@@ -51,10 +51,10 @@ class Newsletter(models.Model):
         verbose_name = _('newsletter')
         verbose_name_plural = _('newsletters')
 
-    @permalink
-    def get_absolute_url(self):
-        return ('mailinglist.views.newsletter', (),
-                {'newsletter_slug': self.newsletter.slug })
+    #@permalink
+    #def get_absolute_url(self):
+    #    return ('mailinglist.views.newsletter', (),
+    #            {'newsletter_slug': self.newsletter.slug })
         
     @permalink
     def subscribe_url(self):
@@ -453,6 +453,8 @@ class Submission(models.Model):
         return submission
     
     def save(self):
+        print '-- message', self.message
+        print '-- message newsletter', self.message.newsletter
         self.newsletter = self.message.newsletter
         
         return super(Submission, self).save()
