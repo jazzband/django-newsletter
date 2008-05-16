@@ -393,7 +393,8 @@ class Submission(models.Model):
     admin_status_text.short_description = 'Status'
  
     def __unicode__(self):
-        return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.newsletter, 'publish_date':self.publish_date}
+        print 'Newsletter', self.id, self.message.id
+        return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.message, 'publish_date':self.publish_date}
 
     def submit(self):
         print _(u"Submitting %(submission)s") % {'submission':self}
@@ -445,22 +446,21 @@ class Submission(models.Model):
     
     @classmethod
     def from_message(cls, message):
+        if settings.DEBUG:
+            print 'Submission from message %s' %  message
         submission = cls()
         submission.message = message
         submission.newsletter = message.newsletter
         submission.save()
         submission.subscriptions = message.newsletter.get_subscriptions()
         return submission
-    
+   
     def save(self):
-        print '-- message', self.message
-        print '-- message newsletter', self.message.newsletter
         self.newsletter = self.message.newsletter
-        
         return super(Submission, self).save()
 
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), editable=False)
-    message = models.ForeignKey('Message', verbose_name=_('message'), default=Message.get_default_id())
+    message = models.ForeignKey('Message', verbose_name=_('message'), editable=False, default=Message.get_default_id(), null=False)
     
     subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), filter_interface=models.HORIZONTAL)
 

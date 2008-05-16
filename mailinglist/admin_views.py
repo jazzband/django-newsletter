@@ -34,7 +34,7 @@ def message_submit(request, myid):
     
     submission = Submission.from_message(message)
     
-    return HttpResponseRedirect('../../../submission/%s/' % message.id)
+    return HttpResponseRedirect('../../../submission/%s/' % submission.id)
 
 @staff_member_required
 def html_preview(request, myid):
