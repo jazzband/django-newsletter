@@ -11,4 +11,5 @@ urlpatterns += patterns('mailinglist.admin_views',
     (r'^message/(.+)/preview/html/$', 'html_preview'),
     (r'^message/(.+)/preview/text/$', 'text_preview'),
     (r'^submission/(.+)/submit/$', 'submit'),
+    (r'^subscription/import/$', 'import_subscribers'),
 )

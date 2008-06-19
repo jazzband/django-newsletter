@@ -77,3 +77,9 @@ def submit(request, myid):
     request.user.message_set.create(message=_('Your submission is being sent.'))
     
     return HttpResponseRedirect('../../')
+
+@staff_member_required
+def import_subscribers(request):
+    pass
+
+
