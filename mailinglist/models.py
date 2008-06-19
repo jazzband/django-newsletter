@@ -142,32 +142,63 @@ class EmailTemplate(models.Model):
 
 
 class Subscription(models.Model):
-    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
-
-    activated = models.BooleanField(default=False, verbose_name=_('activated'),db_index=True)
-    activation_code = models.CharField(verbose_name=_('activation code'), max_length=40, default=make_activation_code())
-    
-    subscribe_date = models.DateTimeField(verbose_name=_("subscribe date"), auto_now=True)
-    unsubscribe_date = models.DateTimeField(verbose_name=_("unsubscribe date"), null=True, blank=True)
-
-    unsubscribed = models.BooleanField(default=False, verbose_name=_('unsubscribed'), db_index=True)
-    
     name = models.CharField(max_length=30, blank=True, null=True, verbose_name=_('name'), help_text=_('optional'))
     email = models.EmailField(verbose_name=_('e-mail'), db_index=True)
-    
+
     ip = models.IPAddressField(_("IP address"), blank=True, null=True)
 
+    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
+
+    subscribe_date = models.DateTimeField(verbose_name=_("subscribe date"), auto_now=True)
+
+    activation_code = models.CharField(verbose_name=_('activation code'), max_length=40, default=make_activation_code())
+    activated = models.BooleanField(default=False, verbose_name=_('activated'),db_index=True)
+    
+    unsubscribed = models.BooleanField(default=False, verbose_name=_('unsubscribed'), db_index=True)
+    unsubscribe_date = models.DateTimeField(verbose_name=_("unsubscribe date"), null=True, blank=True)
+    
     def __unicode__(self):
         return _(u"%(name)s <%(email)s> to %(newsletter)s") % {'name':self.name, 'email':self.email, 'newsletter':self.newsletter}
 
     class Admin:
-        list_display = ('email', 'newsletter', 'subscribe_date', 'activated', 'unsubscribed')
-        list_filter = ('newsletter','activated', 'unsubscribed')
+        list_display = ('name', 'email', 'newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
+        list_filter = ('newsletter','activated', 'unsubscribed','subscribe_date')
+        list_search = ('name', 'email')
+        date_hierarchy = 'subscribe_date'
 
     class Meta:
         verbose_name = _('subscription')
         verbose_name_plural = _('subscriptions')
         unique_together = ('email','newsletter')
+
+    def admin_status(self):
+        if self.unsubscribed:
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text())
+        
+        if self.activated:
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text())
+        else:
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text())
+        
+    admin_status.short_description = ''
+    admin_status.allow_tags = True
+
+    def admin_status_text(self):
+        if self.unsubscribed:
+            return ugettext("Unsubscribed")
+        
+        if self.activated:
+            return ugettext("Activated")
+        else:
+            return ugettext("Unactivated")
+    admin_status_text.short_description = ugettext('Status')   
+    
+    def admin_unsubscribe_date(self):
+        if self.unsubscribe_date:
+            return self.unsubscribe_date
+        else:
+            return ''
+    admin_unsubscribe_date.short_description = unsubscribe_date.verbose_name
     
     def get_recipient(self):
         if self.name:
@@ -390,7 +421,7 @@ class Submission(models.Model):
                     return ugettext("Submitting.")
         else:
             return ugettext("Not sent.")
-    admin_status_text.short_description = 'Status'
+    admin_status_text.short_description = ugettext('Status')
  
     def __unicode__(self):
         print 'Newsletter', self.id, self.message.id
@@ -447,7 +478,7 @@ class Submission(models.Model):
     @classmethod
     def from_message(cls, message):
         if settings.DEBUG:
-            print 'Submission from message %s' %  message
+            print ugettext('Submission from message %s') %  message
         submission = cls()
         submission.message = message
         submission.newsletter = message.newsletter
