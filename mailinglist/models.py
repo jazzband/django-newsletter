@@ -163,7 +163,7 @@ class Subscription(models.Model):
     class Admin:
         list_display = ('name', 'email', 'newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
         list_filter = ('newsletter','activated', 'unsubscribed','subscribe_date')
-        list_search = ('name', 'email')
+        search_fields = ('name', 'email')
         date_hierarchy = 'subscribe_date'
 
     class Meta:
@@ -361,7 +361,7 @@ class Message(models.Model):
     class Admin:
         js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
         save_as = True
-        list_display = ('title', 'newsletter', 'date_create', 'date_modify')
+        list_display = ('admin_newsletter', 'title', 'date_create', 'date_modify')
         list_display_links  = ('title',)
         list_filter = ('newsletter', )
         date_hierarchy = 'date_create'
@@ -370,6 +370,11 @@ class Message(models.Model):
         search_fields = ('title',)
         #fields = (('Artikelen', {'fields' : ('title',), 'classes' : 'wide extrapretty', }),)
         #Note: find some way to fix this bullcrap
+
+    def admin_newsletter(self):
+        return '<a href="../newsletter/%s/">%s</a>' % (self.newsletter.id, self.newsletter)
+    admin_newsletter.short_description = ugettext('newsletter')
+    admin_newsletter.allow_tags = True
 
     class Meta:
         verbose_name = _('message')
@@ -389,11 +394,17 @@ class Submission(models.Model):
         verbose_name_plural = _('submissions')
                 
     class Admin:
-        list_display = ('newsletter', 'message', 'publish_date', 'publish', 'admin_status_text', 'admin_status')
+        list_display = ('admin_newsletter', 'message', 'publish_date', 'publish', 'admin_status_text', 'admin_status')
         list_display_links = ['message',]
         date_hierarchy = 'publish_date'
         list_filter = ('newsletter', 'publish', 'sent')
         save_as = True
+
+    def admin_newsletter(self):
+        return '<a href="../newsletter/%s/">%s</a>' % (self.newsletter.id, self.newsletter)
+    admin_newsletter.short_description = ugettext('newsletter')
+    admin_newsletter.allow_tags = True
+
     
     def admin_status(self):
         if self.prepared:
@@ -424,7 +435,7 @@ class Submission(models.Model):
     admin_status_text.short_description = ugettext('Status')
  
     def __unicode__(self):
-        print 'Newsletter', self.id, self.message.id
+        print _(u'Newsletter'), self.id, self.message.id
         return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.message, 'publish_date':self.publish_date}
 
     def submit(self):
