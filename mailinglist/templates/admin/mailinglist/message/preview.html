@@ -19,8 +19,10 @@
     <li><a href="../">{% trans "Change" %}</a></li>
     <li><a href="../submit/">{% trans "Create submission" %}</a></li>
   </ul>
+    {% if message.newsletter.message_template.html %}
     <h4>{% trans "HTML" %}</h4>
     <iframe src ="{{ message.html_preview_url }}" width="960px" height="720px"></iframe>
+    {% endif %}
     
     <h4>{% trans "Text" %}</h4>
     <iframe src ="{{ message.text_preview_url }}" width="960px" height="720px"></iframe>

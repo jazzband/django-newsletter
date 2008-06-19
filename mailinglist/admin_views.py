@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render_to_response
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 
 from django.core import serializers
 from django.contrib.admin.views.decorators import staff_member_required
@@ -42,6 +42,11 @@ def html_preview(request, myid):
 
     (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', message.newsletter)
 
+    if not html_template:
+        # If no HTML available, return an empty bogus HTML page.
+        #return HttpResponse('<html><head><title></title></head><body></body></html>')
+        raise Http404
+        
     c = Context({'message' : message, 
                  'site' : Site.objects.get_current(),
                  'newsletter' : message.newsletter,

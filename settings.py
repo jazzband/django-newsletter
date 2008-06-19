@@ -92,7 +92,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
 	'django.contrib.admin',
-    'django_evolution',
+    #'django_evolution',
     'mailinglist',
 	'mailinglist.templatetags',
 #    'django.contrib.sitemaps',
