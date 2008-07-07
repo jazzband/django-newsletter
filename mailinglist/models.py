@@ -71,15 +71,18 @@ class EmailTemplate(models.Model):
     
     @classmethod
     def get_default_id(cls, action):
-        ls = EmailTemplate.objects.filter(action__exact = action)
-        if ls.count() == 1:
-            return ls[0].id
-        else:
-            ls = ls.filter(title__exact = _('Default'))
-            if ls.count():
-                #There can be only one of these
+        try:
+            ls = EmailTemplate.objects.filter(action__exact = action)
+            if ls.count() == 1:
                 return ls[0].id
-       
+            else:
+                ls = ls.filter(title__exact = _('Default'))
+                if ls.count():
+                    #There can be only one of these
+                    return ls[0].id
+        except:
+            pass
+        
         return None
 
     title = models.CharField(max_length=200, verbose_name=_('name'), core=True, default=_('Default'))
@@ -195,6 +198,7 @@ class Subscription(models.Model):
 
     class Admin:
         list_display = ('name', 'email', 'newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
+        list_display_links = ('name', 'email')
         list_filter = ('newsletter','activated', 'unsubscribed','subscribe_date')
         search_fields = ('name', 'email')
         date_hierarchy = 'subscribe_date'

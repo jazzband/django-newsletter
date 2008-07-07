@@ -83,8 +83,40 @@ def submit(request, myid):
     
     return HttpResponseRedirect('../../')
 
+from admin_forms import *
+
 @staff_member_required
 def import_subscribers(request):
-    pass
+    if request.POST:
+        form = ImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            request.session['addresses'] = form.get_addresses()
+            return HttpResponseRedirect('confirm/')
+    else:
+        form = ImportForm()
 
+    return render_to_response(
+        "admin/mailinglist/subscription/importform.html",
+        { 'form' : form },
+        RequestContext(request, {}),
+    )
 
+@staff_member_required
+def confirm_import_subscribers(request):
+    addresses = request.session['addresses']
+    print 'confirming addresses', addresses 
+    if request.POST:
+        form = ConfirmForm(request.POST)
+        if form.is_valid():
+            for address in addresses:
+                address.save()
+            request.user.message_set.create(message=_('%s subscriptions have been succesfully added.') % len(addresses)) 
+    else:
+        form = ConfirmForm()
+         
+    return render_to_response(
+        "admin/mailinglist/subscription/confirmimportform.html",
+        { 'form' : form ,
+          'subscribers': addresses },
+        RequestContext(request, {}),
+    )

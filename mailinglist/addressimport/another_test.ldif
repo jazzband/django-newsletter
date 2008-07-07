@@ -1,0 +1,53 @@
+dn: cn=Asafier-fgw,mail=Asafier-fgw@uva.nl
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: mozillaAbPersonAlpha
+givenName: Asafier-fgw
+cn: Asafier-fgw
+mail: Asafier-fgw@uva.nl
+modifytimestamp: 0Z
+
+dn: mail=awffull@stedee.id.au
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: mozillaAbPersonAlpha
+mail: awffull@stedee.id.au
+modifytimestamp: 0Z
+
+dn: cn=Boudewijn Elsinga,mail=b.elsinga@snelnet.net
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: mozillaAbPersonAlpha
+givenName: Boudewijn
+sn: Elsinga
+cn: Boudewijn Elsinga
+mail: b.elsinga@snelnet.net
+modifytimestamp: 0Z
+
+dn: mail=b.erlings@tweedekamer.nl
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: mozillaAbPersonAlpha
+mail: b.erlings@tweedekamer.nl
+modifytimestamp: 0Z
+
+dn: cn=Bart Vullings,mail=bartv@windkracht8.com
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: mozillaAbPersonAlpha
+givenName: Bart
+sn: Vullings
+cn: Bart Vullings
+mail: bartv@windkracht8.com
+modifytimestamp: 0Z
+
