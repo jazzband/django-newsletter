@@ -85,6 +85,8 @@ class UpdateForm(NewsletterForm):
         fields = ('name','email',)
 
     def clean(self):
+        # BUG ALERT:
+        # A ValidationError in clean does most probably NOT get caught by Django.
         if not self.instance.activated:
             ValidationError(_("The subscription has not yet been activated."))
             

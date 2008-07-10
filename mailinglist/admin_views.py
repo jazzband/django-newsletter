@@ -103,14 +103,23 @@ def import_subscribers(request):
 
 @staff_member_required
 def confirm_import_subscribers(request):
+    # If no addresses are in the session, start all over.
+    if not request.session.has_key('addresses'):
+        return HttpResponseRedirect('../')
+        
     addresses = request.session['addresses']
     print 'confirming addresses', addresses 
     if request.POST:
         form = ConfirmForm(request.POST)
         if form.is_valid():
-            for address in addresses:
-                address.save()
+            try:
+                for address in addresses.values():
+                    address.save()
+            finally:
+                del request.session['addresses']
             request.user.message_set.create(message=_('%s subscriptions have been succesfully added.') % len(addresses)) 
+            
+            return HttpResponseRedirect('../../')
     else:
         form = ConfirmForm()
          

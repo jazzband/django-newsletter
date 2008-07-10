@@ -194,10 +194,13 @@ class Subscription(models.Model):
     unsubscribe_date = models.DateTimeField(verbose_name=_("unsubscribe date"), null=True, blank=True)
     
     def __unicode__(self):
-        return _(u"%(name)s <%(email)s> to %(newsletter)s") % {'name':self.name, 'email':self.email, 'newsletter':self.newsletter}
+        if self.name:
+            return _(u"%(name)s <%(email)s> to %(newsletter)s") % {'name':self.name, 'email':self.email, 'newsletter':self.newsletter}
+        else:
+            return self.email
 
     class Admin:
-        list_display = ('name', 'email', 'newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
+        list_display = ('name', 'email', 'admin_newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
         list_display_links = ('name', 'email')
         list_filter = ('newsletter','activated', 'unsubscribed','subscribe_date')
         search_fields = ('name', 'email')
@@ -207,6 +210,11 @@ class Subscription(models.Model):
         verbose_name = _('subscription')
         verbose_name_plural = _('subscriptions')
         unique_together = ('email','newsletter')
+
+    def admin_newsletter(self):
+        return '<a href="../newsletter/%s/">%s</a>' % (self.newsletter.id, self.newsletter)
+    admin_newsletter.short_description = ugettext('newsletter')
+    admin_newsletter.allow_tags = True       
 
     def admin_status(self):
         if self.unsubscribed:

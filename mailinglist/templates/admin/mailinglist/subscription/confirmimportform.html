@@ -15,7 +15,7 @@
 <h1>{% trans "Confirm import" %}</h1>
 <div id="content-main">
     <ul>
-    {% for subscriber in subscribers %}
+    {% for subscriber in subscribers.values %}
     <li>{{ subscriber }}</li>
     {% endfor %}
     </ul>
