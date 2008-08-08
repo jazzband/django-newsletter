@@ -22,6 +22,21 @@ def make_subscription(newsletter, email, name=None):
     
     return addr
 
+def check_email(email, ignore_errors=False):
+    email_length = Subscription._meta.get_field_by_name('email')[0].max_length
+
+    if ignore_errors:
+        return email[:email_length]
+    elif len(email) > email_length:
+        raise forms.ValidationError(_("E-mail address %s too long, maximum length is %s characters.") % (email, email_length))
+
+def check_name(name, ignore_errors=False):
+    name_length = Subscription._meta.get_field_by_name('name')[0].max_length
+    if ignore_errors:        
+        return name[:name_length]
+    elif len(name) > name_length:
+        raise forms.ValidationError(_("Name %s too long, maximum length is %s characters.") % (name, name_length))
+
 def parse_csv(myfile, newsletter, ignore_errors=False):
     import csv
     
@@ -63,13 +78,13 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     if namecol == mailcol:
         raise forms.ValidationError(_("Could not properly determine the proper columns in the CSV-file. There should be a field called 'name' or '%s' and one called 'e-mail' or '%s'.") % (_("name"), _("e-mail")))
 
-    print
-    print 'Extracting data...'
+    #print
+    #print 'Extracting data...'
     
     addresses = {}
     for row in myreader:
-        name = row[namecol]
-        email = row[mailcol]
+        name = check_name(row[namecol], ignore_errors)
+        email = check_email(row[mailcol], ignore_errors)
 
         if email_re.search(email):
             addr = make_subscription(newsletter, email, name)
@@ -95,12 +110,12 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
     
     for myvcard in myvcards:
         if hasattr(myvcard, 'fn'):
-            name = myvcard.fn.value
+            name = check_name(myvcard.fn.value, ignore_errors)
         else:
             name = None
             
         if hasattr(myvcard, 'email'):
-            email = myvcard.email.value
+            email = check_email(myvcard.email.value, ignore_errors)
         elif not ignore_errors:
             raise forms.ValidationError(_("Entry '%s' contains no email address.") % name)
 
@@ -126,9 +141,9 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
 
         def handle(self, dn, entry):
             if entry.has_key('mail'):
-                email = entry['mail'][0]
+                email = check_email(entry['mail'][0], ignore_errors)
                 if entry.has_key('cn'):
-                    name = entry['cn'][0]
+                    name = check_name(entry['cn'][0], ignore_errors)
                 else:
                     name = None
          
@@ -151,8 +166,8 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
         myparser = AddressParser(myfile)
         myparser.parse()
     except ValueError, e:
-        if ignore_errors:
-            raise forms.ValidationError(e.message)    
+        if not ignore_errors:
+            raise forms.ValidationError(e)    
             
     return myparser.addresses
          
@@ -177,7 +192,7 @@ class ImportForm(forms.Form):
 
         self.addresses = []
         
-        ext = myvalue.file_name.rsplit('.', 1)[-1].lower()
+        ext = myvalue.name.rsplit('.', 1)[-1].lower()
         if ext == 'vcf':
             self.addresses = parse_vcard(myvalue.file, newsletter, ignore_errors)
             

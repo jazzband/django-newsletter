@@ -2,7 +2,7 @@
 PYTHON=/usr/local/bin/python
 MYDIR=`dirname $BASH_SOURCE`
 source /usr/local/bin/use-django
-use-django r7367
+use-django r7966
 
 if [[ $1 != "" ]]; then
 	$PYTHON $MYDIR/manage.py $1

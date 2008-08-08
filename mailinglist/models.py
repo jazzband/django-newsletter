@@ -197,7 +197,7 @@ class Subscription(models.Model):
         if self.name:
             return _(u"%(name)s <%(email)s> to %(newsletter)s") % {'name':self.name, 'email':self.email, 'newsletter':self.newsletter}
         else:
-            return self.email
+            return _(u"%(email)s to %(newsletter)s") % {'email':self.email, 'newsletter':self.newsletter}
 
     class Admin:
         list_display = ('name', 'email', 'admin_newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
