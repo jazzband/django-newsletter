@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/local/bin/bash
 PYTHON=/usr/local/bin/python
 MYDIR=`dirname $BASH_SOURCE`
 source /usr/local/bin/use-django

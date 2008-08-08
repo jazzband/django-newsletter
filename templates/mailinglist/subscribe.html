@@ -1,9 +1,0 @@
-<h2>Aanmelden voor de nieuwsbrief</h2>
-{% if form %}
-<form method="post" action="">
-{{ form.as_p }}
-<input type="submit" value="aanmelden"/>
-{% endif %}
-{% if message %}<p>{{ message }}</p>{% else %}<p><a href="/afmelden">afmelden</a></p>{% endif %}
-
-</form>
