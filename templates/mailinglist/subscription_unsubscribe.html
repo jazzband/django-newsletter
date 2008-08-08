@@ -1,0 +1,20 @@
+{% extends "mailinglist/common.html" %}
+{% load i18n %}
+{% block title %}{% trans "Newsletter unsubscribe" %}{% endblock title %}
+{% block body %}
+<h1>{% trans "Newsletter unsubscribe" %} {{ newsletter.title }}</h1>
+{% if form.is_valid %}
+{% trans "Your unsubscription request has succesfully been received. An email has been sent to you with a link you need to follow in order to confirm your unsubscription." %}
+{% else %}
+<form enctype="multipart/form-data" method="post" action=".">
+<ul>
+    {{ form.as_ul }}
+</ul>
+<input name="submit" value="{% trans "Unsubscribe" %}" type="submit" class="submit" />
+</form>
+{% endif %}
+{% endblock body %}
+
+<table>
+    {{ form.as_table }}
+</table>

@@ -1,0 +1,20 @@
+{% extends "mailinglist/common.html" %}
+{% load i18n %}
+{% block title %}{% trans "Newsletter subscribe" %}{% endblock title %}
+{% block body %}
+<h1>{% trans "Newsletter subscribe" %} {{ newsletter.title }}</h1>
+{% if form.is_valid %}
+{% trans "Your subscription was succesfully received and an activation email has been sent to you. In that email you will find a link which you need to follow in order to activate your subscription." %}
+{% else %}
+<form enctype="multipart/form-data" method="post" action=".">
+<ul>
+    {{ form.as_ul }}
+</ul>
+<input name="submit" value="{% trans "Subscribe" %}" type="submit" class="submit" />
+</form>
+{% endif %}
+{% endblock body %}
+
+<table>
+    {{ form.as_table }}
+</table>

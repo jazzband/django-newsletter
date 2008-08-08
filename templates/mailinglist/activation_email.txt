@@ -1,0 +1,15 @@
+Dear {% if subscription.name %}{{ subscription.name }}{% else %}Sir/Madam{% endif %},
+
+you, or somebody in your name has requested a subscription to {{
+subscription.newsletter }}. To confirm this subscription you have to go to the
+following activation page:
+
+http://{{ current_site.domain }}{{ subscription.subscribe_activate_url }}
+
+If the requested activation code is not automatically filled in you should
+manually fill in the following code on http://{{ current_site.domain }}{{ subscripton.newsletter.get_absolute_url }}:
+
+{{ subscription.activation_code }}
+
+Sincerely yours,
+{{ subscription.newsletter.sender }}

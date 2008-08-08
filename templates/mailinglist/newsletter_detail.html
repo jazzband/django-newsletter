@@ -1,0 +1,30 @@
+{% extends "mailinglist/common.html" %}
+{% load i18n %}
+{% block title %}{% trans "Newsletter detail" %}{% endblock title %}
+{% block body %}
+<table>
+    <tr>
+        <th>{% trans "Newsletter" %} {{ object.title }}</th>
+    </tr>
+    <tr>
+        <td><a href="subscribe/">Subscribe</a></td>
+    </tr>
+    {% comment %}
+    <tr>
+        <td><a href="update/">Update</a></td>
+    </tr>
+    {% endcomment %}
+    <tr>
+        <td><a href="unsubscribe/">Unsubscribe</a></td>
+    </tr>
+    {% comment %}
+    <tr>
+        <td><a href="archive/">Archive</a></td>
+    </tr>
+    {% endcomment %}
+    <tr>
+        <td><a href="../">Back to list</a></td>
+    </tr>
+</table>
+{% endblock body %}
+

@@ -1,0 +1,169 @@
+<html>
+    {% load i18n %}
+    <head>
+        <title>{% block title %}{% trans "Newsletter" %}{% endblock title %}</title>
+        {% block header %}
+        {% endblock header %}
+<style type="text/css" media="all">
+<!--
+
+/* reset css begin */
+
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
+	margin:0;
+	padding:0;
+}
+
+table {
+	border-collapse:collapse;
+	border-spacing:0;
+}
+fieldset,img { 
+	border:0;
+}
+address,caption,cite,code,dfn,em,strong,th,var {
+	font-style:normal;
+	font-weight:normal;
+}
+ul {
+	list-style:none;
+}
+caption,th {
+	text-align:left;
+}
+h1,h2,h3,h4,h5,h6 {
+	font-size:100%;
+	font-weight:normal;
+}
+q:before,q:after {
+	content:'';
+}
+abbr,acronym { border:0;
+}
+
+/* reset css end   */
+
+body
+{
+	background-color: rgb(255,255,255);
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+h1
+{
+	color: rgb(60%, 60%, 60%);
+	font-size: 11px;
+	font-weight: bold;
+	margin-bottom: 15px;
+	margin-top: 15px;
+}
+
+
+.submit
+{
+	background-color: rgb(85%,85%,85%);
+	color: rgb(20%,20%,20%);
+	border: 1px solid rgb(70%,70%,70%);
+	padding: 1px 2px 2px 2px;
+	font-size: 11px;
+	width: auto;
+}
+
+
+
+/*** generated form ***/
+
+input
+{
+
+	border: 1px solid rgb(70%,70%,70%);
+	width: 140px;
+	padding: 2px;
+}
+
+label
+{
+	width: 100px;
+	display: block;
+	float: left;
+	border-top: 1px solid rgb(70%,70%,70%);
+	margin: 0 6px 0 0;
+	color: rgb(0,0,0);
+	font-size: 11px;
+}
+
+
+form ul
+{
+}
+
+form ul li
+{
+	padding-bottom: 12px;
+	clear: both;
+	color: rgb(40%,40%,40%);
+}
+
+form ul li ul
+{
+	width: 140px;
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+form ul li ul li
+{
+	clear: none;
+	width: 140px;
+	padding-bottom: 0;
+	padding-top: 3px;
+}
+
+form ul li ul li label
+{
+	width: auto;
+	display: block;
+	float: none;
+	border: none;
+	margin: 0;
+	color: rgb(20%,20%,20%);
+}
+
+form ul li ul li input
+{
+	width: auto;
+	height: auto;
+	border: none;
+}
+
+.errorlist
+{
+	clear: both;
+	width: 100%;
+	margin: 0 0 3px 0;
+	padding: 0;
+	color: rgb(204,0,0);
+}
+
+ul.errorlist li
+{
+	width: 100%;
+	color: rgb(204,0,0);
+}
+
+
+/*** end generated form ***/
+
+
+-->
+</style>    
+    </head>
+
+    <body>
+        {% block body %}
+        {% endblock body %}
+    </body>
+</html>
+
