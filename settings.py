@@ -14,9 +14,9 @@ MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
 DATABASE_NAME = 'newsletter'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'root'             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
+DATABASE_USER = 'newsletter_user'             # Not used with sqlite3.
+DATABASE_PASSWORD = 'IDSW3H7K'         # Not used with sqlite3.
+DATABASE_HOST = 'mysql.visualspace.nl'             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
 # DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
@@ -38,7 +38,7 @@ TIME_ZONE = 'Europe/Amsterdam'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'nl'
 
-SITE_ID = 1
+SITE_ID = 3
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -92,7 +92,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
 	'django.contrib.admin',
-    #'django_evolution',
     'mailinglist',
 	'mailinglist.templatetags',
 #    'django.contrib.sitemaps',
