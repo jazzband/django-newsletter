@@ -5,6 +5,8 @@ from django.core.validators import email_re
 
 from django import newforms as forms
 
+from django.conf import settings
+
 from models import *
     
 def make_subscription(newsletter, email, name=None):
@@ -23,18 +25,24 @@ def make_subscription(newsletter, email, name=None):
     return addr
 
 def check_email(email, ignore_errors=False):
+    if settings.DEBUG:
+        print "Checking e-mail address %s" % email
+
     email_length = Subscription._meta.get_field_by_name('email')[0].max_length
 
-    if ignore_errors:
+    if len(email) <= email_length or ignore_errors:
         return email[:email_length]
-    elif len(email) > email_length:
+    else:
         raise forms.ValidationError(_("E-mail address %s too long, maximum length is %s characters.") % (email, email_length))
 
 def check_name(name, ignore_errors=False):
+    if settings.DEBUG:
+        print "Checking name %s" % name
+
     name_length = Subscription._meta.get_field_by_name('name')[0].max_length
-    if ignore_errors:        
+    if len(name) <= name_length or ignore_errors:        
         return name[:name_length]
-    elif len(name) > name_length:
+    else:
         raise forms.ValidationError(_("Name %s too long, maximum length is %s characters.") % (name, name_length))
 
 def parse_csv(myfile, newsletter, ignore_errors=False):
@@ -45,6 +53,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
 
     # Find name column
     colnum = 0
+    namecol = None
     for column in firstrow:
         if "name" in column.lower() or ugettext("name") in column.lower():
             namecol = colnum
@@ -53,14 +62,15 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
                 break
 
         colnum += 1
-        
-    if not namecol:
+    
+    if namecol is None:
         raise forms.ValidationError(_("Name column not found. The name of this column should be either 'name' or '%s'.") % ugettext("name"))
         
     #print 'Name column found \'%s\'' % firstrow[namecol]
 
     # Find email column
     colnum = 0
+    mailcol = None
     for column in firstrow:
         if 'email' in column.lower() or 'e-mail' in column.lower() or ugettext("e-mail") in column.lower():
             mailcol = colnum
@@ -69,7 +79,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
 
         colnum += 1
         
-    if not mailcol:
+    if mailcol is None:
         raise forms.ValidationError(_("E-mail column not found. The name of this column should be either 'email', 'e-mail' or '%s'.") % ugettext("e-mail"))
 
     #print 'E-mail column found \'%s\'' % firstrow[mailcol]
@@ -85,6 +95,9 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     for row in myreader:
         name = check_name(row[namecol], ignore_errors)
         email = check_email(row[mailcol], ignore_errors)
+
+        if settings.DEBUG:
+            print "Going to add %s <%s>" % (name, email)
 
         if email_re.search(email):
             addr = make_subscription(newsletter, email, name)
