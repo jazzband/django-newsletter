@@ -3,7 +3,14 @@
 {% block title %}{% trans "Newsletter" %} {{ newsletter.title }} {{ action }} {% trans "activate" %}{% endblock title %}
 
 {% block body %}
-<h1>{% trans "Newsletter" %} {{ newsletter.title }} {{ action }} {% trans "activate" %}</h1>
+<h1>
+    {% ifequal action "subscribe" %}
+    {% trans "Confirm subscription to" %} {{ newsletter.title }}
+    {% endifequal %}
+    {% ifequal action "unsubscribe" %}
+    {% trans "Confirm unsubscription from" %} {{ newsletter.title }}
+    {% endifequal %}
+</h1>
 {% if form.is_valid %}
     {% ifequal action "subscribe" %}
         {% trans "Your subscription has succesfully been activated." %}

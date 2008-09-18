@@ -58,7 +58,7 @@ MEDIA_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/media/'
 
 EMAIL_HOST = 'mx2.visualspace.nl'
-#EMAIL_HOST= 'mail.chello.nl'
+#EMAiIL_HOST= 'mail.chello.nl'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '-8v%!!vi-sqk@n)%7)u854e=wsl=5m_-s)!%&yv_up2!k98=)$'
@@ -71,9 +71,11 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
-    #'django.contrib.csrf.middleware.CsrfMiddleware', #Cross Site Request Forgery protection
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'localeurl.middleware.LocaleURLMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.csrf.middleware.CsrfMiddleware', #Cross Site Request Forgery protection
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
 	'newsletter.middleware.threadlocals.ThreadLocals',
