@@ -609,7 +609,7 @@ msgstr "Uw abonnement is succesvol aangepast."
 #: templates/mailinglist/subscription_subscribe.html:3
 #: templates/mailinglist/subscription_subscribe.html:5
 msgid "Newsletter subscribe"
-msgstr ""
+msgstr "Abboneer op nieuwsbrief"
 
 #: templates/mailinglist/subscription_subscribe.html:7
 msgid ""
