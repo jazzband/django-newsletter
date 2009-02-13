@@ -249,7 +249,7 @@ class Subscription(models.Model):
         if self.name:
             return u'%s <%s>' % (self.name, self.email)
 
-        return self.name
+        return u'%s' % (self.email)
         
     def send_activation_email(self, action):
         assert action in ['subscribe', 'unsubscribe', 'update'], 'Unknown action'
@@ -490,7 +490,6 @@ class Submission(models.Model):
     admin_status_text.short_description = ugettext('Status')
  
     def __unicode__(self):
-        print _(u'Newsletter'), self.id, self.message.id
         return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.message, 'publish_date':self.publish_date}
 
     def submit(self):
@@ -522,6 +521,7 @@ class Submission(models.Model):
                     message.attach_alternative(html_template.render(c), "text/html")
                 
                 try:
+                    print ugettext('  - %s.' % subscription)
                     message.send()
                 except Exception, e:
                     print ugettext('Message %s failed with error: %s' % (subscription, e[0]))
@@ -562,7 +562,7 @@ class Submission(models.Model):
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), editable=False)
     message = models.ForeignKey('Message', verbose_name=_('message'), editable=True, default=Message.get_default_id(), null=False)
     
-    subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), filter_interface=models.HORIZONTAL)
+    subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), filter_interface=models.HORIZONTAL, limit_choices_to={ 'activated' :True, 'unsubscribed' : False})
 
     publish_date = models.DateTimeField(verbose_name=_('publication date'), blank=True, null=True, default=datetime.now(), db_index=True) 
     publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'), db_index=True)
