@@ -4,7 +4,7 @@ cd `dirname $BASH_SOURCE`
 
 PWD=`pwd`
 BASEPATH=`basename $PWD`
-PYTHON=`whereis python`
+PYTHON=python
 
 if [ ! -f portnumber ]; then
     echo 'No port number set!' >&2
