@@ -1,6 +1,10 @@
 from mailinglist.models import EmailTemplate, Newsletter, Subscription, Article, Message, Submission
 from django.contrib import admin
+
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
+
+from django.db.models import permalink
 
 from django.forms.util import ValidationError
 
@@ -12,18 +16,18 @@ class NewsletterAdmin(admin.ModelAdmin):
     list_display = ('title', 'admin_subscriptions', 'admin_messages', 'admin_submissions')
     prepopulated_fields = {'slug': ('title',)}
     
-    def admin_messages(self):
-        return '<a href="../message/?newsletter__id__exact=%s">%s</a>' % (self.id, ugettext('Messages'))
+    def admin_messages(self, obj):
+        return '<a href="../message/?newsletter__id__exact=%s">%s</a>' % (obj.id, ugettext('Messages'))
     admin_messages.allow_tags = True
     admin_messages.short_description = ''
 
-    def admin_subscriptions(self):
-        return '<a href="../subscription/?newsletter__id__exact=%s">%s</a>' % (self.id, ugettext('Subscriptions'))
+    def admin_subscriptions(self, obj):
+        return '<a href="../subscription/?newsletter__id__exact=%s">%s</a>' % (obj.id, ugettext('Subscriptions'))
     admin_subscriptions.allow_tags = True
     admin_subscriptions.short_description = ''
 
-    def admin_submissions(self):
-        return '<a href="../submission/?newsletter__id__exact=%s">%s</a>' % (self.id, ugettext('Submissions'))
+    def admin_submissions(self, obj):
+        return '<a href="../submission/?newsletter__id__exact=%s">%s</a>' % (obj.id, ugettext('Submissions'))
     admin_submissions.allow_tags = True
     admin_submissions.short_description = ''
 
@@ -35,32 +39,32 @@ class SubmissionAdmin(admin.ModelAdmin):
     save_as = True
     filter_horizontal = ('subscriptions',)
     
-    def admin_newsletter(self):
-        return '<a href="../newsletter/%s/">%s</a>' % (self.newsletter.id, self.newsletter)
+    def admin_newsletter(self, obj):
+        return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
     admin_newsletter.short_description = ugettext('newsletter')
     admin_newsletter.allow_tags = True
     
-    def admin_status(self):
-        if self.prepared:
-            if self.sent:
-                return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text())
+    def admin_status(self, obj):
+        if obj.prepared:
+            if obj.sent:
+                return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', obj.admin_status_text())
             else:
-                if self.publish_date > datetime.now():
-                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text())
+                if obj.publish_date > datetime.now():
+                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', obj.admin_status_text())
                 else:
-                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/submitting.gif', self.admin_status_text())
+                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/submitting.gif', obj.admin_status_text())
         else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text())
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', obj.admin_status_text())
         
     admin_status.short_description = ''
     admin_status.allow_tags = True
     
-    def admin_status_text(self):
-        if self.prepared:
-            if self.sent:
+    def admin_status_text(self, obj):
+        if obj.prepared:
+            if obj.sent:
                 return ugettext("Sent.")
             else:
-                if self.publish_date > datetime.now():
+                if obj.publish_date > datetime.now():
                     return ugettext("Delayed submission.")
                 else:
                     return ugettext("Submitting.")
@@ -77,20 +81,20 @@ class MessageAdmin(admin.ModelAdmin):
     date_hierarchy = 'date_create'
     
     @permalink
-    def text_preview_url(self):
-        return ('mailinglist.admin_views.text_preview', (self.id, ), {})
+    def text_preview_url(self, obj):
+        return ('mailinglist.admin_views.text_preview', (obj.id, ), {})
         
     @permalink
-    def html_preview_url(self):
-        return ('mailinglist.admin_views.html_preview', (self.id, ), {})
+    def html_preview_url(self, obj):
+        return ('mailinglist.admin_views.html_preview', (obj.id, ), {})
     
-    def admin_preview(self):
-        return '<a href="%s/preview/">%s</a>' % (self.id, ugettext('Preview'))
+    def admin_preview(self, obj):
+        return '<a href="%s/preview/">%s</a>' % (obj.id, ugettext('Preview'))
     admin_preview.short_description = ''
     admin_preview.allow_tags = True
     
-    def admin_newsletter(self):
-        return '<a href="../newsletter/%s/">%s</a>' % (self.newsletter.id, self.newsletter)
+    def admin_newsletter(self, obj):
+        return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
     admin_newsletter.short_description = ugettext('newsletter')
     admin_newsletter.allow_tags = True
 
@@ -123,39 +127,39 @@ class SubscriptionAdmin(admin.ModelAdmin):
     search_fieldsets = ('name', 'email')
     date_hierarchy = 'subscribe_date'
     
-    def admin_newsletter(self):
-        return '<a href="../newsletter/%s/">%s</a>' % (self.newsletter.id, self.newsletter)
+    def admin_newsletter(self, obj):
+        return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
     admin_newsletter.short_description = ugettext('newsletter')
     admin_newsletter.allow_tags = True       
 
-    def admin_status(self):
-        if self.unsubscribed:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text())
+    def admin_status(self, obj):
+        if obj.unsubscribed:
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', obj.admin_status_text())
         
-        if self.activated:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text())
+        if obj.activated:
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', obj.admin_status_text())
         else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text())
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', obj.admin_status_text())
         
     admin_status.short_description = ''
     admin_status.allow_tags = True
 
-    def admin_status_text(self):
-        if self.unsubscribed:
+    def admin_status_text(self, obj):
+        if obj.unsubscribed:
             return ugettext("Unsubscribed")
         
-        if self.activated:
+        if obj.activated:
             return ugettext("Activated")
         else:
             return ugettext("Unactivated")
     admin_status_text.short_description = ugettext('Status')   
     
-    def admin_unsubscribe_date(self):
-        if self.unsubscribe_date:
-            return self.unsubscribe_date
+    def admin_unsubscribe_date(self, obj):
+        if obj.unsubscribe_date:
+            return obj.unsubscribe_date
         else:
             return ''
-    admin_unsubscribe_date.short_description = unsubscribe_date.verbose_name
+    admin_unsubscribe_date.short_description = _("unsubscribe date")
 
 admin.site.register(Newsletter, NewsletterAdmin)
 admin.site.register(Submission, SubmissionAdmin)
