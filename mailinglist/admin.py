@@ -8,6 +8,9 @@ from django.db.models import permalink
 
 from django.forms.util import ValidationError
 
+from django.conf import settings
+
+
 class Article_Inline(admin.TabularInline):
     model = Article
     extra = 2
