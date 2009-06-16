@@ -10,6 +10,9 @@ ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
+import re
+LOCALE_INDEPENDENT_PATHS = (re.compile('^/admin/'), )
+
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
@@ -57,7 +60,7 @@ MEDIA_URL = '/static/'
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
 
-EMAIL_HOST = 'mx2.visualspace.nl'
+EMAIL_HOST = 'mx1.visualspace.nl'
 #EMAiIL_HOST= 'mail.chello.nl'
 
 # Make this unique, and don't share it with anybody.

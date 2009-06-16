@@ -3,6 +3,9 @@
 {% block title %}{% trans "Newsletter subscribe" %}{% endblock title %}
 {% block body %}
 <h1>{% trans "Newsletter subscribe" %} {{ newsletter.title }}</h1>
+{% if error %}
+{% trans "Due to a technical error we were not able to submit your confirmation email. This could be because your email address is invalid.\n\nIf the latter is not the case and the error persists, please don't hesitate to contact us at info@clausenkaan.com." %}
+{% else %}
 {% if form.is_valid %}
 {% trans "Your subscription was succesfully received and an activation email has been sent to you. In that email you will find a link which you need to follow in order to activate your subscription." %}
 {% else %}
@@ -12,6 +15,7 @@
 </table>
 <input name="submit" value="{% trans "Subscribe" %}" type="submit" />
 </form>
+{% endif %}
 {% endif %}
 {% endblock body %}
 

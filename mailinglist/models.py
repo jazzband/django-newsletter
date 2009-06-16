@@ -493,7 +493,8 @@ class Submission(models.Model):
         return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.message, 'publish_date':self.publish_date}
 
     def submit(self):
-        print ugettext("Submitting %(submission)s") % {'submission':self}
+        subscriptions = self.subscriptions.filter(activated=True, unsubscribed=False)
+        print ugettext("Submitting %(submission)s to %(count)d people") % {'submission':self, 'count':subscriptions.count()}
         assert self.publish_date < datetime.now(), 'Something smells fishy; submission time in future.'
 
         self.sending = True
@@ -504,7 +505,7 @@ class Submission(models.Model):
                                         
             conn = SMTPConnection()
     
-            for subscription in self.subscriptions.filter(activated=True, unsubscribed=False):
+            for subscription in subscriptions:
                 c = Context({'subscription' : subscription, 
                              'site' : Site.objects.get_current(),
                              'submission' : self,

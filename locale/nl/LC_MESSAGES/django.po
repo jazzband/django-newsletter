@@ -59,7 +59,7 @@ msgstr "Uw aanmelding is succesvol aangepast."
 
 #: mailinglist/subscription_subscribe.html:3
 msgid "Newsletter subscribe"
-msgstr "Abboneer op nieuwsbrief"
+msgstr "Abonneer op nieuwsbrief"
 
 #: mailinglist/subscription_subscribe.html:5
 msgid "Subscribe to"
@@ -85,7 +85,7 @@ msgstr "Afmelden van nieuwsbrief"
 
 #: mailinglist/subscription_unsubscribe.html:5
 msgid "Unsubscribe from"
-msgstr "Afmeldformulier"
+msgstr "Afmelden van"
 
 #: mailinglist/subscription_unsubscribe.html:7
 msgid ""

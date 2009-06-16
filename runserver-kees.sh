@@ -1,9 +1,10 @@
 #!/usr/local/bin/bash
 source /usr/local/bin/use-django
 use-django r7367
-if [[ $1 == "shell" ]]; then
-	python manage.py shell
+PWD=`pwd`
+BASEPATH=`basename $PWD`
+if [[ $1 != "" ]]; then
+    python manage.py $1
 else
-	screen python manage.py runserver devel.visualspace.nl:9458
+    screen -S $BASEPATH python manage.py runserver `hostname`:9458
 fi
-

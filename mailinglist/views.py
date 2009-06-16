@@ -30,15 +30,20 @@ def newsletter(request, newsletter_slug):
 def subscribe_request(request, newsletter_slug):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
+    error = None
     if request.POST:
         form = SubscribeForm(request.POST, newsletter=my_newsletter, ip=request.META.get('REMOTE_ADDR'))
         if form.is_valid():
-            instance = form.save()
+            try:
+                instance = form.save()
+            except:
+                error = True
     else:
         form = SubscribeForm(newsletter=my_newsletter)
     
     env = { 'newsletter' : my_newsletter,
-            'form' : form }
+            'form' : form,
+            'error' : error }
 
     return render_to_response("mailinglist/subscription_subscribe.html", env)
     
