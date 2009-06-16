@@ -233,8 +233,6 @@ class Article(models.Model):
     # Make this a foreign key for added elegance
     image = models.ImageField(upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True, verbose_name=_('image'), help_text='xxx')
     thumb = models.CharField(max_length=600, verbose_name=_('thumbnail url'), editable=False, null=True, blank=True)
-    
-    remove = models.BooleanField(default=False, verbose_name=_('remove'))
 
     # Post this article is associated with
     post = models.ForeignKey('Message', verbose_name=_('message'), related_name='articles') #STACKED TABULAR    
@@ -263,12 +261,6 @@ class Article(models.Model):
 
     thumbnail.short_description = _('thumbnail')
     thumbnail.allow_tags = True
-
-    def save(self):
-        if self.remove:
-            self.delete()
-        else:
-            super(Article, self).save()
 
 class Message(models.Model):
     title = models.CharField(max_length=200, verbose_name=_('title'))
