@@ -1,14 +1,30 @@
-from mailinglist.models import EmailTemplate, Newsletter, Subscription, Article, Message, Submission
-from django.contrib import admin
+from datetime import datetime
 
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext
+from django.conf import settings
+from django.conf.urls.defaults import patterns, url
+
+from django.contrib import admin
+from django.contrib.admin.util import unquote, force_unicode
+from django.contrib.sites.models import Site
+
+from django.core import serializers
+from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
 
 from django.db.models import permalink
 
 from django.forms.util import ValidationError
 
-from django.conf import settings
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+
+from django.template import RequestContext, Context
+
+from django.shortcuts import render_to_response
+
+from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.functional import update_wrapper
+
+from mailinglist.models import EmailTemplate, Newsletter, Subscription, Article, Message, Submission
 
 class NewsletterAdmin(admin.ModelAdmin):
     list_display = ('title', 'admin_subscriptions', 'admin_messages', 'admin_submissions')
@@ -85,15 +101,25 @@ class MessageAdmin(admin.ModelAdmin):
     inlines = [ArticleInline,]
     
     @permalink
-    def text_preview_url(self, obj):
-        return ('mailinglist.admin_views.text_preview', (obj.id, ), {})
+    def preview_url(self, obj):
+        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
+        
+        return ('%sadmin_%s_%s_preview' % info, (obj.id, ), {})
+    
+    @permalink
+    def preview_text_url(self, obj):
+        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
+        
+        return ('%sadmin_%s_%s_preview_text' % info, (obj.id, ), {})
         
     @permalink
-    def html_preview_url(self, obj):
-        return ('mailinglist.admin_views.html_preview', (obj.id, ), {})
+    def preview_html_url(self, obj):
+        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
+        
+        return ('%sadmin_%s_%s_preview_html' % info, (obj.id, ), {})
     
     def admin_preview(self, obj):
-        return '<a href="%s/preview/">%s</a>' % (obj.id, ugettext('Preview'))
+        return '<a href="%s">%s</a>' % (self.preview_url(obj), ugettext('Preview'))
     admin_preview.short_description = ''
     admin_preview.allow_tags = True
     
@@ -101,6 +127,88 @@ class MessageAdmin(admin.ModelAdmin):
         return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
     admin_newsletter.short_description = ugettext('newsletter')
     admin_newsletter.allow_tags = True
+    
+    def _getobj(self, request, object_id):
+        opts = self.model._meta
+        app_label = opts.app_label
+    
+        try:
+            obj = self.queryset(request).get(pk=unquote(object_id))
+        except self.model.DoesNotExist:
+            # Don't raise Http404 just yet, because we haven't checked
+            # permissions yet. We don't want an unauthenticated user to be able
+            # to determine whether a given object exists.
+            obj = None
+    
+        if obj is None:
+            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
+
+        return obj
+    
+    def preview(self, request, object_id):
+        return render_to_response(
+            "admin/mailinglist/message/preview.html",
+            { 'message' : self._getobj(request, object_id) },
+            RequestContext(request, {}),
+        )
+        
+    def preview_html(self, request, object_id):
+        message = self._getobj(request, object_id)
+        (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', message.newsletter)
+
+        if not html_template:
+            raise Http404(_('No HTML template associated with the newsletter this message belongs to.'))
+        
+        c = Context({'message' : message, 
+                     'site' : Site.objects.get_current(),
+                     'newsletter' : message.newsletter,
+                     'date' : datetime.now()})
+        
+        return HttpResponse(html_template.render(c))
+
+    def preview_text(self, request, object_id):
+        message = self._getobj(request, object_id)
+        (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', message.newsletter)
+
+        c = Context({'message' : message, 
+                     'site' : Site.objects.get_current(),
+                     'newsletter' : message.newsletter,
+                     'date' : datetime.now()})
+         
+        return HttpResponse(text_template.render(c), mimetype='text/plain')
+
+    def submit(self, request, object_id):
+        submission = Submission.from_message(self._getobj(request, object_id))
+        
+        return HttpResponseRedirect('../../../submission/%s/' % submission.id)
+    
+    def get_urls(self):
+        urls = super(MessageAdmin, self).get_urls()
+    
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+            return update_wrapper(wrapper, view)
+    
+        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
+        
+        my_urls = patterns('',
+            url(r'^(.+)/preview/$', 
+                wrap(self.preview), 
+                name='%sadmin_%s_%s_preview' % info),
+            url(r'^(.+)/preview/html/$', 
+                wrap(self.preview_html), 
+                name='%sadmin_%s_%s_preview_html' % info),
+            url(r'^(.+)/preview/text/$', 
+                wrap(self.preview_text), 
+                name='%sadmin_%s_%s_preview_text' % info),
+            url(r'^(.+)/submit/$', 
+                wrap(self.submit), 
+                name='%sadmin_%s_%s_submit' % info),
+
+            )
+
+        return my_urls + urls
 
 
 class EmailTemplateAdmin(admin.ModelAdmin):
