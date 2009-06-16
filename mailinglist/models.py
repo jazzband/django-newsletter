@@ -300,41 +300,6 @@ class Subscription(models.Model):
                  'action' : 'update',
                  'activation_code' : self.activation_code})
 
-
-    
-    # Oh so dry!
-#     @permalink
-#     def get_absolute_url(self):
-#         return ('mailinglist.views.subscribe_update', (), {
-#                 'newsletter_slug': self.newsletter.slug,
-#                 'subscription_id': self.id})
-        
-## - Bestand
-# class File(models.Model):
-#     title = models.CharField(max_length=200, verbose_name=_('title'))
-#     file = models.FileField(upload_to='files', help_text=_('Maximal size is 3 Megabytes (MB).'))
-#     url = models.CharField(max_length=600, verbose_name=_('url'), editable=False, null=True, blank=True)
-# 
-#     def __unicode__(self):
-#         return self.title
-# 
-#     class Admin:
-#         list_display = ('title', 'url')
-#         search_fields = ['title', 'file', 'url']
-#         
-#     def get_absolute_url(self):
-#         return "/static/%s" %self.file
-# 
-#     class Meta:
-#         verbose_name = _('file')
-#         verbose_name_plural = _('files')
-# 
-#     def save(self):
-#         settings = Newsletter.objects.all()[0] ## .title .sender .edition .email .domain
-#         self.url = "%s/static/%s" %(general.site, self.file)
-#         super(File,self).save()
-
-
 class Article(models.Model):
     sortorder =  models.PositiveIntegerField(core=True, help_text=_('Sort order determines the order in which articles are concatenated in a post.'), verbose_name=_('sort order'), db_index=True)
     
