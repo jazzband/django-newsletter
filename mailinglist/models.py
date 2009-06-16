@@ -56,13 +56,6 @@ class EmailTemplate(models.Model):
         else:
             return (Template(myemail.subject), Template(myemail.text), None)                            
 
-    class Admin:
-        list_display = ('title','action')
-        list_display_links = ('title',)
-        list_filter = ('action',)
-        
-        save_as = True
-
     class Meta:
         verbose_name = _('e-mail template')
         verbose_name_plural = _('e-mail templates')
@@ -85,9 +78,9 @@ class EmailTemplate(models.Model):
         
         return None
 
-    title = models.CharField(max_length=200, verbose_name=_('name'), core=True, default=_('Default'))
+    title = models.CharField(max_length=200, verbose_name=_('name'), default=_('Default'))
     
-    action = models.CharField(max_length=16, choices=ACTION_CHOICES, db_index=True, radio_admin=True, verbose_name=_('action'))
+    action = models.CharField(max_length=16, choices=ACTION_CHOICES, db_index=True, verbose_name=_('action'))
     
     subject = models.CharField(max_length=255, verbose_name=_('subject'), validator_list=[TemplateValidator,])
     
@@ -100,7 +93,7 @@ class Newsletter(models.Model):
     site = models.ManyToManyField(Site)
     
     title = models.CharField(max_length=200, verbose_name=_('newsletter title'))
-    slug = models.SlugField(db_index=True, prepopulate_from=('title',),unique=True)
+    slug = models.SlugField(db_index=True, unique=True)
     
     email = models.EmailField(verbose_name=_('e-mail'), help_text=_('Sender e-mail'))
     sender = models.CharField(max_length=200, verbose_name=_('sender'), help_text=_('Sender name'))
@@ -119,28 +112,9 @@ class Newsletter(models.Model):
     def __unicode__(self):
         return self.title
 
-    class Admin:
-        list_display = ('title', 'admin_subscriptions', 'admin_messages', 'admin_submissions')
-
     class Meta:
         verbose_name = _('newsletter')
         verbose_name_plural = _('newsletters')
-
-    def admin_messages(self):
-        return '<a href="../message/?newsletter__id__exact=%s">%s</a>' % (self.id, ugettext('Messages'))
-    admin_messages.allow_tags = True
-    admin_messages.short_description = ''
-
-    def admin_subscriptions(self):
-        return '<a href="../subscription/?newsletter__id__exact=%s">%s</a>' % (self.id, ugettext('Subscriptions'))
-    admin_subscriptions.allow_tags = True
-    admin_subscriptions.short_description = ''
-
-    def admin_submissions(self):
-        return '<a href="../submission/?newsletter__id__exact=%s">%s</a>' % (self.id, ugettext('Submissions'))
-    admin_submissions.allow_tags = True
-    admin_submissions.short_description = ''
-
     
     #@permalink
     #def get_absolute_url(self):
@@ -199,51 +173,10 @@ class Subscription(models.Model):
         else:
             return _(u"%(email)s to %(newsletter)s") % {'email':self.email, 'newsletter':self.newsletter}
 
-    class Admin:
-        list_display = ('name', 'email', 'admin_newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
-        list_display_links = ('name', 'email')
-        list_filter = ('newsletter','activated', 'unsubscribed','subscribe_date')
-        search_fields = ('name', 'email')
-        date_hierarchy = 'subscribe_date'
-
     class Meta:
         verbose_name = _('subscription')
         verbose_name_plural = _('subscriptions')
         unique_together = ('email','newsletter')
-
-    def admin_newsletter(self):
-        return '<a href="../newsletter/%s/">%s</a>' % (self.newsletter.id, self.newsletter)
-    admin_newsletter.short_description = ugettext('newsletter')
-    admin_newsletter.allow_tags = True       
-
-    def admin_status(self):
-        if self.unsubscribed:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text())
-        
-        if self.activated:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text())
-        else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text())
-        
-    admin_status.short_description = ''
-    admin_status.allow_tags = True
-
-    def admin_status_text(self):
-        if self.unsubscribed:
-            return ugettext("Unsubscribed")
-        
-        if self.activated:
-            return ugettext("Activated")
-        else:
-            return ugettext("Unactivated")
-    admin_status_text.short_description = ugettext('Status')   
-    
-    def admin_unsubscribe_date(self):
-        if self.unsubscribe_date:
-            return self.unsubscribe_date
-        else:
-            return ''
-    admin_unsubscribe_date.short_description = unsubscribe_date.verbose_name
     
     def get_recipient(self):
         if self.name:
@@ -301,11 +234,10 @@ class Subscription(models.Model):
                  'activation_code' : self.activation_code})
 
 class Article(models.Model):
-    sortorder =  models.PositiveIntegerField(core=True, help_text=_('Sort order determines the order in which articles are concatenated in a post.'), verbose_name=_('sort order'), db_index=True)
+    sortorder =  models.PositiveIntegerField(help_text=_('Sort order determines the order in which articles are concatenated in a post.'), verbose_name=_('sort order'), db_index=True)
     
-    # Article's core
-    title = models.CharField(max_length=200, verbose_name=_('title'), core=True)
-    text = models.TextField(core=True, verbose_name=_('text'))
+    title = models.CharField(max_length=200, verbose_name=_('title'))
+    text = models.TextField(verbose_name=_('text'))
     
     url = models.URLField(verbose_name=_('link'), blank=True, null=True)
     
@@ -316,7 +248,7 @@ class Article(models.Model):
     remove = models.BooleanField(default=False, verbose_name=_('remove'))
 
     # Post this article is associated with
-    post = models.ForeignKey('Message', edit_inline=models.TABULAR, num_in_admin=2, verbose_name=_('message'), related_name='articles') #STACKED TABULAR    
+    post = models.ForeignKey('Message', verbose_name=_('message'), related_name='articles') #STACKED TABULAR    
     
     class Meta:
         ordering = ('sortorder',)
@@ -351,51 +283,19 @@ class Article(models.Model):
 
 class Message(models.Model):
     title = models.CharField(max_length=200, verbose_name=_('title'))
-
+    
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), default=Newsletter.get_default_id())
     
     date_create = models.DateTimeField(verbose_name=_('created'), auto_now_add=True, editable=False) 
     date_modify = models.DateTimeField(verbose_name=_('modified'), auto_now=True, editable=False) 
-
+    
     def __unicode__(self):
         return _(u"%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
         
-    @permalink
-    def text_preview_url(self):
-        return ('mailinglist.admin_views.text_preview', (self.id, ), {})
-
-    @permalink
-    def html_preview_url(self):
-        return ('mailinglist.admin_views.html_preview', (self.id, ), {})
-  
-    class Admin:
-        js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
-        save_as = True
-        list_display = ('admin_newsletter', 'title', 'admin_preview', 'date_create', 'date_modify')
-        list_display_links  = ('title',)
-        list_filter = ('newsletter', )
-        date_hierarchy = 'date_create'
-
-        #save_on_top = True
-        search_fields = ('title',)
-        #fields = (('Artikelen', {'fields' : ('title',), 'classes' : 'wide extrapretty', }),)
-        #Note: find some way to fix this bullcrap
-
-    def admin_preview(self):
-        return '<a href="%s/preview/">%s</a>' % (self.id, ugettext('Preview'))
-    admin_preview.short_description = ''
-    admin_preview.allow_tags = True
-    
-    
-    def admin_newsletter(self):
-        return '<a href="../newsletter/%s/">%s</a>' % (self.newsletter.id, self.newsletter)
-    admin_newsletter.short_description = ugettext('newsletter')
-    admin_newsletter.allow_tags = True
-
     class Meta:
         verbose_name = _('message')
         verbose_name_plural = _('messages')
-
+        
     @classmethod        
     def get_default_id(cls):
         try:
@@ -404,55 +304,13 @@ class Message(models.Model):
                 return objs[0].id
         except:
             pass
-
+        
         return None
-
 
 class Submission(models.Model):
     class Meta:
         verbose_name = _('submission')
         verbose_name_plural = _('submissions')
-                
-    class Admin:
-        list_display = ('admin_newsletter', 'message', 'publish_date', 'publish', 'admin_status_text', 'admin_status')
-        list_display_links = ['message',]
-        date_hierarchy = 'publish_date'
-        list_filter = ('newsletter', 'publish', 'sent')
-        save_as = True
-
-    def admin_newsletter(self):
-        return '<a href="../newsletter/%s/">%s</a>' % (self.newsletter.id, self.newsletter)
-    admin_newsletter.short_description = ugettext('newsletter')
-    admin_newsletter.allow_tags = True
-
-    
-    def admin_status(self):
-        if self.prepared:
-            if self.sent:
-                return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text())
-            else:
-                if self.publish_date > datetime.now():
-                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text())
-                else:
-                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/submitting.gif', self.admin_status_text())
-        else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text())
-        
-    admin_status.short_description = ''
-    admin_status.allow_tags = True
-
-    def admin_status_text(self):
-        if self.prepared:
-            if self.sent:
-                return ugettext("Sent.")
-            else:
-                if self.publish_date > datetime.now():
-                    return ugettext("Delayed submission.")
-                else:
-                    return ugettext("Submitting.")
-        else:
-            return ugettext("Not sent.")
-    admin_status_text.short_description = ugettext('Status')
  
     def __unicode__(self):
         return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.message, 'publish_date':self.publish_date}
@@ -503,7 +361,7 @@ class Submission(models.Model):
         self.sending = False
         self.sent = True
         self.save()
-
+    
     @classmethod
     def submit_queue(cls):
         todo = cls.objects.filter(prepared=True, sent=False, sending=False, publish_date__lt=datetime.now())
