@@ -2,19 +2,14 @@ import os, sha, random
 
 from datetime import datetime
 
-#import Image
-
 from django.db import models
-from django.db.models import permalink, signals
+from django.db.models import permalink
 
 from django.dispatch import dispatcher
 
 from django.template.defaultfilters import slugify
 from django.template import Template, Context, loader #loader should be removed later on
 
-from django.core.validators import ValidationError
-
-#from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 
@@ -27,12 +22,6 @@ from django.conf import settings
 
 def make_activation_code():
     return sha.new(sha.new(str(random.random())).hexdigest()[:5]+str(datetime.now().microsecond)).hexdigest()
-
-def TemplateValidator(new_data, all_data):
-    try:
-        Template(new_data)
-    except Exception, e:
-        raise ValidationError(_('There was an error parsing your template: %s') % e)
 
 class EmailTemplate(models.Model):
     ACTION_CHOICES = (
@@ -82,11 +71,11 @@ class EmailTemplate(models.Model):
     
     action = models.CharField(max_length=16, choices=ACTION_CHOICES, db_index=True, verbose_name=_('action'))
     
-    subject = models.CharField(max_length=255, verbose_name=_('subject'), validator_list=[TemplateValidator,])
+    subject = models.CharField(max_length=255, verbose_name=_('subject'))
     
-    text = models.TextField(verbose_name=_('Text'), help_text=_('Plain text e-mail message. Available objects: date, subscription, site, submission, newsletter and message.'), validator_list=[TemplateValidator,])
+    text = models.TextField(verbose_name=_('Text'), help_text=_('Plain text e-mail message. Available objects: date, subscription, site, submission, newsletter and message.'))
     
-    html = models.TextField(verbose_name=_('HTML'), help_text=_('HTML e-mail alternative.'), null=True, blank=True, validator_list=[TemplateValidator,])
+    html = models.TextField(verbose_name=_('HTML'), help_text=_('HTML e-mail alternative.'), null=True, blank=True)
 
 
 class Newsletter(models.Model):
@@ -386,7 +375,7 @@ class Submission(models.Model):
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), editable=False)
     message = models.ForeignKey('Message', verbose_name=_('message'), editable=True, default=Message.get_default_id(), null=False)
     
-    subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), filter_interface=models.HORIZONTAL, limit_choices_to={ 'activated' :True, 'unsubscribed' : False})
+    subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), limit_choices_to={ 'activated' :True, 'unsubscribed' : False})
 
     publish_date = models.DateTimeField(verbose_name=_('publication date'), blank=True, null=True, default=datetime.now(), db_index=True) 
     publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'), db_index=True)
