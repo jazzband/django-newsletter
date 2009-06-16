@@ -11,7 +11,7 @@ var JsonSubscribers = {
         SelectBox.move_all('id_subscriptions_to', 'id_subscriptions_from');
     
         if (id) {
-            xmlhttp.open( "GET", "http://devel.visualspace.nl:9457/admin/mailinglist/json/message/"+id+"/subscribers/", true );
+            xmlhttp.open( "GET", "/admin/mailinglist/json/message/"+id+"/subscribers/", true );
             xmlhttp.onreadystatechange=function() {
                 if (xmlhttp.readyState==4 && xmlhttp.status == 200) {
         
