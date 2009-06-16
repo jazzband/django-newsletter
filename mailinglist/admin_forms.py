@@ -1,9 +1,8 @@
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 
-from django.core.validators import email_re
-
 from django import forms
+from django.forms.fields import email_re
 
 from django.conf import settings
 
