@@ -2,6 +2,8 @@ from mailinglist.models import EmailTemplate, Newsletter, Subscription, Article,
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
+from django.forms.util import ValidationError
+
 class Article_Inline(admin.TabularInline):
     model = Article
     extra = 2
@@ -98,6 +100,21 @@ class EmailTemplateAdmin(admin.ModelAdmin):
     list_display_links = ('title',)
     list_filter = ('action',)
     save_as = True
+    
+    def TemplateValidator(self, field):
+        try:
+            Template(self.cleaned_data[field])
+        except Exception, e:
+            raise ValidationError(_('There was an error parsing your template: %s') % e)
+    
+    def clean_subject(self):
+        return TemplateValidator('subject')
+    
+    def clean_text(self):
+        return TemplateValidator('text')
+    
+    def clean_html(self):
+        return TemplateValidator('html')
 
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'admin_newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')

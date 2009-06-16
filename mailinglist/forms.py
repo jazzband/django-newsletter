@@ -1,8 +1,8 @@
 from django.utils.translation import ugettext_lazy as _
 
 from django import forms
-from django.newforms import widgets
-from django.newforms.util import ValidationError, ErrorList
+from django.forms import widgets
+from django.forms.util import ValidationError, ErrorList
 
 from models import Subscription
 
