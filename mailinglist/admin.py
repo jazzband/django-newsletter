@@ -10,11 +10,6 @@ from django.forms.util import ValidationError
 
 from django.conf import settings
 
-
-class Article_Inline(admin.TabularInline):
-    model = Article
-    extra = 2
-
 class NewsletterAdmin(admin.ModelAdmin):
     list_display = ('title', 'admin_subscriptions', 'admin_messages', 'admin_submissions')
     prepopulated_fields = {'slug': ('title',)}
@@ -75,6 +70,10 @@ class SubmissionAdmin(admin.ModelAdmin):
             return ugettext("Not sent.")
     admin_status_text.short_description = ugettext('Status')
 
+class ArticleInline(admin.TabularInline):
+    model = Article
+    extra = 2
+
 class MessageAdmin(admin.ModelAdmin):
     js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
     save_as = True
@@ -82,6 +81,8 @@ class MessageAdmin(admin.ModelAdmin):
     list_display_links  = ('title',)
     list_filter = ('newsletter', )
     date_hierarchy = 'date_create'
+    
+    inlines = [ArticleInline,]
     
     @permalink
     def text_preview_url(self, obj):
