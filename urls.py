@@ -1,5 +1,15 @@
 from django.conf.urls.defaults import *
 
+from django.contrib import admin
+admin.autodiscover()
+
+from django.conf import settings
+if settings.DEBUG:
+    from os import path
+    urlpatterns = patterns('django.views', (r'^static/(?P<path>.*)$', 'static.serve', {'document_root': path.join(settings.PROJECT_ROOT, 'static') }))
+else:
+    urlpatterns = patterns('')
+
 urlpatterns = patterns('',
 
     # Uncomment this for use with static files and media. Don't use this in a production environment!
@@ -11,8 +21,8 @@ urlpatterns = patterns('',
     (r'^mailinglist/', include('newsletter.mailinglist.urls')),    
     (r'^admin/mailinglist/', include('newsletter.mailinglist.admin_urls')),
 
-    # Admin
-    (r'^admin/', include('django.contrib.admin.urls')),
-     
- 
+    # Django Admin
+    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    (r'^admin/', include(admin.site.urls)),
+
 )
