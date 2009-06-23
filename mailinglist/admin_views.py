@@ -11,28 +11,28 @@ from django.utils.translation import ugettext as _
 
 from mailinglist.models import *
 
-@staff_member_required
-def json_subscribers(request, myid):
-    message = get_object_or_404(Message, id=myid)
-
-    json = serializers.serialize("json", message.newsletter.get_subscriptions(), fields=())
-    return HttpResponse(json, mimetype='application/json')
-
-@staff_member_required
-def submit(request, myid):
-    submission = get_object_or_404(Submission, id=myid)
-    
-    if submission.sent or submission.prepared:
-        request.user.message_set.create(message=_('Submission already sent.'))
-        
-        return HttpResponseRedirect('../')
-        
-    submission.prepared=True
-    submission.save()
-    
-    request.user.message_set.create(message=_('Your submission is being sent.'))
-    
-    return HttpResponseRedirect('../../')
+# @staff_member_required
+# def json_subscribers(request, myid):
+#     message = get_object_or_404(Message, id=myid)
+# 
+#     json = serializers.serialize("json", message.newsletter.get_subscriptions(), fields=())
+#     return HttpResponse(json, mimetype='application/json')
+# 
+# @staff_member_required
+# def submit(request, myid):
+#     submission = get_object_or_404(Submission, id=myid)
+#     
+#     if submission.sent or submission.prepared:
+#         request.user.message_set.create(message=_('Submission already sent.'))
+#         
+#         return HttpResponseRedirect('../')
+#         
+#     submission.prepared=True
+#     submission.save()
+#     
+#     request.user.message_set.create(message=_('Your submission is being sent.'))
+#     
+#     return HttpResponseRedirect('../../')
 
 from admin_forms import *
 

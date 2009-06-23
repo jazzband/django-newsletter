@@ -86,7 +86,59 @@ class SubmissionAdmin(admin.ModelAdmin):
         else:
             return ugettext("Not sent.")
     admin_status_text.short_description = ugettext('Status')
-
+    
+    """ Views """
+    def _getobj(self, request, object_id):
+        opts = self.model._meta
+        app_label = opts.app_label
+        
+        try:
+            obj = self.queryset(request).get(pk=unquote(object_id))
+        except self.model.DoesNotExist:
+            # Don't raise Http404 just yet, because we haven't checked
+            # permissions yet. We don't want an unauthenticated user to be able
+            # to determine whether a given object exists.
+            obj = None
+        
+        if obj is None:
+            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
+        
+        return obj
+    
+    def submit(self, request, object_id):
+        submission = self._getobj(request, object_id)
+        
+        if submission.sent or submission.prepared:
+            request.user.message_set.create(message=ugettext('Submission already sent.'))
+        
+            return HttpResponseRedirect('../')
+        
+        submission.prepared=True
+        submission.save()
+        
+        request.user.message_set.create(message=ugettext('Your submission is being sent.'))
+        
+        return HttpResponseRedirect('../../')
+    
+    """ URLs """
+    def get_urls(self):
+        urls = super(SubmissionAdmin, self).get_urls()
+        
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+            return update_wrapper(wrapper, view)
+        
+        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
+        
+        my_urls = patterns('',
+            url(r'^(.+)/submit/$', 
+                wrap(self.submit), 
+                name='%sadmin_%s_%s_submit' % info),
+            )
+            
+        return my_urls + urls
+        
 class ArticleInline(admin.TabularInline):
     model = Article
     extra = 2
@@ -140,7 +192,7 @@ class MessageAdmin(admin.ModelAdmin):
     def preview_html(self, request, object_id):
         message = self._getobj(request, object_id)
         (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', message.newsletter)
-
+        
         if not html_template:
             raise Http404(_('No HTML template associated with the newsletter this message belongs to.'))
         
@@ -150,32 +202,38 @@ class MessageAdmin(admin.ModelAdmin):
                      'date' : datetime.now()})
         
         return HttpResponse(html_template.render(c))
-
+    
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
         (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', message.newsletter)
-
+        
         c = Context({'message' : message, 
                      'site' : Site.objects.get_current(),
                      'newsletter' : message.newsletter,
                      'date' : datetime.now()})
          
         return HttpResponse(text_template.render(c), mimetype='text/plain')
-
+    
     def submit(self, request, object_id):
         submission = Submission.from_message(self._getobj(request, object_id))
+         
+        return HttpResponseRedirect('../../../submission/%s/' % submission.id)    
+    
+    def subscribers_json(request, myid):
+        message = self._getobj(request, object_id)
         
-        return HttpResponseRedirect('../../../submission/%s/' % submission.id)
+        json = serializers.serialize("json", message.newsletter.get_subscriptions(), fields=())
+        return HttpResponse(json, mimetype='application/json')
     
     """ URLs """
     def get_urls(self):
         urls = super(MessageAdmin, self).get_urls()
-    
+        
         def wrap(view):
             def wrapper(*args, **kwargs):
                 return self.admin_site.admin_view(view)(*args, **kwargs)
             return update_wrapper(wrapper, view)
-    
+        
         info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
         
         my_urls = patterns('',
@@ -191,9 +249,11 @@ class MessageAdmin(admin.ModelAdmin):
             url(r'^(.+)/submit/$', 
                 wrap(self.submit), 
                 name='%sadmin_%s_%s_submit' % info),
-
+            url(r'^(.+)/subscribers/json/$', 
+                wrap(self.subscribers_json), 
+                name='%sadmin_%s_%s_subscribers_json' % info),
             )
-
+        
         return my_urls + urls
 
 class EmailTemplateAdmin(admin.ModelAdmin):
