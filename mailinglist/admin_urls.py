@@ -5,8 +5,8 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += patterns('mailinglist.admin_views',
-    (r'^json/message/(.+)/subscribers/$', 'json_subscribers'),
-    (r'^submission/(.+)/submit/$', 'submit'),
+    # (r'^json/message/(.+)/subscribers/$', 'json_subscribers'),
+    # (r'^submission/(.+)/submit/$', 'submit'),
     (r'^subscription/import/$', 'import_subscribers'),
     (r'^subscription/import/confirm/$', 'confirm_import_subscribers'),
 )
