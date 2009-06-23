@@ -29,7 +29,8 @@ from mailinglist.models import EmailTemplate, Newsletter, Subscription, Article,
 class NewsletterAdmin(admin.ModelAdmin):
     list_display = ('title', 'admin_subscriptions', 'admin_messages', 'admin_submissions')
     prepopulated_fields = {'slug': ('title',)}
-    
+
+    """ List extensions """
     def admin_messages(self, obj):
         return '<a href="../message/?newsletter__id__exact=%s">%s</a>' % (obj.id, ugettext('Messages'))
     admin_messages.allow_tags = True
@@ -52,7 +53,8 @@ class SubmissionAdmin(admin.ModelAdmin):
     list_filter = ('newsletter', 'publish', 'sent')
     save_as = True
     filter_horizontal = ('subscriptions',)
-    
+
+    """ List extensions """
     def admin_newsletter(self, obj):
         return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
     admin_newsletter.short_description = ugettext('newsletter')
@@ -68,8 +70,7 @@ class SubmissionAdmin(admin.ModelAdmin):
                 else:
                     return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/submitting.gif', obj.admin_status_text())
         else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', obj.admin_status_text())
-        
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', obj.admin_status_text())    
     admin_status.short_description = ''
     admin_status.allow_tags = True
     
@@ -100,24 +101,7 @@ class MessageAdmin(admin.ModelAdmin):
     
     inlines = [ArticleInline,]
     
-    @permalink
-    def preview_url(self, obj):
-        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
-        
-        return ('%sadmin_%s_%s_preview' % info, (obj.id, ), {})
-    
-    @permalink
-    def preview_text_url(self, obj):
-        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
-        
-        return ('%sadmin_%s_%s_preview_text' % info, (obj.id, ), {})
-        
-    @permalink
-    def preview_html_url(self, obj):
-        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
-        
-        return ('%sadmin_%s_%s_preview_html' % info, (obj.id, ), {})
-    
+    """ List extensions """
     def admin_preview(self, obj):
         return '<a href="%s">%s</a>' % (self.preview_url(obj), ugettext('Preview'))
     admin_preview.short_description = ''
@@ -128,6 +112,7 @@ class MessageAdmin(admin.ModelAdmin):
     admin_newsletter.short_description = ugettext('newsletter')
     admin_newsletter.allow_tags = True
     
+    """ Views """
     def _getobj(self, request, object_id):
         opts = self.model._meta
         app_label = opts.app_label
@@ -182,6 +167,7 @@ class MessageAdmin(admin.ModelAdmin):
         
         return HttpResponseRedirect('../../../submission/%s/' % submission.id)
     
+    """ URLs """
     def get_urls(self):
         urls = super(MessageAdmin, self).get_urls()
     
@@ -210,13 +196,13 @@ class MessageAdmin(admin.ModelAdmin):
 
         return my_urls + urls
 
-
 class EmailTemplateAdmin(admin.ModelAdmin):
     list_display = ('title','action')
     list_display_links = ('title',)
     list_filter = ('action',)
     save_as = True
-    
+
+    """ Validation """
     def TemplateValidator(self, field):
         try:
             Template(self.cleaned_data[field])
@@ -239,6 +225,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
     search_fieldsets = ('name', 'email')
     date_hierarchy = 'subscribe_date'
     
+    """ List extensions """
     def admin_newsletter(self, obj):
         return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
     admin_newsletter.short_description = ugettext('newsletter')
