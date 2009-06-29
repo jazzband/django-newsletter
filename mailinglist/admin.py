@@ -219,7 +219,7 @@ class MessageAdmin(admin.ModelAdmin):
          
         return HttpResponseRedirect('../../../submission/%s/' % submission.id)    
     
-    def subscribers_json(request, myid):
+    def subscribers_json(self, request, object_id):
         message = self._getobj(request, object_id)
         
         json = serializers.serialize("json", message.newsletter.get_subscriptions(), fields=())

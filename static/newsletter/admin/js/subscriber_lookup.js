@@ -1,6 +1,6 @@
 var JsonSubscribers = {
     init: function(inputname, add) {
-        inp = document.getElementById(inputname)
+        inp = document.getElementById(inputname);
         addEvent(inp, "change", function(e) { JsonSubscribers.setSubscribers(inp.value); });
         if (add==true && inp.value != "") {
             JsonSubscribers.setSubscribers(inp.value);
@@ -11,7 +11,7 @@ var JsonSubscribers = {
         SelectBox.move_all('id_subscriptions_to', 'id_subscriptions_from');
     
         if (id) {
-            xmlhttp.open( "GET", "/admin/mailinglist/json/message/"+id+"/subscribers/", true );
+            xmlhttp.open( "GET", "/admin/mailinglist/message/"+id+"/subscribers/json/", true );
             xmlhttp.onreadystatechange=function() {
                 if (xmlhttp.readyState==4 && xmlhttp.status == 200) {
         
