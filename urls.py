@@ -19,7 +19,6 @@ urlpatterns = patterns('',
 
     (r'^$', 'django.views.generic.simple.redirect_to',{'url': '/mailinglist/'}),
     (r'^mailinglist/', include('mailinglist.urls')),    
-    (r'^admin/mailinglist/', include('mailinglist.admin_urls')),
 
     # Django Admin
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),

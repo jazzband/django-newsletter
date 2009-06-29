@@ -24,7 +24,9 @@ from django.shortcuts import render_to_response
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.utils.functional import update_wrapper
 
-from mailinglist.models import EmailTemplate, Newsletter, Subscription, Article, Message, Submission
+from models import EmailTemplate, Newsletter, Subscription, Article, Message, Submission
+
+from admin_forms import *
 
 class NewsletterAdmin(admin.ModelAdmin):
     list_display = ('title', 'admin_subscriptions', 'admin_messages', 'admin_submissions')
@@ -319,6 +321,72 @@ class SubscriptionAdmin(admin.ModelAdmin):
         else:
             return ''
     admin_unsubscribe_date.short_description = _("unsubscribe date")
+    
+    """ Views """
+    def subscribers_import(self, request):
+        if request.POST:
+            form = ImportForm(request.POST, request.FILES)
+            if form.is_valid():
+                request.session['addresses'] = form.get_addresses()
+                return HttpResponseRedirect('confirm/')
+        else:
+            form = ImportForm()
+        
+        return render_to_response(
+            "admin/mailinglist/subscription/importform.html",
+            { 'form' : form },
+            RequestContext(request, {}),
+        )      
+    
+    def subscribers_import_confirm(self, request):
+        # If no addresses are in the session, start all over.
+        if not request.session.has_key('addresses'):
+            return HttpResponseRedirect('../')
+        
+        addresses = request.session['addresses']
+        print 'confirming addresses', addresses 
+        if request.POST:
+            form = ConfirmForm(request.POST)
+            if form.is_valid():
+                try:
+                    for address in addresses.values():
+                        address.save()
+                finally:
+                    del request.session['addresses']
+                request.user.message_set.create(message=_('%s subscriptions have been succesfully added.') % len(addresses)) 
+            
+                return HttpResponseRedirect('../../')
+        else:
+            form = ConfirmForm()
+         
+        return render_to_response(
+            "admin/mailinglist/subscription/confirmimportform.html",
+            { 'form' : form ,
+              'subscribers': addresses },
+            RequestContext(request, {}),
+        )
+    
+    """ URLs """
+    def get_urls(self):
+        urls = super(SubscriptionAdmin, self).get_urls()
+        
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+            return update_wrapper(wrapper, view)
+        
+        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
+        
+        my_urls = patterns('',
+            url(r'^import/$', 
+                wrap(self.subscribers_import), 
+                name='%sadmin_%s_%s_import' % info),
+            url(r'^import/confirm/$', 
+                wrap(self.subscribers_import_confirm), 
+                name='%sadmin_%s_%s_import_confirm' % info),                
+            )
+        
+        return my_urls + urls
 
 admin.site.register(Newsletter, NewsletterAdmin)
 admin.site.register(Submission, SubmissionAdmin)
