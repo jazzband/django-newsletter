@@ -4,16 +4,15 @@
 {% block body %}
 <h1>{% trans "Newsletter subscribe" %} {{ newsletter.title }}</h1>
 {% if error %}
-{% trans "Due to a technical error we were not able to submit your confirmation email. This could be because your email address is invalid.\n\nIf the latter is not the case and the error persists, please don't hesitate to contact us at info@clausenkaan.com." %}
+<p>{% trans "Due to a technical error we were not able to submit your confirmation email. This could be because your email address is invalid." %}</p>
+<p>{% trans "If the error persists, please don't hesitate to contact us at the following email address:" %} <a href="mailto:info@ladyboys.com">info@ladyboys.com</a></p>
 {% else %}
 {% if form.is_valid %}
-{% trans "Your subscription was succesfully received and an activation email has been sent to you. In that email you will find a link which you need to follow in order to activate your subscription." %}
+<p>{% trans "Your subscription was succesfully received and an activation email has been sent to you. In that email you will find a link which you need to follow in order to activate your subscription." %}</p>
 {% else %}
 <form enctype="multipart/form-data" method="post" action=".">
-<table>
-    {{ form.as_table }}
-</table>
-<input name="submit" value="{% trans "Subscribe" %}" type="submit" />
+    {{ form.as_p }}
+    <p><input id="id_submit" name="submit" value="{% trans "Subscribe" %}" type="submit" /></p>
 </form>
 {% endif %}
 {% endif %}
