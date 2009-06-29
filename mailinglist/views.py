@@ -1,3 +1,5 @@
+import logging
+
 from datetime import datetime
 
 from django.shortcuts import get_object_or_404, get_list_or_404, render_to_response
@@ -100,7 +102,7 @@ def subscribe_activate(request, newsletter_slug, subscription_id=None):
     
     my_subscription = get_subscription(subscription_id)
     
-    print 'subscribe update', my_subscription
+    logging.debug('subscribe update %s' % my_subscription)
     
     if request.GET.has_key('activation_code'):
         my_initial = {'user_activation_code' : request.GET['activation_code']}
@@ -127,7 +129,7 @@ def unsubscribe_activate(request, newsletter_slug, subscription_id=None):
     
     my_subscription = get_subscription(subscription_id)
     
-    print 'subscribe update', my_subscription
+    logging.debug('subscribe update %s' % my_subscription)
     
     if request.GET.has_key('activation_code'):
         my_initial = {'user_activation_code' : request.GET['activation_code']}
@@ -152,7 +154,7 @@ def update_request(request, newsletter_slug, subscription_id=None):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
     my_subscription = get_subscription(subscription_id)
-    print 'unsubscribe request', my_subscription
+    logging.debug('unsubscribe request %s' % my_subscription)
 
     if request.POST:
         form = UpdateForm(request.POST, newsletter=my_newsletter, instance=my_subscription)

@@ -1,3 +1,5 @@
+import logging
+
 from datetime import datetime
 
 from django.conf import settings
@@ -344,7 +346,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
             return HttpResponseRedirect('../')
         
         addresses = request.session['addresses']
-        print 'confirming addresses', addresses 
+        logging.debug('Confirming addresses: %s' % addresses)
         if request.POST:
             form = ConfirmForm(request.POST)
             if form.is_valid():

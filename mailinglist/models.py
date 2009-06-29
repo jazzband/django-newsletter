@@ -1,4 +1,4 @@
-import os, sha, random
+import os, sha, random, logging
 
 from datetime import datetime
 
@@ -8,7 +8,7 @@ from django.db.models import permalink
 from django.dispatch import dispatcher
 
 from django.template.defaultfilters import slugify
-from django.template import Template, Context, loader #loader should be removed later on
+from django.template import Template, Context
 
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
@@ -124,9 +124,8 @@ class Newsletter(models.Model):
         return u'%s <%s>' % (self.sender, self.email)
         
     def get_subscriptions(self):
-        if settings.DEBUG:
-            print _(u'Looking up subscribers for %s') % self
-            print  Subscription.objects.filter(newsletter=self, activated=True, unsubscribed=False)
+        logging.debug(_(u'Looking up subscribers for %s') % self)
+        logging.debug(Subscription.objects.filter(newsletter=self, activated=True, unsubscribed=False))
 
         return Subscription.objects.filter(newsletter=self, unsubscribed=False, activated=True)
 
@@ -351,8 +350,7 @@ class Submission(models.Model):
     
     @classmethod
     def from_message(cls, message):
-        if settings.DEBUG:
-            print ugettext('Submission of message %s') %  message
+        logging.debug(ugettext('Submission of message %s') %  message)
         submission = cls()
         submission.message = message
         submission.newsletter = message.newsletter

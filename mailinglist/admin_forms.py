@@ -1,3 +1,5 @@
+import logging
+
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 
@@ -10,7 +12,6 @@ from models import *
     
 def make_subscription(newsletter, email, name=None):
     if Subscription.objects.filter(newsletter__id=newsletter.id, activated=True, email__exact=email).count():
-        #print 'Kappuh nah'
         return None
         
     addr = Subscription(activated=True)
@@ -25,7 +26,7 @@ def make_subscription(newsletter, email, name=None):
 
 def check_email(email, ignore_errors=False):
     if settings.DEBUG:
-        print "Checking e-mail address %s" % email
+        logging.debug("Checking e-mail address %s" % email)
 
     email_length = Subscription._meta.get_field_by_name('email')[0].max_length
 
@@ -36,7 +37,7 @@ def check_email(email, ignore_errors=False):
 
 def check_name(name, ignore_errors=False):
     if settings.DEBUG:
-        print "Checking name %s" % name
+        logging.debug("Checking name: %s" % name)
 
     name_length = Subscription._meta.get_field_by_name('name')[0].max_length
     if len(name) <= name_length or ignore_errors:        
@@ -65,7 +66,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     if namecol is None:
         raise forms.ValidationError(_("Name column not found. The name of this column should be either 'name' or '%s'.") % ugettext("name"))
         
-    #print 'Name column found \'%s\'' % firstrow[namecol]
+    logging.debug("Name column found: '%s'" % firstrow[namecol])
 
     # Find email column
     colnum = 0
@@ -81,22 +82,20 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     if mailcol is None:
         raise forms.ValidationError(_("E-mail column not found. The name of this column should be either 'email', 'e-mail' or '%s'.") % ugettext("e-mail"))
 
-    #print 'E-mail column found \'%s\'' % firstrow[mailcol]
+    logging.debug("E-mail column found: '%s'" % firstrow[mailcol])
 
     #assert namecol != mailcol, 'Name and e-mail column should not be the same.'
     if namecol == mailcol:
         raise forms.ValidationError(_("Could not properly determine the proper columns in the CSV-file. There should be a field called 'name' or '%s' and one called 'e-mail' or '%s'.") % (_("name"), _("e-mail")))
 
-    #print
-    #print 'Extracting data...'
+    logging.debug('Extracting data.')
     
     addresses = {}
     for row in myreader:
         name = check_name(row[namecol], ignore_errors)
         email = check_email(row[mailcol], ignore_errors)
 
-        if settings.DEBUG:
-            print "Going to add %s <%s>" % (name, email)
+        logging.debug("Going to add %s <%s>" % (name, email))
 
         if email_re.search(email):
             addr = make_subscription(newsletter, email, name)
@@ -223,14 +222,12 @@ class ImportForm(forms.Form):
 
         if len(self.addresses) == 0:
             raise forms.ValidationError(_("No entries could found in this file."))
-        #else:
-        #    print 'Found addresses', self.addresses
             
         return self.cleaned_data
 
     def get_addresses(self):
         if hasattr(self, 'addresses'):
-            print 'Getting addresses', self.addresses
+            logging.debug('Getting addresses: %s' % self.addresses)
             return self.addresses
         else:
             return {}
