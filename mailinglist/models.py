@@ -228,7 +228,7 @@ class Article(models.Model):
     title = models.CharField(max_length=200, verbose_name=_('title'))
     text = models.TextField(verbose_name=_('text'))
     
-    url = models.URLField(verbose_name=_('link'), blank=True, null=True)
+    url = models.URLField(verbose_name=_('link'), blank=True, null=True, verify_exists=False)
     
     # Make this a foreign key for added elegance
     image = models.ImageField(upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True, verbose_name=_('image'), help_text='xxx')
