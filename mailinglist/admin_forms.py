@@ -125,12 +125,16 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
             name = check_name(myvcard.fn.value, ignore_errors)
         else:
             name = None
-            
+        
+        # Do we have an email address?
+        # If not: either continue to the next vcard or raise a validation error.
         if hasattr(myvcard, 'email'):
             email = check_email(myvcard.email.value, ignore_errors)
         elif not ignore_errors:
             raise forms.ValidationError(_("Entry '%s' contains no email address.") % name)
-
+        else:
+            continue
+        
         if email_re.search(email):
             addr = make_subscription(newsletter, email, name)
         elif not ignore_errors:
