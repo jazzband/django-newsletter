@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="" />
+<title>secondeverything</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">secondeverything</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/admin/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Site administration | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='content-main']/div[2]/table/tbody/tr[3]/td[1]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Add newsletter | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_title</td>
+	<td>Second newsletter</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_email</td>
+	<td>sender@secondnewsletter.com</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_sender</td>
+	<td>Second Newsletter Sender</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_slug</td>
+	<td>second-newsletter-slug</td>
+</tr>
+<tr>
+	<td>addSelection</td>
+	<td>id_site</td>
+	<td>label=example.com</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>_save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Select newsletter to change | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>added successfully</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/admin/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Site administration | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='content-main']/div[2]/table/tbody/tr[5]/td[1]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Add subscription | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_name</td>
+	<td>Test subscription 2</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_email</td>
+	<td>drbob@dokterbob.net</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id_newsletter</td>
+	<td>label=Test newsletter</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id_activated</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>_save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Select subscription to change | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>added successfully</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Add subscription</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Add subscription | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_name</td>
+	<td>Test subscription 3</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_email</td>
+	<td>drbob@dokterbob.net</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id_newsletter</td>
+	<td>label=Test newsletter</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id_activated</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>_save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Add subscription | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>already exists</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/admin/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Site administration | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='content-main']/div[2]/table/tbody/tr[2]/td[1]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Add message | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_title</td>
+	<td>Fucking message</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id_newsletter</td>
+	<td>label=Second newsletter</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_articles-0-sortorder</td>
+	<td>10</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_articles-0-title</td>
+	<td>Off corrrsssoooo</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_articles-0-text</td>
+	<td>Fuck fuck fuck.</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_articles-0-url</td>
+	<td>http://www.fuck.com</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>_save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Select message to change | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>added successfully</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Fucking message</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Change message | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Preview</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Preview message | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Change</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Change message | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id_title</td>
+	<td>Fucking message2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>_continue</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Change message | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>changed successfully.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Preview</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Preview message | Django site admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Create submission</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Change submission | Django site admin</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
