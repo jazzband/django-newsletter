@@ -38,7 +38,10 @@ def subscribe_request(request, newsletter_slug):
         if form.is_valid():
             try:
                 instance = form.save()
-            except:
+                instance.send_activation_email(action='subscribe')
+
+            except Exception, e:
+                logging.warn('Error %s while subscribing.' % e)
                 error = True
     else:
         form = SubscribeForm(newsletter=my_newsletter)
@@ -97,6 +100,7 @@ def activate_subscription(request, newsletter_slug, email, action, activation_co
     
     return render_to_response("mailinglist/subscription_activate.html", env)
 
+""" These should be removed. It is old crappy code. Surely. 1"""
 def subscribe_activate(request, newsletter_slug, subscription_id=None):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
