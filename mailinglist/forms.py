@@ -57,11 +57,6 @@ class SubscribeForm(NewsletterForm):
             pass
 
         return value
-    
-    def save(self, commit=True):
-        instance = super(SubscribeForm, self).save(commit)
-        instance.send_activation_email(action='subscribe')
-        return instance
 
 class ActivateForm(NewsletterForm):        
     class Meta:
@@ -74,9 +69,6 @@ class ActivateForm(NewsletterForm):
         
         if user_activation_code != self.instance.activation_code:
             raise ValidationError(_('The validation code supplied by you does not match.'))
-
-    def save(self, commit=True):
-        return super(ActivateForm, self).save(commit)
           
     user_activation_code = forms.CharField(label=_("Activation code"), max_length=40)
     
