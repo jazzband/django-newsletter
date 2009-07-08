@@ -34,17 +34,17 @@ def subscribe_request(request, newsletter_slug):
     
     error = None
     if request.POST:
-        form = SubscribeForm(request.POST, newsletter=my_newsletter, ip=request.META.get('REMOTE_ADDR'))
+        form = SubscribeRequestForm(request.POST, newsletter=my_newsletter, ip=request.META.get('REMOTE_ADDR'))
         if form.is_valid():
+            instance = form.save()
+            
             try:
-                instance = form.save()
                 instance.send_activation_email(action='subscribe')
-
             except Exception, e:
-                logging.warn('Error %s while subscribing.' % e)
+                logging.warn('Error %s while submitting email to %s.' % (e, instance.email))
                 error = True
     else:
-        form = SubscribeForm(newsletter=my_newsletter)
+        form = SubscribeRequestForm(newsletter=my_newsletter)
     
     env = { 'newsletter' : my_newsletter,
             'form' : form,
@@ -56,15 +56,19 @@ def unsubscribe_request(request, newsletter_slug):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
     if request.POST:
-        form = UnsubscribeForm(request.POST, newsletter=my_newsletter)
+        form = UnsubscribeRequestForm(request.POST, newsletter=my_newsletter)
         if form.is_valid():
-            instance = form.save()
-            instance.send_activation_email(action='unsubscribe')
+            try:
+                instance.send_activation_email(action='subscribe')
+            except Exception, e:
+                logging.warn('Error %s while submitting email to %s.' % (e, instance.email))
+                error = True
     else:
-        form = UnsubscribeForm(newsletter=my_newsletter)
+        form = UnsubscribeRequestForm(newsletter=my_newsletter)
     
     env = { 'newsletter' : my_newsletter,
-            'form' : form }
+            'form' : form,
+            'error' : error }
             
     return render_to_response("mailinglist/subscription_unsubscribe.html", env)
 
@@ -72,15 +76,19 @@ def update_request(request, newsletter_slug):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
     if request.POST:
-        form = UpdateForm(request.POST, newsletter=my_newsletter)
+        form = UpdateRequestForm(request.POST, newsletter=my_newsletter)
         if form.is_valid():
-            instance = form.save()
-            instance.send_activation_email(action='update')
+            try:
+                instance.send_activation_email(action='subscribe')
+            except Exception, e:
+                logging.warn('Error %s while submitting email to %s.' % (e, instance.email))
+                error = True
     else:
-        form = UpdateForm(newsletter=my_newsletter)
+        form = UpdateRequestForm(newsletter=my_newsletter)
 
     env = { 'newsletter' : my_newsletter,
-            'form' : form }
+            'form' : form,
+            'error' : error }
 
     return render_to_response("mailinglist/subscription_update.html", env)
 
@@ -88,9 +96,8 @@ def update_request(request, newsletter_slug):
 def update_subscription(request, newsletter_slug, email, action, activation_code=None):
     if not action in ['subscribe', 'update', 'unsubscribe']:
         raise Http404
-
+    
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
-
     my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, email__exact=email)
     
     if activation_code:
@@ -99,9 +106,13 @@ def update_subscription(request, newsletter_slug, email, action, activation_code
         my_initial = None
     
     if request.POST:
-        form = ActivateForm(request.POST, newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
+        form = UpdateForm(request.POST, newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
         if form.is_valid():
+            # Get our instance, but do not save yet
             subscription = form.save(commit=False)
+            
+            # If a new subscription or update, make sure it is activated
+            # Else, unsubscribe
             if action == 'subscribe' or action == 'update':
                 subscription.activated=True
             else:
@@ -110,87 +121,19 @@ def update_subscription(request, newsletter_slug, email, action, activation_code
             
             subscription.save()
     else:
-        form = ActivateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
+        form = UpdateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
+        
+        # If we are activating and activation code is valid and not already activated, activate straight away
+        if action == 'subscribe' and form.is_valid() and not my_subscription.activated:
+            subscription = form.save(commit=False)
+            subscription.activated = True
+            subscription.save()
 
     env = { 'newsletter' : my_newsletter,
             'form' : form,
-            'action' : action}
+            'action' : action }
     
     return render_to_response("mailinglist/subscription_activate.html", env)
-
-""" These should be removed. It is old crappy code. Surely. 1"""
-def subscribe_activate(request, newsletter_slug, subscription_id=None):
-    my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
-    
-    my_subscription = get_subscription(subscription_id)
-    
-    logging.debug('subscribe update %s' % my_subscription)
-    
-    if request.GET.has_key('activation_code'):
-        my_initial = {'user_activation_code' : request.GET['activation_code']}
-    else:
-        my_initial = None
-    
-    if request.POST:
-        form = ActivateForm(request.POST, newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.activated = True
-            instance.unsubscribed = False
-            instance.save()
-    else:
-        form = ActivateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
-
-    env = { 'newsletter' : my_newsletter,
-            'form' : form }
-    
-    return render_to_response("mailinglist/newsletter_subscribe_activate.html", env)
-
-def unsubscribe_activate(request, newsletter_slug, subscription_id=None):
-    my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
-    
-    my_subscription = get_subscription(subscription_id)
-    
-    logging.debug('subscribe update %s' % my_subscription)
-    
-    if request.GET.has_key('activation_code'):
-        my_initial = {'user_activation_code' : request.GET['activation_code']}
-    else:
-        my_initial = None
-    
-    if request.POST:
-        form = UnsubscribeActivateForm(request.POST, newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.unsubscribed = True
-            instance.save()
-    else:
-        form = UnsubscribeActivateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
-
-    env = { 'newsletter' : my_newsletter,
-            'form' : form }
-    
-    return render_to_response("mailinglist/newsletter_unsubscribe_activate.html", env)
-
-def update_request(request, newsletter_slug, subscription_id=None):
-    my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
-    
-    my_subscription = get_subscription(subscription_id)
-    logging.debug('unsubscribe request %s' % my_subscription)
-
-    if request.POST:
-        form = UpdateForm(request.POST, newsletter=my_newsletter, instance=my_subscription)
-        if form.is_valid():
-            instance = form.save()
-            instance.send_subscription_request()
-    else:
-        form = UpdateForm(newsletter=my_newsletter, instance=my_subscription)
-
-    env = { 'newsletter' : my_newsletter,
-            'form' : form }
-
-    return render_to_response("mailinglist/newsletter_update.html", env)
-
 
 def archive(request, newsletter_slug):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
