@@ -118,8 +118,8 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         
         activate_url = subscription.subscribe_activate_url()
         self.assert_(activate_url)
-        
-        r = self.client.get(activate_url)
+
+        r = self.client.post(activate_url, {'name':'Test Name', 'email':'test@email.com', 'user_activation_code':subscription.activation_code})
         
         self.assertInContext(r, 'form', UpdateForm)
         

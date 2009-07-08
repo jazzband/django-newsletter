@@ -10,6 +10,8 @@ from django.views.generic.date_based import archive_index
 
 from django.contrib.sites.models import Site
 
+from django.utils.translation import ugettext as _
+
 from mailinglist.models import *
 from mailinglist.forms import *
 
@@ -55,6 +57,7 @@ def subscribe_request(request, newsletter_slug):
 def unsubscribe_request(request, newsletter_slug):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
+    error = None
     if request.POST:
         form = UnsubscribeRequestForm(request.POST, newsletter=my_newsletter)
         if form.is_valid():
@@ -75,6 +78,7 @@ def unsubscribe_request(request, newsletter_slug):
 def update_request(request, newsletter_slug):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
+    error = None
     if request.POST:
         form = UpdateRequestForm(request.POST, newsletter=my_newsletter)
         if form.is_valid():
@@ -119,16 +123,20 @@ def update_subscription(request, newsletter_slug, email, action, activation_code
                 subscription.unsubscribed=True
                 subscription.unsubscribe_date = datetime.now()
             
+            logging.debug(_(u'Updated subscription %(subscription)s through the web.') % {'subscription':subscription})
             subscription.save()
     else:
         form = UpdateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
         
         # If we are activating and activation code is valid and not already activated, activate straight away
-        if action == 'subscribe' and form.is_valid() and not my_subscription.activated:
-            subscription = form.save(commit=False)
-            subscription.activated = True
-            subscription.save()
-
+        # if action == 'subscribe' and form.is_valid() and not my_subscription.activated:
+        #     subscription = form.save(commit=False)
+        #     subscription.activated = True
+        #     subscription.save()
+        #     
+        #     logging.debug(_(u'Activated subscription %(subscription)s through the web.') % {'subscription':subscription})
+        # from ipdb import set_trace; set_trace()
+            
     env = { 'newsletter' : my_newsletter,
             'form' : form,
             'action' : action }
