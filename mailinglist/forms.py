@@ -15,10 +15,12 @@ def getSubscriptionFromEmail(mynewsletter, myemail):
         return instance
 
 class NewsletterForm(forms.ModelForm):
+    """ This is the base class for all forms managing subscriptions. """
+    
     class Meta:
         model = Subscription
         fields = ('name', 'email')
-        
+
     def __init__(self, *args, **kwargs):
         if kwargs.has_key('newsletter'):
             newsletter = kwargs['newsletter']
@@ -31,16 +33,20 @@ class NewsletterForm(forms.ModelForm):
             del kwargs['ip']
         else:
             ip = None
-
-        super(NewsletterForm, self).__init__(*args, **kwargs)
         
+        super(NewsletterForm, self).__init__(*args, **kwargs)
+         
         if newsletter:
             self.instance.newsletter = newsletter
         
         if ip:
             self.instance.ip = ip
-
-class SubscribeForm(NewsletterForm):        
+            
+class SubscribeRequestForm(NewsletterForm):        
+    """ Request subscription to the mailinglist. Will result in an activation email
+        being sent with a link where one can edit, confirm and activate one's subscription. 
+    """
+        
     def clean_email(self):
         myfield = self.base_fields['email']
         value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email'))
@@ -50,18 +56,51 @@ class SubscribeForm(NewsletterForm):
             subscription = Subscription.objects.get(email__exact=value, newsletter=self.instance.newsletter)
             if subscription.activated == True and subscription.unsubscribed == False:
                 raise ValidationError(_("Your e-mail address has already been subscribed to."))
-            else:
-                self.instance = subscription
                 
         except Subscription.DoesNotExist:
             pass
-
+        
         return value
 
-class ActivateForm(NewsletterForm):        
-    class Meta:
-        fields = (None,)
+class UpdateRequestForm(NewsletterForm):
+    """ Request updating or activating subscription. Will result in an activation
+        email being sent.
+    """
+    
+    class Meta(NewsletterForm.Meta):
+        fields = ('email',)
+    
+    def clean_email(self):
+        myfield = self.base_fields['email']
+        value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email'))
         
+        # Set our instance on the basis of the email field, or raise a validationerror
+        try:
+            self.instance = Subscription.objects.get(newsletter=self.instance.newsletter, email__exact=value)
+                
+        except Subscription.DoesNotExist:
+                raise ValidationError(_("This e-mail address has not been subscribed to."))
+                
+        return value
+    
+    def clean(self):
+        if not self.instance.activated:
+            raise ValidationError(_("This subscription has not yet been activated."))
+
+
+class UnsubscribeRequestForm(UpdateRequestForm):
+    """ Similar to previous form but checks if we have not already been unsubscribed. """
+    
+    def clean(self):
+        super(UnsubscribeRequestForm, self).clean()
+        
+        if self.unsubscribed:
+            raise ValidationError(_("This subscription has already been unsubscribed from."))
+
+class UpdateForm(NewsletterForm):
+    """ This form allows one to actually update to or unsubscribe from the mailinglist. To do this, a 
+        correct activation code is required. 
+    """
     def clean_user_activation_code(self):
         myfield = self.base_fields['user_activation_code']
         value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('user_activation_code'))
@@ -71,35 +110,3 @@ class ActivateForm(NewsletterForm):
             raise ValidationError(_('The validation code supplied by you does not match.'))
           
     user_activation_code = forms.CharField(label=_("Activation code"), max_length=40)
-    
-class UpdateForm(NewsletterForm):
-    class Meta(NewsletterForm.Meta):
-        fields = ('name','email',)
-        
-    def clean(self):
-        if not self.instance.activated:
-            ValidationError(_("The subscription has not yet been activated."))
-            
-        if self.instance.unsubscribed:
-            ValidationError(_("The subscription has been unsubscribed. To update your information, please subscribe again."))
-            
-        return super(UpdateForm, self).clean()
-        
-class UnsubscribeForm(UpdateForm):
-    class Meta(NewsletterForm.Meta):
-        fields = ('email',)
-        
-    def clean_email(self):
-        myfield = self.base_fields['email']
-        value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email'))
-        
-        # Set our instance on the basis of the email field, or raise a validationerror
-        try:
-            self.instance = Subscription.objects.get(newsletter=self.instance.newsletter, email__exact=value)
-            if self.instance.activated == False:
-                raise ValidationError(_("The subscription has not yet been activated."))
-                
-        except Subscription.DoesNotExist:
-                raise ValidationError(_("This e-mail address has not been subscribed to."))
-                
-        return value  
