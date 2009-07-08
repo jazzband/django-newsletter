@@ -21,7 +21,7 @@ def newsletter_list(request):
 
     return object_list(request, newsletters)
 
-def newsletter(request, newsletter_slug):
+def newsletter_detail(request, newsletter_slug):
     newsletters = Newsletter.on_site.filter(visible=True)
     
     if not newsletters:
@@ -59,15 +59,33 @@ def unsubscribe_request(request, newsletter_slug):
         form = UnsubscribeForm(request.POST, newsletter=my_newsletter)
         if form.is_valid():
             instance = form.save()
+            instance.send_activation_email(action='unsubscribe')
     else:
         form = UnsubscribeForm(newsletter=my_newsletter)
+    
+    env = { 'newsletter' : my_newsletter,
+            'form' : form }
+            
+    return render_to_response("mailinglist/subscription_unsubscribe.html", env)
+
+def update_request(request, newsletter_slug):
+    my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
+    
+    if request.POST:
+        form = UpdateForm(request.POST, newsletter=my_newsletter)
+        if form.is_valid():
+            instance = form.save()
+            instance.send_activation_email(action='update')
+    else:
+        form = UpdateForm(newsletter=my_newsletter)
 
     env = { 'newsletter' : my_newsletter,
             'form' : form }
 
-    return render_to_response("mailinglist/subscription_unsubscribe.html", env)
+    return render_to_response("mailinglist/subscription_update.html", env)
 
-def activate_subscription(request, newsletter_slug, email, action, activation_code=None):
+
+def update_subscription(request, newsletter_slug, email, action, activation_code=None):
     if not action in ['subscribe', 'update', 'unsubscribe']:
         raise Http404
 
