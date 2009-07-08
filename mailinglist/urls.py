@@ -1,22 +1,17 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('mailinglist.views',
-    # Admin shit
-    #(r'^/admin/mailinglist/newsletter/(.+)/json/subscribers/$', 'json_subscribers'),
-
-    # This one is to be removed later on
-    (r'^$', 'newsletter_list'),
+    url(r'^$', 'newsletter_list', name='mailinglist_newsletter_list'),
     
-    (r'^(?P<newsletter_slug>[-\w]+)/$','newsletter'),
+    url(r'^(?P<newsletter_slug>[-\w]+)/$','newsletter_detail', name='mailinglist_newsletter_detail'),
     
-    (r'^(?P<newsletter_slug>[-\w]+)/subscribe/$', 'subscribe_request'),
-    (r'^(?P<newsletter_slug>[-\w]+)/unsubscribe/$', 'unsubscribe_request'),
+    url(r'^(?P<newsletter_slug>[-\w]+)/subscribe/$', 'subscribe_request', name='mailinglist_newsletter_subscribe_request'),
+    url(r'^(?P<newsletter_slug>[-\w]+)/update/$', 'update_request', name='mailinglist_newsletter_update_request'),
+    url(r'^(?P<newsletter_slug>[-\w]+)/unsubscribe/$', 'unsubscribe_request', name='mailinglist_newsletter_unsubscribe_request'),
         
-    #(r'^(?P<newsletter_slug>[-\w]+)/subscription/(?P<email>[.*]+)/$', 'update_subscription'),
-    (r'^(?P<newsletter_slug>[-\w]+)/subscription/(?P<email>[-_a-zA-Z@\.]+)/(?P<action>[a-z]+)/activate/(?P<activation_code>[a-zA-Z0-9]+)/$', 'activate_subscription'),
-    (r'^(?P<newsletter_slug>[-\w]+)/subscription/(?P<email>[-_a-zA-Z@\.]+)/(?P<action>[a-z]+)/activate/$', 'activate_subscription'),
-
-
-    (r'^(?P<newsletter_slug>[-\w]+)/archive/$','archive'),
+    url(r'^(?P<newsletter_slug>[-\w]+)/subscription/(?P<email>[-_a-zA-Z@\.]+)/(?P<action>[a-z]+)/activate/(?P<activation_code>[a-zA-Z0-9]+)/$', 'update_subscription', name='mailinglist_newsletter_update_activate'),
+    url(r'^(?P<newsletter_slug>[-\w]+)/subscription/(?P<email>[-_a-zA-Z@\.]+)/(?P<action>[a-z]+)/activate/$', 'update_subscription', name='mailinglist_newsletter_update'),
+    
+    url(r'^(?P<newsletter_slug>[-\w]+)/archive/$','archive', name='mailinglist_newsletter_archive'),
 )
 

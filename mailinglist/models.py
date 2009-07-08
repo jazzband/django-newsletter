@@ -23,6 +23,9 @@ from django.conf import settings
 def make_activation_code():
     return sha.new(sha.new(str(random.random())).hexdigest()[:5]+str(datetime.now().microsecond)).hexdigest()
 
+def get_default_sites():
+    return [site.id for site in Site.objects.all()]
+
 class EmailTemplate(models.Model):
     ACTION_CHOICES = (
         ('subscribe', _('Subscribe')),
@@ -67,19 +70,17 @@ class EmailTemplate(models.Model):
         
         return None
 
-    title = models.CharField(max_length=200, verbose_name=_('name'), default=_('Default'))
-    
+    title = models.CharField(max_length=200, verbose_name=_('name'), default=_('Default'))    
     action = models.CharField(max_length=16, choices=ACTION_CHOICES, db_index=True, verbose_name=_('action'))
     
     subject = models.CharField(max_length=255, verbose_name=_('subject'))
     
     text = models.TextField(verbose_name=_('Text'), help_text=_('Plain text e-mail message. Available objects: date, subscription, site, submission, newsletter and message.'))
-    
     html = models.TextField(verbose_name=_('HTML'), help_text=_('HTML e-mail alternative.'), null=True, blank=True)
 
 
 class Newsletter(models.Model):
-    site = models.ManyToManyField(Site)
+    site = models.ManyToManyField(Site, default=get_default_sites)
     
     title = models.CharField(max_length=200, verbose_name=_('newsletter title'))
     slug = models.SlugField(db_index=True, unique=True)
@@ -100,24 +101,29 @@ class Newsletter(models.Model):
         
     def __unicode__(self):
         return self.title
-
+    
     class Meta:
         verbose_name = _('newsletter')
         verbose_name_plural = _('newsletters')
     
-    #@permalink
-    #def get_absolute_url(self):
-    #    return ('mailinglist.views.newsletter', (),
-    #            {'newsletter_slug': self.newsletter.slug })
+    @permalink
+    def get_absolute_url(self):
+        return ('mailinglist_newsletter_detail', (),
+                {'newsletter_slug': self.newsletter.slug })
         
     @permalink
     def subscribe_url(self):
-        return ('mailinglist.views.subscribe_request', (),
+        return ('mailinglist_newsletter_subscribe_request', (),
                 {'newsletter_slug': self.newsletter.slug })
                 
     @permalink
     def unsubscribe_url(self):
-        return ('mailinglist.views.unsubscribe_request', (),
+        return ('mailinglist_newsletter_unsubscribe_request', (),
+                {'newsletter_slug': self.newsletter.slug })
+                
+    @permalink
+    def update_url(self):
+        return ('mailinglist_newsletter_update_request', (),
                 {'newsletter_slug': self.newsletter.slug })
                 
     def get_sender(self):
@@ -176,7 +182,7 @@ class Subscription(models.Model):
         assert action in ['subscribe', 'unsubscribe', 'update'], 'Unknown action'
 
         (subject_template, text_template, html_template) = EmailTemplate.get_templates(action, self.newsletter)
-        # TODO: HTML mail alternative        
+
         c = Context({'subscription' : self, 
                      'site' : Site.objects.get_current(),
                      'date' : self.subscribe_date })
@@ -187,35 +193,27 @@ class Subscription(models.Model):
                                          to=[self.email])
         if html_template:
             message.attach_alternative(html_template.render(c), "text/html")
-        
+        from ipdb import set_trace; set_trace()
         message.send()
-
-#     @permalink
-#     def update_url(self):
-#         return ('mailinglist.views.activate_subscription', (), {
-#                 'newsletter_slug': self.newsletter.slug,
-#                 'email': self.email,
-#                 'action' : 'subscribe',
-#                 'activation_code' : self.activation_code})
     
     @permalink
     def subscribe_activate_url(self):
-        return ('mailinglist.views.activate_subscription', (),
+        return ('mailinglist_newsletter_update_activate', (),
                 {'newsletter_slug': self.newsletter.slug,
                  'email': self.email,
                  'action' : 'subscribe',
                  'activation_code' : self.activation_code})
     @permalink
     def unsubscribe_activate_url(self):
-        return ('mailinglist.views.activate_subscription', (),
+        return ('mailinglist_newsletter_update_activate', (),
                 {'newsletter_slug': self.newsletter.slug,
                  'email': self.email,
                  'action' : 'unsubscribe',
                  'activation_code' : self.activation_code})
-
+    
     @permalink
     def update_activate_url(self):
-        return ('mailinglist.views.activate_subscription', (),
+        return ('mailinglist_newsletter_update_activate', (),
                 {'newsletter_slug': self.newsletter.slug,
                  'email': self.email,
                  'action' : 'update',
