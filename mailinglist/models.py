@@ -193,9 +193,9 @@ class Subscription(models.Model):
                                          to=[self.email])
         if html_template:
             message.attach_alternative(html_template.render(c), "text/html")
-        from ipdb import set_trace; set_trace()
+            
         message.send()
-    
+        
     @permalink
     def subscribe_activate_url(self):
         return ('mailinglist_newsletter_update_activate', (),
