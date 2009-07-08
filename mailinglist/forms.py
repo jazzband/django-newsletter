@@ -75,16 +75,14 @@ class ActivateForm(NewsletterForm):
 class UpdateForm(NewsletterForm):
     class Meta(NewsletterForm.Meta):
         fields = ('name','email',)
-
+        
     def clean(self):
-        # BUG ALERT:
-        # A ValidationError in clean does most probably NOT get caught by Django.
         if not self.instance.activated:
             ValidationError(_("The subscription has not yet been activated."))
             
         if self.instance.unsubscribed:
             ValidationError(_("The subscription has been unsubscribed. To update your information, please subscribe again."))
-
+            
         return super(UpdateForm, self).clean()
         
 class UnsubscribeForm(UpdateForm):
@@ -94,7 +92,7 @@ class UnsubscribeForm(UpdateForm):
     def clean_email(self):
         myfield = self.base_fields['email']
         value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email'))
-
+        
         # Set our instance on the basis of the email field, or raise a validationerror
         try:
             self.instance = Subscription.objects.get(newsletter=self.instance.newsletter, email__exact=value)
@@ -103,10 +101,5 @@ class UnsubscribeForm(UpdateForm):
                 
         except Subscription.DoesNotExist:
                 raise ValidationError(_("This e-mail address has not been subscribed to."))
-
+                
         return value  
-        
-    def save(self, commit=True):
-        self.instance.send_activation_email(action='unsubscribe')
-        return self.instance
-
