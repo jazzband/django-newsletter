@@ -56,6 +56,8 @@ class SubscribeRequestForm(NewsletterForm):
             subscription = Subscription.objects.get(email__exact=value, newsletter=self.instance.newsletter)
             if subscription.activated == True and subscription.unsubscribed == False:
                 raise ValidationError(_("Your e-mail address has already been subscribed to."))
+            
+            self.instance = subscription
                 
         except Subscription.DoesNotExist:
             pass
