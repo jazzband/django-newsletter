@@ -62,6 +62,7 @@ def unsubscribe_request(request, newsletter_slug):
     if request.POST:
         form = UnsubscribeRequestForm(request.POST, newsletter=my_newsletter)
         if form.is_valid():
+            instance = form.instance
             try:
                 instance.send_activation_email(action='unsubscribe')
             except Exception, e:
