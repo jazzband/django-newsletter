@@ -195,7 +195,10 @@ class Subscription(models.Model):
             message.attach_alternative(html_template.render(c), "text/html")
             
         message.send()
-        logging.debug('Activation email sent to %s with activation code "%s".' % (self, self.activation_code))
+        logging.debug('Activation email sent for action \'%(action)s\' to %(subscriber)s with activation code "%(action_code)s".' % 
+            {'action_code':self.activation_code,
+             'action':action,
+             'subscriber':self})
         
     @permalink
     def subscribe_activate_url(self):
