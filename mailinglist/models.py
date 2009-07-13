@@ -299,7 +299,7 @@ class Submission(models.Model):
 
     def submit(self):
         subscriptions = self.subscriptions.filter(activated=True, unsubscribed=False)
-        print ugettext("Submitting %(submission)s to %(count)d people") % {'submission':self, 'count':subscriptions.count()}
+        logging.info(ugettext("Submitting %(submission)s to %(count)d people") % {'submission':self, 'count':subscriptions.count()})
         assert self.publish_date < datetime.now(), 'Something smells fishy; submission time in future.'
 
         self.sending = True
@@ -317,7 +317,7 @@ class Submission(models.Model):
                              'message' : self.message,
                              'newsletter' : self.newsletter,
                              'date' : self.publish_date })
-    
+                
                 message = EmailMultiAlternatives(subject_template.render(c), 
                                                  text_template.render(c), 
                                                  from_email=self.newsletter.get_sender(), 
@@ -327,14 +327,14 @@ class Submission(models.Model):
                     message.attach_alternative(html_template.render(c), "text/html")
                 
                 try:
-                    print ugettext('  - %s.' % subscription)
+                    logging.debug(ugettext('Submitting message to: %s.' % subscription))
                     message.send()
                 except Exception, e:
-                    print ugettext('Message %s failed with error: %s' % (subscription, e[0]))
-    
+                    logging.error(ugettext('Message %s failed with error: %s' % (subscription, e[0])))
+            
             # For some reason this is not working. Bug!?        
             #conn.close()
-
+        
         except Exception, inst:
             self.sending = False
             self.save()
