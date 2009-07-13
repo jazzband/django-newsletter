@@ -50,8 +50,9 @@ def subscribe_request(request, newsletter_slug):
     
     env = { 'newsletter' : my_newsletter,
             'form' : form,
-            'error' : error }
-
+            'error' : error,
+            'action' :'subscribe' }
+    
     return render_to_response("mailinglist/subscription_subscribe.html", env)
     
 def unsubscribe_request(request, newsletter_slug):
@@ -62,7 +63,7 @@ def unsubscribe_request(request, newsletter_slug):
         form = UnsubscribeRequestForm(request.POST, newsletter=my_newsletter)
         if form.is_valid():
             try:
-                instance.send_activation_email(action='subscribe')
+                instance.send_activation_email(action='unsubscribe')
             except Exception, e:
                 logging.warn('Error %s while submitting email to %s.' % (e, instance.email))
                 error = True
@@ -71,7 +72,8 @@ def unsubscribe_request(request, newsletter_slug):
     
     env = { 'newsletter' : my_newsletter,
             'form' : form,
-            'error' : error }
+            'error' : error,
+            'action' :'unsubscribe' }
             
     return render_to_response("mailinglist/subscription_unsubscribe.html", env)
 
@@ -82,8 +84,9 @@ def update_request(request, newsletter_slug):
     if request.POST:
         form = UpdateRequestForm(request.POST, newsletter=my_newsletter)
         if form.is_valid():
+            instance = form.instance
             try:
-                instance.send_activation_email(action='subscribe')
+                instance.send_activation_email(action='update')
             except Exception, e:
                 logging.warn('Error %s while submitting email to %s.' % (e, instance.email))
                 error = True
@@ -92,8 +95,9 @@ def update_request(request, newsletter_slug):
 
     env = { 'newsletter' : my_newsletter,
             'form' : form,
-            'error' : error }
-
+            'error' : error,
+            'action' :'update' }
+            
     return render_to_response("mailinglist/subscription_update.html", env)
 
 
