@@ -4,12 +4,21 @@
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
-     <a href="../../">{% trans "Home" %}</a> &rsaquo;
-     <a href="../">{% trans "Subscriptions" %}</a> &rsaquo;
-     {% trans "Import addresses" %}
+  <a href="../../../">
+    {% trans "Home" %}
+  </a>
+   &rsaquo; 
+   <a href="../../">
+     {% trans "Mailinglist" %}
+  </a>
+  &rsaquo; 
+  <a href="../">
+     {% trans "Subscriptions" %}
+  </a>
+  &rsaquo;
+  {% trans "Import addresses" %}
 </div>
 {% endblock %}
-
 
 {% block content %}
 <h1>{% trans "Import addresses" %}</h1>
