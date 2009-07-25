@@ -100,6 +100,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.sub.submit()
         
         self.assert_(self.sub.sent)
+        self.assertFalse(self.sub.sending)
         
         
         
