@@ -146,6 +146,8 @@ class SubmissionAdmin(admin.ModelAdmin):
 class ArticleInline(admin.TabularInline):
     model = Article
     extra = 2
+    template = 'admin/mailinglist/message/edit_inline/tabular.html'
+    fields = ('title', 'text', 'url', 'image')
 
 class MessageAdmin(admin.ModelAdmin):
     js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
