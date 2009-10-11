@@ -1,0 +1,16 @@
+{% extends "newsletter/common.html" %}
+{% load i18n %}
+{% block title %}{% trans "Newsletter list" %}{% endblock title %}
+{% block body %}
+<table>
+    <tr>
+        <th>{% trans "Newsletter" %}</th>
+    </tr>
+    {% for newsletter in object_list %}
+    <tr>
+        <td><a href="{{ newsletter.slug }}/">{{ newsletter.title }}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock body %}
+

@@ -1,0 +1,19 @@
+{% extends "newsletter/common.html" %}
+{% load i18n %}
+{% block title %}{% trans "Newsletter archive" %}{% endblock title %}
+{% block body %}
+<table>
+    <tr>
+        <th>{% trans "Newsletter archive" %} {{ newsletter.title }}</th>
+    </tr>
+    {% for mailing in latest %}
+    <tr>
+        <td><a href="{{ mailing.get_absolute_url }}">{{ mailing }}</a></td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td><a href="../">Back to list</a></td>
+    </tr>
+</table>
+{% endblock body %}
+
