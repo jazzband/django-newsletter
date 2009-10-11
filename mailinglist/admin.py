@@ -150,7 +150,8 @@ class ArticleInline(admin.TabularInline):
     fields = ('title', 'text', 'url', 'image')
 
 class MessageAdmin(admin.ModelAdmin):
-    js = ('/static/admin/tiny_mce/tiny_mce.js','/static/admin/tiny_mce/textareas.js')
+    class Media:
+        js = ('/static/mailinglist/admin/tiny_mce/tiny_mce.js','/static/mailinglist/admin/tiny_mce/textareas.js')
     save_as = True
     list_display = ('admin_newsletter', 'title', 'admin_preview', 'date_create', 'date_modify')
     list_display_links  = ('title',)
