@@ -223,8 +223,15 @@ class Subscription(models.Model):
                  'action' : 'update',
                  'activation_code' : self.activation_code})
 
+def get_next_order():
+    sib_order__max = Article.objects.aggregate(models.Max('sortorder'))['sortorder__max']
+    if sib_order__max:
+        return sib_order__max + 10
+    else:
+        return 10
+
 class Article(models.Model):
-    sortorder =  models.PositiveIntegerField(help_text=_('Sort order determines the order in which articles are concatenated in a post.'), verbose_name=_('sort order'), db_index=True)
+    sortorder =  models.PositiveIntegerField(help_text=_('Sort order determines the order in which articles are concatenated in a post.'), verbose_name=_('sort order'), db_index=True, default=get_next_order)
     
     title = models.CharField(max_length=200, verbose_name=_('title'))
     text = models.TextField(verbose_name=_('text'))
@@ -232,7 +239,7 @@ class Article(models.Model):
     url = models.URLField(verbose_name=_('link'), blank=True, null=True, verify_exists=False)
     
     # Make this a foreign key for added elegance
-    image = models.ImageField(upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True, verbose_name=_('image'), help_text='xxx')
+    image = models.ImageField(upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True, verbose_name=_('image'))
     thumb = models.CharField(max_length=600, verbose_name=_('thumbnail url'), editable=False, null=True, blank=True)
 
     # Post this article is associated with
@@ -245,6 +252,52 @@ class Article(models.Model):
             
     def __unicode__(self):
         return self.title
+
+    def get_prev(self):
+        try:
+            a = Article.objects.all().order_by('-sortorder').filter(sortorder__lt=self.sortorder)[0]
+            logging.debug('Found prev %d of %d.' % (a.sortorder, self.sortorder))
+            return a
+        except IndexError:
+            logging.debug('No previous found.')
+    
+    def get_next(self):
+        try:
+            a = Article.objects.all().order_by('sortorder').filter(sortorder__gt=self.sortorder)[0]
+            logging.debug('Found next %d of %d.' % (a.sortorder, self.sortorder))
+            return a
+        except IndexError:
+            logging.debug('No previous found.')
+
+
+        return a
+    
+    def move_up(self):
+        sibling = self.get_prev()
+        if sibling:
+            logging.debug('Moving up. Switching %d and %d.' % (sibling.sortorder, self.sortorder))
+
+            sibling.sortorder += 10
+            self.sortorder -= 10
+        
+            sibling.save()
+            self.save()
+        else:
+            logging.debug('Not moving up, already on top.')
+        
+    def move_down(self):
+        sibling = self.get_next()
+
+        if sibling:
+            logging.debug('Moving down. Switching %d and %d.' % (sibling.sortorder, self.sortorder))
+
+            sibling.sortorder -= 10
+            self.sortorder += 10
+        
+            sibling.save()
+            self.save()
+        else:
+            logging.debug('Not moving down, already at bottom.')
     
     # This belongs elsewhere
     def thumbnail(self):

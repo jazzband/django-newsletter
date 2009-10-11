@@ -133,25 +133,48 @@ class SubmissionAdmin(admin.ModelAdmin):
                 return self.admin_site.admin_view(view)(*args, **kwargs)
             return update_wrapper(wrapper, view)
         
-        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
+        info = self.model._meta.app_label, self.model._meta.module_name
         
         my_urls = patterns('',
             url(r'^(.+)/submit/$', 
                 wrap(self.submit), 
-                name='%sadmin_%s_%s_submit' % info),
+                name='%s_%s_submit' % info),
             )
             
         return my_urls + urls
-        
-class ArticleInline(admin.TabularInline):
+
+class OrderingWidget(forms.Widget):
+    def __init__(self):
+        super(OrderingWidget, self).__init__()
+
+    def render(self, name, value, attrs=None):
+        return unicode('Bananas')
+        if self.display_value is not None:
+            return unicode(self.display_value)
+        return unicode(self.original_value)
+
+    # def value_from_datadict(self, data, files, name):
+    #     return self.original_value
+
+class ArticleInline(admin.StackedInline):
     model = Article
     extra = 2
-    template = 'admin/mailinglist/message/edit_inline/tabular.html'
-    fields = ('title', 'text', 'url', 'image')
+    fieldsets = (
+        (None, {
+            'fields' : ('title', 'sortorder', 'text')
+        }),
+        (_('Optional'), {
+            'fields' : ('url', 'image'),
+            'classes': ('collapse',)        
+        }),   
+    )
 
+
+        
 class MessageAdmin(admin.ModelAdmin):
     class Media:
         js = ('/static/mailinglist/admin/tiny_mce/tiny_mce.js','/static/mailinglist/admin/tiny_mce/textareas.js')
+        
     save_as = True
     list_display = ('admin_newsletter', 'title', 'admin_preview', 'date_create', 'date_modify')
     list_display_links  = ('title',)
@@ -187,6 +210,21 @@ class MessageAdmin(admin.ModelAdmin):
         if obj is None:
             raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
 
+    def _getobj(self, request, object_id):
+        opts = self.model._meta
+        app_label = opts.app_label
+    
+        try:
+            obj = self.queryset(request).get(pk=unquote(object_id))
+        except self.model.DoesNotExist:
+            # Don't raise Http404 just yet, because we haven't checked
+            # permissions yet. We don't want an unauthenticated user to be able
+            # to determine whether a given object exists.
+            obj = None
+    
+        if obj is None:
+            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
+    
         return obj
     
     def preview(self, request, object_id):
@@ -231,7 +269,33 @@ class MessageAdmin(admin.ModelAdmin):
         
         json = serializers.serialize("json", message.newsletter.get_subscriptions(), fields=())
         return HttpResponse(json, mimetype='application/json')
+        
+    def move_article_up(self, request, object_id, article_id):
+        #obj = self._getobj(request, object_id)
+        obj = Article.objects.get(pk=article_id)
+        
+        obj_display = force_unicode(obj)
+        obj.move_up()
     
+        self.log_change(request, obj, obj_display)
+        message = _('The %(name)s "%(obj)s" was moved up.') % {'name': force_unicode(opts.verbose_name), 'obj': force_unicode(obj_display)}
+        self.message_user(request, message)
+
+        return HttpResponseRedirect('../../')
+    
+    def move_article_down(self, request, object_id, article_id):
+        #article = self._getobj(request, object_id)
+        obj = Article.objects.get(pk=article_id)        
+
+        obj_display = force_unicode(obj)
+        obj.move_down()
+    
+        self.log_change(request, obj, obj_display)
+        message = _('The %(name)s "%(obj)s" was moved down.') % {'name': force_unicode(opts.verbose_name), 'obj': force_unicode(obj_display)}
+        self.message_user(request, message)
+        
+        return HttpResponseRedirect('../../')
+
     """ URLs """
     def get_urls(self):
         urls = super(MessageAdmin, self).get_urls()
@@ -241,24 +305,30 @@ class MessageAdmin(admin.ModelAdmin):
                 return self.admin_site.admin_view(view)(*args, **kwargs)
             return update_wrapper(wrapper, view)
         
-        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
+        info = self.model._meta.app_label, self.model._meta.module_name
         
         my_urls = patterns('',
             url(r'^(.+)/preview/$', 
                 wrap(self.preview), 
-                name='%sadmin_%s_%s_preview' % info),
+                name='%s_%s_preview' % info),
             url(r'^(.+)/preview/html/$', 
                 wrap(self.preview_html), 
-                name='%sadmin_%s_%s_preview_html' % info),
+                name='%s_%s_preview_html' % info),
             url(r'^(.+)/preview/text/$', 
                 wrap(self.preview_text), 
-                name='%sadmin_%s_%s_preview_text' % info),
+                name='%s_%s_preview_text' % info),
             url(r'^(.+)/submit/$', 
                 wrap(self.submit), 
-                name='%sadmin_%s_%s_submit' % info),
+                name='%s_%s_submit' % info),
             url(r'^(.+)/subscribers/json/$', 
                 wrap(self.subscribers_json), 
-                name='%sadmin_%s_%s_subscribers_json' % info),
+                name='%s_%s_subscribers_json' % info),
+            url(r'^(.+)/article/([0-9]+)/move_up/$', 
+                wrap(self.move_article_up), 
+                name='%s_%s_move_article_up' % info),
+            url(r'^(.+)/article/([0-9]+)/move_down/$', 
+                wrap(self.move_article_down), 
+                name='%s_%s_move_article_down' % info),
             )
         
         return my_urls + urls
@@ -380,15 +450,15 @@ class SubscriptionAdmin(admin.ModelAdmin):
                 return self.admin_site.admin_view(view)(*args, **kwargs)
             return update_wrapper(wrapper, view)
         
-        info = self.admin_site.name, self.model._meta.app_label, self.model._meta.module_name
+        info = self.model._meta.app_label, self.model._meta.module_name
         
         my_urls = patterns('',
             url(r'^import/$', 
                 wrap(self.subscribers_import), 
-                name='%sadmin_%s_%s_import' % info),
+                name='%s_%s_import' % info),
             url(r'^import/confirm/$', 
                 wrap(self.subscribers_import_confirm), 
-                name='%sadmin_%s_%s_import_confirm' % info),                
+                name='%s_%s_import_confirm' % info),                
             )
         
         return my_urls + urls

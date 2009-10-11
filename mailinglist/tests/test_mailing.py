@@ -20,6 +20,59 @@ class MailingTestCase(MailTestCase):
         self.s.save()
         
 
+class ArticleTestCase(MailingTestCase):
+    def make_article(self):
+        a = Article()
+        a.title = 'Test title'
+        a.text = 'This should be a very long text with <html> in it as well.'
+        a.post = self.m
+        a.save()
+        
+        return a
+
+    def update(self, article):
+        return Article.objects.get(pk=article.pk)
+        
+    def test_article(self):
+        self.make_article()        
+    
+    def test_sortorder_defaults(self):
+        total = 3
+        
+        last = 0
+        for current in xrange(total):
+            a = self.make_article()
+            if last:
+                self.assert_(a.sortorder > last)
+            last = a.sortorder
+        
+    
+    def test_moving(self):
+        a1 = self.make_article()
+        a1o = a1.sortorder
+        
+        a2 = self.make_article()
+        a2o = a2.sortorder
+
+        a3 = self.make_article()
+        a3o = a3.sortorder
+        
+        a1.move_down()
+        self.assertEqual(self.update(a1).sortorder, a2o)
+        self.assertEqual(self.update(a2).sortorder, a1o)
+        self.assertEqual(self.update(a3).sortorder, a3o)
+        
+        a1.move_up()
+        self.assertEqual(self.update(a1).sortorder, a1o)
+        self.assertEqual(self.update(a2).sortorder, a2o)
+        self.assertEqual(self.update(a3).sortorder, a3o)
+        
+        a1.move_up()
+        self.assertEqual(self.update(a1).sortorder, a1o)
+        self.assertEqual(self.update(a2).sortorder, a2o)
+        self.assertEqual(self.update(a3).sortorder, a3o)
+
+
 class CreateSubmissionTestCase(MailingTestCase):
     def test_subscription(self):
         self.assertEqual(self.s.get_recipient(), 'Test Name <test@test.com>')
