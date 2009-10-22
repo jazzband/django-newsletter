@@ -7,6 +7,8 @@ urlpatterns = patterns('newsletter.views',
 
     url(r'^(?P<newsletter_slug>[-\w]+)/user/subscribe/$', 'subscribe_user', name='newsletter_newsletter_subscribe_user'),
     url(r'^(?P<newsletter_slug>[-\w]+)/user/unsubscribe/$', 'unsubscribe_user', name='newsletter_newsletter_unsubscribe_user'),
+    url(r'^(?P<newsletter_slug>[-\w]+)/user/subscribe/confirm/$', 'subscribe_user', kwargs={'confirm':True}, name='newsletter_newsletter_subscribe_user_confirm'),
+    url(r'^(?P<newsletter_slug>[-\w]+)/user/unsubscribe/confirm/$', 'unsubscribe_user', kwargs={'confirm':True}, name='newsletter_newsletter_unsubscribe_user_confirm'),
     
     url(r'^(?P<newsletter_slug>[-\w]+)/subscribe/$', 'subscribe_request', name='newsletter_newsletter_subscribe_request'),
     url(r'^(?P<newsletter_slug>[-\w]+)/update/$', 'update_request', name='newsletter_newsletter_update_request'),

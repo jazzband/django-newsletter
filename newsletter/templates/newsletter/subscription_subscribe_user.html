@@ -14,7 +14,7 @@
 </ul>
 {% else %}
 {% trans "Do you want to subscribe to this newsletter?" %}
-<form enctype="multipart/form-data" method="post" action=".">
+<form enctype="multipart/form-data" method="post" action="{% url newsletter_newsletter_subscribe_user_confirm newsletter.slug %}">
     <p><input id="id_submit" name="submit" value="{% trans "Subscribe" %}" type="submit" /></p>
 </form>
 {% endif %}
