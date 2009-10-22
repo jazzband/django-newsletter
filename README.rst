@@ -18,6 +18,7 @@ Installation
 * ``ln -s django-newsletter/media static/newsletter``
 * Add newsletter to ``INSTALLED_APPS`` in ``settings.py``
 * Run unit tests just to be sure it is working.
+* Play around with the demo app! User and pass equal ``test``.
 
 Usage
 -----
