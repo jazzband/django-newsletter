@@ -37,18 +37,18 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         r = self.client.get(self.subscribe_url)
         
         self.assertContains(r, self.n.title, status_code=200)
-        self.assertContains(r, 'input id="id_name" type="text" name="name"')
-        self.assertContains(r, 'input id="id_email" type="text" name="email"')
+        self.assertContains(r, 'input id="id_name_field" type="text" name="name_field"')
+        self.assertContains(r, 'input id="id_email_field" type="text" name="email_field"')
         
         self.assertEqual(r.context['newsletter'], self.n)
     
     def test_subscribe_request_post(self):
         """ Post the subscription form. """
-        r = self.client.post(self.subscribe_url, {'name':'Test Name', 'email':'test@email.com'})
+        r = self.client.post(self.subscribe_url, {'name_field':'Test Name', 'email_field':'test@email.com'})
         
         self.assertContains(r, self.n.title, status_code=200)
-        self.assertNotContains(r, 'input id="id_name" type="text" name="name"')
-        self.assertNotContains(r, 'input id="id_email" type="text" name="email"')
+        self.assertNotContains(r, 'input id="id_name_field" type="text" name="name"')
+        self.assertNotContains(r, 'input id="id_email_field" type="text" name="email"')
         
         self.assertInContext(r, 'newsletter', Newsletter, self.n)
         self.assertInContext(r, 'form', SubscribeRequestForm)
@@ -80,7 +80,7 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         self.assertInContext(r, 'form', UpdateForm)
         self.assertContains(r, subscription.activation_code)
         
-        r = self.client.post(activate_url, {'name':'Test Name', 'email':'test@email.com', 'user_activation_code':subscription.activation_code})        
+        r = self.client.post(activate_url, {'name_field':'Test Name', 'email_field':'test@email.com', 'user_activation_code':subscription.activation_code})        
         self.assertInContext(r, 'form', UpdateForm)
         
         subscription = getattr(r.context['form'], 'instance', None)
@@ -93,7 +93,7 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         r = self.client.get(self.unsubscribe_url)
         
         self.assertContains(r, self.n.title, status_code=200)
-        self.assertContains(r, 'input id="id_email" type="text" name="email"')
+        self.assertContains(r, 'input id="id_email_field" type="text" name="email"')
         
         self.assertEqual(r.context['newsletter'], self.n)
     
@@ -102,10 +102,10 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         subscription = Subscription(newsletter=self.n, name='Test Name', email='test@email.com', activated=True)
         subscription.save()
         
-        r = self.client.post(self.unsubscribe_url, {'email':'test@email.com'})
+        r = self.client.post(self.unsubscribe_url, {'email_field':'test@email.com'})
         
         self.assertContains(r, self.n.title, status_code=200)
-        self.assertNotContains(r, 'input id="id_email" type="text" name="email"')
+        self.assertNotContains(r, 'input id="id_email_field" type="text" name="email"')
         
         self.assertInContext(r, 'newsletter', Newsletter, self.n)
         self.assertInContext(r, 'form', UpdateRequestForm)
@@ -133,7 +133,7 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         
         testname2 = 'Test Name2'
         testemail2 = 'test2@email.com'
-        r = self.client.post(activate_url, {'name':testname2, 'email':testemail2, 'user_activation_code':subscription.activation_code})        
+        r = self.client.post(activate_url, {'name_field':testname2, 'email_field':testemail2, 'user_activation_code':subscription.activation_code})        
         self.assertInContext(r, 'form', UpdateForm)
         
         subscription = getattr(r.context['form'], 'instance', None)
@@ -146,7 +146,7 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         r = self.client.get(self.unsubscribe_url)
         
         self.assertContains(r, self.n.title, status_code=200)
-        self.assertContains(r, 'input id="id_email" type="text" name="email"')
+        self.assertContains(r, 'input id="id_email_field" type="text" name="email_field"')
         
         self.assertEqual(r.context['newsletter'], self.n)
     
@@ -155,10 +155,10 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         subscription = Subscription(newsletter=self.n, name='Test Name', email='test@email.com', activated=True)
         subscription.save()
         
-        r = self.client.post(self.unsubscribe_url, {'email':'test@email.com'})
+        r = self.client.post(self.unsubscribe_url, {'email_field':'test@email.com'})
         
         self.assertContains(r, self.n.title, status_code=200)
-        self.assertNotContains(r, 'input id="id_email" type="text" name="email"')
+        self.assertNotContains(r, 'input id="id_email_field" type="text" name="email"')
         
         self.assertInContext(r, 'newsletter', Newsletter, self.n)
         self.assertInContext(r, 'form', UpdateRequestForm)
@@ -186,7 +186,7 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         
         testname2 = 'Test Name2'
         testemail2 = 'test2@email.com'
-        r = self.client.post(activate_url, {'name':testname2, 'email':testemail2, 'user_activation_code':subscription.activation_code})        
+        r = self.client.post(activate_url, {'name_field':testname2, 'email_field':testemail2, 'user_activation_code':subscription.activation_code})        
         self.assertInContext(r, 'form', UpdateForm)
         
         subscription = getattr(r.context['form'], 'instance', None)

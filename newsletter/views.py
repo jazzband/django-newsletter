@@ -107,7 +107,7 @@ def update_subscription(request, newsletter_slug, email, action, activation_code
         raise Http404
     
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
-    my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, email__exact=email)
+    my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, email_field__exact=email)
     
     if activation_code:
         my_initial = {'user_activation_code' : activation_code}

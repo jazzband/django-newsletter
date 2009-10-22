@@ -18,6 +18,8 @@ from django.core.mail import send_mail, send_mass_mail, EmailMultiAlternatives, 
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
 
+from django.contrib.auth.models import User
+
 from django.conf import settings
 
 def make_activation_code():
@@ -146,15 +148,40 @@ class Newsletter(models.Model):
         return None
 
 class Subscription(models.Model):
-    name = models.CharField(max_length=30, blank=True, null=True, verbose_name=_('name'), help_text=_('optional'))
-    email = models.EmailField(verbose_name=_('e-mail'), db_index=True)
-
+    user = models.ForeignKey(User, blank=True, null=True, verbose_name=_('user'))
+    
+    name_field = models.CharField(db_column='name', max_length=30, blank=True, null=True, verbose_name=_('name'), help_text=_('optional'))
+    def get_name(self):
+        if self.user:
+            return self.user.get_full_name()
+        return self.name_field
+    def set_name(self, name):
+        if not self.user:
+            self.name_field = name
+    name = property(get_name, set_name)
+    
+    email_field = models.EmailField(db_column='email', verbose_name=_('e-mail'), db_index=True, blank=True, null=True)
+    def get_email(self):
+        if self.user:
+            return self.user.email
+        return self.email_field
+    def set_email(self, email):
+        if not self.user:
+            self.email_field = email
+    email = property(get_email, set_email)
+    
+    def save(self):
+        assert self.user or self.email_field, _('Neither an email nor a username is set. This asks for inconsistency!')
+        assert (self.user and not self.email_field) or (self.email_field and not self.user), _('If user is set, email must be null and vice versa.')
+        
+        super(Subscription, self).save()
+    
     ip = models.IPAddressField(_("IP address"), blank=True, null=True)
-
+    
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
-
+    
     subscribe_date = models.DateTimeField(verbose_name=_("subscribe date"), auto_now=True)
-
+    
     activation_code = models.CharField(verbose_name=_('activation code'), max_length=40, default=make_activation_code())
     activated = models.BooleanField(default=False, verbose_name=_('activated'),db_index=True)
     
@@ -166,11 +193,11 @@ class Subscription(models.Model):
             return _(u"%(name)s <%(email)s> to %(newsletter)s") % {'name':self.name, 'email':self.email, 'newsletter':self.newsletter}
         else:
             return _(u"%(email)s to %(newsletter)s") % {'email':self.email, 'newsletter':self.newsletter}
-
+    
     class Meta:
         verbose_name = _('subscription')
         verbose_name_plural = _('subscriptions')
-        unique_together = ('email','newsletter')
+        unique_together = ('user', 'email_field', 'newsletter')
     
     def get_recipient(self):
         if self.name:
