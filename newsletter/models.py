@@ -170,11 +170,11 @@ class Subscription(models.Model):
             self.email_field = email
     email = property(get_email, set_email)
     
-    def save(self):
+    def save(self, *args, **kwargs):
         assert self.user or self.email_field, _('Neither an email nor a username is set. This asks for inconsistency!')
         assert (self.user and not self.email_field) or (self.email_field and not self.user), _('If user is set, email must be null and vice versa.')
         
-        super(Subscription, self).save()
+        super(Subscription, self).save(*args, **kwargs)
     
     ip = models.IPAddressField(_("IP address"), blank=True, null=True)
     
