@@ -16,7 +16,7 @@ Installation
 * ``git clone git://github.com/dokterbob/django-newsletter.git``
 * ``ln -s django-newsletter/newsletter``
 * ``ln -s django-newsletter/media static/newsletter``
-* Add newsletter to ``APPLICATIONS`` in ``settings.py``
+* Add newsletter to ``INSTALLED_APPS`` in ``settings.py``
 * Run unit tests just to be sure it is working.
 
 Usage
