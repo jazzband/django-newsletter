@@ -112,3 +112,17 @@ class UpdateForm(NewsletterForm):
             raise ValidationError(_('The validation code supplied by you does not match.'))
           
     user_activation_code = forms.CharField(label=_("Activation code"), max_length=40)
+
+class UserNewsletterForm(forms.ModelForm):
+    """ This is the base class for all forms managing subscriptions. """
+    
+    class Meta:
+        model = Subscription
+        fields = []
+        
+
+class UserSubscribeForm(UserNewsletterForm):
+    pass
+
+class UserUnsubscribeForm(UserNewsletterForm):
+    pass
