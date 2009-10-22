@@ -8,7 +8,7 @@ from models import Subscription
 
 def getSubscriptionFromEmail(mynewsletter, myemail):
         try:
-            instance = Subscription.objects.get(newsletter__id=mynewsletter.id, email__exact=myemail)
+            instance = Subscription.objects.get(newsletter__id=mynewsletter.id, email_field__exact=myemail)
         except Subscription.DoesNotExist:
             raise ValidationError(_("The e-mail address you specified has not been subscribed to."))
         
@@ -19,7 +19,7 @@ class NewsletterForm(forms.ModelForm):
     
     class Meta:
         model = Subscription
-        fields = ('name', 'email')
+        fields = ('name_field', 'email_field')
 
     def __init__(self, *args, **kwargs):
         if kwargs.has_key('newsletter'):
@@ -47,13 +47,13 @@ class SubscribeRequestForm(NewsletterForm):
         being sent with a link where one can edit, confirm and activate one's subscription. 
     """
         
-    def clean_email(self):
-        myfield = self.base_fields['email']
-        value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email'))
+    def clean_email_field(self):
+        myfield = self.base_fields['email_field']
+        value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email_field'))
 
         # Set our instance on the basis of the email field, or raise a validationerror
         try:
-            subscription = Subscription.objects.get(email__exact=value, newsletter=self.instance.newsletter)
+            subscription = Subscription.objects.get(email_field__exact=value, newsletter=self.instance.newsletter)
             if subscription.activated == True and subscription.unsubscribed == False:
                 raise ValidationError(_("Your e-mail address has already been subscribed to."))
             
@@ -70,15 +70,15 @@ class UpdateRequestForm(NewsletterForm):
     """
     
     class Meta(NewsletterForm.Meta):
-        fields = ('email',)
+        fields = ('email_field',)
     
-    def clean_email(self):
-        myfield = self.base_fields['email']
-        value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email'))
+    def clean_email_field(self):
+        myfield = self.base_fields['email_field']
+        value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email_field'))
         
         # Set our instance on the basis of the email field, or raise a validationerror
         try:
-            self.instance = Subscription.objects.get(newsletter=self.instance.newsletter, email__exact=value)
+            self.instance = Subscription.objects.get(newsletter=self.instance.newsletter, email_field__exact=value)
                 
         except Subscription.DoesNotExist:
                 raise ValidationError(_("This e-mail address has not been subscribed to."))
