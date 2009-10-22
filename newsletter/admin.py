@@ -333,29 +333,65 @@ class MessageAdmin(admin.ModelAdmin):
         
         return my_urls + urls
 
+class EmailTemplateAdminForm(forms.ModelForm):
+    class Meta:
+        model = EmailTemplate
+    
+    def TemplateValidator(self, field):
+        data = self.cleaned_data[field]
+        try:
+            Template(data)
+        except Exception, e:
+            raise ValidationError(_('There was an error parsing your template: %s') % e)
+        return data
+    
+    def clean_subject(self):
+        return self.TemplateValidator('subject')
+    
+    def clean_text(self):
+        return self.TemplateValidator('text')
+    
+    def clean_html(self):
+        return self.TemplateValidator('html') 
+
 class EmailTemplateAdmin(admin.ModelAdmin):
     list_display = ('title','action')
     list_display_links = ('title',)
     list_filter = ('action',)
     save_as = True
+    
+    form = EmailTemplateAdminForm
+    
+    # Does this code still work? Test me!
+    # Update: NO it does NOT. Fix me!
+    # AND make a regression test!
+    
+    # FIXED! Now make unit tests.
 
-    """ Validation """
-    def TemplateValidator(self, field):
-        try:
-            Template(self.cleaned_data[field])
-        except Exception, e:
-            raise ValidationError(_('There was an error parsing your template: %s') % e)
+class SubscriptionAdminForm(forms.ModelForm):
+    class Meta:
+        model = Subscription
     
-    def clean_subject(self):
-        return TemplateValidator('subject')
+    def clean_email_field(self):
+        data = self.cleaned_data['email_field']
+        if self.cleaned_data['user'] and data:
+            raise ValidationError(_('If a user has been selected this field should remain empty.'))
+        return data
     
-    def clean_text(self):
-        return TemplateValidator('text')
+    def clean_name_field(self):
+        data = self.cleaned_data['name_field']
+        if self.cleaned_data['user'] and data:
+            raise ValidationError(_('If a user has been selected this field should remain empty.'))
+        return data
     
-    def clean_html(self):
-        return TemplateValidator('html')
+    def clean(self):
+        cleaned_data = super(SubscriptionAdminForm, self).clean()
+        if not (cleaned_data.get('user', None) or cleaned_data.get('email_field',None)):
+            raise ValidationError(_('Either a user must be selected or an email address must be specified.'))
+        return cleaned_data
 
 class SubscriptionAdmin(admin.ModelAdmin):
+    form = SubscriptionAdminForm
     list_display = ('name', 'email', 'admin_newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
     list_display_links = ('name', 'email')
     list_filter = ('newsletter','activated', 'unsubscribed','subscribe_date')
@@ -462,6 +498,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
             )
         
         return my_urls + urls
+    
 
 admin.site.register(Newsletter, NewsletterAdmin)
 admin.site.register(Submission, SubmissionAdmin)
