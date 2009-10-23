@@ -18,13 +18,36 @@ from django.utils.translation import ugettext as _
 from newsletter.models import *
 from newsletter.forms import *
 
+from django.forms.models import modelformset_factory
+
+
 def newsletter_list(request):
     newsletters = Newsletter.on_site.filter(visible=True)
 
     if not newsletters:
         raise Http404
 
-    return object_list(request, newsletters, context_instance=RequestContext(request))
+    if request.user.is_authenticated():
+        SubscriptionFormSet = modelformset_factory(Subscription, form=UserUpdateForm, extra=0)
+        
+        for n in newsletters:
+            Subscription.objects.get_or_create(newsletter=n, user=request.user)
+        
+        qs = Subscription.objects.filter(newsletter__in=newsletters, user=request.user)
+        
+        if request.method == 'POST':
+            formset = SubscriptionFormSet(request.POST, queryset=qs)
+            if formset.is_valid():
+                instances = formset.save()
+            else:
+                logging.debug('Form was not very valid.')
+        else:
+            formset = SubscriptionFormSet(queryset=qs)
+
+    else:
+        formset = None
+
+    return object_list(request, newsletters, extra_context={'formset':formset})
 
 def newsletter_detail(request, newsletter_slug):
     newsletters = Newsletter.on_site.filter(visible=True)
@@ -32,10 +55,10 @@ def newsletter_detail(request, newsletter_slug):
     if not newsletters:
         raise Http404
         
-    return object_detail(request, newsletters, slug=newsletter_slug, context_instance=RequestContext(request))
+    return object_detail(request, newsletters, slug=newsletter_slug)
 
 @login_required
-def subscribe_user(request, newsletter_slug):
+def subscribe_user(request, newsletter_slug, confirm=False):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
     already_subscribed = False
@@ -43,7 +66,7 @@ def subscribe_user(request, newsletter_slug):
     
     if instance.activated:
         already_subscribed = True
-    elif request.method == 'POST':
+    elif confirm:
         instance.activated = True
         instance.save()
         
@@ -60,7 +83,7 @@ def subscribe_user(request, newsletter_slug):
         
 
 @login_required
-def unsubscribe_user(request, newsletter_slug):
+def unsubscribe_user(request, newsletter_slug, confirm=False):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
     not_subscribed = False
@@ -69,7 +92,7 @@ def unsubscribe_user(request, newsletter_slug):
         instance = Subscription.objects.get(newsletter=my_newsletter, user=request.user)
         if not instance.activated:
             not_subscribed = True
-        elif request.method == 'POST':
+        elif confirm:
             instance.activated=False
             instance.save()
         
@@ -209,4 +232,4 @@ def archive(request, newsletter_slug):
     
     publications = Mailing.objects.filter(newsletter = my_newsletter)
     
-    return archive_index(request, publications, 'publish_date', extra_context = {'newsletter': my_newsletter}, context_instance=RequestContext(request))
+    return archive_index(request, publications, 'publish_date', extra_context = {'newsletter': my_newsletter})
