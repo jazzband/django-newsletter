@@ -31,7 +31,6 @@ Usage
 
 TODO
 -----
-* Connect subcribers to Django auth app User model. (Done)
-* Write unittests for this functionality.
 * Automatically manage unsubscription and dates for tracking.
 * Remove links from one object to another in admin. This is confusing.
+* Write tests for: template syntax checking, web subscription of auth users, ordering of articles in a message.
