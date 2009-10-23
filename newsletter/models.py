@@ -295,15 +295,12 @@ class Article(models.Model):
             return a
         except IndexError:
             logging.debug('No previous found.')
-
-
-        return a
     
     def move_up(self):
         sibling = self.get_prev()
         if sibling:
             logging.debug('Moving up. Switching %d and %d.' % (sibling.sortorder, self.sortorder))
-
+        
             sibling.sortorder += 10
             self.sortorder -= 10
         

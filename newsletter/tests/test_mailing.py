@@ -71,6 +71,11 @@ class ArticleTestCase(MailingTestCase):
         self.assertEqual(self.update(a1).sortorder, a1o)
         self.assertEqual(self.update(a2).sortorder, a2o)
         self.assertEqual(self.update(a3).sortorder, a3o)
+        
+        a3.move_down()
+        self.assertEqual(self.update(a1).sortorder, a1o)
+        self.assertEqual(self.update(a2).sortorder, a2o)
+        self.assertEqual(self.update(a3).sortorder, a3o)
 
 
 class CreateSubmissionTestCase(MailingTestCase):
