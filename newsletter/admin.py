@@ -340,12 +340,7 @@ class EmailTemplateAdmin(admin.ModelAdmin):
     save_as = True
     
     form = EmailTemplateAdminForm
-    
-    # Does this code still work? Test me!
-    # Update: NO it does NOT. Fix me!
-    # AND make a regression test!
-    
-    # FIXED! Now make unit tests.
+
 
 class SubscriptionAdmin(admin.ModelAdmin):
     form = SubscriptionAdminForm
