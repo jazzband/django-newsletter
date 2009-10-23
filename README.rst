@@ -29,8 +29,9 @@ Usage
   ``./manage.py runjob submit``
 * For a proper understanding, please take a look at the model graph in .. image:: model_graph.png
 
-
-
 TODO
 -----
-* Connect subcribers to Django auth app User model.
+* Connect subcribers to Django auth app User model. (Done)
+* Write unittests for this functionality.
+* Automatically manage unsubscription and dates for tracking.
+* Remove links from one object to another in admin. This is confusing.
