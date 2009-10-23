@@ -113,16 +113,13 @@ class UpdateForm(NewsletterForm):
           
     user_activation_code = forms.CharField(label=_("Activation code"), max_length=40)
 
-class UserNewsletterForm(forms.ModelForm):
-    """ This is the base class for all forms managing subscriptions. """
-    
+class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = Subscription
-        fields = []
+        fields = ('activated',)
+        # Newsletter here should become a read only field, once this is supported by Django.
+        # For now, use a hidden field.
+        hidden_fields = ('newsletter',)
+
         
-
-class UserSubscribeForm(UserNewsletterForm):
-    pass
-
-class UserUnsubscribeForm(UserNewsletterForm):
-    pass
+    

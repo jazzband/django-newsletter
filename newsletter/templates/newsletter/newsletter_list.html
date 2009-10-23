@@ -2,6 +2,27 @@
 {% load i18n %}
 {% block title %}{% trans "Newsletter list" %}{% endblock title %}
 {% block body %}
+{% if user.is_authenticated %}
+<form method="POST" action="">
+  {{ formset.management_form }}
+  <table>
+    <tr>
+        <th>{% trans "Newsletter" %}</th>
+        {% if user %}
+        <th>{% trans "Subscribe" %}</th>
+        {% endif %}
+    </tr>
+    {% for form in formset.forms %}
+      <tr>
+        <td>{{ form.id }}{{ form.newsletter }}
+<a href="{{ newsletter.slug }}/">{{ form.instance.newsletter.title }}</a></td>
+        <td>{{ form.activated }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  <p><input id="id_submit" name="submit" value="{% trans "Update subscriptions" %}" type="submit" /></p>
+</form>
+{% else %}
 <table>
     <tr>
         <th>{% trans "Newsletter" %}</th>
@@ -12,5 +33,6 @@
     </tr>
     {% endfor %}
 </table>
+{% endif %}
 {% endblock body %}
 
