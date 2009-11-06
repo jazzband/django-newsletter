@@ -11,16 +11,16 @@ from django.conf import settings
 from models import *
     
 def make_subscription(newsletter, email, name=None):
-    if Subscription.objects.filter(newsletter__id=newsletter.id, subscribed=True, email__exact=email).count():
+    if Subscription.objects.filter(newsletter__id=newsletter.id, subscribed=True, email_field__exact=email).count():
         return None
         
     addr = Subscription(subscribed=True)
     addr.newsletter = newsletter
     
-    addr.email = email
+    addr.email_field = email
     
     if name:
-        addr.name = name
+        addr.name_field = name
     
     return addr
 
@@ -28,7 +28,7 @@ def check_email(email, ignore_errors=False):
     if settings.DEBUG:
         logging.debug("Checking e-mail address %s" % email)
 
-    email_length = Subscription._meta.get_field_by_name('email')[0].max_length
+    email_length = Subscription._meta.get_field_by_name('email_field')[0].max_length
 
     if len(email) <= email_length or ignore_errors:
         return email[:email_length]
@@ -39,7 +39,7 @@ def check_name(name, ignore_errors=False):
     if settings.DEBUG:
         logging.debug("Checking name: %s" % name)
 
-    name_length = Subscription._meta.get_field_by_name('name')[0].max_length
+    name_length = Subscription._meta.get_field_by_name('name_field')[0].max_length
     if len(name) <= name_length or ignore_errors:        
         return name[:name_length]
     else:
