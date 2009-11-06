@@ -1,3 +1,6 @@
+import datetime
+import time
+
 from django.core import mail
 
 from django.core.urlresolvers import reverse
@@ -55,7 +58,7 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         
         subscription = getattr(r.context['form'], 'instance', None)
         self.assert_(subscription)
-        self.assertFalse(subscription.activated)
+        self.assertFalse(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
         
         """ Check the subscription email. """
@@ -71,7 +74,10 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         subscription = Subscription(newsletter=self.n, name='Test Name', email='test@email.com')
         subscription.save()
         
-        self.assertFalse(subscription.activated)
+        WAIT_TIME=2
+        time.sleep(WAIT_TIME)
+        
+        self.assertFalse(subscription.subscribed)
         
         activate_url = subscription.subscribe_activate_url()
         self.assert_(activate_url)
@@ -83,10 +89,15 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         r = self.client.post(activate_url, {'name_field':'Test Name', 'email_field':'test@email.com', 'user_activation_code':subscription.activation_code})        
         self.assertInContext(r, 'form', UpdateForm)
         
+        #subscription = Subscription.objects.get(pk=subscription.pk)
         subscription = getattr(r.context['form'], 'instance', None)
         self.assert_(subscription)
-        self.assert_(subscription.activated)
+        self.assert_(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
+        
+        dt = (subscription.subscribe_date - subscription.create_date).seconds
+        self.assert_(dt >= WAIT_TIME)        
+        self.assert_(dt < WAIT_TIME + 1)
     
     def test_unsubscribe_request_view(self):
         """ Test the unsubscribe request form. """
@@ -152,7 +163,7 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
     
     def test_unsubscribe_request_post(self):
         """ Post the unsubscribe request form. """
-        subscription = Subscription(newsletter=self.n, name='Test Name', email='test@email.com', activated=True)
+        subscription = Subscription(newsletter=self.n, name='Test Name', email='test@email.com', subscribed=True)
         subscription.save()
         
         r = self.client.post(self.unsubscribe_url, {'email_field':'test@email.com'})
@@ -192,3 +203,5 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         subscription = getattr(r.context['form'], 'instance', None)
         self.assert_(subscription)
         self.assert_(subscription.unsubscribed)
+        
+        self.assert_((datetime.now() - subscription.unsubscribe_date).seconds < 2)

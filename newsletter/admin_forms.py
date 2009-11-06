@@ -11,10 +11,10 @@ from django.conf import settings
 from models import *
     
 def make_subscription(newsletter, email, name=None):
-    if Subscription.objects.filter(newsletter__id=newsletter.id, activated=True, email__exact=email).count():
+    if Subscription.objects.filter(newsletter__id=newsletter.id, subscribed=True, email__exact=email).count():
         return None
         
-    addr = Subscription(activated=True)
+    addr = Subscription(subscribed=True)
     addr.newsletter = newsletter
     
     addr.email = email

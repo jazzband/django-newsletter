@@ -54,7 +54,7 @@ class SubscribeRequestForm(NewsletterForm):
         # Set our instance on the basis of the email field, or raise a validationerror
         try:
             subscription = Subscription.objects.get(email_field__exact=value, newsletter=self.instance.newsletter)
-            if subscription.activated == True and subscription.unsubscribed == False:
+            if subscription.subscribed:
                 raise ValidationError(_("Your e-mail address has already been subscribed to."))
             
             self.instance = subscription
@@ -86,7 +86,7 @@ class UpdateRequestForm(NewsletterForm):
         return value
     
     def clean(self):
-        if not self.instance.activated:
+        if not self.instance.subscribed:
             raise ValidationError(_("This subscription has not yet been activated."))
 
 
@@ -116,7 +116,7 @@ class UpdateForm(NewsletterForm):
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = Subscription
-        fields = ('activated',)
+        fields = ('subscribed',)
         # Newsletter here should become a read only field, once this is supported by Django.
         # For now, use a hidden field.
         hidden_fields = ('newsletter',)
