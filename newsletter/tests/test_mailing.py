@@ -159,3 +159,18 @@ class SubmitSubmissionTestCase(MailingTestCase):
         
         self.assert_(self.sub.sent)
         self.assertFalse(self.sub.sending)
+
+class UserSubscriptionTestCase(MailingTestCase):
+    def setUp(self):
+       super(UserSubscriptionTestCase, self).setUp()
+       
+       self.u = User.objects.all()[0]
+       
+    def test_subscription(self):
+        s = Subscription(user=self.u, newsletter=self.n)
+        s.save()
+        
+        self.assertEqual(s.name, self.u.get_full_name())
+        self.assertEqual(s.email, self.u.email)
+
+    
