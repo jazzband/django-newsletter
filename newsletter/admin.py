@@ -173,7 +173,8 @@ class ArticleInline(admin.StackedInline):
         
 class MessageAdmin(admin.ModelAdmin):
     class Media:
-        js = ('/static/newsletter/admin/tiny_mce/tiny_mce.js','/static/newsletter/admin/tiny_mce/textareas.js')
+        pass
+        #js = ('/static/newsletter/admin/tiny_mce/tiny_mce.js','/static/newsletter/admin/tiny_mce/textareas.js')
         
     save_as = True
     list_display = ('admin_newsletter', 'title', 'admin_preview', 'date_create', 'date_modify')
@@ -346,7 +347,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
     form = SubscriptionAdminForm
     list_display = ('name', 'email', 'admin_newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
     list_display_links = ('name', 'email')
-    list_filter = ('newsletter','activated', 'unsubscribed','subscribe_date')
+    list_filter = ('newsletter','subscribed', 'unsubscribed','subscribe_date')
     search_fieldsets = ('name', 'email')
     date_hierarchy = 'subscribe_date'
     
@@ -360,7 +361,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
         if obj.unsubscribed:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', obj.admin_status_text())
         
-        if obj.activated:
+        if obj.subscribed:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', obj.admin_status_text())
         else:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', obj.admin_status_text())
@@ -369,11 +370,10 @@ class SubscriptionAdmin(admin.ModelAdmin):
     admin_status.allow_tags = True
 
     def admin_status_text(self, obj):
-        if obj.unsubscribed:
+        if obj.subscribed:
+            return ugettext("Subscribed")
+        elif obj.unsubscribed:
             return ugettext("Unsubscribed")
-        
-        if obj.activated:
-            return ugettext("Activated")
         else:
             return ugettext("Unactivated")
     admin_status_text.short_description = ugettext('Status')   

@@ -133,9 +133,9 @@ class Newsletter(models.Model):
         
     def get_subscriptions(self):
         logging.debug(_(u'Looking up subscribers for %s') % self)
-        logging.debug(Subscription.objects.filter(newsletter=self, activated=True, unsubscribed=False))
+        logging.debug(Subscription.objects.filter(newsletter=self, subscribed=True))
 
-        return Subscription.objects.filter(newsletter=self, unsubscribed=False, activated=True)
+        return Subscription.objects.filter(newsletter=self, subscribed=True)
 
     @classmethod
     def get_default_id(cls):
@@ -170,24 +170,64 @@ class Subscription(models.Model):
             self.email_field = email
     email = property(get_email, set_email)
     
+    def subscribe(self):
+        logging.debug('Subscribing subscription %s.' % self)
+        
+        self.subscribe_date = datetime.now()
+        self.subscribed = True
+        self.unsubscribed = False
+    
+    def unsubscribe(self):
+        logging.debug('Unsubscribing subscription %s.' % self)
+        
+        self.subscribed = False
+        self.unsubscribed = True
+        self.unsubscribe_date = datetime.now()
+        
     def save(self, *args, **kwargs):
         assert self.user or self.email_field, _('Neither an email nor a username is set. This asks for inconsistency!')
         assert (self.user and not self.email_field) or (self.email_field and not self.user), _('If user is set, email must be null and vice versa.')
         
+        # This is a lame way to find out if we have changed but using Django API internals is bad practice
+        if self.pk:
+            assert(Subscription.objects.filter(pk=self.pk).count() == 1)
+            
+            subscribing = self.subscribed and not Subscription.objects.get(pk=self.pk).subscribed  
+            if subscribing:                
+                self.subscribe()
+                
+                assert not self.unsubscribed
+                assert self.subscribed
+                
+            else:
+               unsubscribing = self.unsubscribed and not Subscription.objects.get(pk=self.pk).unsubscribed
+               if unsubscribing:                   
+                   self.unsubscribe()
+                   
+                   assert not self.subscribed 
+                   assert self.unsubscribed
+        else:
+            if self.subscribed:
+                self.subscribe()
+            elif self.unsubscribed:
+                self.unsubscribe()
+            
         super(Subscription, self).save(*args, **kwargs)
     
     ip = models.IPAddressField(_("IP address"), blank=True, null=True)
     
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
     
-    subscribe_date = models.DateTimeField(verbose_name=_("subscribe date"), auto_now=True)
+    create_date = models.DateTimeField(editable=False, default=datetime.now)
     
-    activation_code = models.CharField(verbose_name=_('activation code'), max_length=40, default=make_activation_code())
-    activated = models.BooleanField(default=False, verbose_name=_('activated'),db_index=True)
+    activation_code = models.CharField(verbose_name=_('activation code'), max_length=40, default=make_activation_code)
+    
+    subscribed = models.BooleanField(default=False, verbose_name=_('unsubscribed'), db_index=True)
+    subscribe_date = models.DateTimeField(verbose_name=_("subscribe date"), null=True, blank=True)
     
     unsubscribed = models.BooleanField(default=False, verbose_name=_('unsubscribed'), db_index=True)
     unsubscribe_date = models.DateTimeField(verbose_name=_("unsubscribe date"), null=True, blank=True)
-    
+            
     def __unicode__(self):
         if self.name:
             return _(u"%(name)s <%(email)s> to %(newsletter)s") % {'name':self.name, 'email':self.email, 'newsletter':self.newsletter}
@@ -375,7 +415,7 @@ class Submission(models.Model):
         return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.message, 'publish_date':self.publish_date}
 
     def submit(self):
-        subscriptions = self.subscriptions.filter(activated=True, unsubscribed=False)
+        subscriptions = self.subscriptions.filter(subscribed=True)
         logging.info(ugettext("Submitting %(submission)s to %(count)d people") % {'submission':self, 'count':subscriptions.count()})
         assert self.publish_date < datetime.now(), 'Something smells fishy; submission time in future.'
 
@@ -444,7 +484,7 @@ class Submission(models.Model):
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), editable=False)
     message = models.ForeignKey('Message', verbose_name=_('message'), editable=True, default=Message.get_default_id(), null=False)
     
-    subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), limit_choices_to={ 'activated' :True, 'unsubscribed' : False})
+    subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), limit_choices_to={ 'subscribed' :True })
 
     publish_date = models.DateTimeField(verbose_name=_('publication date'), blank=True, null=True, default=datetime.now(), db_index=True) 
     publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'), db_index=True)

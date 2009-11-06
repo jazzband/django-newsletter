@@ -64,10 +64,10 @@ def subscribe_user(request, newsletter_slug, confirm=False):
     already_subscribed = False
     instance = Subscription.objects.get_or_create(newsletter=my_newsletter, user=request.user)[0]
     
-    if instance.activated:
+    if instance.subscribed:
         already_subscribed = True
     elif confirm:
-        instance.activated = True
+        instance.subscribed = True
         instance.save()
         
         request.user.message_set.create(message=_('You have been subscribed to %s.') % my_newsletter)        
@@ -90,10 +90,10 @@ def unsubscribe_user(request, newsletter_slug, confirm=False):
     
     try:
         instance = Subscription.objects.get(newsletter=my_newsletter, user=request.user)
-        if not instance.activated:
+        if not instance.subscribed:
             not_subscribed = True
         elif confirm:
-            instance.activated=False
+            instance.subscribed=False
             instance.save()
         
             request.user.message_set.create(message=_('You have been unsubscribed from %s.') % my_newsletter)        
@@ -199,23 +199,22 @@ def update_subscription(request, newsletter_slug, email, action, activation_code
             # Get our instance, but do not save yet
             subscription = form.save(commit=False)
             
-            # If a new subscription or update, make sure it is activated
+            # If a new subscription or update, make sure it is subscribed
             # Else, unsubscribe
             if action == 'subscribe' or action == 'update':
-                subscription.activated=True
+                subscription.subscribed=True
             else:
                 subscription.unsubscribed=True
-                subscription.unsubscribe_date = datetime.now()
             
             logging.debug(_(u'Updated subscription %(subscription)s through the web.') % {'subscription':subscription})
             subscription.save()
     else:
         form = UpdateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
         
-        # If we are activating and activation code is valid and not already activated, activate straight away
-        # if action == 'subscribe' and form.is_valid() and not my_subscription.activated:
+        # If we are activating and activation code is valid and not already subscribed, activate straight away
+        # if action == 'subscribe' and form.is_valid() and not my_subscription.subscribed:
         #     subscription = form.save(commit=False)
-        #     subscription.activated = True
+        #     subscription.subscribed = True
         #     subscription.save()
         #     
         #     logging.debug(_(u'Activated subscription %(subscription)s through the web.') % {'subscription':subscription})
