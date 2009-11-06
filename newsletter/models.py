@@ -222,7 +222,7 @@ class Subscription(models.Model):
     
     activation_code = models.CharField(verbose_name=_('activation code'), max_length=40, default=make_activation_code)
     
-    subscribed = models.BooleanField(default=False, verbose_name=_('unsubscribed'), db_index=True)
+    subscribed = models.BooleanField(default=False, verbose_name=_('subscribed'), db_index=True)
     subscribe_date = models.DateTimeField(verbose_name=_("subscribe date"), null=True, blank=True)
     
     unsubscribed = models.BooleanField(default=False, verbose_name=_('unsubscribed'), db_index=True)
