@@ -9,9 +9,11 @@
     <tr>
         <td><a href="subscribe/">Subscribe</a></td>
     </tr>
+    {% if not user.is_authenticated %}
     <tr>
         <td><a href="update/">Update</a></td>
     </tr>
+    {% endif %}
     <tr>
         <td><a href="unsubscribe/">Unsubscribe</a></td>
     </tr>
