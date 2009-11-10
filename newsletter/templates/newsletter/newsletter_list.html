@@ -15,8 +15,8 @@
     {% for form in formset.forms %}
       <tr>
         <td>{{ form.id }}{{ form.newsletter }}
-<a href="{{ form.instance.newsletter.slug }}/">{{ form.instance.newsletter.title }}</a></td>
-        <td>{{ form.activated }}</td>
+<a href="{% url newsletter_detail form.instance.newsletter.slug %}">{{ form.instance.newsletter.title }}</a></td>
+        <td>{{ form.subscribed }}</td>
       </tr>
     {% endfor %}
   </table>
@@ -29,7 +29,7 @@
     </tr>
     {% for newsletter in object_list %}
     <tr>
-        <td><a href="{{ newsletter.slug }}/">{{ newsletter.title }}</a></td>
+        <td><a href="{% url newsletter_detail newsletter.slug %}">{{ newsletter.title }}</a></td>
     </tr>
     {% endfor %}
 </table>
