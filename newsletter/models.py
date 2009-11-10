@@ -188,24 +188,31 @@ class Subscription(models.Model):
         assert self.user or self.email_field, _('Neither an email nor a username is set. This asks for inconsistency!')
         assert (self.user and not self.email_field) or (self.email_field and not self.user), _('If user is set, email must be null and vice versa.')
         
-        # This is a lame way to find out if we have changed but using Django API internals is bad practice
+        # This is a lame way to find out if we have changed but using Django API internals is bad practice.
+        # This is necessary to discriminate from a state where we have never been subscribed but is mostly 
+        # for backward compatibility. It might be very useful to make this just one attribute 'subscribe' later.
+        # In this case unsubscribed can be replaced by a method property.
+        
         if self.pk:
             assert(Subscription.objects.filter(pk=self.pk).count() == 1)
+            old_subscribed = Subscription.objects.get(pk=self.pk).subscribed
+            old_unsubscribed = Subscription.objects.get(pk=self.pk).unsubscribed
             
-            subscribing = self.subscribed and not Subscription.objects.get(pk=self.pk).subscribed  
-            if subscribing:                
+            # If we are subscribed now and we used not to be so, subscribe.
+            # If we user to be unsubscribed but are not so anymore, subscribe.
+            if (self.subscribed and not old_subscribed) or (old_unsubscribed and not self.unsubscribed):                
                 self.subscribe()
                 
                 assert not self.unsubscribed
                 assert self.subscribed
-                
-            else:
-               unsubscribing = self.unsubscribed and not Subscription.objects.get(pk=self.pk).unsubscribed
-               if unsubscribing:                   
-                   self.unsubscribe()
-                   
-                   assert not self.subscribed 
-                   assert self.unsubscribed
+            
+            # If we are unsubcribed now and we used not to be so, unsubscribe.
+            # If we used to be subscribed but are not subscribed anymore, unsubscribe.
+            elif (self.unsubscribed and not old_unsubscribed) or (old_subscribed and not self.subscribed):
+               self.unsubscribe()
+               
+               assert not self.subscribed 
+               assert self.unsubscribed
         else:
             if self.subscribed:
                 self.subscribe()

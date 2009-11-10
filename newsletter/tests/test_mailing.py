@@ -160,17 +160,52 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.assert_(self.sub.sent)
         self.assertFalse(self.sub.sending)
 
-class UserSubscriptionTestCase(MailingTestCase):
+class SubscriptionTestCase(MailingTestCase):
     def setUp(self):
-       super(UserSubscriptionTestCase, self).setUp()
+       super(SubscriptionTestCase, self).setUp()
        
        self.u = User.objects.all()[0]
        
-    def test_subscription(self):
-        s = Subscription(user=self.u, newsletter=self.n)
-        s.save()
+       self.us = Subscription(user=self.u, newsletter=self.n)
+       self.us.save()
+       
+       self.ns = Subscription(name='Test susbcriber', newsletter=self.n, email='test@test.com')
+       self.ns.save()
+       
+       self.ss = [self.us, self.ns]
+       
+    def test_usersubscription(self):
+        self.assertEqual(self.us.name, self.u.get_full_name())
+        self.assertEqual(self.us.email, self.u.email)
         
-        self.assertEqual(s.name, self.u.get_full_name())
-        self.assertEqual(s.email, self.u.email)
-
-    
+    def test_subscribe_unsubscribe(self):
+        for s in self.ss:
+            self.assertFalse(s.subscribed)
+            self.assertFalse(s.unsubscribed)
+            self.assertFalse(s.subscribe_date)
+            self.assertFalse(s.unsubscribe_date)
+            
+            # Repeat this to ensure consequencentness 
+            for x in xrange(2):
+                s.subscribed = True
+                s.save()
+            
+                self.assert_(s.subscribed)
+                self.assert_(s.subscribe_date)
+                self.assertFalse(s.unsubscribed)
+                old_subscribe_date = s.subscribe_date
+            
+                s.unsubscribed = True
+                s.save()
+            
+                self.assertFalse(s.subscribed)
+                self.assert_(s.unsubscribed)
+                self.assert_(s.unsubscribe_date)
+            
+                s.unsubscribed = False
+                s.save()
+            
+                self.assertFalse(s.unsubscribed)
+                self.assert_(s.subscribed)
+                self.assertNotEqual(s.subscribe_date, old_subscribe_date)
+            
