@@ -4,7 +4,7 @@ Django app for managing multiple mass-mailing lists with both plaintext as well 
 
 Status
 ------
-We are currently nearing the end of a migration from an early production version to a Django 1.1-compatible release. Might still be a bit buggy though.
+We are currently nearing the end of a migration from an early production version to a Django 1.1-compatible release and are steadily approaching a production-ready stage.
 
 Requirements
 ------------
