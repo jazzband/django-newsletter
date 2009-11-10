@@ -232,6 +232,7 @@ class Subscription(models.Model):
     subscribed = models.BooleanField(default=False, verbose_name=_('subscribed'), db_index=True)
     subscribe_date = models.DateTimeField(verbose_name=_("subscribe date"), null=True, blank=True)
     
+    # This should be a pseudo-field, I reckon.
     unsubscribed = models.BooleanField(default=False, verbose_name=_('unsubscribed'), db_index=True)
     unsubscribe_date = models.DateTimeField(verbose_name=_("unsubscribe date"), null=True, blank=True)
             

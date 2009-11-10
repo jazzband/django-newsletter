@@ -40,3 +40,4 @@ TODO
 * Remove links from one object to another in admin. This is confusing.
 * Finish front end for article ordering from admin.
 * Write tests for: template syntax checking, ordering of articles in a message.
+* Change the unsubscribe field in Subscription into a pseudo-field.
