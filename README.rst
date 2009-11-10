@@ -17,7 +17,8 @@ Installation
 * ``ln -s django-newsletter/newsletter``
 * ``ln -s django-newsletter/media static/newsletter``
 * Add newsletter to ``INSTALLED_APPS`` in ``settings.py``
-* Run unit tests just to be sure it is working.
+* Run unit tests just to be sure it is working: ``./manage.py test``.
+* If it is not, let me know. Create an issue on GitHub or send me a message.
 * Play around with the demo app! User and pass equal ``test``.
 
 Usage
@@ -29,7 +30,13 @@ Usage
   ``./manage.py runjob submit``
 * For a proper understanding, please take a look at the model graph in .. image:: model_graph.png
 
+Unit tests
+----------
+Yes, we can! 
+Fairly extensive tests are available for internal frameworks, web (un)subscription and mail sending. One feature currently untested is actually sending mail to very large numbers of recipients (500+), but feel free to try around.
+
 TODO
 -----
 * Remove links from one object to another in admin. This is confusing.
+* Finish front end for article ordering from admin.
 * Write tests for: template syntax checking, web subscription of auth users, ordering of articles in a message.
