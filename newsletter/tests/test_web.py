@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 import time
 
 from django.core import mail
@@ -9,6 +9,8 @@ from newsletter.models import *
 from newsletter.forms import *
 
 from utils import *
+
+WAIT_TIME=1
 
 class WebSubscribeTestCase(WebTestCase, MailTestCase):
     def setUp(self):
@@ -21,20 +23,106 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         
         self.subscribe_url = reverse('newsletter_subscribe_request', 
                                      kwargs={'newsletter_slug' : self.n.slug })
+        
+        self.subscribe_confirm_url = reverse('newsletter_subscribe_confirm', 
+                                             kwargs={'newsletter_slug' : self.n.slug })
                                      
         self.unsubscribe_url = reverse('newsletter_unsubscribe_request', 
                                        kwargs={'newsletter_slug' : self.n.slug })
                                        
-        self.unsubscribe_url = reverse('newsletter_unsubscribe_request', 
-                                  kwargs={'newsletter_slug' : self.n.slug })
+        self.unsubscribe_confirm_url = reverse('newsletter_unsubscribe_confirm', 
+                                               kwargs={'newsletter_slug' : self.n.slug })
         
         super(WebSubscribeTestCase, self).setUp()
     
     def test_urls(self):
         self.assert_(len(self.subscribe_url))
         self.assert_(len(self.unsubscribe_url))
-        self.assert_(len(self.unsubscribe_url))
+        self.assert_(len(self.subscribe_confirm_url))
+        self.assert_(len(self.unsubscribe_confirm_url))
+
+class WebUserSubscribeTestCase(WebSubscribeTestCase, UserTestCase, ComparingTestCase):
+    def get_user_subscription(self):
+        subscriptions = Subscription.objects.filter(newsletter=self.n, user=self.user)
+        self.assertEqual(subscriptions.count(), 1)
+        
+        subscription = subscriptions[0]
+        self.assert_(subscription.create_date)
+        
+        return subscriptions[0]
     
+    def test_subscribe_view(self):
+        """ Test the subscription form. """
+        r = self.client.get(self.subscribe_url)
+        
+        self.assertContains(r, self.n.title, status_code=200)
+        
+        self.assertEqual(r.context['newsletter'], self.n)
+        self.assertEqual(r.context['user'], self.user)
+        
+        self.assertContains(r, 'action="%s"' % self.subscribe_confirm_url)
+        self.assertContains(r, 'id="id_submit"')
+        
+        subscription = self.get_user_subscription()
+        self.assertFalse(subscription.subscribed)
+        self.assertFalse(subscription.unsubscribed)
+    
+    def test_subscribe_post(self):
+        """ Test subscription confirmation. """
+        r = self.client.post(self.subscribe_confirm_url)
+        
+        self.assertContains(r, self.n.title, status_code=200)
+        
+        self.assertEqual(r.context['newsletter'], self.n)
+        self.assertEqual(r.context['user'], self.user)
+        
+        subscription = self.get_user_subscription()
+        self.assert_(subscription.subscribed)
+        self.assertFalse(subscription.unsubscribed)
+        
+    def test_unsubscribe_view(self):
+        """ Test the unsubscription form. """
+        subscription = Subscription(user=self.user, newsletter=self.n)
+        subscription.subscribed = True
+        subscription.unsubscribed = False
+        subscription.save()
+        
+        self.assertLessThan(subscription.subscribe_date, datetime.now() + timedelta(seconds=1))
+        
+        r = self.client.get(self.unsubscribe_url)
+        
+        self.assertContains(r, self.n.title, status_code=200)
+        
+        self.assertEqual(r.context['newsletter'], self.n)
+        self.assertEqual(r.context['user'], self.user)
+        
+        self.assertContains(r, 'action="%s"' % self.unsubscribe_confirm_url)
+        self.assertContains(r, 'id="id_submit"')
+        
+        subscription = self.get_user_subscription()
+        self.assert_(subscription.subscribed)
+        self.assertFalse(subscription.unsubscribed)
+    
+    def test_unsubscribe_post(self):
+        """ Test unsubscription confirmation. """
+        subscription = Subscription(user=self.user, newsletter=self.n)
+        subscription.subscribed = True
+        subscription.unsubscribed = False
+        subscription.save()
+        
+        r = self.client.post(self.unsubscribe_confirm_url)
+        
+        self.assertContains(r, self.n.title, status_code=200)
+
+        self.assertEqual(r.context['newsletter'], self.n)
+        self.assertEqual(r.context['user'], self.user)
+        
+        subscription = self.get_user_subscription()
+        self.assertFalse(subscription.subscribed)
+        self.assert_(subscription.unsubscribed)
+        self.assertLessThan(subscription.unsubscribe_date, datetime.now() + timedelta(seconds=1))
+
+class AnonymousSubscribeTestCase(WebSubscribeTestCase, ComparingTestCase):
     def test_subscribe_request_view(self):
         """ Test the subscription form. """
         r = self.client.get(self.subscribe_url)
@@ -74,7 +162,6 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         subscription = Subscription(newsletter=self.n, name='Test Name', email='test@email.com')
         subscription.save()
         
-        WAIT_TIME=2
         time.sleep(WAIT_TIME)
         
         self.assertFalse(subscription.subscribed)
@@ -96,8 +183,7 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         self.assertFalse(subscription.unsubscribed)
         
         dt = (subscription.subscribe_date - subscription.create_date).seconds
-        self.assert_(dt >= WAIT_TIME)        
-        self.assert_(dt < WAIT_TIME + 1)
+        self.assertBetween(dt, WAIT_TIME, WAIT_TIME+1)
     
     def test_unsubscribe_request_view(self):
         """ Test the unsubscribe request form. """
@@ -204,4 +290,5 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         self.assert_(subscription)
         self.assert_(subscription.unsubscribed)
         
-        self.assert_((datetime.now() - subscription.unsubscribe_date).seconds < 2)
+        dt = (datetime.now() - subscription.unsubscribe_date).seconds
+        self.assertLessThan(dt, 2)

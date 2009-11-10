@@ -15,7 +15,7 @@
 {% else %}
 
 {% trans "Do you want to unsubscribe from this newsletter?" %}
-<form enctype="multipart/form-data" method="post" action="{% url newsletter_unsubscribe_user_confirm newsletter.slug %}">
+<form enctype="multipart/form-data" method="post" action="{% url newsletter_unsubscribe_confirm newsletter.slug %}">
     <p><input id="id_submit" name="submit" value="{% trans "Unsubscribe" %}" type="submit" /></p>
 </form>
 {% endif %}
