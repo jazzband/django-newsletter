@@ -19,13 +19,13 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         self.n.save()
         self.n.site = get_default_sites()
         
-        self.subscribe_url = reverse('newsletter_newsletter_subscribe_request', 
+        self.subscribe_url = reverse('newsletter_subscribe_request', 
                                      kwargs={'newsletter_slug' : self.n.slug })
                                      
-        self.unsubscribe_url = reverse('newsletter_newsletter_unsubscribe_request', 
+        self.unsubscribe_url = reverse('newsletter_unsubscribe_request', 
                                        kwargs={'newsletter_slug' : self.n.slug })
                                        
-        self.unsubscribe_url = reverse('newsletter_newsletter_unsubscribe_request', 
+        self.unsubscribe_url = reverse('newsletter_unsubscribe_request', 
                                   kwargs={'newsletter_slug' : self.n.slug })
         
         super(WebSubscribeTestCase, self).setUp()

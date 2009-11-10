@@ -110,22 +110,22 @@ class Newsletter(models.Model):
     
     @permalink
     def get_absolute_url(self):
-        return ('newsletter_newsletter_detail', (),
+        return ('newsletter_detail', (),
                 {'newsletter_slug': self.newsletter.slug })
         
     @permalink
     def subscribe_url(self):
-        return ('newsletter_newsletter_subscribe_request', (),
+        return ('newsletter_subscribe_request', (),
                 {'newsletter_slug': self.newsletter.slug })
                 
     @permalink
     def unsubscribe_url(self):
-        return ('newsletter_newsletter_unsubscribe_request', (),
+        return ('newsletter_unsubscribe_request', (),
                 {'newsletter_slug': self.newsletter.slug })
                 
     @permalink
     def update_url(self):
-        return ('newsletter_newsletter_update_request', (),
+        return ('newsletter_update_request', (),
                 {'newsletter_slug': self.newsletter.slug })
                 
     def get_sender(self):
@@ -276,14 +276,14 @@ class Subscription(models.Model):
         
     @permalink
     def subscribe_activate_url(self):
-        return ('newsletter_newsletter_update_activate', (),
+        return ('newsletter_update_activate', (),
                 {'newsletter_slug': self.newsletter.slug,
                  'email': self.email,
                  'action' : 'subscribe',
                  'activation_code' : self.activation_code})
     @permalink
     def unsubscribe_activate_url(self):
-        return ('newsletter_newsletter_update_activate', (),
+        return ('newsletter_update_activate', (),
                 {'newsletter_slug': self.newsletter.slug,
                  'email': self.email,
                  'action' : 'unsubscribe',
@@ -291,7 +291,7 @@ class Subscription(models.Model):
     
     @permalink
     def update_activate_url(self):
-        return ('newsletter_newsletter_update_activate', (),
+        return ('newsletter_update_activate', (),
                 {'newsletter_slug': self.newsletter.slug,
                  'email': self.email,
                  'action' : 'update',
