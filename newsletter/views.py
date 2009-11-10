@@ -110,7 +110,10 @@ def unsubscribe_user(request, newsletter_slug, confirm=False):
     
     return render_to_response("newsletter/subscription_unsubscribe_user.html", env, context_instance=RequestContext(request))     
     
-def subscribe_request(request, newsletter_slug):
+def subscribe_request(request, newsletter_slug, confirm=False):
+    if request.user.is_authenticated() or confirm:
+        return subscribe_user(request, newsletter_slug, confirm)
+        
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
     error = None
@@ -134,7 +137,10 @@ def subscribe_request(request, newsletter_slug):
     
     return render_to_response("newsletter/subscription_subscribe.html", env, context_instance=RequestContext(request))
     
-def unsubscribe_request(request, newsletter_slug):
+def unsubscribe_request(request, newsletter_slug, confirm=False):
+    if request.user.is_authenticated() or confirm:
+        return unsubscribe_user(request, newsletter_slug, confirm)
+    
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
     error = None
