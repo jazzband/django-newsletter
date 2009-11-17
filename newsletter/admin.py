@@ -209,21 +209,6 @@ class MessageAdmin(admin.ModelAdmin):
     
         if obj is None:
             raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
-
-    def _getobj(self, request, object_id):
-        opts = self.model._meta
-        app_label = opts.app_label
-    
-        try:
-            obj = self.queryset(request).get(pk=unquote(object_id))
-        except self.model.DoesNotExist:
-            # Don't raise Http404 just yet, because we haven't checked
-            # permissions yet. We don't want an unauthenticated user to be able
-            # to determine whether a given object exists.
-            obj = None
-    
-        if obj is None:
-            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
     
         return obj
     
