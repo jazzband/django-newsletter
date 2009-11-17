@@ -2,4 +2,6 @@ settings_local.py
 static/newsletter/images
 portnumber
 database.sqlite
+*.pyc
+*.pyo
 
