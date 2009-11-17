@@ -51,14 +51,18 @@ class NewsletterAdmin(admin.ModelAdmin):
     admin_submissions.short_description = ''
 
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ('admin_newsletter', 'message', 'publish_date', 'publish', 'admin_status_text', 'admin_status')
-    list_display_links = ['message',]
+    list_display = ('admin_message', 'admin_newsletter', 'publish_date', 'publish', 'admin_status_text', 'admin_status')
     date_hierarchy = 'publish_date'
     list_filter = ('newsletter', 'publish', 'sent')
     save_as = True
     filter_horizontal = ('subscriptions',)
 
     """ List extensions """
+    def admin_message(self, obj):
+        return '<a href="%d/">%s</a>' % (obj.id, obj.message.title)
+    admin_message.short_description = ugettext('submission')
+    admin_message.allow_tags = True
+    
     def admin_newsletter(self, obj):
         return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
     admin_newsletter.short_description = ugettext('newsletter')
@@ -176,14 +180,18 @@ class MessageAdmin(admin.ModelAdmin):
         js = ('/static/newsletter/admin/tiny_mce/tiny_mce.js','/static/newsletter/admin/tiny_mce/textareas.js')
         
     save_as = True
-    list_display = ('admin_newsletter', 'title', 'admin_preview', 'date_create', 'date_modify')
-    list_display_links  = ('title',)
+    list_display = ('admin_title', 'admin_newsletter', 'admin_preview', 'date_create', 'date_modify')
     list_filter = ('newsletter', )
     date_hierarchy = 'date_create'
     
     inlines = [ArticleInline,]
     
     """ List extensions """
+    def admin_title(self, obj):
+        return '<a href="%d/">%s</a>' % (obj.id, obj.title)
+    admin_title.short_description = ugettext('message')
+    admin_title.allow_tags = True
+    
     def admin_preview(self, obj):
         return '<a href="%s">%s</a>' % (self.preview_url(obj), ugettext('Preview'))
     admin_preview.short_description = ''
