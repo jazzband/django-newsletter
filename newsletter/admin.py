@@ -71,14 +71,15 @@ class SubmissionAdmin(admin.ModelAdmin):
     def admin_status(self, obj):
         if obj.prepared:
             if obj.sent:
-                return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', obj.admin_status_text())
+                return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text(obj))
             else:
                 if obj.publish_date > datetime.now():
-                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', obj.admin_status_text())
-                else:
-                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/submitting.gif', obj.admin_status_text())
+                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/newsletter/admin/img/waiting.gif', self.admin_status_text(obj))
+                else:                    
+                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/newsletter/admin/img/submitting.gif', self.admin_status_text(obj))
         else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', obj.admin_status_text())    
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text(obj))
+        
     admin_status.short_description = ''
     admin_status.allow_tags = True
     
@@ -88,11 +89,11 @@ class SubmissionAdmin(admin.ModelAdmin):
                 return ugettext("Sent.")
             else:
                 if obj.publish_date > datetime.now():
-                    return ugettext("Delayed submission.")
+                    return ugettext("Scheduled.")
                 else:
                     return ugettext("Submitting.")
         else:
-            return ugettext("Not sent.")
+            return ugettext("Not queued.")
     admin_status_text.short_description = ugettext('Status')
     
     """ Views """
@@ -172,8 +173,6 @@ class ArticleInline(admin.StackedInline):
             'classes': ('collapse',)        
         }),   
     )
-
-
         
 class MessageAdmin(admin.ModelAdmin):
     class Media:
@@ -337,9 +336,9 @@ class EmailTemplateAdmin(admin.ModelAdmin):
 
 class SubscriptionAdmin(admin.ModelAdmin):
     form = SubscriptionAdminForm
-    list_display = ('name', 'email', 'admin_newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
+    list_display = ('name', 'email', 'admin_newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'subscribed')
     list_display_links = ('name', 'email')
-    list_filter = ('newsletter','subscribed', 'unsubscribed','subscribe_date')
+    list_filter = ('newsletter','subscribed', 'subscribe_date', 'unsubscribe_date')
     search_fieldsets = ('name', 'email')
     date_hierarchy = 'subscribe_date'
     
@@ -348,27 +347,6 @@ class SubscriptionAdmin(admin.ModelAdmin):
         return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
     admin_newsletter.short_description = ugettext('newsletter')
     admin_newsletter.allow_tags = True       
-
-    def admin_status(self, obj):
-        if obj.unsubscribed:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', obj.admin_status_text())
-        
-        if obj.subscribed:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', obj.admin_status_text())
-        else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', obj.admin_status_text())
-        
-    admin_status.short_description = ''
-    admin_status.allow_tags = True
-
-    def admin_status_text(self, obj):
-        if obj.subscribed:
-            return ugettext("Subscribed")
-        elif obj.unsubscribed:
-            return ugettext("Unsubscribed")
-        else:
-            return ugettext("Unactivated")
-    admin_status_text.short_description = ugettext('Status')   
     
     def admin_unsubscribe_date(self, obj):
         if obj.unsubscribe_date:
