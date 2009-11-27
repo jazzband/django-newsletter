@@ -37,7 +37,6 @@ Fairly extensive tests are available for internal frameworks, web (un)subscripti
 
 TODO
 -----
-* Remove links from one object to another in admin. This is confusing.
+* Add a separate submission queue view in the admin instead of the modded edit view, which is confusing to the user.
 * Finish front end for article ordering from admin.
 * Write tests for: template syntax checking, ordering of articles in a message.
-* Change the unsubscribe field in Subscription into a pseudo-field.
