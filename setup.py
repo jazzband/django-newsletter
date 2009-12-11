@@ -20,11 +20,16 @@
 
 from distutils.core import setup
 
+try:
+    README = open('README.rst').read()
+except:
+    README = None
+
 setup(
     name = 'django-newsletter',
     version = "0.1",
     description = 'Django app for managing multiple mass-mailing lists with both plaintext as well as HTML templates (and TinyMCE editor for HTML messages), images and a smart queueing system all right from the admin interface.',
-    long_description = open('README.rst').read(),
+    long_description = README,
     author = 'Mathijs de Bruin',
     author_email = 'drbob@dokterbob.net',
     url = 'http://github.com/dokterbob/django-newsletter',
