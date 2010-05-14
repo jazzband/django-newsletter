@@ -429,7 +429,7 @@ class Submission(models.Model):
 
     def submit(self):
         subscriptions = self.subscriptions.filter(subscribed=True)
-        logging.info(ugettext("Submitting %(submission)s to %(count)d people") % {'submission':self, 'count':subscriptions.count()})
+        logging.info(ugettext(u"Submitting %(submission)s to %(count)d people") % {'submission':self, 'count':subscriptions.count()})
         assert self.publish_date < datetime.now(), 'Something smells fishy; submission time in future.'
 
         self.sending = True
@@ -457,23 +457,19 @@ class Submission(models.Model):
                     message.attach_alternative(html_template.render(c), "text/html")
                 
                 try:
-                    logging.debug(ugettext('Submitting message to: %s.' % subscription))
+                    logging.debug(ugettext(u'Submitting message to: %s.' % subscription))
                     message.send()
                 except Exception, e:
-                    logging.error(ugettext('Message %s failed with error: %s' % (subscription, e[0])))
+                    logging.error(ugettext(u'Message %s failed with error: %s' % (subscription, e[0])))
             
             # For some reason this is not working. Bug!?        
             #conn.close()
-        
-        except Exception, inst:
+            self.sent = True
+
+        finally:
             self.sending = False
             self.save()
-            raise inst
         
-        self.sending = False
-        self.sent = True
-        self.save()
-    
     @classmethod
     def submit_queue(cls):
         todo = cls.objects.filter(prepared=True, sent=False, sending=False, publish_date__lt=datetime.now())
