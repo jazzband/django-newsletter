@@ -397,8 +397,13 @@ class Message(models.Model):
     date_modify = models.DateTimeField(verbose_name=_('modified'), auto_now=True, editable=False) 
     
     def __unicode__(self):
-        return _(u"%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
-        
+        try:
+            return _(u"%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
+        except Newsletter.DoesNotExist:
+            logging.warn('Database inconsistency, related newsletter not found for message with id %d' % self.id)
+
+            return "%s" % self.title
+
     class Meta:
         verbose_name = _('message')
         verbose_name_plural = _('messages')
