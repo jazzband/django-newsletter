@@ -216,6 +216,21 @@ class MessageAdmin(admin.ModelAdmin):
     
         if obj is None:
             raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
+
+    def _getobj(self, request, object_id):
+        opts = self.model._meta
+        app_label = opts.app_label
+    
+        try:
+            obj = self.queryset(request).get(pk=unquote(object_id))
+        except self.model.DoesNotExist:
+            # Don't raise Http404 just yet, because we haven't checked
+            # permissions yet. We don't want an unauthenticated user to be able
+            # to determine whether a given object exists.
+            obj = None
+    
+        if obj is None:
+            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
     
         return obj
     
@@ -336,10 +351,10 @@ class EmailTemplateAdmin(admin.ModelAdmin):
 
 class SubscriptionAdmin(admin.ModelAdmin):
     form = SubscriptionAdminForm
-    list_display = ('name', 'email', 'admin_newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'subscribed')
+    list_display = ('name', 'email', 'admin_newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
     list_display_links = ('name', 'email')
-    list_filter = ('newsletter','subscribed', 'subscribe_date', 'unsubscribe_date')
-    search_fieldsets = ('name', 'email')
+    list_filter = ('newsletter','subscribed', 'unsubscribed','subscribe_date')
+    search_fields = ('name_field', 'email_field', 'user__first_name','user__last_name', 'user__email')
     date_hierarchy = 'subscribe_date'
     
     """ List extensions """
@@ -347,6 +362,27 @@ class SubscriptionAdmin(admin.ModelAdmin):
         return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
     admin_newsletter.short_description = ugettext('newsletter')
     admin_newsletter.allow_tags = True       
+
+    def admin_status(self, obj):
+        if obj.unsubscribed:
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', obj.admin_status_text())
+        
+        if obj.subscribed:
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', obj.admin_status_text())
+        else:
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', obj.admin_status_text())
+        
+    admin_status.short_description = ''
+    admin_status.allow_tags = True
+
+    def admin_status_text(self, obj):
+        if obj.subscribed:
+            return ugettext("Subscribed")
+        elif obj.unsubscribed:
+            return ugettext("Unsubscribed")
+        else:
+            return ugettext("Unactivated")
+    admin_status_text.short_description = ugettext('Status')   
     
     def admin_unsubscribe_date(self, obj):
         if obj.unsubscribe_date:
