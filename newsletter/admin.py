@@ -89,11 +89,11 @@ class SubmissionAdmin(admin.ModelAdmin):
                 return ugettext("Sent.")
             else:
                 if obj.publish_date > datetime.now():
-                    return ugettext("Scheduled.")
+                    return ugettext("Delayed submission.")
                 else:
                     return ugettext("Submitting.")
         else:
-            return ugettext("Not queued.")
+            return ugettext("Not sent.")
     admin_status_text.short_description = ugettext('Status')
     
     """ Views """
