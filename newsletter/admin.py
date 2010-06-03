@@ -176,7 +176,7 @@ class ArticleInline(admin.StackedInline):
         
 class MessageAdmin(admin.ModelAdmin):
     class Media:
-        js = ('/static/newsletter/admin/tiny_mce/tiny_mce.js','/static/newsletter/admin/tiny_mce/textareas.js')
+        js = (settings.MEDIA_URL + 'newsletter/admin/tiny_mce/tiny_mce.js', settings.MEDIA_URL + 'newsletter/admin/tiny_mce/textareas.js')
         
     save_as = True
     list_display = ('admin_title', 'admin_newsletter', 'admin_preview', 'date_create', 'date_modify')
