@@ -26,6 +26,13 @@ from django.shortcuts import render_to_response
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.utils.functional import update_wrapper
 
+# This function is new in Django 1.2 - fallback to dummy identity
+# function not to break compatibility with older releases.
+try:
+    from django.utils.formats import date_format
+except ImportError:
+    date_format = lambda value, format=None: value
+
 from models import EmailTemplate, Newsletter, Subscription, Article, Message, Submission
 
 from admin_forms import *
@@ -351,7 +358,7 @@ class EmailTemplateAdmin(admin.ModelAdmin):
 
 class SubscriptionAdmin(admin.ModelAdmin):
     form = SubscriptionAdminForm
-    list_display = ('name', 'email', 'admin_newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
+    list_display = ('name', 'email', 'admin_newsletter', 'admin_subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
     list_display_links = ('name', 'email')
     list_filter = ('newsletter','subscribed', 'unsubscribed','subscribe_date')
     search_fields = ('name_field', 'email_field', 'user__first_name','user__last_name', 'user__email')
@@ -383,10 +390,17 @@ class SubscriptionAdmin(admin.ModelAdmin):
         else:
             return ugettext("Unactivated")
     admin_status_text.short_description = ugettext('Status')   
+
+    def admin_subscribe_date(self, obj):
+        if obj.subscribe_date:
+            return date_format(obj.subscribe_date)
+        else:
+            return ''
+    admin_subscribe_date.short_description = _("subscribe date")
     
     def admin_unsubscribe_date(self, obj):
         if obj.unsubscribe_date:
-            return obj.unsubscribe_date
+            return date_format(obj.unsubscribe_date)
         else:
             return ''
     admin_unsubscribe_date.short_description = _("unsubscribe date")
