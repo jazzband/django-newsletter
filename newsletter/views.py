@@ -236,6 +236,6 @@ def update_subscription(request, newsletter_slug, email, action, activation_code
 def archive(request, newsletter_slug):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     
-    publications = Mailing.objects.filter(newsletter = my_newsletter)
+    publications = Submission.objects.filter(newsletter = my_newsletter)
     
     return archive_index(request, publications, 'publish_date', extra_context = {'newsletter': my_newsletter})
