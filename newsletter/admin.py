@@ -130,12 +130,10 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def get_urls(self):
         urls = super(SubmissionAdmin, self).get_urls()
                 
-        info = self.model._meta.app_label, self.model._meta.module_name
-        
         my_urls = patterns('',
             url(r'^(.+)/submit/$', 
                 self._wrap(self.submit), 
-                name='%s_%s_submit' % info),
+                name=self._view_name('submit')),
             )
             
         return my_urls + urls
@@ -266,31 +264,29 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     """ URLs """
     def get_urls(self):
         urls = super(MessageAdmin, self).get_urls()
-        
-        info = self.model._meta.app_label, self.model._meta.module_name
-        
+                
         my_urls = patterns('',
             url(r'^(.+)/preview/$', 
                 self._wrap(self.preview), 
-                name='%s_%s_preview' % info),
+                name=self._view_name('preview')),
             url(r'^(.+)/preview/html/$', 
                 self._wrap(self.preview_html), 
-                name='%s_%s_preview_html' % info),
+                name=self._view_name('preview_html')),
             url(r'^(.+)/preview/text/$', 
                 self._wrap(self.preview_text), 
-                name='%s_%s_preview_text' % info),
+                name=self._view_name('preview_text')),
             url(r'^(.+)/submit/$', 
                 self._wrap(self.submit), 
-                name='%s_%s_submit' % info),
+                name=self._view_name('submit')),
             url(r'^(.+)/subscribers/json/$', 
                 self._wrap(self.subscribers_json), 
-                name='%s_%s_subscribers_json' % info),
+                name=self._view_name('subscribers_json')),
             url(r'^(.+)/article/([0-9]+)/move_up/$', 
                 self._wrap(self.move_article_up), 
-                name='%s_%s_move_article_up' % info),
+                name=self._view_name('move_article_up')),
             url(r'^(.+)/article/([0-9]+)/move_down/$', 
                 self._wrap(self.move_article_down), 
-                name='%s_%s_move_article_down' % info),
+                name=self._view_name('move_article_down')),
             )
         
         return my_urls + urls
@@ -406,10 +402,10 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         my_urls = patterns('',
             url(r'^import/$', 
                 self._wrap(self.subscribers_import), 
-                name='%s_%s_import' % info),
+                name=self._view_name('import')),
             url(r'^import/confirm/$', 
                 self._wrap(self.subscribers_import_confirm), 
-                name='%s_%s_import_confirm' % info),                
+                name=self._view_name('import_confirm')),                
             )
         
         return my_urls + urls
