@@ -37,6 +37,34 @@ from models import EmailTemplate, Newsletter, Subscription, Article, Message, Su
 
 from admin_forms import *
 
+class ExtendibleModelAdminMixin(object):
+    def _getobj(self, request, object_id):
+            opts = self.model._meta
+            app_label = opts.app_label
+    
+            try:
+                obj = self.queryset(request).get(pk=unquote(object_id))
+            except self.model.DoesNotExist:
+                # Don't raise Http404 just yet, because we haven't checked
+                # permissions yet. We don't want an unauthenticated user to be able
+                # to determine whether a given object exists.
+                obj = None
+    
+            if obj is None:
+                raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
+
+            return obj
+    
+    def _wrap(self, view):
+        def wrapper(*args, **kwargs):
+            return self.admin_site.admin_view(view)(*args, **kwargs)
+        return update_wrapper(wrapper, view)
+    
+    def _view_name(self, name):
+        info = self.model._meta.app_label, self.model._meta.module_name, name
+
+        return '%s_%s_%s' % info
+
 class NewsletterAdmin(admin.ModelAdmin):
     list_display = ('title', 'admin_subscriptions', 'admin_messages', 'admin_submissions')
     prepopulated_fields = {'slug': ('title',)}
@@ -57,7 +85,7 @@ class NewsletterAdmin(admin.ModelAdmin):
     admin_submissions.allow_tags = True
     admin_submissions.short_description = ''
 
-class SubmissionAdmin(admin.ModelAdmin):
+class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     list_display = ('admin_message', 'admin_newsletter', 'admin_publish_date', 'publish', 'admin_status_text', 'admin_status')
     date_hierarchy = 'publish_date'
     list_filter = ('newsletter', 'publish', 'sent')
@@ -111,23 +139,6 @@ class SubmissionAdmin(admin.ModelAdmin):
     admin_status_text.short_description = ugettext('Status')
     
     """ Views """
-    def _getobj(self, request, object_id):
-        opts = self.model._meta
-        app_label = opts.app_label
-        
-        try:
-            obj = self.queryset(request).get(pk=unquote(object_id))
-        except self.model.DoesNotExist:
-            # Don't raise Http404 just yet, because we haven't checked
-            # permissions yet. We don't want an unauthenticated user to be able
-            # to determine whether a given object exists.
-            obj = None
-        
-        if obj is None:
-            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
-        
-        return obj
-    
     def submit(self, request, object_id):
         submission = self._getobj(request, object_id)
         
@@ -188,7 +199,7 @@ class ArticleInline(admin.StackedInline):
         }),   
     )
         
-class MessageAdmin(admin.ModelAdmin):
+class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     class Media:
         js = (settings.MEDIA_URL + 'newsletter/admin/tiny_mce/tiny_mce.js', settings.MEDIA_URL + 'newsletter/admin/tiny_mce/textareas.js')
         
@@ -215,24 +226,7 @@ class MessageAdmin(admin.ModelAdmin):
     admin_newsletter.short_description = ugettext('newsletter')
     admin_newsletter.allow_tags = True
     
-    """ Views """
-    def _getobj(self, request, object_id):
-        opts = self.model._meta
-        app_label = opts.app_label
-    
-        try:
-            obj = self.queryset(request).get(pk=unquote(object_id))
-        except self.model.DoesNotExist:
-            # Don't raise Http404 just yet, because we haven't checked
-            # permissions yet. We don't want an unauthenticated user to be able
-            # to determine whether a given object exists.
-            obj = None
-    
-        if obj is None:
-            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
-    
-        return obj
-    
+    """ Views """    
     def preview(self, request, object_id):
         return render_to_response(
             "admin/newsletter/message/preview.html",
