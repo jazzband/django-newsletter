@@ -1,4 +1,4 @@
-import os, sha, random, logging
+import os, random, logging
 
 from datetime import datetime
 
@@ -13,6 +13,8 @@ from django.template import Template, Context
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 
+from django.utils.hashcompat import sha_constructor
+
 from django.core.mail import send_mail, send_mass_mail, EmailMultiAlternatives, SMTPConnection
 
 from django.contrib.sites.models import Site
@@ -23,7 +25,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 def make_activation_code():
-    return sha.new(sha.new(str(random.random())).hexdigest()[:5]+str(datetime.now().microsecond)).hexdigest()
+    return sha_constructor(sha_constructor(str(random.random())).hexdigest()[:5]+str(datetime.now().microsecond)).hexdigest()
 
 def get_default_sites():
     return [site.id for site in Site.objects.all()]
@@ -397,8 +399,13 @@ class Message(models.Model):
     date_modify = models.DateTimeField(verbose_name=_('modified'), auto_now=True, editable=False) 
     
     def __unicode__(self):
-        return _(u"%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
-        
+        try:
+            return _(u"%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
+        except Newsletter.DoesNotExist:
+            logging.warn('Database inconsistency, related newsletter not found for message with id %d' % self.id)
+
+            return "%s" % self.title
+
     class Meta:
         verbose_name = _('message')
         verbose_name_plural = _('messages')
@@ -424,7 +431,7 @@ class Submission(models.Model):
 
     def submit(self):
         subscriptions = self.subscriptions.filter(subscribed=True)
-        logging.info(ugettext("Submitting %(submission)s to %(count)d people") % {'submission':self, 'count':subscriptions.count()})
+        logging.info(ugettext(u"Submitting %(submission)s to %(count)d people") % {'submission':self, 'count':subscriptions.count()})
         assert self.publish_date < datetime.now(), 'Something smells fishy; submission time in future.'
 
         self.sending = True
@@ -452,23 +459,19 @@ class Submission(models.Model):
                     message.attach_alternative(html_template.render(c), "text/html")
                 
                 try:
-                    logging.debug(ugettext('Submitting message to: %s.' % subscription))
+                    logging.debug(ugettext(u'Submitting message to: %s.' % subscription))
                     message.send()
                 except Exception, e:
-                    logging.error(ugettext('Message %s failed with error: %s' % (subscription, e[0])))
+                    logging.error(ugettext(u'Message %s failed with error: %s' % (subscription, e[0])))
             
             # For some reason this is not working. Bug!?        
             #conn.close()
-        
-        except Exception, inst:
+            self.sent = True
+
+        finally:
             self.sending = False
             self.save()
-            raise inst
         
-        self.sending = False
-        self.sent = True
-        self.save()
-    
     @classmethod
     def submit_queue(cls):
         todo = cls.objects.filter(prepared=True, sent=False, sending=False, publish_date__lt=datetime.now())
