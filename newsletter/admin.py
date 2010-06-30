@@ -199,7 +199,7 @@ class MessageAdmin(admin.ModelAdmin):
     admin_title.allow_tags = True
     
     def admin_preview(self, obj):
-        return '<a href="%s">%s</a>' % (self.preview_url(obj), ugettext('Preview'))
+        return '<a href="%d/preview/">%s</a>' % (obj.id, ugettext('Preview'))
     admin_preview.short_description = ''
     admin_preview.allow_tags = True
     
