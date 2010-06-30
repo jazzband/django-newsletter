@@ -58,7 +58,7 @@ class NewsletterAdmin(admin.ModelAdmin):
     admin_submissions.short_description = ''
 
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ('admin_message', 'admin_newsletter', 'publish_date', 'publish', 'admin_status_text', 'admin_status')
+    list_display = ('admin_message', 'admin_newsletter', 'admin_publish_date', 'publish', 'admin_status_text', 'admin_status')
     date_hierarchy = 'publish_date'
     list_filter = ('newsletter', 'publish', 'sent')
     save_as = True
@@ -74,6 +74,13 @@ class SubmissionAdmin(admin.ModelAdmin):
         return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
     admin_newsletter.short_description = ugettext('newsletter')
     admin_newsletter.allow_tags = True
+
+    def admin_publish_date(self, obj):
+        if obj.publish_date:
+            return date_format(obj.publish_date)
+        else:
+            return ''
+    admin_publish_date.short_description = _("publish date")
     
     def admin_status(self, obj):
         if obj.prepared:
