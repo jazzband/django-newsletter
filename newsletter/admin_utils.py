@@ -1,4 +1,5 @@
 from django.contrib.admin.util import unquote
+from django.utils.functional import update_wrapper
 
 class ExtendibleModelAdminMixin(object):
     def _getobj(self, request, object_id):

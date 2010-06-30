@@ -24,7 +24,6 @@ from django.template import RequestContext, Context
 from django.shortcuts import render_to_response
 
 from django.utils.translation import ugettext, ugettext_lazy as _
-from django.utils.functional import update_wrapper
 
 # This function is new in Django 1.2 - fallback to dummy identity
 # function not to break compatibility with older releases.
@@ -130,17 +129,12 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     """ URLs """
     def get_urls(self):
         urls = super(SubmissionAdmin, self).get_urls()
-        
-        def wrap(view):
-            def wrapper(*args, **kwargs):
-                return self.admin_site.admin_view(view)(*args, **kwargs)
-            return update_wrapper(wrapper, view)
-        
+                
         info = self.model._meta.app_label, self.model._meta.module_name
         
         my_urls = patterns('',
             url(r'^(.+)/submit/$', 
-                wrap(self.submit), 
+                self._wrap(self.submit), 
                 name='%s_%s_submit' % info),
             )
             
@@ -273,34 +267,29 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def get_urls(self):
         urls = super(MessageAdmin, self).get_urls()
         
-        def wrap(view):
-            def wrapper(*args, **kwargs):
-                return self.admin_site.admin_view(view)(*args, **kwargs)
-            return update_wrapper(wrapper, view)
-        
         info = self.model._meta.app_label, self.model._meta.module_name
         
         my_urls = patterns('',
             url(r'^(.+)/preview/$', 
-                wrap(self.preview), 
+                self._wrap(self.preview), 
                 name='%s_%s_preview' % info),
             url(r'^(.+)/preview/html/$', 
-                wrap(self.preview_html), 
+                self._wrap(self.preview_html), 
                 name='%s_%s_preview_html' % info),
             url(r'^(.+)/preview/text/$', 
-                wrap(self.preview_text), 
+                self._wrap(self.preview_text), 
                 name='%s_%s_preview_text' % info),
             url(r'^(.+)/submit/$', 
-                wrap(self.submit), 
+                self._wrap(self.submit), 
                 name='%s_%s_submit' % info),
             url(r'^(.+)/subscribers/json/$', 
-                wrap(self.subscribers_json), 
+                self._wrap(self.subscribers_json), 
                 name='%s_%s_subscribers_json' % info),
             url(r'^(.+)/article/([0-9]+)/move_up/$', 
-                wrap(self.move_article_up), 
+                self._wrap(self.move_article_up), 
                 name='%s_%s_move_article_up' % info),
             url(r'^(.+)/article/([0-9]+)/move_down/$', 
-                wrap(self.move_article_down), 
+                self._wrap(self.move_article_down), 
                 name='%s_%s_move_article_down' % info),
             )
         
@@ -315,7 +304,7 @@ class EmailTemplateAdmin(admin.ModelAdmin):
     form = EmailTemplateAdminForm
 
 
-class SubscriptionAdmin(admin.ModelAdmin):
+class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     form = SubscriptionAdminForm
     list_display = ('name', 'email', 'admin_newsletter', 'admin_subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
     list_display_links = ('name', 'email')
@@ -411,20 +400,15 @@ class SubscriptionAdmin(admin.ModelAdmin):
     """ URLs """
     def get_urls(self):
         urls = super(SubscriptionAdmin, self).get_urls()
-        
-        def wrap(view):
-            def wrapper(*args, **kwargs):
-                return self.admin_site.admin_view(view)(*args, **kwargs)
-            return update_wrapper(wrapper, view)
-        
+                
         info = self.model._meta.app_label, self.model._meta.module_name
         
         my_urls = patterns('',
             url(r'^import/$', 
-                wrap(self.subscribers_import), 
+                self._wrap(self.subscribers_import), 
                 name='%s_%s_import' % info),
             url(r'^import/confirm/$', 
-                wrap(self.subscribers_import_confirm), 
+                self._wrap(self.subscribers_import_confirm), 
                 name='%s_%s_import_confirm' % info),                
             )
         
