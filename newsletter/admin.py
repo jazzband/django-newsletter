@@ -71,14 +71,15 @@ class SubmissionAdmin(admin.ModelAdmin):
     def admin_status(self, obj):
         if obj.prepared:
             if obj.sent:
-                return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', obj.admin_status_text())
+                return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text(obj))
             else:
                 if obj.publish_date > datetime.now():
-                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', obj.admin_status_text())
-                else:
-                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/submitting.gif', obj.admin_status_text())
+                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/newsletter/admin/img/waiting.gif', self.admin_status_text(obj))
+                else:                    
+                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/newsletter/admin/img/submitting.gif', self.admin_status_text(obj))
         else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', obj.admin_status_text())    
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text(obj))
+        
     admin_status.short_description = ''
     admin_status.allow_tags = True
     
@@ -172,12 +173,10 @@ class ArticleInline(admin.StackedInline):
             'classes': ('collapse',)        
         }),   
     )
-
-
         
 class MessageAdmin(admin.ModelAdmin):
     class Media:
-        js = ('/static/newsletter/admin/tiny_mce/tiny_mce.js','/static/newsletter/admin/tiny_mce/textareas.js')
+        js = (settings.MEDIA_URL + 'newsletter/admin/tiny_mce/tiny_mce.js', settings.MEDIA_URL + 'newsletter/admin/tiny_mce/textareas.js')
         
     save_as = True
     list_display = ('admin_title', 'admin_newsletter', 'admin_preview', 'date_create', 'date_modify')
@@ -355,7 +354,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'admin_newsletter', 'subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
     list_display_links = ('name', 'email')
     list_filter = ('newsletter','subscribed', 'unsubscribed','subscribe_date')
-    search_fieldsets = ('name', 'email')
+    search_fields = ('name_field', 'email_field', 'user__first_name','user__last_name', 'user__email')
     date_hierarchy = 'subscribe_date'
     
     """ List extensions """

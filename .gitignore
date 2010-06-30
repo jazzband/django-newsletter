@@ -4,4 +4,7 @@ portnumber
 database.sqlite
 *.pyc
 *.pyo
-
+build
+dist
+MANIFEST
+*.egg-info
