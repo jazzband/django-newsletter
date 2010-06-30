@@ -88,9 +88,9 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                 return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text(obj))
             else:
                 if obj.publish_date > datetime.now():
-                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/newsletter/admin/img/waiting.gif', self.admin_status_text(obj))
+                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text(obj))
                 else:                    
-                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/newsletter/admin/img/submitting.gif', self.admin_status_text(obj))
+                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/submitting.gif', self.admin_status_text(obj))
         else:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text(obj))
         
