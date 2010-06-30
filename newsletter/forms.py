@@ -79,16 +79,14 @@ class UpdateRequestForm(NewsletterForm):
         # Set our instance on the basis of the email field, or raise a validationerror
         try:
             self.instance = Subscription.objects.get(newsletter=self.instance.newsletter, email_field__exact=value)
+    
+            if not self.instance.subscribed:
+                raise ValidationError(_("This subscription has not yet been activated."))
                 
         except Subscription.DoesNotExist:
                 raise ValidationError(_("This e-mail address has not been subscribed to."))
                 
         return value
-    
-    def clean(self):
-        if not self.instance.subscribed:
-            raise ValidationError(_("This subscription has not yet been activated."))
-
 
 class UnsubscribeRequestForm(UpdateRequestForm):
     """ Similar to previous form but checks if we have not already been unsubscribed. """
