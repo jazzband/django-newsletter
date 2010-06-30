@@ -1,4 +1,4 @@
-import os, sha, random, logging
+import os, random, logging
 
 from datetime import datetime
 
@@ -13,6 +13,8 @@ from django.template import Template, Context
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 
+from django.utils.hashcompat import sha_constructor
+
 from django.core.mail import send_mail, send_mass_mail, EmailMultiAlternatives, SMTPConnection
 
 from django.contrib.sites.models import Site
@@ -23,7 +25,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 def make_activation_code():
-    return sha.new(sha.new(str(random.random())).hexdigest()[:5]+str(datetime.now().microsecond)).hexdigest()
+    return sha_constructor(sha_constructor(str(random.random())).hexdigest()[:5]+str(datetime.now().microsecond)).hexdigest()
 
 def get_default_sites():
     return [site.id for site in Site.objects.all()]
