@@ -1,26 +1,20 @@
 {% extends "newsletter/common.html" %}
 {% load i18n %}
-{% block title %}{% trans "Newsletter" %} {{ newsletter.title }} {{ action }} {% trans "activate" %}{% endblock title %}
-
+{% block title %}{% trans "Newsletter update" %}{% endblock title %}
 {% block body %}
-<h1>{% trans "Newsletter" %} {{ newsletter.title }} {{ action }} {% trans "activate" %}</h1>
-<p>
+<h1>{% trans "Newsletter update" %} {{ newsletter.title }}</h1>
+{% if error %}
+<p>{% trans "Due to a technical error we were not able to submit your confirmation email. This could be because your email address is invalid." %}</p>
+<p>{% trans "If the error persists, please don't hesitate to contact us at the following email address:" %} <a href="mailto:info@ladyboys.com">info@ladyboys.com</a></p>
+{% else %}
 {% if form.is_valid %}
-    {% ifequal action "subscribe" %}
-        {% trans "Your subscription has succesfully been activated." %}
-    {% endifequal %}
-    {% ifequal action "unsubscribe" %}
-        {% trans "You have succesfully been unsubscribed." %}
-    {% endifequal %}
-    {% ifequal action "update" %}
-        {% trans "Your subscription has succesfully been updated." %}
-    {% endifequal %}
-</p>
+<p>{% trans "Your update request was succesfully received and an activation email has been sent to you. In that email you will find a link which you need to follow in order to update your subscription." %}</p>
 {% else %}
 <form enctype="multipart/form-data" method="post" action=".">
     {{ form.as_p }}
-    <p><input id="id_submit" name="submit" value="{% trans "Activate" %}" type="submit" /></p>
+    <p><input id="id_submit" name="submit" value="{% trans "Subscribe" %}" type="submit" /></p>
 </form>
+{% endif %}
 {% endif %}
 {% endblock body %}
 
