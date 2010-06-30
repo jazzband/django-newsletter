@@ -39,6 +39,7 @@ def newsletter_list(request):
             formset = SubscriptionFormSet(request.POST, queryset=qs)
             if formset.is_valid():
                 instances = formset.save()
+                request.user.message_set.create(message="Uw wijzigingen zijn bewaard.")
             else:
                 logging.debug('Form was not very valid.')
         else:
