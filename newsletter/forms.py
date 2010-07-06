@@ -91,11 +91,11 @@ class UpdateRequestForm(NewsletterForm):
 class UnsubscribeRequestForm(UpdateRequestForm):
     """ Similar to previous form but checks if we have not already been unsubscribed. """
     
-    def clean(self):
-        super(UnsubscribeRequestForm, self).clean()
-        
+    def clean(self):        
         if self.instance.unsubscribed:
             raise ValidationError(_("This subscription has already been unsubscribed from."))
+        
+        return super(UnsubscribeRequestForm, self).clean()
 
 class UpdateForm(NewsletterForm):
     """ This form allows one to actually update to or unsubscribe from the newsletter. To do this, a 
