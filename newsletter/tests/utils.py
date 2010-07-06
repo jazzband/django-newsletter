@@ -8,6 +8,8 @@ from django.test import TestCase
 from django.test.client import Client
 
 class WebTestCase(TestCase):
+    fixtures = ['default_messages',]
+
     def setUp(self):
         self.site = Site.objects.get_current()
         
@@ -27,6 +29,8 @@ class WebTestCase(TestCase):
             self.assertEqual(instance, value)
 
 class MailTestCase(TestCase):
+    fixtures = ['default_messages',]
+    
     def get_email_list(self, email):
         if email:
             return (email,)
