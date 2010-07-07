@@ -197,6 +197,7 @@ class ImportForm(forms.Form):
         # If there are validation errors earlier on, don't bother.
         if not (self.cleaned_data.has_key('address_file') and self.cleaned_data.has_key('ignore_errors') and self.cleaned_data.has_key('newsletter')):
             return self.cleaned_data
+            # TESTME: Should an error be raised here or not?
             #raise forms.ValidationError(_("No file has been specified."))                
             
         ignore_errors = self.cleaned_data['ignore_errors']
