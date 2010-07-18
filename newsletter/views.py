@@ -7,8 +7,7 @@ from django.template import RequestContext
 from django.shortcuts import get_object_or_404, get_list_or_404, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 
-from django.views.generic.list_detail import object_list, object_detail
-from django.views.generic.date_based import archive_index
+from django.views.generic import list_detail, date_based 
 
 from django.contrib.sites.models import Site
 from django.contrib.auth.decorators import login_required
@@ -48,7 +47,7 @@ def newsletter_list(request):
     else:
         formset = None
 
-    return object_list(request, newsletters, extra_context={'formset':formset})
+    return list_detail.object_list(request, newsletters, extra_context={'formset':formset})
 
 def newsletter_detail(request, newsletter_slug):
     newsletters = Newsletter.on_site.filter(visible=True)
@@ -56,7 +55,7 @@ def newsletter_detail(request, newsletter_slug):
     if not newsletters:
         raise Http404
         
-    return object_detail(request, newsletters, slug=newsletter_slug)
+    return list_detail.object_detail(request, newsletters, slug=newsletter_slug)
 
 @login_required
 def subscribe_user(request, newsletter_slug, confirm=False):
@@ -234,8 +233,28 @@ def update_subscription(request, newsletter_slug, email, action, activation_code
     return render_to_response("newsletter/subscription_activate.html", env, context_instance=RequestContext(request))
 
 def archive(request, newsletter_slug):
-    my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
+    my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug, visible=True)
     
-    publications = Submission.objects.filter(newsletter = my_newsletter)
+    submissions = Submission.objects.filter(newsletter=my_newsletter, publish=True)
     
-    return archive_index(request, publications, 'publish_date', extra_context = {'newsletter': my_newsletter})
+    return date_based.archive_index(request, 
+                                    queryset=submissions, 
+                                    date_field='publish_date', 
+                                    extra_context = {'newsletter': my_newsletter})
+
+def archive_detail(request, newsletter_slug, year, month, day, slug):
+    my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug, visible=True)
+    
+    submissions = Submission.objects.filter(newsletter=my_newsletter, publish=True)
+    
+    return date_based.object_detail(request, 
+                                    year=year,
+                                    month=month, 
+                                    day=day,
+                                    queryset=submissions, 
+                                    date_field='publish_date',
+                                    month_format='%m',
+                                    slug=slug,
+                                    slug_field='message__slug',
+                                    template_object_name='submission',
+                                    extra_context = {'newsletter': my_newsletter})

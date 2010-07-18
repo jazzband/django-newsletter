@@ -172,6 +172,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     list_display = ('admin_title', 'admin_newsletter', 'admin_preview', 'date_create', 'date_modify')
     list_filter = ('newsletter', )
     date_hierarchy = 'date_create'
+    prepopulated_fields = {'slug': ('title',)}
     
     inlines = [ArticleInline,]
     
