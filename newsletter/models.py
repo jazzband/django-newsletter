@@ -462,7 +462,7 @@ class Submission(models.Model):
                     logging.debug(ugettext(u'Submitting message to: %s.' % subscription))
                     message.send()
                 except Exception, e:
-                    logging.error(ugettext(u'Message %s failed with error: %s' % (subscription, e)))
+                    logging.error(ugettext(u'Message %(subscription)s failed with error: %(e)s') % {"subscription":subscription, "e":e})
             
             # For some reason this is not working. Bug!?        
             #conn.close()

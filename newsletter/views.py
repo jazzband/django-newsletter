@@ -72,7 +72,7 @@ def subscribe_user(request, newsletter_slug, confirm=False):
         instance.save()
         
         request.user.message_set.create(message=_('You have been subscribed to %s.') % my_newsletter)        
-        logging.debug(_('User %s subscribed to %s.') % (request.user, my_newsletter))
+        logging.debug(_('User %(rs)s subscribed to %(my_newsletter)s.') % {"rs":request.user, "my_newsletter": my_newsletter})
 
     if already_subscribed:
         request.user.message_set.create(message=_('You are already subscribed to %s.') % my_newsletter) 
@@ -98,7 +98,7 @@ def unsubscribe_user(request, newsletter_slug, confirm=False):
             instance.save()
         
             request.user.message_set.create(message=_('You have been unsubscribed from %s.') % my_newsletter)        
-            logging.debug(_('User %s unsubscribed from %s.') % (request.user, my_newsletter))
+            logging.debug(_('User %(rs)s unsubscribed from %(my_newsletter)s.') % {"rs":request.user, "my_newsletter":my_newsletter })
         
     except Subscription.DoesNotExist:
         not_subscribed = True
