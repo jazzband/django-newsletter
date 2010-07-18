@@ -39,7 +39,7 @@ def check_email(email, ignore_errors=False):
     if len(email) <= email_length or ignore_errors:
         return email[:email_length]
     else:
-        raise forms.ValidationError(_("E-mail address %s too long, maximum length is %s characters.") % (email, email_length))
+        raise forms.ValidationError(_("E-mail address %(email)s too long, maximum length is %(email_length)s characters.") % {"email":email, "email_length":email_length})
 
 def check_name(name, ignore_errors=False):
     if settings.DEBUG:
@@ -49,7 +49,7 @@ def check_name(name, ignore_errors=False):
     if len(name) <= name_length or ignore_errors:        
         return name[:name_length]
     else:
-        raise forms.ValidationError(_("Name %s too long, maximum length is %s characters.") % (name, name_length))
+        raise forms.ValidationError(_("Name %(name)s too long, maximum length is %(name_length)s characters.") % {"name":name, "name_length":name_length})
 
 def parse_csv(myfile, newsletter, ignore_errors=False):
     import csv
@@ -92,7 +92,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
 
     #assert namecol != mailcol, 'Name and e-mail column should not be the same.'
     if namecol == mailcol:
-        raise forms.ValidationError(_("Could not properly determine the proper columns in the CSV-file. There should be a field called 'name' or '%s' and one called 'e-mail' or '%s'.") % (_("name"), _("e-mail")))
+        raise forms.ValidationError(_("Could not properly determine the proper columns in the CSV-file. There should be a field called 'name' or '%(name)s' and one called 'e-mail' or '%(e-mail)s'.") % {"name":_("name"), "e-mail":_("e-mail")})
 
     logging.debug('Extracting data.')
     
