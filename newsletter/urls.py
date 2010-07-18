@@ -14,6 +14,7 @@ urlpatterns = patterns('newsletter.views',
     url(r'^(?P<newsletter_slug>[-\w]+)/subscription/(?P<email>[-_a-zA-Z@\.]+)/(?P<action>[a-z]+)/activate/(?P<activation_code>[a-zA-Z0-9]+)/$', 'update_subscription', name='newsletter_update_activate'),
     url(r'^(?P<newsletter_slug>[-\w]+)/subscription/(?P<email>[-_a-zA-Z@\.]+)/(?P<action>[a-z]+)/activate/$', 'update_subscription', name='newsletter_update'),
     
-    url(r'^(?P<newsletter_slug>[-\w]+)/archive/$','archive', name='newsletter_archive'),
+    url(r'^(?P<newsletter_slug>[-\w]+)/archive/(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\w{1,2})/(?P<slug>[-\w]+)/$', 'archive_detail', name='newsletter_archive_detail'),
+    url(r'^(?P<newsletter_slug>[-\w]+)/archive/$', 'archive', name='newsletter_archive'),
 )
 

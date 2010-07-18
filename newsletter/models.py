@@ -392,6 +392,7 @@ class Article(models.Model):
 
 class Message(models.Model):
     title = models.CharField(max_length=200, verbose_name=_('title'))
+    slug = models.SlugField(verbose_name=_('slug'))
     
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), default=Newsletter.get_default_id())
     
@@ -409,6 +410,7 @@ class Message(models.Model):
     class Meta:
         verbose_name = _('message')
         verbose_name_plural = _('messages')
+        unique_together = ("slug", "newsletter")
         
     @classmethod        
     def get_default_id(cls):
@@ -491,6 +493,15 @@ class Submission(models.Model):
     def save(self):
         self.newsletter = self.message.newsletter
         return super(Submission, self).save()
+
+    @permalink
+    def get_absolute_url(self):
+        return ('newsletter_archive_detail', (),
+                {'newsletter_slug': self.newsletter.slug,
+                 'year': self.publish_date.year,
+                 'month':self.publish_date.month,
+                 'day':self.publish_date.day,
+                 'slug':self.message.slug })
 
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), editable=False)
     message = models.ForeignKey('Message', verbose_name=_('message'), editable=True, default=Message.get_default_id(), null=False)
