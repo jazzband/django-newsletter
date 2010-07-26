@@ -98,10 +98,10 @@ class Newsletter(models.Model):
     on_site = CurrentSiteManager()
     objects = on_site # To make stuff consistent
     
-    subscribe_template = models.ForeignKey('EmailTemplate', default=EmailTemplate.get_default_id('subscribe'), related_name='subcribe_template', verbose_name=_('subscribe template'), limit_choices_to={'action':'subscribe'})
-    unsubscribe_template = models.ForeignKey('EmailTemplate', default=EmailTemplate.get_default_id('unsubscribe'), related_name='unsubcribe_template', verbose_name=_('unsubscribe template'), limit_choices_to={'action':'unsubscribe'})
-    update_template = models.ForeignKey('EmailTemplate', default=EmailTemplate.get_default_id('update'), related_name='update_template', verbose_name=_('update template'), limit_choices_to={'action':'update'})
-    message_template = models.ForeignKey('EmailTemplate', default=EmailTemplate.get_default_id('message'), related_name='message_template', verbose_name=_('message template'), limit_choices_to={'action':'message'})
+    subscribe_template = models.ForeignKey('EmailTemplate', default=lambda: EmailTemplate.get_default_id('subscribe'), related_name='subcribe_template', verbose_name=_('subscribe template'), limit_choices_to={'action':'subscribe'})
+    unsubscribe_template = models.ForeignKey('EmailTemplate', default=lambda: EmailTemplate.get_default_id('unsubscribe'), related_name='unsubcribe_template', verbose_name=_('unsubscribe template'), limit_choices_to={'action':'unsubscribe'})
+    update_template = models.ForeignKey('EmailTemplate', default=lambda: EmailTemplate.get_default_id('update'), related_name='update_template', verbose_name=_('update template'), limit_choices_to={'action':'update'})
+    message_template = models.ForeignKey('EmailTemplate', default=lambda: EmailTemplate.get_default_id('message'), related_name='message_template', verbose_name=_('message template'), limit_choices_to={'action':'message'})
         
     def __unicode__(self):
         return self.title
@@ -394,7 +394,7 @@ class Message(models.Model):
     title = models.CharField(max_length=200, verbose_name=_('title'))
     slug = models.SlugField(verbose_name=_('slug'))
     
-    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), default=Newsletter.get_default_id())
+    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), default=Newsletter.get_default_id)
     
     date_create = models.DateTimeField(verbose_name=_('created'), auto_now_add=True, editable=False) 
     date_modify = models.DateTimeField(verbose_name=_('modified'), auto_now=True, editable=False) 
@@ -504,7 +504,7 @@ class Submission(models.Model):
                  'slug':self.message.slug })
 
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), editable=False)
-    message = models.ForeignKey('Message', verbose_name=_('message'), editable=True, default=Message.get_default_id(), null=False)
+    message = models.ForeignKey('Message', verbose_name=_('message'), editable=True, default=Message.get_default_id, null=False)
     
     subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), limit_choices_to={ 'subscribed' :True })
 
