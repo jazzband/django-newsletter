@@ -44,7 +44,7 @@ class NewsletterListTestCase(WebTestCase):
 
 
 class AnonymousNewsletterListTestCase(NewsletterListTestCase):
-    """ Base test case for anonymous acccess to the newsletetr webspace. """
+    """ Test case for anonymous views of newsletter. """
 
     def test_list(self):
         """ Test whether all newsletters are in the list and whether the links
@@ -60,7 +60,7 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
 
 
 class UserNewsletterListTestCase(UserTestCase,
-                                 AnonymousNewsletterListTestCase):
+                                 NewsletterListTestCase):
 
     def get_user_subscription(self, newsletter):
         subscriptions = Subscription.objects.filter(newsletter=newsletter,
@@ -127,7 +127,7 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
 
         self.unsubscribe_url = \
             reverse('newsletter_unsubscribe_request',
-                    kwargs={'newsletter_slug': elf.n.slug})
+                    kwargs={'newsletter_slug': self.n.slug})
 
         self.unsubscribe_confirm_url = \
             reverse('newsletter_unsubscribe_confirm',
