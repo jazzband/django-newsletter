@@ -4,6 +4,9 @@ from newsletter.forms import *
 from utils import *
 
 class MailingTestCase(MailTestCase):
+    
+    fixtures = ['default_templates']
+    
     def setUp(self):
         self.n = Newsletter(title='Test newsletter',
                             slug='test-newsletter',
