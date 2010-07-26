@@ -3,7 +3,7 @@
 # django-newsletter: Django app for managing multiple mass-mailing lists with 
 # both plaintext as well as HTML templates (and TinyMCE editor for HTML messages), 
 # images and a smart queueing system all right from the admin interface.
-# Copyright (C) 2008-2009 Mathijs de Bruin
+# Copyright (C) 2008-2010 Mathijs de Bruin
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -18,22 +18,31 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from distutils.core import setup
+import distribute_setup
+distribute_setup.use_setuptools()
+
+from setuptools import setup, find_packages
 
 try:
     README = open('README.rst').read()
 except:
     README = None
 
+try:
+    REQUIREMENTS = open('requirements.txt').read()
+except:
+    REQUIREMENTS = None
+
 setup(
     name = 'django-newsletter',
     version = "0.1",
     description = 'Django app for managing multiple mass-mailing lists with both plaintext as well as HTML templates (and TinyMCE editor for HTML messages), images and a smart queueing system all right from the admin interface.',
     long_description = README,
+    install_requires=REQUIREMENTS,
     author = 'Mathijs de Bruin',
-    author_email = 'drbob@dokterbob.net',
+    author_email = 'mathijs@mathijsfietst.nl',
     url = 'http://github.com/dokterbob/django-newsletter',
-    packages = ['newsletter', 'newsletter.templatetags',],
+    packages = find_packages(exclude=['demo']),
     include_package_data = True,
     classifiers = ['Development Status :: 4 - Beta',
                    'Environment :: Web Environment',

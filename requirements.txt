@@ -1,0 +1,5 @@
+webtest
+django-webtest
+django-extensions
+Django>=1.1
+vobject
