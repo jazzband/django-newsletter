@@ -13,32 +13,30 @@ from utils import *
 WAIT_TIME=1
 
 
+class NoNewsLetterListTestCase(WebTestCase):
+    """ Test case for when no newsletter exists """
+    
+    def setUp(self):
+        Newsletter.objects.all().delete()
+        
+        self.list_url = reverse('newsletter_list')
+    
+    def test_list(self):
+        """ Test whether all newsletters are in the list and whether the links
+            to them are correct. """
+            
+        r = self.client.get(self.list_url)
+        
+        self.assertEqual(r.status_code, 404)
+
+
 class NewsletterListTestCase(WebTestCase):
     """ Base class for newsletter test cases. """
+    
+    fixtures = ['default_templates', 'test_newsletters']
 
     def setUp(self):
-        n1 = Newsletter(title='First newsletter',
-                        slug='first_newsletter',
-                        sender='Test Sender',
-                        email='test@testsender.com')
-        n1.save()
-        n1.site = get_default_sites()
-
-        n2 = Newsletter(title='Second newsletter',
-                        slug='second_newsletter',
-                        sender='Test Sender',
-                        email='test@testsender.com')
-        n2.save()
-        n2.site = get_default_sites()
-
-        n3 = Newsletter(title='Third newsletter',
-                        slug='third_newsletter',
-                        sender='Test Sender',
-                        email='test@testsender.com')
-        n3.save()
-        n3.site = get_default_sites()
-
-        self.newsletters = [n1, n2, n3]
+        self.newsletters = Newsletter.objects.all()
 
         self.list_url = reverse('newsletter_list')
 
@@ -51,7 +49,7 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
         to them are correct. """
         r = self.client.get(self.list_url)
 
-        for n in self.newsletters:
+        for n in self.newsletters.filter(visible=True):
             self.assertContains(r, n.title)
 
             detail_url = reverse('newsletter_detail',
@@ -78,7 +76,7 @@ class UserNewsletterListTestCase(UserTestCase,
 
         formset = r.context['formset']
         total_forms = len(formset.forms)
-        self.assertEqual(total_forms, len(self.newsletters))
+        self.assertEqual(total_forms, len(self.newsletters.filter(visible=True)))
         self.assertContains(r, \
             '<input type="hidden" name="form-TOTAL_FORMS" value="%d" id="id_form-TOTAL_FORMS" />' % total_forms)
         self.assertContains(r, \
@@ -108,6 +106,8 @@ class UserNewsletterListTestCase(UserTestCase,
         #     r = self.client.post(self.list_url, params)
 
 class WebSubscribeTestCase(WebTestCase, MailTestCase):
+    
+    fixtures = ['default_templates']
 
     def setUp(self):
         self.n = Newsletter(title='Test newsletter',
