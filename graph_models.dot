@@ -348,6 +348,13 @@ digraph name {
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Bold">slug</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Bold">SlugField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
         ><FONT FACE="Helvetica Bold">newsletter</FONT
         ></TD>
         <TD ALIGN="LEFT"
@@ -471,18 +478,6 @@ digraph name {
     newsletter_models_Newsletter -> newsletter_models_EmailTemplate
     [label="message_template"] ;
     
-    
-    django_contrib_sites_models_Site [label=<
-        <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-        <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
-        ><FONT FACE="Helvetica Bold" COLOR="white"
-        >Site</FONT></TD></TR>
-        </TABLE>
-        >]
-    
-    newsletter_models_Newsletter -> django_contrib_sites_models_Site
-    [label="site"] [arrowhead=normal arrowtail=normal];
-    
   
     
     
@@ -522,10 +517,6 @@ digraph name {
     
     newsletter_models_Submission -> newsletter_models_Message
     [label="message"] ;
-    
-    
-    newsletter_models_Submission -> newsletter_models_Subscription
-    [label="subscriptions"] [arrowhead=normal arrowtail=normal];
     
   
 
