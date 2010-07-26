@@ -55,6 +55,9 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
             detail_url = reverse('newsletter_detail',
                                  kwargs={'newsletter_slug': n.slug})
             self.assertContains(r, '<a href="%s">' % detail_url)
+        
+        for n in self.newsletters.filter(visible=False):
+            self.assertNotContains(r, n.title)
 
 
 class UserNewsletterListTestCase(UserTestCase,
