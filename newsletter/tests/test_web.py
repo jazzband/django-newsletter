@@ -59,6 +59,37 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
         for n in self.newsletters.filter(visible=False):
             self.assertNotContains(r, n.title)
 
+    def test_detail(self):
+        for n in self.newsletters:
+            detail_url = reverse('newsletter_detail',
+                                 kwargs={'newsletter_slug': n.slug})
+
+            subscribe_url = reverse('newsletter_subscribe_request',
+                                 kwargs={'newsletter_slug': n.slug})
+
+
+            unsubscribe_url = reverse('newsletter_unsubscribe_request',
+                                 kwargs={'newsletter_slug': n.slug})
+
+
+            update_url = reverse('newsletter_update_request',
+                                 kwargs={'newsletter_slug': n.slug})
+
+            archive_url = reverse('newsletter_archive',
+                                 kwargs={'newsletter_slug': n.slug})
+
+            
+            r = self.client.get(detail_url)
+            
+            if not n.visible:
+                self.assertEqual(r.status_code, 404)
+                continue
+            
+            self.assertContains(r, '<a href="%s">' % subscribe_url )
+            self.assertContains(r, '<a href="%s">' % update_url )
+            self.assertContains(r, '<a href="%s">' % unsubscribe_url )
+            self.assertContains(r, '<a href="%s">' % archive_url )
+
 
 class UserNewsletterListTestCase(UserTestCase,
                                  NewsletterListTestCase):
