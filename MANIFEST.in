@@ -2,3 +2,8 @@ include README.rst
 include LICENSE
 include COPYRIGHT
 include graph_models.*
+recursive-include newsletter/fixtures *.json
+recursive-include newsletter/templates *.html
+recursive-include newsletter/static *
+recursive-include newsletter/locale *
+recursive-include newsletter/addressimport/testdata *
