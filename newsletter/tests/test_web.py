@@ -89,6 +89,18 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
             self.assertContains(r, '<a href="%s">' % update_url )
             self.assertContains(r, '<a href="%s">' % unsubscribe_url )
             self.assertContains(r, '<a href="%s">' % archive_url )
+            
+            r = self.client.get(subscribe_url)
+            self.assertContains(r, n.title, status_code=200)
+
+            r = self.client.get(unsubscribe_url)
+            self.assertContains(r, n.title, status_code=200)
+
+            r = self.client.get(update_url)
+            self.assertContains(r, n.title, status_code=200)
+
+            r = self.client.get(archive_url)
+            self.assertContains(r, n.title, status_code=200)
 
 
 class UserNewsletterListTestCase(UserTestCase,
