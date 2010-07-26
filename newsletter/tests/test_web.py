@@ -134,22 +134,22 @@ class UserNewsletterListTestCase(UserTestCase,
             self.assertContains(r, form['id'])
             self.assertContains(r, form['subscribed'])
 
-    def test_update(self):
-        r = self.client.get(self.list_url)
-
-        formset = r.context['formset']
-        #TDB
-        # total_forms = len(self.newsletters)
-        # params = {'form-TOTAL_FORMS' : total_forms,
-        #           'form-INITIAL_FORMS' : total_forms}
-        #
-        # for n in self.newsletters:
-        #     for x in xrange(0, total_forms):
-        #         field = 'form-%d-id' % x
-        #         params.update({field: self.newsletters[x-1]})
-        #         if n == self.newsletters[x-1]:
-        #             params.update('form-%d-subscribed' % x: 'checked'})
-        #     r = self.client.post(self.list_url, params)
+    # def test_update(self):
+    #     r = self.client.get(self.list_url)
+    # 
+    #     formset = r.context['formset']
+    # 
+    #     total_forms = self.newsletters.count()
+    #     params = {'form-TOTAL_FORMS' : total_forms,
+    #               'form-INITIAL_FORMS' : total_forms}
+    #     
+    #     for n in self.newsletters:
+    #         for x in xrange(0, total_forms):
+    #             field = 'form-%d-id' % x
+    #             params.update({field: self.newsletters[x-1]})
+    #             if n == self.newsletters[x-1]:
+    #                 params.update('form-%d-subscribed' % x: 'checked'})
+    #         r = self.client.post(self.list_url, params)
 
 class WebSubscribeTestCase(WebTestCase, MailTestCase):
     
@@ -231,6 +231,23 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         subscription = self.get_user_subscription()
         self.assert_(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
+    
+    def test_subscribe_twice(self):
+        # After subscribing we should not be able to subscribe again
+        subscription = Subscription(user=self.user, newsletter=self.n)
+        subscription.subscribed = True
+        subscription.unsubscribed = False
+        subscription.save()
+        
+        r = self.client.get(self.subscribe_url)
+
+        self.assertContains(r, self.n.title, status_code=200)
+
+        self.assertEqual(r.context['newsletter'], self.n)
+        self.assertEqual(r.context['user'], self.user)
+
+        self.assertNotContains(r, 'action="%s"' % self.subscribe_confirm_url)
+        self.assertNotContains(r, 'id="id_submit"')
 
     def test_unsubscribe_view(self):
         """ Test the unsubscription form. """
@@ -276,6 +293,21 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         self.assertLessThan(subscription.unsubscribe_date, datetime.now() \
                                 + timedelta(seconds=1))
 
+    def test_unsubscribe_twice(self):
+        subscription = Subscription(user=self.user, newsletter=self.n)
+        subscription.subscribed = False
+        subscription.unsubscribed = True
+        subscription.save()
+        
+        r = self.client.get(self.unsubscribe_url)
+
+        self.assertContains(r, self.n.title, status_code=200)
+
+        self.assertEqual(r.context['newsletter'], self.n)
+        self.assertEqual(r.context['user'], self.user)
+
+        self.assertNotContains(r, 'action="%s"' % self.unsubscribe_confirm_url)
+        self.assertNotContains(r, 'id="id_submit"')
 
 class AnonymousSubscribeTestCase(WebSubscribeTestCase, ComparingTestCase):
 
