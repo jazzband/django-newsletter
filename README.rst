@@ -33,7 +33,7 @@ Usage
 #) Submit your message with ``./manage.py runjob submit``
 #) For a proper understanding, please take a look at the model graph.
 
-.. image:: model_graph.png
+.. image:: http://github.com/dokterbob/django-newsletter/raw/master/graph_models.png
 
 Unit tests
 ----------
