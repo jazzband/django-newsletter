@@ -8,3 +8,5 @@ build
 dist
 MANIFEST
 *.egg-info
+distribute-*
+.DS_Store
