@@ -478,3 +478,39 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         dt = (datetime.now() - subscription.unsubscribe_date).seconds
         self.assertLessThan(dt, 2)
+
+    def test_update_request_view(self):
+        """ Test the update request form. """
+        r = self.client.get(self.update_url)
+
+        self.assertContains(r, self.n.title, status_code=200)
+        self.assertContains(r, 'input id="id_email_field" type="text" name="email_field"')
+
+        self.assertEqual(r.context['newsletter'], self.n)
+
+    def test_update_request_post(self):
+        """ Test the update request post view. """
+        subscription = Subscription(newsletter=self.n,
+                                    name='Test Name',
+                                    email='test@email.com',
+                                    subscribed=True)
+        subscription.save()
+
+        r = self.client.post(self.update_url, {'email_field': 'test@email.com'})
+
+        self.assertContains(r, self.n.title, status_code=200)
+        self.assertNotContains(r, 'input id="id_email_field" type="text" name="email"')
+
+        self.assertInContext(r, 'newsletter', Newsletter, self.n)
+        self.assertInContext(r, 'form', UpdateRequestForm)
+
+        self.assertEqual(subscription, r.context['form'].instance)
+
+        """ Check the subscription email. """
+        self.assertEquals(len(mail.outbox), 1)
+
+        activate_url = subscription.update_activate_url()
+        full_activate_url = 'http://%s%s' % (self.site.domain, activate_url)
+
+        self.assertEmailContains(full_activate_url)
+
