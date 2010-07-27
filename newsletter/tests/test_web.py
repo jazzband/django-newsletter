@@ -133,6 +133,13 @@ class UserNewsletterListTestCase(UserTestCase,
             self.assertContains(r, form['id'])
             self.assertContains(r, form['subscribed'])
 
+    def test_update(self):
+        for n in self.newsletters.filter(visible=True):
+            r = self.client.post(self.list_url, {'form-0-id': n.id,
+                                                 'form-0-subscribed': ''})
+            
+            self.assert_(n.subscribed)
+
     # def test_update(self):
     #     r = self.client.get(self.list_url)
     # 
