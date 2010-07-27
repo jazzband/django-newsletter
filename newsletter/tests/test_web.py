@@ -514,3 +514,30 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         self.assertEmailContains(full_activate_url)
 
+    def test_update_request_activate(self):
+        """ Update a request. """
+        subscription = Subscription(newsletter=self.n,
+                                    name='Test Name',
+                                    email='test@email.com')
+        subscription.save()
+
+        activate_url = subscription.subscribe_activate_url()
+
+        r = self.client.get(activate_url)
+        self.assertInContext(r, 'form', UpdateForm)
+        self.assertContains(r, subscription.activation_code)
+
+        testname2 = 'Test Name2'
+        testemail2 = 'test2@email.com'
+        r = self.client.post(activate_url, \
+                {'name_field': testname2,
+                 'email_field': testemail2,
+                 'user_activation_code': subscription.activation_code})
+        self.assertInContext(r, 'form', UpdateForm)
+
+        subscription = getattr(r.context['form'], 'instance', None)
+        self.assert_(subscription)
+        self.assert_(subscription.subscribed)
+        self.assertEqual(subscription.name, testname2)
+        self.assertEqual(subscription.email, testemail2)
+
