@@ -171,6 +171,10 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
             reverse('newsletter_subscribe_confirm',
                     kwargs={'newsletter_slug': self.n.slug})
 
+        self.update_url = \
+            reverse('newsletter_update_request',
+                    kwargs={'newsletter_slug': self.n.slug})
+
         self.unsubscribe_url = \
             reverse('newsletter_unsubscribe_request',
                     kwargs={'newsletter_slug': self.n.slug})
@@ -183,6 +187,7 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
 
     def test_urls(self):
         self.assert_(len(self.subscribe_url))
+        self.assert_(len(self.update_url))
         self.assert_(len(self.unsubscribe_url))
         self.assert_(len(self.subscribe_confirm_url))
         self.assert_(len(self.unsubscribe_confirm_url))
@@ -309,7 +314,8 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         self.assertNotContains(r, 'action="%s"' % self.unsubscribe_confirm_url)
         self.assertNotContains(r, 'id="id_submit"')
 
-class AnonymousSubscribeTestCase(WebSubscribeTestCase, ComparingTestCase):
+class AnonymousSubscribeTestCase(WebSubscribeTestCase, 
+                                 ComparingTestCase):
 
     def test_subscribe_request_view(self):
         """ Test the subscription form. """
@@ -345,6 +351,37 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase, ComparingTestCase):
         full_activate_url = 'http://%s%s' % (self.site.domain, activate_url)
 
         self.assertEmailContains(full_activate_url)
+
+    def test_subscribe_twice(self):
+        """ Subscribing twice should not be possible """
+        subscription = Subscription(newsletter=self.n,
+                                    name='Test Name',
+                                    email='test@email.com',
+                                    subscribed=True)
+        subscription.save()
+
+        r = self.client.post(self.subscribe_url, {'name_field': 'Test Name',
+                                                  'email_field': 'test@email.com'})
+        
+        self.assertContains(r, "already been subscribed to",
+                            status_code=200)
+        
+    def test_user_update(self):
+        """ We should not be able to update anonymous for an email address belonging
+            to an existing user. """
+
+        from django.contrib.auth.models import User
+        password = User.objects.make_random_password()
+        user = User.objects.create_user('john', 'lennon@thebeatles.com', password)
+        user.save()
+
+        # Attempt to subscribe with user email address
+        for url in (self.subscribe_url, self.update_url, self.unsubscribe_url):
+            r = self.client.post(url, {'name_field': 'Test Name',
+                                                      'email_field': user.email})
+
+            self.assertContains(r, "Please log in as that user and try again.",
+                                status_code=200)
 
     def test_subscribe_request_activate(self):
         """ Test subscription activation. """
