@@ -4,6 +4,8 @@ from django import forms
 from django.forms import widgets
 from django.forms.util import ValidationError, ErrorList
 
+from django.contrib.auth.models import User
+
 from models import Subscription
 
 def getSubscriptionFromEmail(mynewsletter, myemail):
@@ -51,17 +53,26 @@ class SubscribeRequestForm(NewsletterForm):
         myfield = self.base_fields['email_field']
         value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email_field'))
 
-        # Set our instance on the basis of the email field, or raise a validationerror
+        # Check whether we have already been subscribed to
         try:
             subscription = Subscription.objects.get(email_field__exact=value, newsletter=self.instance.newsletter)
             if subscription.subscribed:
                 raise ValidationError(_("Your e-mail address has already been subscribed to."))
-            
-            self.instance = subscription
-                
+                            
         except Subscription.DoesNotExist:
             pass
         
+        # Check whether we should be subscribed to as a user
+        try:
+            user = User.objects.get(email__exact=value)
+            
+            raise ValidationError(_("This e-mail address belongs to the user '%(username)s'. \
+                                     Please log in as that user and try again.") 
+                                     % {'username': user.username})
+        
+        except User.DoesNotExist:
+            pass
+            
         return value
 
 class UpdateRequestForm(NewsletterForm):
