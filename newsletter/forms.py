@@ -53,15 +53,6 @@ class SubscribeRequestForm(NewsletterForm):
         myfield = self.base_fields['email_field']
         value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email_field'))
 
-        # Check whether we have already been subscribed to
-        try:
-            subscription = Subscription.objects.get(email_field__exact=value, newsletter=self.instance.newsletter)
-            if subscription.subscribed:
-                raise ValidationError(_("Your e-mail address has already been subscribed to."))
-                            
-        except Subscription.DoesNotExist:
-            pass
-        
         # Check whether we should be subscribed to as a user
         try:
             user = User.objects.get(email__exact=value)
@@ -72,7 +63,16 @@ class SubscribeRequestForm(NewsletterForm):
         
         except User.DoesNotExist:
             pass
-            
+
+        # Check whether we have already been subscribed to
+        try:
+            subscription = Subscription.objects.get(email_field__exact=value, newsletter=self.instance.newsletter)
+            if subscription.subscribed:
+                raise ValidationError(_("Your e-mail address has already been subscribed to."))
+                            
+        except Subscription.DoesNotExist:
+            pass
+                    
         return value
 
 class UpdateRequestForm(NewsletterForm):
@@ -87,6 +87,17 @@ class UpdateRequestForm(NewsletterForm):
         myfield = self.base_fields['email_field']
         value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email_field'))
         
+        # Check whether we should update as a user
+        try:
+            user = User.objects.get(email__exact=value)
+            
+            raise ValidationError(_("This e-mail address belongs to the user '%(username)s'. \
+                                     Please log in as that user and try again.") 
+                                     % {'username': user.username})
+        
+        except User.DoesNotExist:
+            pass
+
         # Set our instance on the basis of the email field, or raise a validationerror
         try:
             self.instance = Subscription.objects.get(newsletter=self.instance.newsletter, email_field__exact=value)
