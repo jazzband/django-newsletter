@@ -12,7 +12,7 @@ from django.views.generic import list_detail, date_based
 from django.contrib.sites.models import Site
 from django.contrib.auth.decorators import login_required
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from newsletter.models import *
 from newsletter.forms import *
@@ -38,7 +38,7 @@ def newsletter_list(request):
             formset = SubscriptionFormSet(request.POST, queryset=qs)
             if formset.is_valid():
                 instances = formset.save()
-                request.user.message_set.create(message="Uw wijzigingen zijn bewaard.")
+                request.user.message_set.create(message=_("Your changes have been saved."))
             else:
                 logging.debug('Form was not very valid.')
         else:
