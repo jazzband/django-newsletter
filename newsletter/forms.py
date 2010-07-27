@@ -16,11 +16,10 @@ class NewsletterForm(forms.ModelForm):
         fields = ('name_field', 'email_field')
 
     def __init__(self, *args, **kwargs):
-        if kwargs.has_key('newsletter'):
-            newsletter = kwargs['newsletter']
-            del kwargs['newsletter']            
-        else:
-            newsletter = None
+        
+        assert kwargs.has_key('newsletter'), 'No newsletter specified'
+        
+        newsletter = kwargs.pop('newsletter')
         
         if kwargs.has_key('ip'):
             ip = kwargs['ip']
@@ -30,8 +29,7 @@ class NewsletterForm(forms.ModelForm):
         
         super(NewsletterForm, self).__init__(*args, **kwargs)
          
-        if newsletter:
-            self.instance.newsletter = newsletter
+        self.instance.newsletter = newsletter
         
         if ip:
             self.instance.ip = ip
