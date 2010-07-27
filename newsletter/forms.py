@@ -8,14 +8,6 @@ from django.contrib.auth.models import User
 
 from models import Subscription
 
-def getSubscriptionFromEmail(mynewsletter, myemail):
-        try:
-            instance = Subscription.objects.get(newsletter__id=mynewsletter.id, email_field__exact=myemail)
-        except Subscription.DoesNotExist:
-            raise ValidationError(_("The e-mail address you specified has not been subscribed to."))
-        
-        return instance
-
 class NewsletterForm(forms.ModelForm):
     """ This is the base class for all forms managing subscriptions. """
     
