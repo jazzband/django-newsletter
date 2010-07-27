@@ -514,6 +514,19 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         self.assertEmailContains(full_activate_url)
 
+    def test_unsubscribe_update_unactivated(self):
+        """ Test updating nonexisting subscriptions view. """
+        subscription = Subscription(newsletter=self.n,
+                                    name='Test Name',
+                                    email='test@email.com',
+                                    subscribed=False)
+        subscription.save()
+        
+        for url in (self.update_url, self.unsubscribe_url):
+            r = self.client.post(url, {'email_field': 'test@email.com'})
+        
+            self.assertContains(r, "This subscription has not yet been activated.")
+        
     def test_update_request_activate(self):
         """ Update a request. """
         subscription = Subscription(newsletter=self.n,
