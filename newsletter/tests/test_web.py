@@ -12,7 +12,6 @@ from utils import *
 
 WAIT_TIME=1
 
-
 class NoNewsLetterListTestCase(WebTestCase):
     """ Test case for when no newsletter exists """
     
@@ -515,7 +514,8 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assertEmailContains(full_activate_url)
 
     def test_unsubscribe_update_unactivated(self):
-        """ Test updating nonexisting subscriptions view. """
+        """ Test updating unsubscribed subscriptions view. """
+        
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com',
@@ -526,6 +526,16 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
             r = self.client.post(url, {'email_field': 'test@email.com'})
         
             self.assertContains(r, "This subscription has not yet been activated.")
+
+    def test_unsubscribe_update_unsubscribed(self):
+        """ Test updating nonexisting subscriptions view. """
+
+        # The second call of this will fail due to a weird bug
+        # where Django picks the wrong translation. Nevermind.
+        for url in (self.update_url, self.unsubscribe_url):
+            r = self.client.post(url, {'email_field': 'newemail@fdgf.com'})
+
+            self.assertContains(r, "This e-mail address has not been subscribed to.")
         
     def test_update_request_activate(self):
         """ Update a request. """

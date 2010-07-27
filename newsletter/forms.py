@@ -73,6 +73,12 @@ class UpdateRequestForm(NewsletterForm):
     class Meta(NewsletterForm.Meta):
         fields = ('email_field',)
     
+    def clean(self):
+        if not self.instance.subscribed:
+            raise ValidationError(_("This subscription has not yet been activated."))
+
+        return super(UpdateRequestForm, self).clean()
+    
     def clean_email_field(self):
         myfield = self.base_fields['email_field']
         value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email_field'))
@@ -91,10 +97,7 @@ class UpdateRequestForm(NewsletterForm):
         # Set our instance on the basis of the email field, or raise a validationerror
         try:
             self.instance = Subscription.objects.get(newsletter=self.instance.newsletter, email_field__exact=value)
-    
-            if not self.instance.subscribed:
-                raise ValidationError(_("This subscription has not yet been activated."))
-                
+                    
         except Subscription.DoesNotExist:
                 raise ValidationError(_("This e-mail address has not been subscribed to."))
                 
@@ -103,10 +106,10 @@ class UpdateRequestForm(NewsletterForm):
 class UnsubscribeRequestForm(UpdateRequestForm):
     """ Similar to previous form but checks if we have not already been unsubscribed. """
     
-    def clean(self):        
+    def clean(self):
         if self.instance.unsubscribed:
             raise ValidationError(_("This subscription has already been unsubscribed from."))
-        
+
         return super(UnsubscribeRequestForm, self).clean()
 
 class UpdateForm(NewsletterForm):
