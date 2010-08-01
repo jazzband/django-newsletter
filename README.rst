@@ -15,14 +15,14 @@ should still be considered a work in progress.
 
 Requirements
 ------------
-Please refere to ``requirements.txt`` for an updated list of required packes.
+Please refere to `requirements.txt <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_ for an updated list of required packes.
 
 Installation
 ------------
 #) Install the package using ``pip install -e git://github.com/dokterbob/django-newsletter.git#egg=django_newsletter``
 #) ``ln -s <my_project>/<media_dir> <newsletter_install_dir>/media``
-#) Add newsletter to ``INSTALLED_APPS`` in ``settings.py``
-#) Run unit tests just to be sure it is working: ``./manage.py test``.
+#) Add ``newsletter`` to ``INSTALLED_APPS`` in ``settings.py``
+#) Run unit tests just to be sure it is working: ``./manage.py test newsletter``.
 #) If it is not, let me know. Create an issue on GitHub or send me a message.
 
 Usage
