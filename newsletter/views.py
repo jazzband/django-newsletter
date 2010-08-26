@@ -245,16 +245,23 @@ def archive(request, newsletter_slug):
 def archive_detail(request, newsletter_slug, year, month, day, slug):
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug, visible=True)
     
-    submissions = Submission.objects.filter(newsletter=my_newsletter, publish=True)
+    submission = get_object_or_404(Submission, newsletter=my_newsletter, 
+                                               publish=True,
+                                               publish_date__year=year,
+                                               publish_date__month=month,
+                                               publish_date__day=day, 
+                                               message__slug=slug)
+
+    message = submission.message
+    (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', message.newsletter)
     
-    return date_based.object_detail(request, 
-                                    year=year,
-                                    month=month, 
-                                    day=day,
-                                    queryset=submissions, 
-                                    date_field='publish_date',
-                                    month_format='%m',
-                                    slug=slug,
-                                    slug_field='message__slug',
-                                    template_object_name='submission',
-                                    extra_context = {'newsletter': my_newsletter})
+    if not html_template:
+        raise Http404(_('No HTML template associated with the newsletter this message belongs to.'))
+    
+    c = Context({'message' : message, 
+                 'site' : Site.objects.get_current(),
+                 'newsletter' : message.newsletter,
+                 'date' : datetime.now()})
+    
+    return HttpResponse(html_template.render(c))
+
