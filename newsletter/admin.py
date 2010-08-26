@@ -317,12 +317,12 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     def admin_status(self, obj):
         if obj.unsubscribed:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', obj.admin_status_text())
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text(obj))
         
         if obj.subscribed:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', obj.admin_status_text())
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text(obj))
         else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', obj.admin_status_text())
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text(obj))
         
     admin_status.short_description = ''
     admin_status.allow_tags = True
