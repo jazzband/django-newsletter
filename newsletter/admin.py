@@ -25,6 +25,9 @@ from django.shortcuts import render_to_response
 
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+from tinymce.widgets import TinyMCE
+
+
 # This function is new in Django 1.2 - fallback to dummy identity
 # function not to break compatibility with older releases.
 try:
@@ -163,11 +166,13 @@ class ArticleInline(admin.StackedInline):
             'classes': ('collapse',)        
         }),   
     )
+    
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE},
+    }
+
         
 class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
-    class Media:
-        js = (settings.MEDIA_URL + 'newsletter/admin/tiny_mce/tiny_mce.js', settings.MEDIA_URL + 'newsletter/admin/tiny_mce/textareas.js')
-        
     save_as = True
     list_display = ('admin_title', 'admin_newsletter', 'admin_preview', 'date_create', 'date_modify')
     list_filter = ('newsletter', )
