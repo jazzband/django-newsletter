@@ -1,3 +1,4 @@
 django-extensions
 Django>=1.1
 vobject
+django-tinymce
