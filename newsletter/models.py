@@ -15,7 +15,7 @@ from django.utils.translation import ugettext
 
 from django.utils.hashcompat import sha_constructor
 
-from django.core.mail import send_mail, send_mass_mail, EmailMultiAlternatives, SMTPConnection
+from django.core.mail import EmailMultiAlternatives
 
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
