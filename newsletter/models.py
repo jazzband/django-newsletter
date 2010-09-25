@@ -442,8 +442,6 @@ class Submission(models.Model):
         try:
             (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', self.message.newsletter)
                                         
-            conn = SMTPConnection()
-    
             for subscription in subscriptions:
                 c = Context({'subscription' : subscription, 
                              'site' : Site.objects.get_current(),
@@ -455,8 +453,7 @@ class Submission(models.Model):
                 message = EmailMultiAlternatives(subject_template.render(c), 
                                                  text_template.render(c), 
                                                  from_email=self.newsletter.get_sender(), 
-                                                 to=[subscription.get_recipient()], 
-                                                 connection=conn)
+                                                 to=[subscription.get_recipient()])
                 if html_template:
                     message.attach_alternative(html_template.render(c), "text/html")
                 
@@ -466,8 +463,6 @@ class Submission(models.Model):
                 except Exception, e:
                     logging.error(ugettext(u'Message %(subscription)s failed with error: %(e)s') % {"subscription":subscription, "e":e})
             
-            # For some reason this is not working. Bug!?        
-            #conn.close()
             self.sent = True
 
         finally:
