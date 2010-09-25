@@ -119,7 +119,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     return addresses
         
 def parse_vcard(myfile, newsletter, ignore_errors=False):
-    from addressimport import vobject
+    import vobject
     
     myvcards = vobject.readComponents(myfile)
     
