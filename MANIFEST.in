@@ -1,6 +1,7 @@
 include README.rst
 include LICENSE
 include COPYRIGHT
+include distribute_setup.py
 include graph_models.*
 recursive-include newsletter/fixtures *.json
 recursive-include newsletter/templates *.html
