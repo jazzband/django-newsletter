@@ -208,7 +208,7 @@ class ImportForm(forms.Form):
         myvalue = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('address_file'))
         
         content_type = myvalue.content_type
-        allowed_types = ['text/plain', 'application/octet-stream', ]
+        allowed_types = ['text/plain', 'application/octet-stream', 'text/vcard']
         if content_type not in allowed_types:
             raise forms.ValidationError(_("File type '%s' was not recognized.") % content_type)
 
