@@ -54,7 +54,7 @@ Installation
     to make everything accessible in the development server::
 
 	import staticmedia
-	urlpatterns = staticmedia.serve()
+	urlpatterns += staticmedia.serve()
 
 #)  Configure TinyMCE if you have not already done so. At the very least make
     sure you set ``TINYMCE_JS_URL`` in ``settings.py`` to point to wherever 
@@ -62,7 +62,6 @@ Installation
 
 #)  Create required data structure and load default template fixture::
     
-	cd $PROJECT_DIR
 	./manage.py syncdb
 	./manage.py loaddata default_templates
 
@@ -75,7 +74,8 @@ Installation
 	./manage.py test
     
     If this fails, please contact me!
-    If it doesn't: that's a good sign, chap! Go on to the next step.
+    If it doesn't: that's a good sign, chap. You'll probably have yourself a
+    working configuration!
 
 #)  Add jobs for sending out mail queues to 
 `crontab <http://linuxmanpages.com/man5/crontab.5.php>`_::
