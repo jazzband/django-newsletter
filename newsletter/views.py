@@ -12,7 +12,7 @@ from django.views.generic import list_detail, date_based
 from django.contrib.sites.models import Site
 from django.contrib.auth.decorators import login_required
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 
 from newsletter.models import *
 from newsletter.forms import *
@@ -256,7 +256,7 @@ def archive_detail(request, newsletter_slug, year, month, day, slug):
     (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', message.newsletter)
     
     if not html_template:
-        raise Http404(_('No HTML template associated with the newsletter this message belongs to.'))
+        raise Http404(ugettext('No HTML template associated with the newsletter this message belongs to.'))
     
     c = Context({'message' : message, 
                  'site' : Site.objects.get_current(),

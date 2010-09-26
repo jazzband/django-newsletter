@@ -30,7 +30,7 @@ Installation
     
 	git clone git://github.com/dokterbob/django-newsletter.git
     
-#)  Add newsletter and to `INSTALLED_APPS` in settings.py and make sure that
+#)  Add newsletter and to ``INSTALLED_APPS`` in settings.py and make sure that
     django-tinymce is there as well::
 
 	INSTALLED_APPS = (
@@ -51,7 +51,11 @@ Installation
 
 	import staticmedia
 	urlpatterns = staticmedia.serve()
-    
+
+#)  Configure TinyMCE if you have not already done so. At the very least make
+    sure you set ``TINYMCE_JS_URL`` in ``settings.py`` to point to wherever 
+    ``tiny_mce.js`` is located. (Typically ``/media/tinymce/tiny_mce/tiny_mce.js``)
+
 #)  Create required data structure and load default template fixture::
     
 	cd $PROJECT_DIR
@@ -89,6 +93,7 @@ TODO
 * Finish front end for article ordering from admin.
 * Write tests for: template syntax checking, ordering of articles in a
   message.
+* Extend subscription models to allow for mail deliverability feedback.
 
 License
 =======
