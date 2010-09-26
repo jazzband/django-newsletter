@@ -28,8 +28,12 @@ Installation
     **Or** get the latest & greatest from Github and link it to your
     application tree::
     
-	git clone git://github.com/dokterbob/django-newsletter.git
+	pip install -e git://github.com/dokterbob/django-newsletter.git#egg=django-newsletter
     
+    (In either case it is recommended that you use 
+    `VirtualEnv <http://pypi.python.org/pypi/virtualenv>`_ in order to
+    keep your Python environment somewhat clean.)
+
 #)  Add newsletter and to ``INSTALLED_APPS`` in settings.py and make sure that
     django-tinymce is there as well::
 
