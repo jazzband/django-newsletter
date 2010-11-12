@@ -65,6 +65,10 @@ Installation
 	cd $PROJECT_DIR
 	./manage.py syncdb
 	./manage.py loaddata default_templates
+
+#)  Change the default contact email listed in 
+    ``templates/newsletter/subscription_subscribe.html`` and
+    ``templates/newsletter/subscription_update.html``.
     
 #)  Run the tests to see if it all works::
     
@@ -98,6 +102,7 @@ TODO
 * Write tests for: template syntax checking, ordering of articles in a
   message.
 * Extend subscription models to allow for mail deliverability feedback.
+* Refactor default contact email out of the templates.
 
 License
 =======

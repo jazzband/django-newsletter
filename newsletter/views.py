@@ -40,7 +40,7 @@ def newsletter_list(request):
                 instances = formset.save()
                 request.user.message_set.create(message=_("Your changes have been saved."))
             else:
-                assert False, 'An invalid user update request was received.'
+                assert False, 'An invalid user update request was recieved.'
         else:
             formset = SubscriptionFormSet(queryset=qs)
 
