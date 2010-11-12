@@ -386,7 +386,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                         address.save()
                 finally:
                     del request.session['addresses']
-                request.user.message_set.create(message=_('%s subscriptions have been succesfully added.') % len(addresses)) 
+                request.user.message_set.create(message=_('%s subscriptions have been successfully added.') % len(addresses)) 
             
                 return HttpResponseRedirect('../../')
         else:
