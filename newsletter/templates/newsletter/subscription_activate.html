@@ -7,13 +7,13 @@
 <p>
 {% if form.is_valid %}
     {% ifequal action "subscribe" %}
-        {% trans "Your subscription has succesfully been activated." %}
+        {% trans "Your subscription has successfully been activated." %}
     {% endifequal %}
     {% ifequal action "unsubscribe" %}
-        {% trans "You have succesfully been unsubscribed." %}
+        {% trans "You have successfully been unsubscribed." %}
     {% endifequal %}
     {% ifequal action "update" %}
-        {% trans "Your subscription has succesfully been updated." %}
+        {% trans "Your subscription has successfully been updated." %}
     {% endifequal %}
 </p>
 {% else %}
