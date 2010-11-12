@@ -69,13 +69,21 @@ Installation
 #)  Change the default contact email listed in 
     ``templates/newsletter/subscription_subscribe.html`` and
     ``templates/newsletter/subscription_update.html``.
-    
+
 #)  Run the tests to see if it all works::
     
 	./manage.py test
     
     If this fails, please contact me!
     If it doesn't: that's a good sign, chap! Go on to the next step.
+
+#)  Add cron jobs for sending out mail queues::
+
+    @hourly /path/to/my/project/manage.py runjobs hourly
+    @daily /path/to/my/project/manage.py runjobs daily
+    @weekly /path/to/my/project/manage.py runjobs weekly
+    @monthly /path/to/my/project/manage.py runjobs monthly 
+
 
 Usage
 =====
