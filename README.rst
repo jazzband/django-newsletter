@@ -77,13 +77,12 @@ Installation
     If it doesn't: that's a good sign, chap. You'll probably have yourself a
     working configuration!
 
-#)  Add jobs for sending out mail queues to 
-`crontab <http://linuxmanpages.com/man5/crontab.5.php>`_::
+#)  Add jobs for sending out mail queues to `crontab <http://linuxmanpages.com/man5/crontab.5.php>`_::
 
-    @hourly /path/to/my/project/manage.py runjobs hourly
-    @daily /path/to/my/project/manage.py runjobs daily
-    @weekly /path/to/my/project/manage.py runjobs weekly
-    @monthly /path/to/my/project/manage.py runjobs monthly 
+	@hourly /path/to/my/project/manage.py runjobs hourly
+	@daily /path/to/my/project/manage.py runjobs daily
+	@weekly /path/to/my/project/manage.py runjobs weekly
+	@monthly /path/to/my/project/manage.py runjobs monthly			
 
 
 Usage
@@ -92,8 +91,7 @@ Usage
 #) Navigate to ``/admin/`` and: behold!
 #) Put a submission in the queue.
 #) Submit your message with ``./manage.py runjob submit``
-#) For a proper understanding, please take a look at the 
-`model graph <https://github.com/dokterbob/django-newsletter/raw/master/graph_models.png>`_.
+#) For a proper understanding, please take a look at the `model graph <https://github.com/dokterbob/django-newsletter/raw/master/graph_models.png>`_.
 
 .. image:: https://github.com/dokterbob/django-newsletter/raw/master/graph_models.png
 
