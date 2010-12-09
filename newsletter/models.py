@@ -427,6 +427,7 @@ class Submission(models.Model):
     class Meta:
         verbose_name = _('submission')
         verbose_name_plural = _('submissions')
+        unique_together = ('newsletter', 'message','publish', )
  
     def __unicode__(self):
         return _(u"%(newsletter)s on %(publish_date)s") % {'newsletter':self.message, 'publish_date':self.publish_date}
