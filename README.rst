@@ -77,7 +77,8 @@ Installation
     If this fails, please contact me!
     If it doesn't: that's a good sign, chap! Go on to the next step.
 
-#)  Add cron jobs for sending out mail queues::
+#)  Add jobs for sending out mail queues to 
+`crontab <http://linuxmanpages.com/man5/crontab.5.php>`_::
 
     @hourly /path/to/my/project/manage.py runjobs hourly
     @daily /path/to/my/project/manage.py runjobs daily
