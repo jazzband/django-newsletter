@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: http://github.com/dokterbob/django-newsletter/issues\n"
-"POT-Creation-Date: 2008-05-08 16:10+0200\n"
-"PO-Revision-Date: 2010-12-10 13:44+0000\n"
+"POT-Creation-Date: 2010-12-10 14:48+0100\n"
+"PO-Revision-Date: 2010-12-10 13:54+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,6 +17,6 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: static/newsletter/admin/js/submit_interface.js:12
+#: media/admin/js/submit_interface.js:12
 msgid "The submission has been changed. It has to be saved before you can submit. Click OK to proceed with saving, click cancel to continue editing."
 msgstr ""

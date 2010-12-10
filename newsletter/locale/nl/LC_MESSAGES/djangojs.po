@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
-"Report-Msgid-Bugs-To: http://github.com/dokterbob/django-newsletter/issues\n"
-"POT-Creation-Date: 2008-05-08 16:10+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-12-10 14:48+0100\n"
 "PO-Revision-Date: 2010-12-10 13:44+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,11 @@ msgstr ""
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: static/newsletter/admin/js/submit_interface.js:12
-msgid "The submission has been changed. It has to be saved before you can submit. Click OK to proceed with saving, click cancel to continue editing."
-msgstr "De zending is veranderd. Hij moet opgeslagen worden voordat u kunt verzenden. Klik op OK om de zending op te slaan, klik op annuleren om verder te gaan met bewerken."
+#: media/admin/js/submit_interface.js:12
+msgid ""
+"The submission has been changed. It has to be saved before you can submit. "
+"Click OK to proceed with saving, click cancel to continue editing."
+msgstr ""
+"De zending is veranderd. Hij moet opgeslagen worden voordat u kunt "
+"verzenden. Klik op OK om de zending op te slaan, klik op annuleren om verder "
+"te gaan met bewerken."
