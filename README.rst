@@ -15,6 +15,10 @@ Status
 We are currently using this package in several production environments, but it
 should still be considered a work in progress.
 
+Translations
+============
+Most of the strings have been translated to Dutch and a German translation should be available soon. Feel free to contribute any translations through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_.
+
 Requirements
 ============
 Please refer to `requirements.txt <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_ for an updated list of required packes.
