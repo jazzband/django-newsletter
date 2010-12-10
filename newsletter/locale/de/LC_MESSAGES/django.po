@@ -2,19 +2,19 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-10 12:14+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: django-newsletter\n"
+"Report-Msgid-Bugs-To: http://github.com/dokterbob/django-newsletter/issues\n"
+"POT-Creation-Date: 2010-12-10 12:12+0100\n"
+"PO-Revision-Date: 2010-12-10 13:44+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: admin.py:49
@@ -86,8 +86,7 @@ msgid "Preview"
 msgstr ""
 
 #: admin.py:213 views.py:259
-msgid ""
-"No HTML template associated with the newsletter this message belongs to."
+msgid "No HTML template associated with the newsletter this message belongs to."
 msgstr ""
 
 #: admin.py:252
@@ -127,9 +126,7 @@ msgstr ""
 
 #: admin_forms.py:42
 #, python-format
-msgid ""
-"E-mail address %(email)s too long, maximum length is %(email_length)s "
-"characters."
+msgid "E-mail address %(email)s too long, maximum length is %(email_length)s characters."
 msgstr ""
 
 #: admin_forms.py:52
@@ -148,9 +145,7 @@ msgstr ""
 
 #: admin_forms.py:73
 #, python-format
-msgid ""
-"Name column not found. The name of this column should be either 'name' or '%"
-"s'."
+msgid "Name column not found. The name of this column should be either 'name' or '%s'."
 msgstr ""
 
 #: admin_forms.py:81 admin_forms.py:89 admin_forms.py:95 models.py:92
@@ -160,17 +155,12 @@ msgstr ""
 
 #: admin_forms.py:89
 #, python-format
-msgid ""
-"E-mail column not found. The name of this column should be either 'email', "
-"'e-mail' or '%s'."
+msgid "E-mail column not found. The name of this column should be either 'email', 'e-mail' or '%s'."
 msgstr ""
 
 #: admin_forms.py:95
 #, python-format
-msgid ""
-"Could not properly determine the proper columns in the CSV-file. There "
-"should be a field called 'name' or '%(name)s' and one called 'e-mail' or '%"
-"(e-mail)s'."
+msgid "Could not properly determine the proper columns in the CSV-file. There should be a field called 'name' or '%(name)s' and one called 'e-mail' or '%(e-mail)s'."
 msgstr ""
 
 #: admin_forms.py:109 admin_forms.py:146 admin_forms.py:174
@@ -260,10 +250,7 @@ msgstr ""
 
 #: forms.py:50 forms.py:90
 #, python-format
-msgid ""
-"This e-mail address belongs to the user '%(username)"
-"s'.                                      Please log in as that user and try "
-"again."
+msgid "This e-mail address belongs to the user '%(username)s'.                                      Please log in as that user and try again."
 msgstr ""
 
 #: forms.py:61
@@ -335,9 +322,7 @@ msgid "Text"
 msgstr ""
 
 #: models.py:82
-msgid ""
-"Plain text e-mail message. Available objects: date, subscription, site, "
-"submission, newsletter and message."
+msgid "Plain text e-mail message. Available objects: date, subscription, site, submission, newsletter and message."
 msgstr ""
 
 #: models.py:83 templates/admin/newsletter/message/preview.html:23
@@ -444,8 +429,7 @@ msgid "subscriptions"
 msgstr ""
 
 #: models.py:311
-msgid ""
-"Sort order determines the order in which articles are concatenated in a post."
+msgid "Sort order determines the order in which articles are concatenated in a post."
 msgstr ""
 
 #: models.py:311
@@ -535,9 +519,7 @@ msgid "Submission of message %s"
 msgstr ""
 
 #: models.py:505
-msgid ""
-"If you select none, the system will automatically find the subscribers for "
-"you."
+msgid "If you select none, the system will automatically find the subscribers for you."
 msgstr ""
 
 #: models.py:505
@@ -720,23 +702,16 @@ msgstr ""
 
 #: templates/newsletter/subscription_subscribe.html:7
 #: templates/newsletter/subscription_update.html:7
-msgid ""
-"Due to a technical error we were not able to submit your confirmation email. "
-"This could be because your email address is invalid."
+msgid "Due to a technical error we were not able to submit your confirmation email. This could be because your email address is invalid."
 msgstr ""
 
 #: templates/newsletter/subscription_subscribe.html:8
 #: templates/newsletter/subscription_update.html:8
-msgid ""
-"If the error persists, please don't hesitate to contact us at the following "
-"email address:"
+msgid "If the error persists, please don't hesitate to contact us at the following email address:"
 msgstr ""
 
 #: templates/newsletter/subscription_subscribe.html:11
-msgid ""
-"Your subscription was successfully recieved and an activation email has been "
-"sent to you. In that email you will find a link which you need to follow in "
-"order to activate your subscription."
+msgid "Your subscription was successfully recieved and an activation email has been sent to you. In that email you will find a link which you need to follow in order to activate your subscription."
 msgstr ""
 
 #: templates/newsletter/subscription_subscribe_user.html:16
@@ -751,10 +726,7 @@ msgid "Newsletter unsubscribe"
 msgstr ""
 
 #: templates/newsletter/subscription_unsubscribe.html:7
-msgid ""
-"Your unsubscription request has successfully been recieved. An email has "
-"been sent to you with a link you need to follow in order to confirm your "
-"unsubscription."
+msgid "Your unsubscription request has successfully been recieved. An email has been sent to you with a link you need to follow in order to confirm your unsubscription."
 msgstr ""
 
 #: templates/newsletter/subscription_unsubscribe_user.html:17
@@ -767,10 +739,7 @@ msgid "Newsletter update"
 msgstr ""
 
 #: templates/newsletter/subscription_update.html:11
-msgid ""
-"Your update request was successfully recieved and an activation email has "
-"been sent to you. In that email you will find a link which you need to "
-"follow in order to update your subscription."
+msgid "Your update request was successfully recieved and an activation email has been sent to you. In that email you will find a link which you need to follow in order to update your subscription."
 msgstr ""
 
 #: templates/widget/image.html:2
