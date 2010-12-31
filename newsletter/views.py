@@ -1,5 +1,7 @@
 import logging
 
+logger = logging.getLogger(__name__)
+
 from datetime import datetime
 
 from django.template import RequestContext
@@ -71,7 +73,7 @@ def subscribe_user(request, newsletter_slug, confirm=False):
         instance.save()
         
         request.user.message_set.create(message=_('You have been subscribed to %s.') % my_newsletter)        
-        logging.debug(_('User %(rs)s subscribed to %(my_newsletter)s.') % {"rs":request.user, "my_newsletter": my_newsletter})
+        logger.debug(_('User %(rs)s subscribed to %(my_newsletter)s.') % {"rs":request.user, "my_newsletter": my_newsletter})
 
     if already_subscribed:
         request.user.message_set.create(message=_('You are already subscribed to %s.') % my_newsletter) 
@@ -97,7 +99,7 @@ def unsubscribe_user(request, newsletter_slug, confirm=False):
             instance.save()
         
             request.user.message_set.create(message=_('You have been unsubscribed from %s.') % my_newsletter)        
-            logging.debug(_('User %(rs)s unsubscribed from %(my_newsletter)s.') % {"rs":request.user, "my_newsletter":my_newsletter })
+            logger.debug(_('User %(rs)s unsubscribed from %(my_newsletter)s.') % {"rs":request.user, "my_newsletter":my_newsletter })
         
     except Subscription.DoesNotExist:
         not_subscribed = True
@@ -125,7 +127,7 @@ def subscribe_request(request, newsletter_slug, confirm=False):
             try:
                 instance.send_activation_email(action='subscribe')
             except Exception, e:
-                logging.warn('Error %s while submitting email to %s.' % (e, instance.email))
+                logger.warn('Error %s while submitting email to %s.' % (e, instance.email))
                 error = True
     else:
         form = SubscribeRequestForm(newsletter=my_newsletter)
@@ -151,7 +153,7 @@ def unsubscribe_request(request, newsletter_slug, confirm=False):
             try:
                 instance.send_activation_email(action='unsubscribe')
             except Exception, e:
-                logging.warn('Error %s while submitting email to %s.' % (e, instance.email))
+                logger.warn('Error %s while submitting email to %s.' % (e, instance.email))
                 error = True
     else:
         form = UnsubscribeRequestForm(newsletter=my_newsletter)
@@ -174,7 +176,7 @@ def update_request(request, newsletter_slug):
             try:
                 instance.send_activation_email(action='update')
             except Exception, e:
-                logging.warn('Error %s while submitting email to %s.' % (e, instance.email))
+                logger.warn('Error %s while submitting email to %s.' % (e, instance.email))
                 error = True
     else:
         form = UpdateRequestForm(newsletter=my_newsletter)
@@ -212,7 +214,7 @@ def update_subscription(request, newsletter_slug, email, action, activation_code
             else:
                 subscription.unsubscribed=True
             
-            logging.debug(_(u'Updated subscription %(subscription)s through the web.') % {'subscription':subscription})
+            logger.debug(_(u'Updated subscription %(subscription)s through the web.') % {'subscription':subscription})
             subscription.save()
     else:
         form = UpdateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
@@ -223,7 +225,7 @@ def update_subscription(request, newsletter_slug, email, action, activation_code
         #     subscription.subscribed = True
         #     subscription.save()
         #     
-        #     logging.debug(_(u'Activated subscription %(subscription)s through the web.') % {'subscription':subscription})
+        #     logger.debug(_(u'Activated subscription %(subscription)s through the web.') % {'subscription':subscription})
         # from ipdb import set_trace; set_trace()
             
     env = { 'newsletter' : my_newsletter,

@@ -1,4 +1,7 @@
 import os, logging
+
+logger = logging.getLogger(__name__)
+
 import Image
 from django.template import Library
 from django.conf import settings
@@ -16,7 +19,7 @@ def thumb(file, size='200x200'):
     miniature_url = os.path.join(settings.MEDIA_URL, miniature)
     # if the image wasn't already resized, resize it
     if not os.path.exists(miniature_filename):
-        logging.debug('Resizing %s to %s' % (basename, size))
+        logger.debug('Resizing %s to %s' % (basename, size))
         
         filename = os.path.join(settings.MEDIA_ROOT, file)
         try:
@@ -27,7 +30,7 @@ def thumb(file, size='200x200'):
             else:
                 image.save(miniature_filename, image.format)
         except Exception, inst:
-            logging.warn('Soft-fail: ' % inst)
+            logger.warn('Soft-fail: ' % inst)
 
     return miniature_url
 

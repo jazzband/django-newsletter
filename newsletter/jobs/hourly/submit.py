@@ -1,4 +1,6 @@
-import logging
+import logging    
+
+logger = logging.getLogger(__name__)
 
 from django_extensions.management.jobs import HourlyJob
 
@@ -10,5 +12,5 @@ class Job(HourlyJob):
     help = "Submit pending messages."
 
     def execute(self):
-        logging.info(_('Submitting queued newsletter mailings'))
+        logger.info(_('Submitting queued newsletter mailings'))
         Submission.submit_queue()

@@ -1,5 +1,7 @@
 import os, random, logging
 
+logger = logging.getLogger(__name__)
+
 from datetime import datetime
 
 from django.db import models
@@ -134,8 +136,8 @@ class Newsletter(models.Model):
         return u'%s <%s>' % (self.sender, self.email)
         
     def get_subscriptions(self):
-        logging.debug(_(u'Looking up subscribers for %s') % self)
-        logging.debug(Subscription.objects.filter(newsletter=self, subscribed=True))
+        logger.debug(_(u'Looking up subscribers for %s') % self)
+        logger.debug(Subscription.objects.filter(newsletter=self, subscribed=True))
 
         return Subscription.objects.filter(newsletter=self, subscribed=True)
 
@@ -173,14 +175,14 @@ class Subscription(models.Model):
     email = property(get_email, set_email)
     
     def subscribe(self):
-        logging.debug('Subscribing subscription %s.' % self)
+        logger.debug('Subscribing subscription %s.' % self)
         
         self.subscribe_date = datetime.now()
         self.subscribed = True
         self.unsubscribed = False
     
     def unsubscribe(self):
-        logging.debug('Unsubscribing subscription %s.' % self)
+        logger.debug('Unsubscribing subscription %s.' % self)
         
         self.subscribed = False
         self.unsubscribed = True
@@ -272,7 +274,7 @@ class Subscription(models.Model):
             message.attach_alternative(html_template.render(c), "text/html")
             
         message.send()
-        logging.debug('Activation email sent for action \'%(action)s\' to %(subscriber)s with activation code "%(action_code)s".' % 
+        logger.debug('Activation email sent for action \'%(action)s\' to %(subscriber)s with activation code "%(action_code)s".' % 
             {'action_code':self.activation_code,
              'action':action,
              'subscriber':self})
@@ -333,23 +335,23 @@ class Article(models.Model):
     def get_prev(self):
         try:
             a = Article.objects.all().order_by('-sortorder').filter(sortorder__lt=self.sortorder)[0]
-            logging.debug('Found prev %d of %d.' % (a.sortorder, self.sortorder))
+            logger.debug('Found prev %d of %d.' % (a.sortorder, self.sortorder))
             return a
         except IndexError:
-            logging.debug('No previous found.')
+            logger.debug('No previous found.')
     
     def get_next(self):
         try:
             a = Article.objects.all().order_by('sortorder').filter(sortorder__gt=self.sortorder)[0]
-            logging.debug('Found next %d of %d.' % (a.sortorder, self.sortorder))
+            logger.debug('Found next %d of %d.' % (a.sortorder, self.sortorder))
             return a
         except IndexError:
-            logging.debug('No previous found.')
+            logger.debug('No previous found.')
     
     def move_up(self):
         sibling = self.get_prev()
         if sibling:
-            logging.debug('Moving up. Switching %d and %d.' % (sibling.sortorder, self.sortorder))
+            logger.debug('Moving up. Switching %d and %d.' % (sibling.sortorder, self.sortorder))
         
             sibling.sortorder += 10
             self.sortorder -= 10
@@ -357,13 +359,13 @@ class Article(models.Model):
             sibling.save()
             self.save()
         else:
-            logging.debug('Not moving up, already on top.')
+            logger.debug('Not moving up, already on top.')
         
     def move_down(self):
         sibling = self.get_next()
 
         if sibling:
-            logging.debug('Moving down. Switching %d and %d.' % (sibling.sortorder, self.sortorder))
+            logger.debug('Moving down. Switching %d and %d.' % (sibling.sortorder, self.sortorder))
 
             sibling.sortorder -= 10
             self.sortorder += 10
@@ -371,7 +373,7 @@ class Article(models.Model):
             sibling.save()
             self.save()
         else:
-            logging.debug('Not moving down, already at bottom.')
+            logger.debug('Not moving down, already at bottom.')
     
     # This belongs elsewhere
     def thumbnail(self):
@@ -403,7 +405,7 @@ class Message(models.Model):
         try:
             return _(u"%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
         except Newsletter.DoesNotExist:
-            logging.warn('Database inconsistency, related newsletter not found for message with id %d' % self.id)
+            logger.warn('Database inconsistency, related newsletter not found for message with id %d' % self.id)
 
             return "%s" % self.title
 
@@ -434,7 +436,7 @@ class Submission(models.Model):
 
     def submit(self):
         subscriptions = self.subscriptions.filter(subscribed=True)
-        logging.info(ugettext(u"Submitting %(submission)s to %(count)d people") % {'submission':self, 'count':subscriptions.count()})
+        logger.info(ugettext(u"Submitting %(submission)s to %(count)d people") % {'submission':self, 'count':subscriptions.count()})
         assert self.publish_date < datetime.now(), 'Something smells fishy; submission time in future.'
 
         self.sending = True
@@ -459,10 +461,10 @@ class Submission(models.Model):
                     message.attach_alternative(html_template.render(c), "text/html")
                 
                 try:
-                    logging.debug(ugettext(u'Submitting message to: %s.' % subscription))
+                    logger.debug(ugettext(u'Submitting message to: %s.' % subscription))
                     message.send()
                 except Exception, e:
-                    logging.error(ugettext(u'Message %(subscription)s failed with error: %(e)s') % {"subscription":subscription, "e":e})
+                    logger.error(ugettext(u'Message %(subscription)s failed with error: %(e)s') % {"subscription":subscription, "e":e})
             
             self.sent = True
 
@@ -478,7 +480,7 @@ class Submission(models.Model):
     
     @classmethod
     def from_message(cls, message):
-        logging.debug(ugettext('Submission of message %s') %  message)
+        logger.debug(ugettext('Submission of message %s') %  message)
         submission = cls()
         submission.message = message
         submission.newsletter = message.newsletter

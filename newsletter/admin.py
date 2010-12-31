@@ -1,4 +1,6 @@
-import logging
+import logging 
+
+logger = logging.getLogger(__name__)
 
 from datetime import datetime
 
@@ -377,7 +379,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             return HttpResponseRedirect('../')
         
         addresses = request.session['addresses']
-        logging.debug('Confirming addresses: %s' % addresses)
+        logger.debug('Confirming addresses: %s' % addresses)
         if request.POST:
             form = ConfirmForm(request.POST)
             if form.is_valid():
