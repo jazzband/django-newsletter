@@ -39,11 +39,12 @@ Installation
     keep your Python environment somewhat clean.)
 
 #)  Add newsletter and to ``INSTALLED_APPS`` in settings.py and make sure that
-    django-tinymce is there as well::
+    the dependencies django-tinymce and django-extensions are there as well::
 
 	INSTALLED_APPS = (
 	    ...
 	    'tinymce',
+	    'django_extensions',
 	    ...
 	    'newsletter',
 	    ...
