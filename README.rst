@@ -49,6 +49,15 @@ Installation
 	    ...
 	)
 
+#)  Import subscription, unsubscription and archive URL's somewhere in your
+    `urls.py`::
+
+	urlpatterns = patterns('',
+	    ...
+	    (r'^newsletter/', include('newsletter.urls')),
+	    ...
+	)
+
 #)  Make the ``media`` dir available as ``{{ MEDIA_URL }}newsletter/`` and do the
     same for the django-tinymce app.
 
@@ -104,7 +113,9 @@ Unit tests
 Fairly extensive tests are available for internal frameworks, web
 (un)subscription and mail sending. One feature currently untested is actually
 sending mail to very large numbers of recipients (1000+), but feel free to try
-around.
+around. Please to note that the unittests (or actually, Django) currently 
+requires a `404.html` in your `templates` directory in order to be able to
+test 404 responses.
 
 TODO
 ====
