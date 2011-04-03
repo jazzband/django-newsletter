@@ -115,22 +115,22 @@ class Newsletter(models.Model):
     @permalink
     def get_absolute_url(self):
         return ('newsletter_detail', (),
-                {'newsletter_slug': self.newsletter.slug })
+                {'newsletter_slug': self.slug })
         
     @permalink
     def subscribe_url(self):
         return ('newsletter_subscribe_request', (),
-                {'newsletter_slug': self.newsletter.slug })
+                {'newsletter_slug': self.slug })
                 
     @permalink
     def unsubscribe_url(self):
         return ('newsletter_unsubscribe_request', (),
-                {'newsletter_slug': self.newsletter.slug })
+                {'newsletter_slug': self.slug })
                 
     @permalink
     def update_url(self):
         return ('newsletter_update_request', (),
-                {'newsletter_slug': self.newsletter.slug })
+                {'newsletter_slug': self.slug })
                 
     def get_sender(self):
         return u'%s <%s>' % (self.sender, self.email)
