@@ -296,3 +296,21 @@ class SubscriptionAdminForm(forms.ModelForm):
         if not (cleaned_data.get('user', None) or cleaned_data.get('email_field',None)):
             raise forms.ValidationError(_('Either a user must be selected or an email address must be specified.'))
         return cleaned_data
+
+class SubmissionAdminForm(forms.ModelForm):
+    class Meta:
+        model = Submission
+
+    def clean_publish(self):
+        """ Make sure only one submission can be published for each message. """
+        publish = self.cleaned_data['publish']
+
+        if publish:
+            message = self.cleaned_data['message']
+            qs = Submission.objects.filter(publish=True, message=message)
+            if self.instance:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise forms.ValidationError(_('This message has already been published in some other submission. Messages can only be published once.'))
+
+        return publish

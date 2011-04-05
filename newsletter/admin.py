@@ -63,6 +63,7 @@ class NewsletterAdmin(admin.ModelAdmin):
     admin_submissions.short_description = ''
 
 class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
+    form = SubmissionAdminForm
     list_display = ('admin_message', 'admin_newsletter', 'admin_publish_date', 'publish', 'admin_status_text', 'admin_status')
     date_hierarchy = 'publish_date'
     list_filter = ('newsletter', 'publish', 'sent')
