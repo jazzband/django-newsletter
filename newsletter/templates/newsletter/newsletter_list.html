@@ -4,6 +4,7 @@
 {% block body %}
 {% if user.is_authenticated %}
 <form method="POST" action="">
+  {% csrf_token %}
   {{ formset.management_form }}
   <table>
     <tr>
