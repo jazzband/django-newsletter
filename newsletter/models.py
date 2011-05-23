@@ -59,6 +59,7 @@ class EmailTemplate(models.Model):
         verbose_name_plural = _('e-mail templates')
         
         unique_together = ("title", "action")
+        ordering = ('title', )
     
     @classmethod
     def get_default_id(cls, action):
