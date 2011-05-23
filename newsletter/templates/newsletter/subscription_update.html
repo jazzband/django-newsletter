@@ -11,6 +11,7 @@
 <p>{% trans "Your update request was successfully recieved and an activation email has been sent to you. In that email you will find a link which you need to follow in order to update your subscription." %}</p>
 {% else %}
 <form enctype="multipart/form-data" method="post" action=".">
+    {% csrf_token %}
     {{ form.as_p }}
     <p><input id="id_submit" name="submit" value="{% trans "Subscribe" %}" type="submit" /></p>
 </form>
