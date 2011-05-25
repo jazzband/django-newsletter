@@ -218,7 +218,9 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         c = Context({'message' : message, 
                      'site' : Site.objects.get_current(),
                      'newsletter' : message.newsletter,
-                     'date' : datetime.now()})
+                     'date' : datetime.now(),
+                     'STATIC_URL': settings.STATIC_URL,
+                     'MEDIA_URL': settings.MEDIA_URL})
         
         return HttpResponse(html_template.render(c))
     
@@ -229,7 +231,9 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         c = Context({'message' : message, 
                      'site' : Site.objects.get_current(),
                      'newsletter' : message.newsletter,
-                     'date' : datetime.now()})
+                     'date' : datetime.now(),
+                     'STATIC_URL': settings.STATIC_URL,
+                     'MEDIA_URL': settings.MEDIA_URL})
          
         return HttpResponse(text_template.render(c), mimetype='text/plain')
     
