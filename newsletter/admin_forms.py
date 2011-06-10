@@ -54,9 +54,18 @@ def check_name(name, ignore_errors=False):
         raise forms.ValidationError(_("Name %(name)s too long, maximum length is %(name_length)s characters.") % {"name":name, "name_length":name_length})
 
 def parse_csv(myfile, newsletter, ignore_errors=False):
-    import csv
-    
-    myreader = csv.reader(myfile)
+    import csv, codecs
+
+    encodedfile = codecs.EncodedFile(myfile,"utf-8")
+
+    # Attempt to detect the dialect
+    dialect = csv.Sniffer().sniff(encodedfile.read(1024))
+
+    encodedfile.seek(0)
+    # Seek to 0
+
+    myreader = csv.reader(encodedfile, dialect=dialect)
+
     firstrow = myreader.next()
 
     # Find name column
