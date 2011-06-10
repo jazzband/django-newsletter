@@ -1,4 +1,4 @@
-import os, random, logging
+import random, logging
 
 logger = logging.getLogger(__name__)
 
@@ -7,9 +7,6 @@ from datetime import datetime
 from django.db import models
 from django.db.models import permalink
 
-from django.dispatch import dispatcher
-
-from django.template.defaultfilters import slugify
 from django.template import Template, Context
 
 from django.utils.translation import ugettext_lazy as _
