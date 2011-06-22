@@ -226,6 +226,8 @@ class ImportForm(forms.Form):
             
         ignore_errors = self.cleaned_data['ignore_errors']
         newsletter = self.cleaned_data['newsletter']
+
+        # The next line might be redundant
         myfile = self.cleaned_data['address_file']
 
         myfield = self.base_fields['address_file']
