@@ -54,9 +54,31 @@ def check_name(name, ignore_errors=False):
         raise forms.ValidationError(_("Name %(name)s too long, maximum length is %(name_length)s characters.") % {"name":name, "name_length":name_length})
 
 def parse_csv(myfile, newsletter, ignore_errors=False):
-    import csv
-    
-    myreader = csv.reader(myfile)
+    from newsletter.addressimport.csv_util import UnicodeReader
+    import codecs, csv
+
+    # Detect encoding
+    from chardet.universaldetector import UniversalDetector
+
+    detector = UniversalDetector()
+    for line in myfile.readlines():
+        detector.feed(line)
+        if detector.done: break
+    detector.close()
+    charset = detector.result['encoding']
+
+    # Reset the file index
+    myfile.seek(0)
+
+    # Attempt to detect the dialect
+    encodedfile = codecs.EncodedFile(myfile, charset)
+    dialect = csv.Sniffer().sniff(encodedfile.read(1024))
+
+    # Reset the file index
+    myfile.seek(0)
+
+    myreader = UnicodeReader(myfile, dialect=dialect, encoding=charset)
+
     firstrow = myreader.next()
 
     # Find name column
@@ -204,6 +226,8 @@ class ImportForm(forms.Form):
             
         ignore_errors = self.cleaned_data['ignore_errors']
         newsletter = self.cleaned_data['newsletter']
+
+        # The next line might be redundant
         myfile = self.cleaned_data['address_file']
 
         myfield = self.base_fields['address_file']

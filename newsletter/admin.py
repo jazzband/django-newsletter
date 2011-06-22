@@ -94,9 +94,9 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                 return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text(obj))
             else:
                 if obj.publish_date > datetime.now():
-                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text(obj))
+                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.STATIC_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text(obj))
                 else:                    
-                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/submitting.gif', self.admin_status_text(obj))
+                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.STATIC_URL+'newsletter/admin/img/submitting.gif', self.admin_status_text(obj))
         else:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text(obj))
         
@@ -218,7 +218,9 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         c = Context({'message' : message, 
                      'site' : Site.objects.get_current(),
                      'newsletter' : message.newsletter,
-                     'date' : datetime.now()})
+                     'date' : datetime.now(),
+                     'STATIC_URL': settings.STATIC_URL,
+                     'MEDIA_URL': settings.MEDIA_URL})
         
         return HttpResponse(html_template.render(c))
     
@@ -229,7 +231,9 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         c = Context({'message' : message, 
                      'site' : Site.objects.get_current(),
                      'newsletter' : message.newsletter,
-                     'date' : datetime.now()})
+                     'date' : datetime.now(),
+                     'STATIC_URL': settings.STATIC_URL,
+                     'MEDIA_URL': settings.MEDIA_URL})
          
         return HttpResponse(text_template.render(c), mimetype='text/plain')
     
@@ -330,7 +334,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         if obj.subscribed:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text(obj))
         else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.MEDIA_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text(obj))
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.STATIC_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text(obj))
         
     admin_status.short_description = ''
     admin_status.allow_tags = True

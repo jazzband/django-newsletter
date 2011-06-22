@@ -1,4 +1,4 @@
-import os, random, logging
+import random, logging
 
 logger = logging.getLogger(__name__)
 
@@ -7,9 +7,6 @@ from datetime import datetime
 from django.db import models
 from django.db.models import permalink
 
-from django.dispatch import dispatcher
-
-from django.template.defaultfilters import slugify
 from django.template import Template, Context
 
 from django.utils.translation import ugettext_lazy as _
@@ -59,6 +56,7 @@ class EmailTemplate(models.Model):
         verbose_name_plural = _('e-mail templates')
         
         unique_together = ("title", "action")
+        ordering = ('title', )
     
     @classmethod
     def get_default_id(cls, action):
@@ -81,7 +79,7 @@ class EmailTemplate(models.Model):
     
     subject = models.CharField(max_length=255, verbose_name=_('subject'))
     
-    text = models.TextField(verbose_name=_('Text'), help_text=_('Plain text e-mail message. Available objects: date, subscription, site, submission, newsletter and message.'))
+    text = models.TextField(verbose_name=_('Text'), help_text=_('Plain text e-mail message. Available objects: date, subscription, site, submission, newsletter, STATIC_URL, MEDIA_URL and message.'))
     html = models.TextField(verbose_name=_('HTML'), help_text=_('HTML e-mail alternative.'), null=True, blank=True)
 
 
@@ -262,9 +260,12 @@ class Subscription(models.Model):
 
         (subject_template, text_template, html_template) = EmailTemplate.get_templates(action, self.newsletter)
 
-        c = Context({'subscription' : self, 
+        c = Context({'subscription' : self,
+                     'newsletter' : self.newsletter,
                      'site' : Site.objects.get_current(),
-                     'date' : self.subscribe_date })
+                     'date' : self.subscribe_date,
+                     'STATIC_URL': settings.STATIC_URL,
+                     'MEDIA_URL': settings.MEDIA_URL})
         
         message = EmailMultiAlternatives(subject_template.render(c), 
                                          text_template.render(c), 
@@ -450,8 +451,10 @@ class Submission(models.Model):
                              'submission' : self,
                              'message' : self.message,
                              'newsletter' : self.newsletter,
-                             'date' : self.publish_date })
-                
+                             'date' : self.publish_date,
+                             'STATIC_URL': settings.STATIC_URL,
+                             'MEDIA_URL': settings.MEDIA_URL})
+
                 message = EmailMultiAlternatives(subject_template.render(c), 
                                                  text_template.render(c), 
                                                  from_email=self.newsletter.get_sender(), 

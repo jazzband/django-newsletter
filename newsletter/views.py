@@ -4,6 +4,8 @@ logger = logging.getLogger(__name__)
 
 from datetime import datetime
 
+from django.conf import settings
+
 from django.template import RequestContext
 
 from django.shortcuts import get_object_or_404, get_list_or_404, render_to_response
@@ -263,7 +265,9 @@ def archive_detail(request, newsletter_slug, year, month, day, slug):
     c = Context({'message' : message, 
                  'site' : Site.objects.get_current(),
                  'newsletter' : message.newsletter,
-                 'date' : datetime.now()})
+                 'date' : submission.publish_date,
+                 'STATIC_URL': settings.STATIC_URL,
+                 'MEDIA_URL': settings.MEDIA_URL})
     
     return HttpResponse(html_template.render(c))
 

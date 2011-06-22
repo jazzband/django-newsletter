@@ -59,20 +59,9 @@ Installation
 	    ...
 	)
 
-#)  Make the ``media`` dir available as ``{{ MEDIA_URL }}newsletter/`` and do the
-    same for the django-tinymce app.
-
-    Preferably use something like ``django-staticmedia`` to manage the media files
-    for your installed apps so you won't have to worry about this. You can
-    simply ``pip install django-staticmedia`` and add the following to ``urls.py``
-    to make everything accessible in the development server::
-
-	import staticmedia
-	urlpatterns += staticmedia.serve()
-
-#)  Configure TinyMCE if you have not already done so. At the very least make
-    sure you set ``TINYMCE_JS_URL`` in ``settings.py`` to point to wherever 
-    ``tiny_mce.js`` is located. (Typically ``/media/tinymce/tiny_mce/tiny_mce.js``)
+#)  Enable Django's `staticfiles <http://docs.djangoproject.com/en/dev/howto/static-files/>`_ 
+    app so the admin icons, CSS and JavaScript will be available where 
+    we expect it.
 
 #)  Create required data structure and load default template fixture::
     
