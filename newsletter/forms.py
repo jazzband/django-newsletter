@@ -46,7 +46,8 @@ class SubscribeRequestForm(NewsletterForm):
         # Check whether we should be subscribed to as a user
         try:
             user = User.objects.get(email__exact=value)
-            
+           
+            # TODO: This error contains an information leak. Which should be fixed in the future.
             raise ValidationError(_("This e-mail address belongs to the user '%(username)s'. \
                                      Please log in as that user and try again.") 
                                      % {'username': user.username})

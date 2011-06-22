@@ -127,6 +127,8 @@ TODO
   message.
 * Extend subscription models to allow for mail deliverability feedback.
 * Refactor default contact email out of the templates.
+* If you have an e-mail address the username can be found. Depending on the
+	usage this should be fixed.
 
 License
 =======
