@@ -38,32 +38,32 @@ class SubscribeRequestForm(NewsletterForm):
     """ Request subscription to the newsletter. Will result in an activation email
         being sent with a link where one can edit, confirm and activate one's subscription. 
     """
-        
+
     def clean_email_field(self):
-        myfield = self.base_fields['email_field']
-        value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email_field'))
+        data = self.cleaned_data['email_field']
 
         # Check whether we should be subscribed to as a user
         try:
-            user = User.objects.get(email__exact=value)
-            
+            user = User.objects.get(email__exact=data)
+
             raise ValidationError(_("This e-mail address belongs to the user '%(username)s'. \
-                                     Please log in as that user and try again.") 
+                                     Please log in as that user and try again.")
                                      % {'username': user.username})
-        
+
         except User.DoesNotExist:
             pass
 
         # Check whether we have already been subscribed to
         try:
-            subscription = Subscription.objects.get(email_field__exact=value, newsletter=self.instance.newsletter)
+            subscription = Subscription.objects.get(email_field__exact=data,
+                                                    newsletter=self.instance.newsletter)
             if subscription.subscribed:
                 raise ValidationError(_("Your e-mail address has already been subscribed to."))
-                            
+
         except Subscription.DoesNotExist:
             pass
-                    
-        return value
+
+        return data
 
 class UpdateRequestForm(NewsletterForm):
     """ Request updating or activating subscription. Will result in an activation
@@ -80,28 +80,28 @@ class UpdateRequestForm(NewsletterForm):
         return super(UpdateRequestForm, self).clean()
     
     def clean_email_field(self):
-        myfield = self.base_fields['email_field']
-        value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('email_field'))
-        
+        data = self.cleaned_data['email_field']
+
         # Check whether we should update as a user
         try:
-            user = User.objects.get(email__exact=value)
-            
+            user = User.objects.get(email__exact=data)
+
             raise ValidationError(_("This e-mail address belongs to the user '%(username)s'. \
-                                     Please log in as that user and try again.") 
+                                     Please log in as that user and try again.")
                                      % {'username': user.username})
-        
+
         except User.DoesNotExist:
             pass
 
         # Set our instance on the basis of the email field, or raise a validationerror
         try:
-            self.instance = Subscription.objects.get(newsletter=self.instance.newsletter, email_field__exact=value)
-                    
+            self.instance = Subscription.objects.get(newsletter=self.instance.newsletter,
+                                                     email_field__exact=data)
+
         except Subscription.DoesNotExist:
                 raise ValidationError(_("This e-mail address has not been subscribed to."))
-                
-        return value
+
+        return data
 
 class UnsubscribeRequestForm(UpdateRequestForm):
     """ Similar to previous form but checks if we have not already been unsubscribed. """
@@ -117,13 +117,13 @@ class UpdateForm(NewsletterForm):
         correct activation code is required. 
     """
     def clean_user_activation_code(self):
-        myfield = self.base_fields['user_activation_code']
-        value = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('user_activation_code'))
-        user_activation_code = myfield.clean(value)
-        
-        if user_activation_code != self.instance.activation_code:
+        data = self.cleaned_data['user_activation_code']
+
+        if data != self.instance.activation_code:
             raise ValidationError(_('The validation code supplied by you does not match.'))
-          
+
+        return data
+
     user_activation_code = forms.CharField(label=_("Activation code"), max_length=40)
 
 class UserUpdateForm(forms.ModelForm):
