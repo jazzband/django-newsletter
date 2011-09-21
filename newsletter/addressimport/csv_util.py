@@ -30,6 +30,10 @@ class UnicodeReader:
     def __iter__(self):
         return self
 
+    @property
+    def line_number(self):
+        return self.reader.line_number
+
 class UnicodeWriter:
     """
     A CSV writer which will write rows to CSV file "f",
