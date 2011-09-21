@@ -123,7 +123,8 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     addresses = {}
     for row in myreader:
         if not max(namecol, mailcol) < len(row):
-            logger.debug("Column count does not match for row: %s", row)
+            logger.warn("Column count does not match for row number %d", 
+                        myreader.line_num, extra=dict(data={'row':row}))
 
             if ignore_errors:
                 # Skip this record
@@ -140,14 +141,26 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
             addr = make_subscription(newsletter, email, name)
         elif not ignore_errors:
                 raise forms.ValidationError(_("Entry '%s' does not contain a valid e-mail address.") % name)
+        else:
+            logger.warn("Entry '%s' at line %d does not contain a valid e-mail address.",
+                        name, myreader.line_num, extra=dict(data={'row':row}))
+
 
         if addr:
-            if addresses.has_key(email) and not ignore_errors:
-                raise forms.ValidationError(_("The address file contains duplicate entries for '%s'.") % email)
+            if addresses.has_key(email):
+                logger.warn("Entry '%s' at line %d contains a duplicate entry for '%s'",
+                    name, myreader.line_num, email, extra=dict(data={'row':row}))
+
+                if not ignore_errors:
+                    raise forms.ValidationError(_("The address file contains duplicate entries for '%s'.") % email)
 
             addresses.update({email:addr})
-        elif not ignore_errors:
-            raise forms.ValidationError(_("Some entries are already subscribed to."))
+        else:
+            logger.warn("Entry '%s' at line %d is already subscribed to with email '%s'",
+                name, myreader.line_num, email, extra=dict(data={'row':row}))
+
+            if not ignore_errors:
+                raise forms.ValidationError(_("Some entries are already subscribed to."))
 
     return addresses
 
