@@ -77,6 +77,9 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     # Reset the file index
     myfile.seek(0)
 
+    logger.info('Detected encoding %s and dialect %s for CSV file',
+                charset, dialect)
+
     myreader = UnicodeReader(myfile, dialect=dialect, encoding=charset)
 
     firstrow = myreader.next()
