@@ -31,8 +31,8 @@ class UnicodeReader:
         return self
 
     @property
-    def line_number(self):
-        return self.reader.line_number
+    def line_num(self):
+        return self.reader.line_num
 
 class UnicodeWriter:
     """
