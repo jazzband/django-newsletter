@@ -134,8 +134,7 @@ class Newsletter(models.Model):
         return u'%s <%s>' % (self.sender, self.email)
         
     def get_subscriptions(self):
-        logger.debug(_(u'Looking up subscribers for %s') % self)
-        logger.debug(Subscription.objects.filter(newsletter=self, subscribed=True))
+        logger.debug(_(u'Looking up subscribers for %s'), self)
 
         return Subscription.objects.filter(newsletter=self, subscribed=True)
 
@@ -173,14 +172,14 @@ class Subscription(models.Model):
     email = property(get_email, set_email)
     
     def subscribe(self):
-        logger.debug('Subscribing subscription %s.' % self)
+        logger.debug(u'Subscribing subscription %s.', self)
         
         self.subscribe_date = datetime.now()
         self.subscribed = True
         self.unsubscribed = False
     
     def unsubscribe(self):
-        logger.debug('Unsubscribing subscription %s.' % self)
+        logger.debug(u'Unsubscribing subscription %s.', self)
         
         self.subscribed = False
         self.unsubscribed = True
@@ -275,10 +274,8 @@ class Subscription(models.Model):
             message.attach_alternative(html_template.render(c), "text/html")
             
         message.send()
-        logger.debug('Activation email sent for action \'%(action)s\' to %(subscriber)s with activation code "%(action_code)s".' % 
-            {'action_code':self.activation_code,
-             'action':action,
-             'subscriber':self})
+        logger.debug('Activation email sent for action "%s" to %s with activation code "%s".',
+                     action, self, self.activation_code)
         
     @permalink
     def subscribe_activate_url(self):
@@ -336,7 +333,7 @@ class Article(models.Model):
     def get_prev(self):
         try:
             a = Article.objects.all().order_by('-sortorder').filter(sortorder__lt=self.sortorder)[0]
-            logger.debug('Found prev %d of %d.' % (a.sortorder, self.sortorder))
+            logger.debug('Found prev %d of %d.', a.sortorder, self.sortorder)
             return a
         except IndexError:
             logger.debug('No previous found.')
@@ -344,7 +341,7 @@ class Article(models.Model):
     def get_next(self):
         try:
             a = Article.objects.all().order_by('sortorder').filter(sortorder__gt=self.sortorder)[0]
-            logger.debug('Found next %d of %d.' % (a.sortorder, self.sortorder))
+            logger.debug('Found next %d of %d.', a.sortorder, self.sortorder)
             return a
         except IndexError:
             logger.debug('No previous found.')
@@ -352,7 +349,7 @@ class Article(models.Model):
     def move_up(self):
         sibling = self.get_prev()
         if sibling:
-            logger.debug('Moving up. Switching %d and %d.' % (sibling.sortorder, self.sortorder))
+            logger.debug('Moving up. Switching %d and %d.', sibling.sortorder, self.sortorder)
         
             sibling.sortorder += 10
             self.sortorder -= 10
@@ -366,7 +363,7 @@ class Article(models.Model):
         sibling = self.get_next()
 
         if sibling:
-            logger.debug('Moving down. Switching %d and %d.' % (sibling.sortorder, self.sortorder))
+            logger.debug('Moving down. Switching %d and %d.', sibling.sortorder, self.sortorder)
 
             sibling.sortorder -= 10
             self.sortorder += 10
@@ -406,7 +403,7 @@ class Message(models.Model):
         try:
             return _(u"%(title)s in %(newsletter)s") % {'title':self.title, 'newsletter':self.newsletter}
         except Newsletter.DoesNotExist:
-            logger.warn('Database inconsistency, related newsletter not found for message with id %d' % self.id)
+            logger.warn('Database inconsistency, related newsletter not found for message with id %d', self.id)
 
             return "%s" % self.title
 
@@ -463,7 +460,7 @@ class Submission(models.Model):
                     message.attach_alternative(html_template.render(c), "text/html")
                 
                 try:
-                    logger.debug(ugettext(u'Submitting message to: %s.' % subscription))
+                    logger.debug(ugettext(u'Submitting message to: %s.'), subscription)
                     message.send()
                 except Exception, e:
                     logger.error(ugettext(u'Message %(subscription)s failed with error: %(e)s') % {"subscription":subscription, "e":e})
