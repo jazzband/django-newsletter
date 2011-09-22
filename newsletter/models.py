@@ -253,30 +253,43 @@ class Subscription(models.Model):
             return u'%s <%s>' % (self.name, self.email)
 
         return u'%s' % (self.email)
-        
+
     def send_activation_email(self, action):
         assert action in ['subscribe', 'unsubscribe', 'update'], 'Unknown action'
 
-        (subject_template, text_template, html_template) = EmailTemplate.get_templates(action, self.newsletter)
+        (subject_template, text_template, html_template) = \
+            EmailTemplate.get_templates(action, self.newsletter)
 
-        c = Context({'subscription' : self,
-                     'newsletter' : self.newsletter,
-                     'site' : Site.objects.get_current(),
-                     'date' : self.subscribe_date,
-                     'STATIC_URL': settings.STATIC_URL,
-                     'MEDIA_URL': settings.MEDIA_URL})
-        
-        message = EmailMultiAlternatives(subject_template.render(c), 
-                                         text_template.render(c), 
-                                         from_email=self.newsletter.get_sender(), 
-                                         to=[self.email])
+        variable_dict = {
+            'subscription' : self,
+            'site' : Site.objects.get_current(),
+            'submission' : self,
+            'message' : self.message,
+            'newsletter' : self.newsletter,
+            'date' : self.subscribe_date,
+            'STATIC_URL': settings.STATIC_URL,
+            'MEDIA_URL': settings.MEDIA_URL
+        }
+
+        unescaped_context = Context(variable_dict, autoescape=False)
+
+        message = EmailMultiAlternatives(
+            subject_template.render(unescaped_context),
+            text_template.render(unescaped_context),
+            from_email=self.newsletter.get_sender(),
+            to=[self.email]
+        )
+
         if html_template:
-            message.attach_alternative(html_template.render(c), "text/html")
-            
+            escaped_context = Context(variable_dict)
+
+            message.attach_alternative(html_template.render(escaped_context),
+                                      "text/html")
+
         message.send()
         logger.debug('Activation email sent for action "%s" to %s with activation code "%s".',
                      action, self, self.activation_code)
-        
+
     @permalink
     def subscribe_activate_url(self):
         return ('newsletter_update_activate', (),
@@ -440,25 +453,38 @@ class Submission(models.Model):
         self.save()
 
         try:
-            (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', self.message.newsletter)
-                                        
-            for subscription in subscriptions:
-                c = Context({'subscription' : subscription, 
-                             'site' : Site.objects.get_current(),
-                             'submission' : self,
-                             'message' : self.message,
-                             'newsletter' : self.newsletter,
-                             'date' : self.publish_date,
-                             'STATIC_URL': settings.STATIC_URL,
-                             'MEDIA_URL': settings.MEDIA_URL})
+            (subject_template, text_template, html_template) = \
+                EmailTemplate.get_templates('message', self.message.newsletter)
 
-                message = EmailMultiAlternatives(subject_template.render(c), 
-                                                 text_template.render(c), 
-                                                 from_email=self.newsletter.get_sender(), 
-                                                 to=[subscription.get_recipient()])
+            for subscription in subscriptions:
+                variable_dict = {
+                    'subscription' : subscription,
+                    'site' : Site.objects.get_current(),
+                    'submission' : self,
+                    'message' : self.message,
+                    'newsletter' : self.newsletter,
+                    'date' : self.publish_date,
+                    'STATIC_URL': settings.STATIC_URL,
+                    'MEDIA_URL': settings.MEDIA_URL
+                }
+
+                unescaped_context = Context(variable_dict, autoescape=False)
+
+                message = EmailMultiAlternatives(
+                    subject_template.render(unescaped_context),
+                    text_template.render(unescaped_context),
+                    from_email=self.newsletter.get_sender(),
+                    to=[subscription.get_recipient()]
+                )
+
                 if html_template:
-                    message.attach_alternative(html_template.render(c), "text/html")
-                
+                    escaped_context = Context(variable_dict)
+
+                    message.attach_alternative(
+                        html_template.render(escaped_context),
+                        "text/html"
+                    )
+
                 try:
                     logger.debug(ugettext(u'Submitting message to: %s.'), subscription)
                     message.send()

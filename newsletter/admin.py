@@ -210,33 +210,38 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         
     def preview_html(self, request, object_id):
         message = self._getobj(request, object_id)
-        (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', message.newsletter)
-        
+
+        (subject_template, text_template, html_template) = \
+            EmailTemplate.get_templates('message', message.newsletter)
+
         if not html_template:
             raise Http404(_('No HTML template associated with the newsletter this message belongs to.'))
-        
-        c = Context({'message' : message, 
+
+        c = Context({'message' : message,
                      'site' : Site.objects.get_current(),
                      'newsletter' : message.newsletter,
                      'date' : datetime.now(),
                      'STATIC_URL': settings.STATIC_URL,
                      'MEDIA_URL': settings.MEDIA_URL})
-        
+
         return HttpResponse(html_template.render(c))
-    
+
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
-        (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', message.newsletter)
-        
-        c = Context({'message' : message, 
+
+        (subject_template, text_template, html_template) = \
+            EmailTemplate.get_templates('message', message.newsletter)
+
+        c = Context({'message' : message,
                      'site' : Site.objects.get_current(),
                      'newsletter' : message.newsletter,
                      'date' : datetime.now(),
                      'STATIC_URL': settings.STATIC_URL,
-                     'MEDIA_URL': settings.MEDIA_URL})
-         
+                     'MEDIA_URL': settings.MEDIA_URL},
+                     autoescape=False)
+
         return HttpResponse(text_template.render(c), mimetype='text/plain')
-    
+
     def submit(self, request, object_id):
         submission = Submission.from_message(self._getobj(request, object_id))
          
