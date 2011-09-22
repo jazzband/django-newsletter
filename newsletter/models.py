@@ -287,8 +287,11 @@ class Subscription(models.Model):
                                       "text/html")
 
         message.send()
-        logger.debug('Activation email sent for action "%s" to %s with activation code "%s".',
-                     action, self, self.activation_code)
+
+        logger.debug(u'Activation email sent for action "%(action)s" to %(subscriber)s with activation code "%(action_code)s".',
+                     {'action_code':self.activation_code,
+                      'action':action,
+                      'subscriber':self})
 
     @permalink
     def subscribe_activate_url(self):
@@ -446,7 +449,10 @@ class Submission(models.Model):
 
     def submit(self):
         subscriptions = self.subscriptions.filter(subscribed=True)
-        logger.info(ugettext(u"Submitting %(submission)s to %(count)d people") % {'submission':self, 'count':subscriptions.count()})
+
+        logger.info(ugettext(u"Submitting %(submission)s to %(count)d people"),
+                    {'submission':self, 'count':subscriptions.count()})
+
         assert self.publish_date < datetime.now(), 'Something smells fishy; submission time in future.'
 
         self.sending = True
@@ -489,8 +495,10 @@ class Submission(models.Model):
                     logger.debug(ugettext(u'Submitting message to: %s.'), subscription)
                     message.send()
                 except Exception, e:
-                    logger.error(ugettext(u'Message %(subscription)s failed with error: %(e)s') % {"subscription":subscription, "e":e})
-            
+                    logger.error(ugettext(u'Message %(subscription)s failed with error: %(error)s'),
+                                 {'subscription':subscription,
+                                  'error': e})
+
             self.sent = True
 
         finally:
