@@ -128,7 +128,7 @@ def subscribe_request(request, newsletter_slug, confirm=False):
             try:
                 instance.send_activation_email(action='subscribe')
             except Exception, e:
-                logger.warn('Error %s while submitting email to %s.' % (e, instance.email))
+                logger.exception('Error %s while submitting email to %s.', e, instance.email)
                 error = True
     else:
         form = SubscribeRequestForm(newsletter=my_newsletter)
@@ -154,7 +154,7 @@ def unsubscribe_request(request, newsletter_slug, confirm=False):
             try:
                 instance.send_activation_email(action='unsubscribe')
             except Exception, e:
-                logger.warn('Error %s while submitting email to %s.' % (e, instance.email))
+                logger.exception('Error %s while submitting email to %s.', e, instance.email)
                 error = True
     else:
         form = UnsubscribeRequestForm(newsletter=my_newsletter)
@@ -177,7 +177,7 @@ def update_request(request, newsletter_slug):
             try:
                 instance.send_activation_email(action='update')
             except Exception, e:
-                logger.warn('Error %s while submitting email to %s.' % (e, instance.email))
+                logger.exception('Error %s while submitting email to %s.', e, instance.email)
                 error = True
     else:
         form = UpdateRequestForm(newsletter=my_newsletter)
