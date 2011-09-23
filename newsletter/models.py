@@ -263,8 +263,6 @@ class Subscription(models.Model):
         variable_dict = {
             'subscription' : self,
             'site' : Site.objects.get_current(),
-            'submission' : self,
-            'message' : self.message,
             'newsletter' : self.newsletter,
             'date' : self.subscribe_date,
             'STATIC_URL': settings.STATIC_URL,
