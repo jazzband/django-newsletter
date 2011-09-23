@@ -86,6 +86,9 @@ class UpdateRequestForm(NewsletterForm):
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
 
+        if not data:
+            raise ValidationError(_("An e-mail address is required."))
+
         # Check whether we should update as a user
         try:
             user = User.objects.get(email__exact=data)
