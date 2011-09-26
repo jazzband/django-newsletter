@@ -34,7 +34,7 @@ def make_subscription(newsletter, email, name=None):
 
 def check_email(email, ignore_errors=False):
     if settings.DEBUG:
-        logger.debug("Checking e-mail address %s" % email)
+        logger.debug("Checking e-mail address %s", email)
 
     email_length = Subscription._meta.get_field_by_name('email_field')[0].max_length
 
@@ -45,7 +45,7 @@ def check_email(email, ignore_errors=False):
 
 def check_name(name, ignore_errors=False):
     if settings.DEBUG:
-        logger.debug("Checking name: %s" % name)
+        logger.debug("Checking name: %s", name)
 
     name_length = Subscription._meta.get_field_by_name('name_field')[0].max_length
     if len(name) <= name_length or ignore_errors:
@@ -99,7 +99,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     if namecol is None:
         raise forms.ValidationError(_("Name column not found. The name of this column should be either 'name' or '%s'.") % ugettext("name"))
 
-    logger.debug("Name column found: '%s'" % firstrow[namecol])
+    logger.debug("Name column found: '%s'", firstrow[namecol])
 
     # Find email column
     colnum = 0
@@ -115,7 +115,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     if mailcol is None:
         raise forms.ValidationError(_("E-mail column not found. The name of this column should be either 'email', 'e-mail' or '%s'.") % ugettext("e-mail"))
 
-    logger.debug("E-mail column found: '%s'" % firstrow[mailcol])
+    logger.debug("E-mail column found: '%s'", firstrow[mailcol])
 
     #assert namecol != mailcol, 'Name and e-mail column should not be the same.'
     if namecol == mailcol:
@@ -290,7 +290,7 @@ class ImportForm(forms.Form):
 
     def get_addresses(self):
         if hasattr(self, 'addresses'):
-            logger.debug('Getting addresses: %s' % self.addresses)
+            logger.debug('Getting addresses: %s', self.addresses)
             return self.addresses
         else:
             return {}

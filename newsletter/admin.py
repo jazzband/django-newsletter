@@ -389,7 +389,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             return HttpResponseRedirect('../')
         
         addresses = request.session['addresses']
-        logger.debug('Confirming addresses: %s' % addresses)
+        logger.debug('Confirming addresses: %s', addresses)
         if request.POST:
             form = ConfirmForm(request.POST)
             if form.is_valid():

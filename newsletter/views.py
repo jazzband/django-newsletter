@@ -74,7 +74,7 @@ def subscribe_user(request, newsletter_slug, confirm=False):
         instance.save()
         
         messages.success(request, _('You have been subscribed to %s.') % my_newsletter)        
-        logger.debug(_('User %(rs)s subscribed to %(my_newsletter)s.') % {"rs":request.user, "my_newsletter": my_newsletter})
+        logger.debug(_('User %(rs)s subscribed to %(my_newsletter)s.'), {"rs":request.user, "my_newsletter": my_newsletter})
 
     if already_subscribed:
         messages.info(request, _('You are already subscribed to %s.') % my_newsletter) 
@@ -100,7 +100,7 @@ def unsubscribe_user(request, newsletter_slug, confirm=False):
             instance.save()
         
             messages.success(request, _('You have been unsubscribed from %s.') % my_newsletter)        
-            logger.debug(_('User %(rs)s unsubscribed from %(my_newsletter)s.') % {"rs":request.user, "my_newsletter":my_newsletter })
+            logger.debug(_('User %(rs)s unsubscribed from %(my_newsletter)s.'), {"rs":request.user, "my_newsletter":my_newsletter })
         
     except Subscription.DoesNotExist:
         not_subscribed = True
@@ -215,7 +215,7 @@ def update_subscription(request, newsletter_slug, email, action, activation_code
             else:
                 subscription.unsubscribed=True
             
-            logger.debug(_(u'Updated subscription %(subscription)s through the web.') % {'subscription':subscription})
+            logger.debug(_(u'Updated subscription %(subscription)s through the web.'), {'subscription':subscription})
             subscription.save()
     else:
         form = UpdateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)

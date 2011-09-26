@@ -511,7 +511,7 @@ class Submission(models.Model):
     
     @classmethod
     def from_message(cls, message):
-        logger.debug(ugettext('Submission of message %s') %  message)
+        logger.debug(ugettext('Submission of message %s'), message)
         submission = cls()
         submission.message = message
         submission.newsletter = message.newsletter
