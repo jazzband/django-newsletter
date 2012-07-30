@@ -1,9 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 import time
 
 from django.core import mail
 
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 
 from newsletter.models import *
 from newsletter.forms import *
@@ -268,7 +269,7 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         subscription.unsubscribed = False
         subscription.save()
 
-        self.assertLessThan(subscription.subscribe_date, datetime.now() \
+        self.assertLessThan(subscription.subscribe_date, timezone.now() \
             + timedelta(seconds=1))
 
         r = self.client.get(self.unsubscribe_url)
@@ -302,7 +303,7 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         subscription = self.get_user_subscription()
         self.assertFalse(subscription.subscribed)
         self.assert_(subscription.unsubscribed)
-        self.assertLessThan(subscription.unsubscribe_date, datetime.now() \
+        self.assertLessThan(subscription.unsubscribe_date, timezone.now() \
                                 + timedelta(seconds=1))
 
     def test_unsubscribe_twice(self):
@@ -483,7 +484,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assertEqual(subscription.name, testname2)
         self.assertEqual(subscription.email, testemail2)
 
-        dt = (datetime.now() - subscription.unsubscribe_date).seconds
+        dt = (timezone.now() - subscription.unsubscribe_date).seconds
         self.assertLessThan(dt, 2)
 
     def test_update_request_view(self):

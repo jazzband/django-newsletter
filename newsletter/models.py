@@ -2,8 +2,6 @@ import random, logging
 
 logger = logging.getLogger(__name__)
 
-from datetime import datetime
-
 from django.db import models
 from django.db.models import permalink
 
@@ -23,8 +21,10 @@ from django.contrib.auth.models import User
 
 from django.conf import settings
 
+from django.utils import timezone
+
 def make_activation_code():
-    return sha_constructor(sha_constructor(str(random.random())).hexdigest()[:5]+str(datetime.now().microsecond)).hexdigest()
+    return sha_constructor(sha_constructor(str(random.random())).hexdigest()[:5]+str(timezone.now().microsecond)).hexdigest()
 
 def get_default_sites():
     return [site.id for site in Site.objects.all()]
@@ -174,7 +174,7 @@ class Subscription(models.Model):
     def subscribe(self):
         logger.debug(u'Subscribing subscription %s.', self)
         
-        self.subscribe_date = datetime.now()
+        self.subscribe_date = timezone.now()
         self.subscribed = True
         self.unsubscribed = False
     
@@ -183,7 +183,7 @@ class Subscription(models.Model):
         
         self.subscribed = False
         self.unsubscribed = True
-        self.unsubscribe_date = datetime.now()
+        self.unsubscribe_date = timezone.now()
         
     def save(self, *args, **kwargs):
         assert self.user or self.email_field, _('Neither an email nor a username is set. This asks for inconsistency!')
@@ -226,7 +226,7 @@ class Subscription(models.Model):
     
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
     
-    create_date = models.DateTimeField(editable=False, default=datetime.now)
+    create_date = models.DateTimeField(editable=False, default=timezone.now)
     
     activation_code = models.CharField(verbose_name=_('activation code'), max_length=40, default=make_activation_code)
     
@@ -451,7 +451,7 @@ class Submission(models.Model):
         logger.info(ugettext(u"Submitting %(submission)s to %(count)d people"),
                     {'submission':self, 'count':subscriptions.count()})
 
-        assert self.publish_date < datetime.now(), 'Something smells fishy; submission time in future.'
+        assert self.publish_date < timezone.now(), 'Something smells fishy; submission time in future.'
 
         self.sending = True
         self.save()
@@ -505,7 +505,7 @@ class Submission(models.Model):
         
     @classmethod
     def submit_queue(cls):
-        todo = cls.objects.filter(prepared=True, sent=False, sending=False, publish_date__lt=datetime.now())
+        todo = cls.objects.filter(prepared=True, sent=False, sending=False, publish_date__lt=timezone.now())
         for submission in todo:
             submission.submit()
     
@@ -537,7 +537,7 @@ class Submission(models.Model):
     
     subscriptions = models.ManyToManyField('Subscription', help_text=_('If you select none, the system will automatically find the subscribers for you.'), blank=True, db_index=True, verbose_name=_('recipients'), limit_choices_to={ 'subscribed' :True })
 
-    publish_date = models.DateTimeField(verbose_name=_('publication date'), blank=True, null=True, default=datetime.now(), db_index=True) 
+    publish_date = models.DateTimeField(verbose_name=_('publication date'), blank=True, null=True, default=timezone.now(), db_index=True) 
     publish = models.BooleanField(default=True, verbose_name=_('publish'), help_text=_('Publish in archive.'), db_index=True)
 
     prepared = models.BooleanField(default=False, verbose_name=_('prepared'), db_index=True, editable=False)
