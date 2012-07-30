@@ -2,12 +2,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from datetime import datetime
-
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 
 from django.contrib import admin
+from django.contrib import messages
 from django.contrib.admin.util import force_unicode
 from django.contrib.sites.models import Site
 
@@ -24,6 +23,8 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import RequestContext, Context
 
 from django.shortcuts import render_to_response
+
+from django.utils import timezone
 
 from django.utils.translation import ugettext, ugettext_lazy as _
 
@@ -93,7 +94,7 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             if obj.sent:
                 return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text(obj))
             else:
-                if obj.publish_date > datetime.now():
+                if obj.publish_date > timezone.now():
                     return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.STATIC_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text(obj))
                 else:                    
                     return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.STATIC_URL+'newsletter/admin/img/submitting.gif', self.admin_status_text(obj))
@@ -108,7 +109,7 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             if obj.sent:
                 return ugettext("Sent.")
             else:
-                if obj.publish_date > datetime.now():
+                if obj.publish_date > timezone.now():
                     return ugettext("Delayed submission.")
                 else:
                     return ugettext("Submitting.")
@@ -121,14 +122,14 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         submission = self._getobj(request, object_id)
         
         if submission.sent or submission.prepared:
-            request.user.message_set.create(message=ugettext('Submission already sent.'))
+            messages.info(request, ugettext("Submission already sent."))
         
             return HttpResponseRedirect('../')
         
         submission.prepared=True
         submission.save()
         
-        request.user.message_set.create(message=ugettext('Your submission is being sent.'))
+        messages.info(request, ugettext("Your submission is being sent."))
         
         return HttpResponseRedirect('../../')
     
@@ -220,7 +221,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         c = Context({'message' : message,
                      'site' : Site.objects.get_current(),
                      'newsletter' : message.newsletter,
-                     'date' : datetime.now(),
+                     'date' : timezone.now(),
                      'STATIC_URL': settings.STATIC_URL,
                      'MEDIA_URL': settings.MEDIA_URL})
 
@@ -235,7 +236,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         c = Context({'message' : message,
                      'site' : Site.objects.get_current(),
                      'newsletter' : message.newsletter,
-                     'date' : datetime.now(),
+                     'date' : timezone.now(),
                      'STATIC_URL': settings.STATIC_URL,
                      'MEDIA_URL': settings.MEDIA_URL},
                      autoescape=False)
@@ -398,7 +399,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                         address.save()
                 finally:
                     del request.session['addresses']
-                request.user.message_set.create(message=_('%s subscriptions have been successfully added.') % len(addresses)) 
+                messages.success(request, _('%s subscriptions have been successfully added.') % len(addresses))
             
                 return HttpResponseRedirect('../../')
         else:
