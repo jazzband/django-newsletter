@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # This file is part of django-newsletter.
 #
 # django-newsletter: Django app for managing multiple mass-mailing lists with
