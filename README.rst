@@ -26,15 +26,15 @@ Please refer to `requirements.txt <http://github.com/dokterbob/django-newsletter
 Installation
 ============
 #)  Get it from the Cheese Shop::
-    
+
 	pip install django-newsletter
-    
+
     **Or** get the latest & greatest from Github and link it to your
     application tree::
-    
+
 	pip install -e git://github.com/dokterbob/django-newsletter.git#egg=django-newsletter
-    
-    (In either case it is recommended that you use 
+
+    (In either case it is recommended that you use
     `VirtualEnv <http://pypi.python.org/pypi/virtualenv>`_ in order to
     keep your Python environment somewhat clean.)
 
@@ -59,23 +59,23 @@ Installation
 	    ...
 	)
 
-#)  Enable Django's `staticfiles <http://docs.djangoproject.com/en/dev/howto/static-files/>`_ 
-    app so the admin icons, CSS and JavaScript will be available where 
+#)  Enable Django's `staticfiles <http://docs.djangoproject.com/en/dev/howto/static-files/>`_
+    app so the admin icons, CSS and JavaScript will be available where
     we expect it.
 
 #)  Create required data structure and load default template fixture::
-    
+
 	./manage.py syncdb
 	./manage.py loaddata default_templates
 
-#)  Change the default contact email listed in 
+#)  Change the default contact email listed in
     ``templates/newsletter/subscription_subscribe.html`` and
     ``templates/newsletter/subscription_update.html``.
 
 #)  Run the tests to see if it all works::
-    
+
 	./manage.py test
-    
+
     If this fails, please contact me!
     If it doesn't: that's a good sign, chap. You'll probably have yourself a
     working configuration!
@@ -85,7 +85,7 @@ Installation
 	@hourly /path/to/my/project/manage.py runjobs hourly
 	@daily /path/to/my/project/manage.py runjobs daily
 	@weekly /path/to/my/project/manage.py runjobs weekly
-	@monthly /path/to/my/project/manage.py runjobs monthly			
+	@monthly /path/to/my/project/manage.py runjobs monthly
 
 
 Usage
@@ -103,14 +103,14 @@ Unit tests
 Fairly extensive tests are available for internal frameworks, web
 (un)subscription and mail sending. One feature currently untested is actually
 sending mail to very large numbers of recipients (1000+), but feel free to try
-around. Please to note that the unittests (or actually, Django) currently 
+around. Please to note that the unittests (or actually, Django) currently
 requires a `404.html` in your `templates` directory in order to be able to
 test 404 responses.
 
 TODO
 ====
 * Add a separate submission queue view in the admin instead of the modded edit
-  view, which is confusing to the user. 
+  view, which is confusing to the user.
 * Finish front end for article ordering from admin.
 * Write tests for: template syntax checking, ordering of articles in a
   message.
@@ -121,5 +121,5 @@ TODO
 
 License
 =======
-This application is released 
+This application is released
 under the GNU Affero General Public License version 3.

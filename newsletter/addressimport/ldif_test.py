@@ -1,4 +1,4 @@
-import ldif 
+import ldif
 
 myfile = open("ldif.ldif", "rb")
 

@@ -8,10 +8,10 @@ colnum = 0
 for column in firstrow:
 	if 'naam' in column.lower() or 'name' in column.lower():
 		namecol = colnum
-		
+
 		if 'display' in column.lower() or 'weergave' in column.lower():
 			break
-		
+
 	colnum += 1
 assert namecol != None, 'Name column not found.'
 print 'Name column found \'%s\'' % firstrow[namecol]
@@ -21,7 +21,7 @@ colnum = 0
 for column in firstrow:
 	if 'email' in column.lower() or 'e-mail' in column.lower():
 		mailcol = colnum
-		
+
 		break
 
 	colnum += 1
