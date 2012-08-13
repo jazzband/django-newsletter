@@ -7,7 +7,7 @@ Newsletter application for the Django web framework.
 What is it?
 ===========
 Django app for managing multiple mass-mailing lists with both plaintext as
-well as HTML templates (and TinyMCE editor for HTML messages), images and a
+well as HTML templates with rich text widget integration, images and a
 smart queueing system all right from the admin interface.
 
 Status
@@ -39,16 +39,24 @@ Installation
     keep your Python environment somewhat clean.)
 
 #)  Add newsletter and to ``INSTALLED_APPS`` in settings.py and make sure that
-    the dependencies django-tinymce and django-extensions are there as well::
+    your favourite rich text widget and django-extensions are there as well::
 
 	INSTALLED_APPS = (
 	    ...
-	    'tinymce',
+	    'imperavi',
 	    'django_extensions',
 	    ...
 	    'newsletter',
 	    ...
 	)
+
+#)  Set the path to your preferred rich text widget (optional). If not set,
+    django-newsletter will fall back to Django's default TextField widget.
+
+	# Using django-imperavi
+	NEWSLETTER_RICHTEXT_WIDGET = "imperavi.widget.ImperaviWidget"
+	# Using django-tinymce
+	NEWSLETTER_RICHTEXT_WIDGET = "tinymce.widgets.TinyMCE"
 
 #)  Import subscription, unsubscription and archive URL's somewhere in your
     `urls.py`::

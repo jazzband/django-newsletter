@@ -27,9 +27,6 @@ from django.shortcuts import render_to_response
 
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from tinymce.widgets import TinyMCE
-
-
 # This function is new in Django 1.2 - fallback to dummy identity
 # function not to break compatibility with older releases.
 try:
@@ -41,6 +38,22 @@ from models import EmailTemplate, Newsletter, Subscription, Article, Message, Su
 
 from admin_forms import *
 from admin_utils import *
+
+# Import and set the richtext field
+NEWSLETTER_RICHTEXT_WIDGET = getattr(settings, "NEWSLETTER_RICHTEXT_WIDGET", "")
+RICHTEXT_WIDGET = None
+if NEWSLETTER_RICHTEXT_WIDGET:
+    try:
+        # NEWSLETTER_RICHTEXT_WIDGET = x.y.Widget
+        # -> from x.y import Widget
+        module_path = NEWSLETTER_RICHTEXT_WIDGET.split(".")
+        widget = module_path[-1]
+        module_path = module_path[:-1]
+        module = __import__(".".join(module_path), globals(), locals(), [widget])
+        RICHTEXT_WIDGET = getattr(module, widget)
+    except Exception as e:
+        # Catch ImportError and other exceptions too (eg user sets setting to an integer)
+        raise ImportError("Error while importing %r: %s" % (NEWSLETTER_RICHTEXT_WIDGET, e))
 
 class NewsletterAdmin(admin.ModelAdmin):
     list_display = ('title', 'admin_subscriptions', 'admin_messages', 'admin_submissions')
@@ -157,7 +170,19 @@ class OrderingWidget(forms.Widget):
     # def value_from_datadict(self, data, files, name):
     #     return self.original_value
 
-class ArticleInline(admin.StackedInline):
+
+StackedInline = admin.StackedInline
+if RICHTEXT_WIDGET and RICHTEXT_WIDGET.__name__ == "ImperaviWidget":
+    # Imperavi works a little differently
+    # It's not just a field, it's also a media class and a method.
+    # To avoid complications, we reuse ImperaviStackedInlineAdmin
+    try:
+        from imperavi.admin import ImperaviStackedInlineAdmin
+        StackedInline = ImperaviStackedInlineAdmin
+    except ImportError:
+        pass
+
+class ArticleInline(StackedInline):
     model = Article
     extra = 2
     fieldsets = (
@@ -170,9 +195,10 @@ class ArticleInline(admin.StackedInline):
         }),
     )
 
-    formfield_overrides = {
-        models.TextField: {'widget': TinyMCE},
-    }
+    if RICHTEXT_WIDGET:
+        formfield_overrides = {
+            models.TextField: {'widget': RICHTEXT_WIDGET},
+        }
 
 
 class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
