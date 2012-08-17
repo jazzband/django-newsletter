@@ -12,7 +12,7 @@ from django.contrib.admin.util import force_unicode
 from django.contrib.sites.models import Site
 
 from django.core import serializers
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.core.urlresolvers import reverse
 
 from django.db.models import permalink
@@ -25,6 +25,7 @@ from django.template import RequestContext, Context
 
 from django.shortcuts import render_to_response
 
+from django.utils.importlib import import_module
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 # This function is new in Django 1.2 - fallback to dummy identity
@@ -43,17 +44,13 @@ from admin_utils import *
 NEWSLETTER_RICHTEXT_WIDGET = getattr(settings, "NEWSLETTER_RICHTEXT_WIDGET", "")
 RICHTEXT_WIDGET = None
 if NEWSLETTER_RICHTEXT_WIDGET:
+    module, attr = NEWSLETTER_RICHTEXT_WIDGET.rsplit(".", 1)
     try:
-        # NEWSLETTER_RICHTEXT_WIDGET = x.y.Widget
-        # -> from x.y import Widget
-        module_path = NEWSLETTER_RICHTEXT_WIDGET.split(".")
-        widget = module_path[-1]
-        module_path = module_path[:-1]
-        module = __import__(".".join(module_path), globals(), locals(), [widget])
-        RICHTEXT_WIDGET = getattr(module, widget)
+        mod = import_module(module)
+        RICHTEXT_WIDGET = getattr(mod, attr)
     except Exception as e:
         # Catch ImportError and other exceptions too (eg user sets setting to an integer)
-        raise ImportError("Error while importing %r: %s" % (NEWSLETTER_RICHTEXT_WIDGET, e))
+        raise ImproperlyConfigured("Error while importing setting NEWSLETTER_RICHTEXT_WIDGET %r: %s" % (NEWSLETTER_RICHTEXT_WIDGET, e))
 
 class NewsletterAdmin(admin.ModelAdmin):
     list_display = ('title', 'admin_subscriptions', 'admin_messages', 'admin_submissions')
