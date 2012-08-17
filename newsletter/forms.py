@@ -10,33 +10,33 @@ from models import Subscription
 
 class NewsletterForm(forms.ModelForm):
     """ This is the base class for all forms managing subscriptions. """
-    
+
     class Meta:
         model = Subscription
         fields = ('name_field', 'email_field')
 
     def __init__(self, *args, **kwargs):
-        
+
         assert kwargs.has_key('newsletter'), 'No newsletter specified'
-        
+
         newsletter = kwargs.pop('newsletter')
-        
+
         if kwargs.has_key('ip'):
             ip = kwargs['ip']
             del kwargs['ip']
         else:
             ip = None
-        
+
         super(NewsletterForm, self).__init__(*args, **kwargs)
-         
+
         self.instance.newsletter = newsletter
-        
+
         if ip:
             self.instance.ip = ip
-            
-class SubscribeRequestForm(NewsletterForm):        
+
+class SubscribeRequestForm(NewsletterForm):
     """ Request subscription to the newsletter. Will result in an activation email
-        being sent with a link where one can edit, confirm and activate one's subscription. 
+        being sent with a link where one can edit, confirm and activate one's subscription.
     """
 
     def clean_email_field(self):
@@ -73,16 +73,16 @@ class UpdateRequestForm(NewsletterForm):
     """ Request updating or activating subscription. Will result in an activation
         email being sent.
     """
-    
+
     class Meta(NewsletterForm.Meta):
         fields = ('email_field',)
-    
+
     def clean(self):
         if not self.instance.subscribed:
             raise ValidationError(_("This subscription has not yet been activated."))
 
         return super(UpdateRequestForm, self).clean()
-    
+
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
 
@@ -112,7 +112,7 @@ class UpdateRequestForm(NewsletterForm):
 
 class UnsubscribeRequestForm(UpdateRequestForm):
     """ Similar to previous form but checks if we have not already been unsubscribed. """
-    
+
     def clean(self):
         if self.instance.unsubscribed:
             raise ValidationError(_("This subscription has already been unsubscribed from."))
@@ -120,8 +120,8 @@ class UnsubscribeRequestForm(UpdateRequestForm):
         return super(UnsubscribeRequestForm, self).clean()
 
 class UpdateForm(NewsletterForm):
-    """ This form allows one to actually update to or unsubscribe from the newsletter. To do this, a 
-        correct activation code is required. 
+    """ This form allows one to actually update to or unsubscribe from the newsletter. To do this, a
+        correct activation code is required.
     """
     def clean_user_activation_code(self):
         data = self.cleaned_data['user_activation_code']
@@ -141,5 +141,5 @@ class UserUpdateForm(forms.ModelForm):
         # For now, use a hidden field.
         hidden_fields = ('newsletter',)
 
-        
-    
+
+

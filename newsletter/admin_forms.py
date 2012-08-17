@@ -126,7 +126,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     addresses = {}
     for row in myreader:
         if not max(namecol, mailcol) < len(row):
-            logger.warn("Column count does not match for row number %d", 
+            logger.warn("Column count does not match for row number %d",
                         myreader.line_num, extra=dict(data={'row':row}))
 
             if ignore_errors:
