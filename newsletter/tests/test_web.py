@@ -14,24 +14,24 @@ WAIT_TIME=1
 
 class NoNewsLetterListTestCase(WebTestCase):
     """ Test case for when no newsletter exists """
-    
+
     def setUp(self):
         Newsletter.objects.all().delete()
-        
+
         self.list_url = reverse('newsletter_list')
-    
+
     def test_list(self):
         """ Test whether all newsletters are in the list and whether the links
             to them are correct. """
-            
+
         r = self.client.get(self.list_url)
-        
+
         self.assertEqual(r.status_code, 404)
 
 
 class NewsletterListTestCase(WebTestCase):
     """ Base class for newsletter test cases. """
-    
+
     fixtures = ['default_templates', 'test_newsletters']
 
     def setUp(self):
@@ -54,7 +54,7 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
             detail_url = reverse('newsletter_detail',
                                  kwargs={'newsletter_slug': n.slug})
             self.assertContains(r, '<a href="%s">' % detail_url)
-        
+
         for n in self.newsletters.filter(visible=False):
             self.assertNotContains(r, n.title)
 
@@ -77,18 +77,18 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
             archive_url = reverse('newsletter_archive',
                                  kwargs={'newsletter_slug': n.slug})
 
-            
+
             r = self.client.get(detail_url)
-            
+
             if not n.visible:
                 self.assertEqual(r.status_code, 404)
                 continue
-            
+
             self.assertContains(r, '<a href="%s">' % subscribe_url )
             self.assertContains(r, '<a href="%s">' % update_url )
             self.assertContains(r, '<a href="%s">' % unsubscribe_url )
             self.assertContains(r, '<a href="%s">' % archive_url )
-            
+
             r = self.client.get(subscribe_url)
             self.assertContains(r, n.title, status_code=200)
 
@@ -138,18 +138,18 @@ class UserNewsletterListTestCase(UserTestCase,
     #     for n in self.newsletters.filter(visible=True):
     #         r = self.client.post(self.list_url, {'form-0-id': n.id,
     #                                              'form-0-subscribed': ''})
-    #         
+    #
     #         self.assert_(n.subscribed)
-    # 
+    #
     # def test_update(self):
     #     r = self.client.get(self.list_url)
-    # 
+    #
     #     formset = r.context['formset']
-    # 
+    #
     #     total_forms = self.newsletters.count()
     #     params = {'form-TOTAL_FORMS' : total_forms,
     #               'form-INITIAL_FORMS' : total_forms}
-    #     
+    #
     #     for n in self.newsletters:
     #         for x in xrange(0, total_forms):
     #             field = 'form-%d-id' % x
@@ -159,7 +159,7 @@ class UserNewsletterListTestCase(UserTestCase,
     #         r = self.client.post(self.list_url, params)
 
 class WebSubscribeTestCase(WebTestCase, MailTestCase):
-    
+
     fixtures = ['default_templates']
 
     def setUp(self):
@@ -243,14 +243,14 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         subscription = self.get_user_subscription()
         self.assert_(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
-    
+
     def test_subscribe_twice(self):
         # After subscribing we should not be able to subscribe again
         subscription = Subscription(user=self.user, newsletter=self.n)
         subscription.subscribed = True
         subscription.unsubscribed = False
         subscription.save()
-        
+
         r = self.client.get(self.subscribe_url)
 
         self.assertContains(r, self.n.title, status_code=200)
@@ -310,7 +310,7 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         subscription.subscribed = False
         subscription.unsubscribed = True
         subscription.save()
-        
+
         r = self.client.get(self.unsubscribe_url)
 
         self.assertContains(r, self.n.title, status_code=200)
@@ -321,7 +321,7 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         self.assertNotContains(r, 'action="%s"' % self.unsubscribe_confirm_url)
         self.assertNotContains(r, 'id="id_submit"')
 
-class AnonymousSubscribeTestCase(WebSubscribeTestCase, 
+class AnonymousSubscribeTestCase(WebSubscribeTestCase,
                                  ComparingTestCase):
 
     def test_subscribe_request_view(self):
@@ -369,10 +369,10 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         r = self.client.post(self.subscribe_url, {'name_field': 'Test Name',
                                                   'email_field': 'test@email.com'})
-        
+
         self.assertContains(r, "already been subscribed to",
                             status_code=200)
-        
+
     def test_user_update(self):
         """ We should not be able to update anonymous for an email address belonging
             to an existing user. """
@@ -420,7 +420,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         dt = (subscription.subscribe_date - subscription.create_date).seconds
         self.assertBetween(dt, WAIT_TIME, WAIT_TIME+1)
-        
+
     def test_unsubscribe_request_post(self):
         """ Post the unsubscribe request form. """
         subscription = Subscription(newsletter=self.n,
@@ -523,16 +523,16 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_unsubscribe_update_unactivated(self):
         """ Test updating unsubscribed subscriptions view. """
-        
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com',
                                     subscribed=False)
         subscription.save()
-        
+
         for url in (self.update_url, self.unsubscribe_url):
             r = self.client.post(url, {'email_field': 'test@email.com'})
-        
+
             self.assertContains(r, "This subscription has not yet been activated.")
 
     def test_unsubscribe_update_unsubscribed(self):
@@ -544,7 +544,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
             r = self.client.post(url, {'email_field': 'newemail@fdgf.com'})
 
             self.assertContains(r, "This e-mail address has not been subscribed to.")
-        
+
     def test_update_request_activate(self):
         """ Update a request. """
         subscription = Subscription(newsletter=self.n,

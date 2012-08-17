@@ -20,7 +20,7 @@ def thumb(file, size='200x200'):
     # if the image wasn't already resized, resize it
     if not os.path.exists(miniature_filename):
         logger.debug('Resizing %s to %s', basename, size)
-        
+
         filename = os.path.join(settings.MEDIA_ROOT, file)
         try:
             image = Image.open(filename)
