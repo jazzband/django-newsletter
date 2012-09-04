@@ -110,9 +110,9 @@ Usage
 Unit tests
 ==========
 Fairly extensive tests are available for internal frameworks, web
-(un)subscription and mail sending. One feature currently untested is actually
-sending mail to very large numbers of recipients (1000+), but feel free to try
-around. Please to note that the unittests (or actually, Django) currently
+(un)subscription and mail sending. Sending a newsletter to large groups of recipients 
+(+10k) has been confirmed to work in multiple production environments.
+Please to note that the unittests (or actually, Django) currently
 requires a `404.html` in your `templates` directory in order to be able to
 test 404 responses.
 
