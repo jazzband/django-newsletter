@@ -12,8 +12,8 @@ smart queueing system all right from the admin interface.
 
 Status
 ======
-We are currently using this package in several production environments, but it
-should still be considered a work in progress.
+We are currently using this package in several large to medium scale production environments, but it
+should be considered a permanent work in progress.
 
 Translations
 ============
@@ -115,18 +115,6 @@ Fairly extensive tests are available for internal frameworks, web
 Please to note that the unittests (or actually, Django) currently
 requires a `404.html` in your `templates` directory in order to be able to
 test 404 responses.
-
-TODO
-====
-* Add a separate submission queue view in the admin instead of the modded edit
-  view, which is confusing to the user.
-* Finish front end for article ordering from admin.
-* Write tests for: template syntax checking, ordering of articles in a
-  message.
-* Extend subscription models to allow for mail deliverability feedback.
-* Refactor default contact email out of the templates.
-* If you have an e-mail address the username can be found. Depending on the
-	usage this should be fixed.
 
 License
 =======
