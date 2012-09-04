@@ -51,11 +51,12 @@ Installation
 	)
 
 #)  Set the path to your preferred rich text widget (optional). If not set,
-    django-newsletter will fall back to Django's default TextField widget.
+    django-newsletter will fall back to Django's default TextField widget::
 
 	# Using django-imperavi
 	NEWSLETTER_RICHTEXT_WIDGET = "imperavi.widget.ImperaviWidget"
-	# Using django-tinymce
+
+        # Using django-tinymce
 	NEWSLETTER_RICHTEXT_WIDGET = "tinymce.widgets.TinyMCE"
 
 #)  Import subscription, unsubscription and archive URL's somewhere in your
