@@ -4,7 +4,7 @@
 # django-newsletter: Django app for managing multiple mass-mailing lists with
 # both plaintext as well as HTML templates (and TinyMCE editor for HTML messages),
 # images and a smart queueing system all right from the admin interface.
-# Copyright (C) 2008-2011 Mathijs de Bruin
+# Copyright (C) 2008-2012 Mathijs de Bruin
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -53,4 +53,8 @@ setup(
                    'Operating System :: OS Independent',
                    'Programming Language :: Python',
                    'Topic :: Utilities'],
+    test_suite='setuptest.setuptest.SetupTestSuite',
+    tests_require=(
+        'django-setuptest',
+    ),
 )
