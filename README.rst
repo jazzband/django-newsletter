@@ -1,6 +1,10 @@
 =================
 django-newsletter
 =================
+
+.. image:: https://secure.travis-ci.org/dokterbob/django-newsletter.png
+    :target: http://travis-ci.org/dokterbob/django-newsletter
+
 Newsletter application for the Django web framework.
 ----------------------------------------------------
 
