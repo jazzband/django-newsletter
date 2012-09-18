@@ -15,3 +15,5 @@ INSTALLED_APPS = (
 ROOT_URLCONF = 'test_urls'
 
 SITE_ID = 1
+
+TEMPLATE_DIRS = ('test_templates', )
