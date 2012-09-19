@@ -16,10 +16,16 @@ except ImportError:
 
 from django.conf import settings
 
-from models import *
+from .models import *
+
 
 def make_subscription(newsletter, email, name=None):
-    if Subscription.objects.filter(newsletter__id=newsletter.id, subscribed=True, email_field__exact=email).count():
+    qs = Subscription.objects.filter(
+        newsletter__id=newsletter.id,
+        subscribed=True,
+        email_field__exact=email)
+
+    if qs.count():
         return None
 
     addr = Subscription(subscribed=True)
@@ -32,38 +38,55 @@ def make_subscription(newsletter, email, name=None):
 
     return addr
 
+
 def check_email(email, ignore_errors=False):
     if settings.DEBUG:
         logger.debug("Checking e-mail address %s", email)
 
-    email_length = Subscription._meta.get_field_by_name('email_field')[0].max_length
+    email_length = \
+        Subscription._meta.get_field_by_name('email_field')[0].max_length
 
     if len(email) <= email_length or ignore_errors:
         return email[:email_length]
     else:
-        raise forms.ValidationError(_("E-mail address %(email)s too long, maximum length is %(email_length)s characters.") % {"email":email, "email_length":email_length})
+        raise forms.ValidationError(_(
+            "E-mail address %(email)s too long, maximum length is "
+            "%(email_length)s characters.") % {
+                "email": email,
+                "email_length": email_length})
+
 
 def check_name(name, ignore_errors=False):
     if settings.DEBUG:
         logger.debug("Checking name: %s", name)
 
-    name_length = Subscription._meta.get_field_by_name('name_field')[0].max_length
+    name_length = \
+        Subscription._meta.get_field_by_name('name_field')[0].max_length
     if len(name) <= name_length or ignore_errors:
         return name[:name_length]
     else:
-        raise forms.ValidationError(_("Name %(name)s too long, maximum length is %(name_length)s characters.") % {"name":name, "name_length":name_length})
+        raise forms.ValidationError(_(
+            "Name %(name)s too long, maximum length is "
+            "%(name_length)s characters.") % {
+                "name": name,
+                "name_length": name_length})
+
 
 def parse_csv(myfile, newsletter, ignore_errors=False):
     from newsletter.addressimport.csv_util import UnicodeReader
-    import codecs, csv
+    import codecs
+    import csv
 
     # Detect encoding
     from chardet.universaldetector import UniversalDetector
 
     detector = UniversalDetector()
+
     for line in myfile.readlines():
         detector.feed(line)
-        if detector.done: break
+        if detector.done:
+            break
+
     detector.close()
     charset = detector.result['encoding']
 
@@ -91,13 +114,16 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
         if "name" in column.lower() or ugettext("name") in column.lower():
             namecol = colnum
 
-            if "display" in column.lower() or ugettext("display") in column.lower():
+            if "display" in column.lower() or \
+                    ugettext("display") in column.lower():
                 break
 
         colnum += 1
 
     if namecol is None:
-        raise forms.ValidationError(_("Name column not found. The name of this column should be either 'name' or '%s'.") % ugettext("name"))
+        raise forms.ValidationError(_(
+            "Name column not found. The name of this column should be "
+            "either 'name' or '%s'.") % ugettext("name"))
 
     logger.debug("Name column found: '%s'", firstrow[namecol])
 
@@ -105,7 +131,10 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     colnum = 0
     mailcol = None
     for column in firstrow:
-        if 'email' in column.lower() or 'e-mail' in column.lower() or ugettext("e-mail") in column.lower():
+        if 'email' in column.lower() or \
+                'e-mail' in column.lower() or \
+                ugettext("e-mail") in column.lower():
+
             mailcol = colnum
 
             break
@@ -113,13 +142,21 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
         colnum += 1
 
     if mailcol is None:
-        raise forms.ValidationError(_("E-mail column not found. The name of this column should be either 'email', 'e-mail' or '%s'.") % ugettext("e-mail"))
+        raise forms.ValidationError(_(
+            "E-mail column not found. The name of this column should be "
+            "either 'email', 'e-mail' or '%s'.") % ugettext("e-mail"))
 
     logger.debug("E-mail column found: '%s'", firstrow[mailcol])
 
-    #assert namecol != mailcol, 'Name and e-mail column should not be the same.'
+    #assert namecol != mailcol, \
+    #    'Name and e-mail column should not be the same.'
     if namecol == mailcol:
-        raise forms.ValidationError(_("Could not properly determine the proper columns in the CSV-file. There should be a field called 'name' or '%(name)s' and one called 'e-mail' or '%(e-mail)s'.") % {"name":_("name"), "e-mail":_("e-mail")})
+        raise forms.ValidationError(_(
+            "Could not properly determine the proper columns in the "
+            "CSV-file. There should be a field called 'name' or '%(name)s' "
+            "and one called 'e-mail' or '%(e-mail)s'.") % {
+                "name": _("name"),
+                "e-mail": _("e-mail")})
 
     logger.debug('Extracting data.')
 
@@ -127,13 +164,15 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     for row in myreader:
         if not max(namecol, mailcol) < len(row):
             logger.warn("Column count does not match for row number %d",
-                        myreader.line_num, extra=dict(data={'row':row}))
+                        myreader.line_num, extra=dict(data={'row': row}))
 
             if ignore_errors:
                 # Skip this record
                 continue
             else:
-                raise forms.ValidationError(_("Row with content '%s' does not contain a name and email field.") % row)
+                raise forms.ValidationError(_(
+                    "Row with content '%s' does not contain a name and "
+                    "email field.") % row)
 
         name = check_name(row[namecol], ignore_errors)
         email = check_email(row[mailcol], ignore_errors)
@@ -143,29 +182,41 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
         if email_re.search(email):
             addr = make_subscription(newsletter, email, name)
         elif not ignore_errors:
-                raise forms.ValidationError(_("Entry '%s' does not contain a valid e-mail address.") % name)
+                raise forms.ValidationError(_(
+                    "Entry '%s' does not contain a valid "
+                    "e-mail address.") % name)
         else:
-            logger.warn("Entry '%s' at line %d does not contain a valid e-mail address.",
-                        name, myreader.line_num, extra=dict(data={'row':row}))
-
+            logger.warn(
+                "Entry '%s' at line %d does not contain a valid "
+                "e-mail address.",
+                name, myreader.line_num, extra=dict(data={'row': row}))
 
         if addr:
-            if addresses.has_key(email):
-                logger.warn("Entry '%s' at line %d contains a duplicate entry for '%s'",
-                    name, myreader.line_num, email, extra=dict(data={'row':row}))
+            if email in addresses:
+                logger.warn(
+                    "Entry '%s' at line %d contains a "
+                    "duplicate entry for '%s'",
+                    name, myreader.line_num, email,
+                    extra=dict(data={'row': row}))
 
                 if not ignore_errors:
-                    raise forms.ValidationError(_("The address file contains duplicate entries for '%s'.") % email)
+                    raise forms.ValidationError(_(
+                        "The address file contains duplicate entries "
+                        "for '%s'.") % email)
 
-            addresses.update({email:addr})
+            addresses.update({email: addr})
         else:
-            logger.warn("Entry '%s' at line %d is already subscribed to with email '%s'",
-                name, myreader.line_num, email, extra=dict(data={'row':row}))
+            logger.warn(
+                "Entry '%s' at line %d is already subscribed to "
+                "with email '%s'",
+                name, myreader.line_num, email, extra=dict(data={'row': row}))
 
             if not ignore_errors:
-                raise forms.ValidationError(_("Some entries are already subscribed to."))
+                raise forms.ValidationError(
+                    _("Some entries are already subscribed to."))
 
     return addresses
+
 
 def parse_vcard(myfile, newsletter, ignore_errors=False):
     import vobject
@@ -181,38 +232,47 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
             name = None
 
         # Do we have an email address?
-        # If not: either continue to the next vcard or raise a validation error.
+        # If not: either continue to the next vcard or
+        # raise a validation error.
         if hasattr(myvcard, 'email'):
             email = check_email(myvcard.email.value, ignore_errors)
         elif not ignore_errors:
-            raise forms.ValidationError(_("Entry '%s' contains no email address.") % name)
+            raise forms.ValidationError(
+                _("Entry '%s' contains no email address.") % name)
         else:
             continue
 
         if email_re.search(email):
             addr = make_subscription(newsletter, email, name)
         elif not ignore_errors:
-                raise forms.ValidationError(_("Entry '%s' does not contain a valid e-mail address.") % name)
+                raise forms.ValidationError(
+                    _("Entry '%s' does not contain a valid e-mail address.")
+                        % name)
 
         if addr:
-            if addresses.has_key(email) and not ignore_errors:
-                raise forms.ValidationError(_("The address file contains duplicate entries for '%s'.") % email)
+            if email in addresses and not ignore_errors:
+                raise forms.ValidationError(_(
+                    "The address file contains duplicate entries for '%s'.")
+                        % email)
 
-            addresses.update({email:addr})
+            addresses.update({email: addr})
         elif not ignore_errors:
-            raise forms.ValidationError(_("Some entries are already subscribed to."))
+            raise forms.ValidationError(
+                _("Some entries are already subscribed to."))
 
     return addresses
 
+
 def parse_ldif(myfile, newsletter, ignore_errors=False):
     from addressimport import ldif
+
     class AddressParser(ldif.LDIFParser):
         addresses = {}
 
         def handle(self, dn, entry):
-            if entry.has_key('mail'):
+            if 'mail' in entry:
                 email = check_email(entry['mail'][0], ignore_errors)
-                if entry.has_key('cn'):
+                if 'cn' in entry:
                     name = check_name(entry['cn'][0], ignore_errors)
                 else:
                     name = None
@@ -220,18 +280,24 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
                 if email_re.search(email):
                     addr = make_subscription(newsletter, email, name)
                 elif not ignore_errors:
-                        raise forms.ValidationError(_("Entry '%s' does not contain a valid e-mail address.") % name)
+                        raise forms.ValidationError(_(
+                            "Entry '%s' does not contain a valid "
+                            "e-mail address.") % name)
 
                 if addr:
-                    if self.addresses.has_key(email) and not ignore_errors:
-                        raise forms.ValidationError(_("The address file contains duplicate entries for '%s'.") % email)
+                    if email in self.addresses and not ignore_errors:
+                        raise forms.ValidationError(_(
+                            "The address file contains duplicate entries "
+                            "for '%s'.") % email)
 
-                    self.addresses.update({email:addr})
+                    self.addresses.update({email: addr})
                 elif not ignore_errors:
-                    raise forms.ValidationError(_("Some entries are already subscribed to."))
+                    raise forms.ValidationError(
+                        _("Some entries are already subscribed to."))
 
             elif not ignore_errors:
-                raise forms.ValidationError(_("Some entries have no e-mail address."))
+                raise forms.ValidationError(
+                    _("Some entries have no e-mail address."))
     try:
         myparser = AddressParser(myfile)
         myparser.parse()
@@ -241,10 +307,14 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
 
     return myparser.addresses
 
+
 class ImportForm(forms.Form):
+
     def clean(self):
         # If there are validation errors earlier on, don't bother.
-        if not (self.cleaned_data.has_key('address_file') and self.cleaned_data.has_key('ignore_errors') and self.cleaned_data.has_key('newsletter')):
+        if not ('address_file' in self.cleaned_data and
+                'ignore_errors' in self.cleaned_data and
+                'newsletter' in self.cleaned_data):
             return self.cleaned_data
             # TESTME: Should an error be raised here or not?
             #raise forms.ValidationError(_("No file has been specified."))
@@ -256,7 +326,8 @@ class ImportForm(forms.Form):
         myfile = self.cleaned_data['address_file']
 
         myfield = self.base_fields['address_file']
-        myvalue = myfield.widget.value_from_datadict(self.data, self.files, self.add_prefix('address_file'))
+        myvalue = myfield.widget.value_from_datadict(
+            self.data, self.files, self.add_prefix('address_file'))
 
         content_type = myvalue.content_type
         allowed_types = ('text/plain', 'application/octet-stream',
@@ -266,25 +337,31 @@ class ImportForm(forms.Form):
                          'application/csv', 'application/excel',
                          'application/vnd.msexcel', 'text/anytext')
         if content_type not in allowed_types:
-            raise forms.ValidationError(_("File type '%s' was not recognized.") % content_type)
+            raise forms.ValidationError(_(
+                "File type '%s' was not recognized.") % content_type)
 
         self.addresses = []
 
         ext = myvalue.name.rsplit('.', 1)[-1].lower()
         if ext == 'vcf':
-            self.addresses = parse_vcard(myvalue.file, newsletter, ignore_errors)
+            self.addresses = parse_vcard(
+                myvalue.file, newsletter, ignore_errors)
 
         elif ext == 'ldif':
-            self.addresses = parse_ldif(myvalue.file, newsletter, ignore_errors)
+            self.addresses = parse_ldif(
+                myvalue.file, newsletter, ignore_errors)
 
         elif ext == 'csv':
-            self.addresses = parse_csv(myvalue.file, newsletter, ignore_errors)
+            self.addresses = parse_csv(
+                myvalue.file, newsletter, ignore_errors)
 
         else:
-            raise forms.ValidationError(_("File extention '%s' was not recognized.") % ext)
+            raise forms.ValidationError(
+                _("File extention '%s' was not recognized.") % ext)
 
         if len(self.addresses) == 0:
-            raise forms.ValidationError(_("No entries could found in this file."))
+            raise forms.ValidationError(
+                _("No entries could found in this file."))
 
         return self.cleaned_data
 
@@ -295,20 +372,32 @@ class ImportForm(forms.Form):
         else:
             return {}
 
-    newsletter = forms.ModelChoiceField(label=_("Newsletter"),queryset=Newsletter.objects.all(), initial=Newsletter.get_default_id())
+    newsletter = forms.ModelChoiceField(
+        label=_("Newsletter"),
+        queryset=Newsletter.objects.all(),
+        initial=Newsletter.get_default_id())
     address_file = forms.FileField(label=_("Address file"))
-    ignore_errors = forms.BooleanField(label=_("Ignore non-fatal errors"), initial=False, required=False)
+    ignore_errors = forms.BooleanField(
+        label=_("Ignore non-fatal errors"),
+        initial=False, required=False)
+
 
 class ConfirmForm(forms.Form):
+
     def clean(self):
         value = self.cleaned_data['confirm']
 
         if not value:
-            raise forms.ValidationError(_("You should confirm in order to continue."))
+            raise forms.ValidationError(
+                _("You should confirm in order to continue."))
 
-    confirm = forms.BooleanField(label=_("Confirm import"),initial=True, widget=forms.HiddenInput)
+    confirm = forms.BooleanField(
+        label=_("Confirm import"),
+        initial=True, widget=forms.HiddenInput)
+
 
 class EmailTemplateAdminForm(forms.ModelForm):
+
     class Meta:
         model = EmailTemplate
 
@@ -317,7 +406,8 @@ class EmailTemplateAdminForm(forms.ModelForm):
         try:
             Template(data)
         except Exception, e:
-            raise forms.ValidationError(_('There was an error parsing your template: %s') % e)
+            raise forms.ValidationError(
+                _('There was an error parsing your template: %s') % e)
         return data
 
     def clean_subject(self):
@@ -329,34 +419,49 @@ class EmailTemplateAdminForm(forms.ModelForm):
     def clean_html(self):
         return self.TemplateValidator('html')
 
+
 class SubscriptionAdminForm(forms.ModelForm):
+
     class Meta:
         model = Subscription
 
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
         if self.cleaned_data['user'] and data:
-            raise forms.ValidationError(_('If a user has been selected this field should remain empty.'))
+            raise forms.ValidationError(_(
+                'If a user has been selected this field '
+                'should remain empty.'))
         return data
 
     def clean_name_field(self):
         data = self.cleaned_data['name_field']
         if self.cleaned_data['user'] and data:
-            raise forms.ValidationError(_('If a user has been selected this field should remain empty.'))
+            raise forms.ValidationError(_(
+                'If a user has been selected '
+                'this field should remain empty.'))
         return data
 
     def clean(self):
         cleaned_data = super(SubscriptionAdminForm, self).clean()
-        if not (cleaned_data.get('user', None) or cleaned_data.get('email_field',None)):
-            raise forms.ValidationError(_('Either a user must be selected or an email address must be specified.'))
+        if not (
+                cleaned_data.get('user', None) or \
+                cleaned_data.get('email_field', None)):
+
+            raise forms.ValidationError(_(
+                'Either a user must be selected or an email address must '
+                'be specified.'))
         return cleaned_data
 
+
 class SubmissionAdminForm(forms.ModelForm):
+
     class Meta:
         model = Submission
 
     def clean_publish(self):
-        """ Make sure only one submission can be published for each message. """
+        """
+        Make sure only one submission can be published for each message.
+        """
         publish = self.cleaned_data['publish']
 
         if publish:
@@ -365,6 +470,8 @@ class SubmissionAdminForm(forms.ModelForm):
             if self.instance:
                 qs = qs.exclude(pk=self.instance.pk)
             if qs.exists():
-                raise forms.ValidationError(_('This message has already been published in some other submission. Messages can only be published once.'))
+                raise forms.ValidationError(_(
+                    'This message has already been published in some '
+                    'other submission. Messages can only be published once.'))
 
         return publish

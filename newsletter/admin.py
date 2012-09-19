@@ -12,12 +12,7 @@ from django.contrib.admin.util import force_unicode
 from django.contrib.sites.models import Site
 
 from django.core import serializers
-from django.core.exceptions import ImproperlyConfigured, PermissionDenied
-from django.core.urlresolvers import reverse
-
-from django.db.models import permalink
-
-from django.forms.util import ValidationError
+from django.core.exceptions import ImproperlyConfigured
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
@@ -35,13 +30,18 @@ try:
 except ImportError:
     date_format = lambda value, format=None: value
 
-from models import EmailTemplate, Newsletter, Subscription, Article, Message, Submission
+from .models import (
+    EmailTemplate, Newsletter, Subscription, Article, Message, Submission
+)
 
-from admin_forms import *
-from admin_utils import *
+from .admin_forms import *
+from .admin_utils import *
+
+""" TODO: Factor settings out into seperate settings module. """
 
 # Import and set the richtext field
-NEWSLETTER_RICHTEXT_WIDGET = getattr(settings, "NEWSLETTER_RICHTEXT_WIDGET", "")
+NEWSLETTER_RICHTEXT_WIDGET = \
+    getattr(settings, "NEWSLETTER_RICHTEXT_WIDGET", "")
 RICHTEXT_WIDGET = None
 if NEWSLETTER_RICHTEXT_WIDGET:
     module, attr = NEWSLETTER_RICHTEXT_WIDGET.rsplit(".", 1)
@@ -49,32 +49,58 @@ if NEWSLETTER_RICHTEXT_WIDGET:
         mod = import_module(module)
         RICHTEXT_WIDGET = getattr(mod, attr)
     except Exception as e:
-        # Catch ImportError and other exceptions too (eg user sets setting to an integer)
-        raise ImproperlyConfigured("Error while importing setting NEWSLETTER_RICHTEXT_WIDGET %r: %s" % (NEWSLETTER_RICHTEXT_WIDGET, e))
+        # Catch ImportError and other exceptions too
+        # (e.g. user sets setting to an integer)
+        raise ImproperlyConfigured(
+            "Error while importing setting "
+            "NEWSLETTER_RICHTEXT_WIDGET %r: %s" % (
+                NEWSLETTER_RICHTEXT_WIDGET, e
+            )
+        )
+
+
+YES_ICON_URL = '%simg/admin/icon-yes.gif' % settings.ADMIN_MEDIA_PREFIX
+WAIT_ICON_URL = '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL
+SUBMIT_ICON_URL = \
+    '%snewsletter/admin/img/submitting.gif' % settings.STATIC_URL
+NO_ICON_URL = '%simg/admin/icon-no.gif' % settings.ADMIN_MEDIA_PREFIX
+
 
 class NewsletterAdmin(admin.ModelAdmin):
-    list_display = ('title', 'admin_subscriptions', 'admin_messages', 'admin_submissions')
+    list_display = (
+        'title', 'admin_subscriptions', 'admin_messages', 'admin_submissions'
+    )
     prepopulated_fields = {'slug': ('title',)}
 
     """ List extensions """
     def admin_messages(self, obj):
-        return '<a href="../message/?newsletter__id__exact=%s">%s</a>' % (obj.id, ugettext('Messages'))
+        return '<a href="../message/?newsletter__id__exact=%s">%s</a>' % (
+            obj.id, ugettext('Messages')
+        )
     admin_messages.allow_tags = True
     admin_messages.short_description = ''
 
     def admin_subscriptions(self, obj):
-        return '<a href="../subscription/?newsletter__id__exact=%s">%s</a>' % (obj.id, ugettext('Subscriptions'))
+        return \
+            '<a href="../subscription/?newsletter__id__exact=%s">%s</a>' % \
+            (obj.id, ugettext('Subscriptions'))
     admin_subscriptions.allow_tags = True
     admin_subscriptions.short_description = ''
 
     def admin_submissions(self, obj):
-        return '<a href="../submission/?newsletter__id__exact=%s">%s</a>' % (obj.id, ugettext('Submissions'))
+        return '<a href="../submission/?newsletter__id__exact=%s">%s</a>' % (
+            obj.id, ugettext('Submissions')
+        )
     admin_submissions.allow_tags = True
     admin_submissions.short_description = ''
 
+
 class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     form = SubmissionAdminForm
-    list_display = ('admin_message', 'admin_newsletter', 'admin_publish_date', 'publish', 'admin_status_text', 'admin_status')
+    list_display = (
+        'admin_message', 'admin_newsletter', 'admin_publish_date', 'publish',
+        'admin_status_text', 'admin_status'
+    )
     date_hierarchy = 'publish_date'
     list_filter = ('newsletter', 'publish', 'sent')
     save_as = True
@@ -87,7 +113,9 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     admin_message.allow_tags = True
 
     def admin_newsletter(self, obj):
-        return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
+        return '<a href="../newsletter/%s/">%s</a>' % (
+            obj.newsletter.id, obj.newsletter
+        )
     admin_newsletter.short_description = ugettext('newsletter')
     admin_newsletter.allow_tags = True
 
@@ -101,14 +129,20 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def admin_status(self, obj):
         if obj.prepared:
             if obj.sent:
-                return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text(obj))
+                return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
+                    YES_ICON_URL, self.admin_status_text(obj))
             else:
                 if obj.publish_date > datetime.now():
-                    return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.STATIC_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text(obj))
+                    return \
+                        u'<img src="%s" width="10" height="10" alt="%s"/>' % (
+                            WAIT_ICON_URL, self.admin_status_text(obj))
                 else:
-                    return u'<img src="%s" width="12" height="12" alt="%s"/>' % (settings.STATIC_URL+'newsletter/admin/img/submitting.gif', self.admin_status_text(obj))
+                    return \
+                        u'<img src="%s" width="12" height="12" alt="%s"/>' % (
+                            SUBMIT_ICON_URL, self.admin_status_text(obj))
         else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text(obj))
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
+                NO_ICON_URL, self.admin_status_text(obj))
 
     admin_status.short_description = ''
     admin_status.allow_tags = True
@@ -131,14 +165,18 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         submission = self._getobj(request, object_id)
 
         if submission.sent or submission.prepared:
-            request.user.message_set.create(message=ugettext('Submission already sent.'))
+            request.user.message_set.create(
+                message=ugettext('Submission already sent.')
+            )
 
             return HttpResponseRedirect('../')
 
-        submission.prepared=True
+        submission.prepared = True
         submission.save()
 
-        request.user.message_set.create(message=ugettext('Your submission is being sent.'))
+        request.user.message_set.create(
+            message=ugettext('Your submission is being sent.')
+        )
 
         return HttpResponseRedirect('../../')
 
@@ -149,10 +187,11 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         my_urls = patterns('',
             url(r'^(.+)/submit/$',
                 self._wrap(self.submit),
-                name=self._view_name('submit')),
-            )
+                name=self._view_name('submit'))
+        )
 
         return my_urls + urls
+
 
 class OrderingWidget(forms.Widget):
     def __init__(self):
@@ -179,15 +218,16 @@ if RICHTEXT_WIDGET and RICHTEXT_WIDGET.__name__ == "ImperaviWidget":
     except ImportError:
         pass
 
+
 class ArticleInline(StackedInline):
     model = Article
     extra = 2
     fieldsets = (
         (None, {
-            'fields' : ('title', 'sortorder', 'text')
+            'fields': ('title', 'sortorder', 'text')
         }),
         (_('Optional'), {
-            'fields' : ('url', 'image'),
+            'fields': ('url', 'image'),
             'classes': ('collapse',)
         }),
     )
@@ -200,12 +240,15 @@ class ArticleInline(StackedInline):
 
 class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     save_as = True
-    list_display = ('admin_title', 'admin_newsletter', 'admin_preview', 'date_create', 'date_modify')
+    list_display = (
+        'admin_title', 'admin_newsletter', 'admin_preview', 'date_create',
+        'date_modify'
+    )
     list_filter = ('newsletter', )
     date_hierarchy = 'date_create'
     prepopulated_fields = {'slug': ('title',)}
 
-    inlines = [ArticleInline,]
+    inlines = [ArticleInline, ]
 
     """ List extensions """
     def admin_title(self, obj):
@@ -219,7 +262,9 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     admin_preview.allow_tags = True
 
     def admin_newsletter(self, obj):
-        return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
+        return '<a href="../newsletter/%s/">%s</a>' % (
+            obj.newsletter.id, obj.newsletter
+        )
     admin_newsletter.short_description = ugettext('newsletter')
     admin_newsletter.allow_tags = True
 
@@ -227,7 +272,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def preview(self, request, object_id):
         return render_to_response(
             "admin/newsletter/message/preview.html",
-            { 'message' : self._getobj(request, object_id) },
+            {'message': self._getobj(request, object_id)},
             RequestContext(request, {}),
         )
 
@@ -238,12 +283,15 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             EmailTemplate.get_templates('message', message.newsletter)
 
         if not html_template:
-            raise Http404(_('No HTML template associated with the newsletter this message belongs to.'))
+            raise Http404(_(
+                'No HTML template associated with the newsletter this '
+                'message belongs to.'
+            ))
 
-        c = Context({'message' : message,
-                     'site' : Site.objects.get_current(),
-                     'newsletter' : message.newsletter,
-                     'date' : datetime.now(),
+        c = Context({'message': message,
+                     'site': Site.objects.get_current(),
+                     'newsletter': message.newsletter,
+                     'date': datetime.now(),
                      'STATIC_URL': settings.STATIC_URL,
                      'MEDIA_URL': settings.MEDIA_URL})
 
@@ -255,10 +303,10 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         (subject_template, text_template, html_template) = \
             EmailTemplate.get_templates('message', message.newsletter)
 
-        c = Context({'message' : message,
-                     'site' : Site.objects.get_current(),
-                     'newsletter' : message.newsletter,
-                     'date' : datetime.now(),
+        c = Context({'message': message,
+                     'site': Site.objects.get_current(),
+                     'newsletter': message.newsletter,
+                     'date': datetime.now(),
                      'STATIC_URL': settings.STATIC_URL,
                      'MEDIA_URL': settings.MEDIA_URL},
                      autoescape=False)
@@ -273,7 +321,9 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def subscribers_json(self, request, object_id):
         message = self._getobj(request, object_id)
 
-        json = serializers.serialize("json", message.newsletter.get_subscriptions(), fields=())
+        json = serializers.serialize(
+            "json", message.newsletter.get_subscriptions(), fields=()
+        )
         return HttpResponse(json, mimetype='application/json')
 
     def move_article_up(self, request, object_id, article_id):
@@ -284,7 +334,10 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         obj.move_up()
 
         self.log_change(request, obj, obj_display)
-        message = _('The %(name)s "%(obj)s" was moved up.') % {'name': force_unicode(opts.verbose_name), 'obj': force_unicode(obj_display)}
+        message = _('The %(name)s "%(obj)s" was moved up.') % {
+            'name': force_unicode(opts.verbose_name),
+            'obj': force_unicode(obj_display)
+        }
         self.message_user(request, message)
 
         return HttpResponseRedirect('../../')
@@ -297,7 +350,10 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         obj.move_down()
 
         self.log_change(request, obj, obj_display)
-        message = _('The %(name)s "%(obj)s" was moved down.') % {'name': force_unicode(opts.verbose_name), 'obj': force_unicode(obj_display)}
+        message = _('The %(name)s "%(obj)s" was moved down.') % {
+            'name': force_unicode(opts.verbose_name),
+            'obj': force_unicode(obj_display)
+        }
         self.message_user(request, message)
 
         return HttpResponseRedirect('../../')
@@ -327,13 +383,14 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                 name=self._view_name('move_article_up')),
             url(r'^(.+)/article/([0-9]+)/move_down/$',
                 self._wrap(self.move_article_down),
-                name=self._view_name('move_article_down')),
-            )
+                name=self._view_name('move_article_down'))
+        )
 
         return my_urls + urls
 
+
 class EmailTemplateAdmin(admin.ModelAdmin):
-    list_display = ('title','action')
+    list_display = ('title', 'action')
     list_display_links = ('title',)
     list_filter = ('action',)
     save_as = True
@@ -343,26 +400,39 @@ class EmailTemplateAdmin(admin.ModelAdmin):
 
 class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     form = SubscriptionAdminForm
-    list_display = ('name', 'email', 'admin_newsletter', 'admin_subscribe_date', 'admin_unsubscribe_date', 'admin_status_text', 'admin_status')
+    list_display = (
+        'name', 'email', 'admin_newsletter', 'admin_subscribe_date',
+        'admin_unsubscribe_date', 'admin_status_text', 'admin_status'
+    )
     list_display_links = ('name', 'email')
-    list_filter = ('newsletter','subscribed', 'unsubscribed','subscribe_date')
-    search_fields = ('name_field', 'email_field', 'user__first_name','user__last_name', 'user__email')
+    list_filter = (
+        'newsletter', 'subscribed', 'unsubscribed', 'subscribe_date'
+    )
+    search_fields = (
+        'name_field', 'email_field', 'user__first_name', 'user__last_name',
+        'user__email'
+    )
     date_hierarchy = 'subscribe_date'
 
     """ List extensions """
     def admin_newsletter(self, obj):
-        return '<a href="../newsletter/%s/">%s</a>' % (obj.newsletter.id, obj.newsletter)
+        return '<a href="../newsletter/%s/">%s</a>' % (
+            obj.newsletter.id, obj.newsletter
+        )
     admin_newsletter.short_description = ugettext('newsletter')
     admin_newsletter.allow_tags = True
 
     def admin_status(self, obj):
         if obj.unsubscribed:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-no.gif', self.admin_status_text(obj))
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
+                NO_ICON_URL, self.admin_status_text(obj))
 
         if obj.subscribed:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.ADMIN_MEDIA_PREFIX+'img/admin/icon-yes.gif', self.admin_status_text(obj))
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
+                YES_ICON_URL, self.admin_status_text(obj))
         else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (settings.STATIC_URL+'newsletter/admin/img/waiting.gif', self.admin_status_text(obj))
+            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
+                WAIT_ICON_URL, self.admin_status_text(obj))
 
     admin_status.short_description = ''
     admin_status.allow_tags = True
@@ -402,13 +472,13 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
         return render_to_response(
             "admin/newsletter/subscription/importform.html",
-            { 'form' : form },
+            {'form': form},
             RequestContext(request, {}),
         )
 
     def subscribers_import_confirm(self, request):
         # If no addresses are in the session, start all over.
-        if not request.session.has_key('addresses'):
+        if not 'addresses' in request.session:
             return HttpResponseRedirect('../')
 
         addresses = request.session['addresses']
@@ -421,7 +491,9 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                         address.save()
                 finally:
                     del request.session['addresses']
-                request.user.message_set.create(message=_('%s subscriptions have been successfully added.') % len(addresses))
+                request.user.message_set.create(message=_(
+                    '%s subscriptions have been successfully added.'
+                ) % len(addresses))
 
                 return HttpResponseRedirect('../../')
         else:
@@ -429,8 +501,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
         return render_to_response(
             "admin/newsletter/subscription/confirmimportform.html",
-            { 'form' : form ,
-              'subscribers': addresses },
+            {'form': form, 'subscribers': addresses},
             RequestContext(request, {}),
         )
 
@@ -438,16 +509,14 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def get_urls(self):
         urls = super(SubscriptionAdmin, self).get_urls()
 
-        info = self.model._meta.app_label, self.model._meta.module_name
-
         my_urls = patterns('',
             url(r'^import/$',
                 self._wrap(self.subscribers_import),
                 name=self._view_name('import')),
             url(r'^import/confirm/$',
                 self._wrap(self.subscribers_import_confirm),
-                name=self._view_name('import_confirm')),
-            )
+                name=self._view_name('import_confirm'))
+        )
 
         return my_urls + urls
 
@@ -457,4 +526,3 @@ admin.site.register(Submission, SubmissionAdmin)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(EmailTemplate, EmailTemplateAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
-
