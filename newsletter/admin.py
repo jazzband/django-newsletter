@@ -60,11 +60,11 @@ if NEWSLETTER_RICHTEXT_WIDGET:
         )
 
 
-YES_ICON_URL = '%simg/admin/icon-yes.gif' % settings.ADMIN_MEDIA_PREFIX
+YES_ICON_URL = '%sadmin/img/admin/icon-yes.gif' % settings.STATIC_URL
 WAIT_ICON_URL = '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL
 SUBMIT_ICON_URL = \
     '%snewsletter/admin/img/submitting.gif' % settings.STATIC_URL
-NO_ICON_URL = '%simg/admin/icon-no.gif' % settings.ADMIN_MEDIA_PREFIX
+NO_ICON_URL = '%sadmin/img/admin/icon-no.gif' % settings.STATIC_URL
 
 
 class NewsletterAdmin(admin.ModelAdmin):
