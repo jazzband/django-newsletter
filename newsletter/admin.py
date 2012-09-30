@@ -24,12 +24,7 @@ from django.shortcuts import render_to_response
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-# This function is new in Django 1.2 - fallback to dummy identity
-# function not to break compatibility with older releases.
-try:
-    from django.utils.formats import date_format
-except ImportError:
-    date_format = lambda value, format=None: value
+from django.utils.formats import date_format
 
 from .models import (
     EmailTemplate, Newsletter, Subscription, Article, Message, Submission
