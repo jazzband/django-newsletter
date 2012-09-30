@@ -8,6 +8,7 @@ from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 
 from django.contrib import admin
+from django.contrib import messages
 from django.contrib.admin.util import force_unicode
 from django.contrib.sites.models import Site
 
@@ -165,18 +166,13 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         submission = self._getobj(request, object_id)
 
         if submission.sent or submission.prepared:
-            request.user.message_set.create(
-                message=ugettext('Submission already sent.')
-            )
-
+            messages.info(request, ugettext("Submission already sent."))
             return HttpResponseRedirect('../')
 
         submission.prepared = True
         submission.save()
 
-        request.user.message_set.create(
-            message=ugettext('Your submission is being sent.')
-        )
+        messages.info(request, ugettext("Your submission is being sent."))
 
         return HttpResponseRedirect('../../')
 
@@ -491,9 +487,11 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                         address.save()
                 finally:
                     del request.session['addresses']
-                request.user.message_set.create(message=_(
-                    '%s subscriptions have been successfully added.'
-                ) % len(addresses))
+
+                messages.success(
+                    request,
+                    _('%s subscriptions have been successfully added.') \
+                        % len(addresses))
 
                 return HttpResponseRedirect('../../')
         else:
