@@ -126,18 +126,22 @@ class UserNewsletterListTestCase(UserTestCase,
 
     def test_form(self):
         """ Test whether form elements are present. """
+
         response = self.client.get(self.list_url)
 
         formset = response.context['formset']
         total_forms = len(formset.forms)
+
         self.assertEqual(
             total_forms, len(self.newsletters.filter(visible=True))
         )
+
         self.assertContains(
             response,
             '<input type="hidden" name="form-TOTAL_FORMS" value="%d" '
             'id="id_form-TOTAL_FORMS" />' % total_forms
         )
+
         self.assertContains(
             response,
             '<input type="hidden" name="form-INITIAL_FORMS" value="%d" '

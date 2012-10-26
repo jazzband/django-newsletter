@@ -68,12 +68,20 @@ class UserTestCase(TestCase):
     def setUp(self):
         super(UserTestCase, self).setUp()
 
-        self.password = User.objects.make_random_password()
+        self.password = 'johnpassword'
         self.user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', self.password)
-        self.user.save()
 
-        self.client.login(username=self.user.username, password=self.password)
+        # Make sure the user has been created
+        self.assertIn(self.user, User.objects.all())
+
+        # Login the newly created user
+        result = self.client.login(
+            username=self.user.username, password=self.password
+        )
+
+        # Make sure the login went well
+        self.assertTrue(result)
 
     def tearDown(self):
         self.client.logout()
