@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-26 15:31+0200\n"
+"POT-Creation-Date: 2012-10-26 15:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -126,7 +126,7 @@ msgstr ""
 msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
 msgstr ""
 
-#: admin_forms.py:114 admin_forms.py:126 admin_forms.py:158 models.py:99
+#: admin_forms.py:114 admin_forms.py:126 admin_forms.py:159 models.py:99
 #: models.py:235
 msgid "name"
 msgstr ""
@@ -142,7 +142,7 @@ msgid ""
 "s'."
 msgstr ""
 
-#: admin_forms.py:136 admin_forms.py:147 admin_forms.py:159 models.py:129
+#: admin_forms.py:136 admin_forms.py:148 admin_forms.py:160 models.py:129
 #: models.py:249
 msgid "e-mail"
 msgstr ""
@@ -151,10 +151,10 @@ msgstr ""
 #, python-format
 msgid ""
 "E-mail column not found. The name of this column should be either 'email', "
-"'e-mail' or '%s'."
+"'e-mail' or '%(email)s'."
 msgstr ""
 
-#: admin_forms.py:155
+#: admin_forms.py:156
 #, python-format
 msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
@@ -162,49 +162,49 @@ msgid ""
 "(e-mail)s'."
 msgstr ""
 
-#: admin_forms.py:174
+#: admin_forms.py:175
 #, python-format
-msgid "Row with content '%s' does not contain a name and email field."
+msgid "Row with content '%(row)s' does not contain a name and email field."
 msgstr ""
 
-#: admin_forms.py:186 admin_forms.py:249 admin_forms.py:286
+#: admin_forms.py:187 admin_forms.py:250 admin_forms.py:287
 #, python-format
 msgid "Entry '%s' does not contain a valid e-mail address."
 msgstr ""
 
-#: admin_forms.py:204 admin_forms.py:256 admin_forms.py:292
+#: admin_forms.py:205 admin_forms.py:257 admin_forms.py:293
 #, python-format
 msgid "The address file contains duplicate entries for '%s'."
 msgstr ""
 
-#: admin_forms.py:216 admin_forms.py:263 admin_forms.py:298
+#: admin_forms.py:217 admin_forms.py:264 admin_forms.py:299
 msgid "Some entries are already subscribed to."
 msgstr ""
 
-#: admin_forms.py:241
+#: admin_forms.py:242
 #, python-format
 msgid "Entry '%s' contains no email address."
 msgstr ""
 
-#: admin_forms.py:302
+#: admin_forms.py:303
 msgid "Some entries have no e-mail address."
 msgstr ""
 
-#: admin_forms.py:343
+#: admin_forms.py:344
 #, python-format
 msgid "File type '%s' was not recognized."
 msgstr ""
 
-#: admin_forms.py:362
+#: admin_forms.py:363
 #, python-format
 msgid "File extention '%s' was not recognized."
 msgstr ""
 
-#: admin_forms.py:366
+#: admin_forms.py:367
 msgid "No entries could found in this file."
 msgstr ""
 
-#: admin_forms.py:378
+#: admin_forms.py:379
 #: templates/admin/newsletter/subscription/confirmimportform.html:12
 #: templates/admin/newsletter/subscription/importform.html:12
 #: templates/newsletter/common.html:7
@@ -216,38 +216,38 @@ msgstr ""
 msgid "Newsletter"
 msgstr ""
 
-#: admin_forms.py:381
+#: admin_forms.py:382
 msgid "Address file"
 msgstr ""
 
-#: admin_forms.py:383
+#: admin_forms.py:384
 msgid "Ignore non-fatal errors"
 msgstr ""
 
-#: admin_forms.py:394
+#: admin_forms.py:395
 msgid "You should confirm in order to continue."
 msgstr ""
 
-#: admin_forms.py:397
+#: admin_forms.py:398
 #: templates/admin/newsletter/subscription/confirmimportform.html:23
 #: templates/admin/newsletter/subscription/confirmimportform.html:28
 msgid "Confirm import"
 msgstr ""
 
-#: admin_forms.py:412
+#: admin_forms.py:413
 #, python-format
 msgid "There was an error parsing your template: %s"
 msgstr ""
 
-#: admin_forms.py:434 admin_forms.py:442
+#: admin_forms.py:435 admin_forms.py:443
 msgid "If a user has been selected this field should remain empty."
 msgstr ""
 
-#: admin_forms.py:452
+#: admin_forms.py:453
 msgid "Either a user must be selected or an email address must be specified."
 msgstr ""
 
-#: admin_forms.py:475
+#: admin_forms.py:476
 msgid ""
 "This message has already been published in some other submission. Messages "
 "can only be published once."
