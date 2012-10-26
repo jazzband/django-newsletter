@@ -528,41 +528,6 @@ class Article(models.Model):
         except IndexError:
             logger.debug('No previous found.')
 
-    def move_up(self):
-        """ TODO: Not used -> factor out. """
-        sibling = self.get_prev()
-        if sibling:
-            logger.debug(
-                'Moving up. Switching %d and %d.',
-                sibling.sortorder, self.sortorder
-            )
-
-            sibling.sortorder += 10
-            self.sortorder -= 10
-
-            sibling.save()
-            self.save()
-        else:
-            logger.debug('Not moving up, already on top.')
-
-    def move_down(self):
-        """ TODO: Not used -> factor out. """
-        sibling = self.get_next()
-
-        if sibling:
-            logger.debug(
-                'Moving down. Switching %d and %d.',
-                sibling.sortorder, self.sortorder
-            )
-
-            sibling.sortorder -= 10
-            self.sortorder += 10
-
-            sibling.save()
-            self.save()
-        else:
-            logger.debug('Not moving down, already at bottom.')
-
     # This belongs elsewhere
     def thumbnail(self):
         """
@@ -571,6 +536,8 @@ class Article(models.Model):
         image is done on backend).
 
         Requires constant named MAX_THUMB_LENGTH to limit longest axis
+
+        TODO: Replace by sorl-thumbnail's functionality.
         """
         MAX_THUMB_LENGTH = 200
         max_img_length = max(self.get_image_width(), self.get_image_height())

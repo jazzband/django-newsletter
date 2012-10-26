@@ -53,36 +53,6 @@ class ArticleTestCase(MailingTestCase):
                 self.assert_(a.sortorder > last)
             last = a.sortorder
 
-    def test_moving(self):
-        a1 = self.make_article()
-        a1o = a1.sortorder
-
-        a2 = self.make_article()
-        a2o = a2.sortorder
-
-        a3 = self.make_article()
-        a3o = a3.sortorder
-
-        a1.move_down()
-        self.assertEqual(self.update(a1).sortorder, a2o)
-        self.assertEqual(self.update(a2).sortorder, a1o)
-        self.assertEqual(self.update(a3).sortorder, a3o)
-
-        a1.move_up()
-        self.assertEqual(self.update(a1).sortorder, a1o)
-        self.assertEqual(self.update(a2).sortorder, a2o)
-        self.assertEqual(self.update(a3).sortorder, a3o)
-
-        a1.move_up()
-        self.assertEqual(self.update(a1).sortorder, a1o)
-        self.assertEqual(self.update(a2).sortorder, a2o)
-        self.assertEqual(self.update(a3).sortorder, a3o)
-
-        a3.move_down()
-        self.assertEqual(self.update(a1).sortorder, a1o)
-        self.assertEqual(self.update(a2).sortorder, a2o)
-        self.assertEqual(self.update(a3).sortorder, a3o)
-
 
 class CreateSubmissionTestCase(MailingTestCase):
     def test_subscription(self):

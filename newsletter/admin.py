@@ -319,38 +319,6 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         )
         return HttpResponse(json, mimetype='application/json')
 
-    def move_article_up(self, request, object_id, article_id):
-        #obj = self._getobj(request, object_id)
-        obj = Article.objects.get(pk=article_id)
-
-        obj_display = force_unicode(obj)
-        obj.move_up()
-
-        self.log_change(request, obj, obj_display)
-        message = _('The %(name)s "%(obj)s" was moved up.') % {
-            'name': force_unicode(opts.verbose_name),
-            'obj': force_unicode(obj_display)
-        }
-        self.message_user(request, message)
-
-        return HttpResponseRedirect('../../')
-
-    def move_article_down(self, request, object_id, article_id):
-        #article = self._getobj(request, object_id)
-        obj = Article.objects.get(pk=article_id)
-
-        obj_display = force_unicode(obj)
-        obj.move_down()
-
-        self.log_change(request, obj, obj_display)
-        message = _('The %(name)s "%(obj)s" was moved down.') % {
-            'name': force_unicode(opts.verbose_name),
-            'obj': force_unicode(obj_display)
-        }
-        self.message_user(request, message)
-
-        return HttpResponseRedirect('../../')
-
     """ URLs """
     def get_urls(self):
         urls = super(MessageAdmin, self).get_urls()
@@ -371,12 +339,6 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             url(r'^(.+)/subscribers/json/$',
                 self._wrap(self.subscribers_json),
                 name=self._view_name('subscribers_json')),
-            url(r'^(.+)/article/([0-9]+)/move_up/$',
-                self._wrap(self.move_article_up),
-                name=self._view_name('move_article_up')),
-            url(r'^(.+)/article/([0-9]+)/move_down/$',
-                self._wrap(self.move_article_down),
-                name=self._view_name('move_article_down'))
         )
 
         return my_urls + urls
