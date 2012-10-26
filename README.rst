@@ -22,9 +22,11 @@ progress.
 
 Translations
 ============
-Most of the strings have been translated to Dutch and a German translation
-should be available soon. Feel free to contribute any translations through
-`Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_.
+Most if not all strings are available in Dutch, German and English.
+Contributions to translations are welcome through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_.
+
+.. image:: https://www.transifex.com/projects/p/django-newsletter/resource/django/chart/image_png
+    :target: http://www.transifex.net/projects/p/django-newsletter/
 
 Requirements
 ============
