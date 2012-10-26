@@ -16,12 +16,15 @@ smart queueing system all right from the admin interface.
 
 Status
 ======
-We are currently using this package in several large to medium scale production environments, but it
-should be considered a permanent work in progress.
+We are currently using this package in several large to medium scale
+production environments, but it should be considered a permanent work in
+progress.
 
 Translations
 ============
-Most of the strings have been translated to Dutch and a German translation should be available soon. Feel free to contribute any translations through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_.
+Most of the strings have been translated to Dutch and a German translation
+should be available soon. Feel free to contribute any translations through
+`Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_.
 
 Requirements
 ============
@@ -43,9 +46,14 @@ Installation
     keep your Python environment somewhat clean.)
 
 #)  Add newsletter and to ``INSTALLED_APPS`` in settings.py and make sure that
-    your favourite rich text widget and django-extensions are there as well::
+    your favourite rich text widget, some Django contrib dependencies and
+    django-extensions (for the submission jobs) are there as well::
 
 	INSTALLED_APPS = (
+	    'django.contrib.contenttypes',
+    	'django.contrib.sessions',
+    	'django.contrib.auth',
+    	'django.contrib.sites',
 	    ...
 	    'imperavi',
 	    'django_extensions',
@@ -114,11 +122,10 @@ Usage
 Unit tests
 ==========
 Fairly extensive tests are available for internal frameworks, web
-(un)subscription and mail sending. Sending a newsletter to large groups of recipients 
-(+10k) has been confirmed to work in multiple production environments.
-Please to note that the unittests (or actually, Django) currently
-requires a `404.html` in your `templates` directory in order to be able to
-test 404 responses.
+(un)subscription and mail sending. Sending a newsletter to large groups of recipients
+(+10k) has been confirmed to work in multiple production environments. Tests
+for pull req's and the master branch are automatically run through
+`Travis CI <http://travis-ci.org/dokterbob/django-newsletter>`_.
 
 License
 =======
