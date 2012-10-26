@@ -1,13 +1,14 @@
+[main]
+host = http://www.transifex.net
+
 [django-newsletter.djangojs]
 file_filter = newsletter/locale/<lang>/LC_MESSAGES/djangojs.po
 source_file = newsletter/locale/en/LC_MESSAGES/djangojs.po
 source_lang = en
-
-[main]
-host = http://www.transifex.net
+type = PO
 
 [django-newsletter.django]
 file_filter = newsletter/locale/<lang>/LC_MESSAGES/django.po
 source_file = newsletter/locale/en/LC_MESSAGES/django.po
 source_lang = en
-
+type = PO
