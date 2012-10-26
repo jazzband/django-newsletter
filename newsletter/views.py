@@ -57,6 +57,7 @@ def newsletter_list(request):
     return list_detail.object_list(
         request, newsletters, extra_context={'formset': formset})
 
+
 def newsletter_detail(request, newsletter_slug):
     newsletters = Newsletter.on_site.filter(visible=True)
 
@@ -66,14 +67,17 @@ def newsletter_detail(request, newsletter_slug):
     return list_detail.object_detail(
         request, newsletters, slug=newsletter_slug)
 
+
 @login_required
 def subscribe_user(request, newsletter_slug, confirm=False):
     my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug)
+        Newsletter.on_site, slug=newsletter_slug
+    )
 
     already_subscribed = False
     instance = Subscription.objects.get_or_create(
-        newsletter=my_newsletter, user=request.user)[0]
+        newsletter=my_newsletter, user=request.user
+    )[0]
 
     if instance.subscribed:
         already_subscribed = True
@@ -83,15 +87,21 @@ def subscribe_user(request, newsletter_slug, confirm=False):
 
         messages.success(
             request, _('You have been subscribed to %s.') % my_newsletter)
-        logger.debug(_('User %(rs)s subscribed to %(my_newsletter)s.'),
-            {"rs":request.user, "my_newsletter": my_newsletter})
+
+        logger.debug(
+            _('User %(rs)s subscribed to %(my_newsletter)s.'), {
+                "rs": request.user,
+                "my_newsletter": my_newsletter
+        })
 
     if already_subscribed:
         messages.info(
             request, _('You are already subscribed to %s.') % my_newsletter)
 
-    env = { 'newsletter'            : my_newsletter,
-            'action'                : 'subscribe',}
+    env = {
+        'newsletter': my_newsletter,
+        'action': 'subscribe'
+    }
 
     return render_to_response(
         "newsletter/subscription_subscribe_user.html",
@@ -101,24 +111,32 @@ def subscribe_user(request, newsletter_slug, confirm=False):
 @login_required
 def unsubscribe_user(request, newsletter_slug, confirm=False):
     my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug)
+        Newsletter.on_site, slug=newsletter_slug
+    )
 
     not_subscribed = False
 
     try:
         instance = Subscription.objects.get(
-            newsletter=my_newsletter, user=request.user)
+            newsletter=my_newsletter, user=request.user
+        )
+
         if not instance.subscribed:
             not_subscribed = True
         elif confirm:
-            instance.subscribed=False
+            instance.subscribed = False
             instance.save()
 
-            messages.success(request,
-                _('You have been unsubscribed from %s.') % my_newsletter)
+            messages.success(
+                request,
+                _('You have been unsubscribed from %s.') % my_newsletter
+            )
+
             logger.debug(
-                _('User %(rs)s unsubscribed from %(my_newsletter)s.'),
-                {"rs":request.user, "my_newsletter":my_newsletter })
+                _('User %(rs)s unsubscribed from %(my_newsletter)s.'), {
+                    "rs": request.user,
+                    "my_newsletter": my_newsletter
+            })
 
     except Subscription.DoesNotExist:
         not_subscribed = True
@@ -127,12 +145,15 @@ def unsubscribe_user(request, newsletter_slug, confirm=False):
         messages.info(request,
             _('You are not subscribed to %s.') % my_newsletter)
 
-    env = { 'newsletter'     : my_newsletter,
-            'action'         : 'unsubscribe' }
+    env = {
+        'newsletter': my_newsletter,
+        'action': 'unsubscribe'
+    }
 
     return render_to_response(
         "newsletter/subscription_unsubscribe_user.html",
         env, context_instance=RequestContext(request))
+
 
 def subscribe_request(request, newsletter_slug, confirm=False):
     if request.user.is_authenticated() or confirm:
@@ -159,14 +180,17 @@ def subscribe_request(request, newsletter_slug, confirm=False):
     else:
         form = SubscribeRequestForm(newsletter=my_newsletter)
 
-    env = {'newsletter': my_newsletter,
-           'form': form,
-           'error': error,
-           'action':'subscribe'}
+    env = {
+        'newsletter': my_newsletter,
+        'form': form,
+        'error': error,
+        'action': 'subscribe'
+    }
 
     return render_to_response(
         "newsletter/subscription_subscribe.html",
         env, context_instance=RequestContext(request))
+
 
 def unsubscribe_request(request, newsletter_slug, confirm=False):
     if request.user.is_authenticated() or confirm:
@@ -190,14 +214,17 @@ def unsubscribe_request(request, newsletter_slug, confirm=False):
     else:
         form = UnsubscribeRequestForm(newsletter=my_newsletter)
 
-    env = { 'newsletter' : my_newsletter,
-            'form' : form,
-            'error' : error,
-            'action' :'unsubscribe' }
+    env = {
+        'newsletter': my_newsletter,
+        'form': form,
+        'error': error,
+        'action': 'unsubscribe'
+    }
 
     return render_to_response(
         "newsletter/subscription_unsubscribe.html",
         env, context_instance=RequestContext(request))
+
 
 def update_request(request, newsletter_slug):
     my_newsletter = get_object_or_404(
@@ -218,30 +245,39 @@ def update_request(request, newsletter_slug):
     else:
         form = UpdateRequestForm(newsletter=my_newsletter)
 
-    env = {'newsletter': my_newsletter,
-           'form': form,
-           'error': error,
-           'action':'update' }
+    env = {
+        'newsletter': my_newsletter,
+        'form': form,
+        'error': error,
+        'action': 'update'
+    }
 
     return render_to_response(
         "newsletter/subscription_update.html",
         env, context_instance=RequestContext(request))
 
 
-def update_subscription(request, newsletter_slug, email, action, activation_code=None):
+def update_subscription(request, newsletter_slug,
+        email, action, activation_code=None):
+
     if not action in ['subscribe', 'update', 'unsubscribe']:
         raise Http404
 
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
-    my_subscription = get_object_or_404(Subscription, newsletter=my_newsletter, email_field__exact=email)
+    my_subscription = get_object_or_404(
+        Subscription, newsletter=my_newsletter, email_field__exact=email
+    )
 
     if activation_code:
-        my_initial = {'user_activation_code' : activation_code}
+        my_initial = {'user_activation_code': activation_code}
     else:
         my_initial = None
 
     if request.POST:
-        form = UpdateForm(request.POST, newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
+        form = UpdateForm(
+            request.POST, newsletter=my_newsletter, instance=my_subscription,
+            initial=my_initial
+        )
         if form.is_valid():
             # Get our instance, but do not save yet
             subscription = form.save(commit=False)
@@ -249,62 +285,90 @@ def update_subscription(request, newsletter_slug, email, action, activation_code
             # If a new subscription or update, make sure it is subscribed
             # Else, unsubscribe
             if action == 'subscribe' or action == 'update':
-                subscription.subscribed=True
+                subscription.subscribed = True
             else:
-                subscription.unsubscribed=True
+                subscription.unsubscribed = True
 
-            logger.debug(_(u'Updated subscription %(subscription)s through the web.'), {'subscription':subscription})
+            logger.debug(
+                _(u'Updated subscription %(subscription)s through the web.'),
+                {'subscription': subscription}
+            )
             subscription.save()
     else:
-        form = UpdateForm(newsletter=my_newsletter, instance=my_subscription, initial=my_initial)
+        form = UpdateForm(
+            newsletter=my_newsletter, instance=my_subscription,
+            initial=my_initial
+        )
 
-        # If we are activating and activation code is valid and not already subscribed, activate straight away
+        # If we are activating and activation code is valid and not already
+        # subscribed, activate straight away
+
         # if action == 'subscribe' and form.is_valid() and not my_subscription.subscribed:
         #     subscription = form.save(commit=False)
         #     subscription.subscribed = True
         #     subscription.save()
         #
         #     logger.debug(_(u'Activated subscription %(subscription)s through the web.') % {'subscription':subscription})
-        # from ipdb import set_trace; set_trace()
 
-    env = { 'newsletter' : my_newsletter,
-            'form' : form,
-            'action' : action }
+    env = {
+        'newsletter': my_newsletter,
+        'form': form,
+        'action': action
+    }
 
-    return render_to_response("newsletter/subscription_activate.html", env, context_instance=RequestContext(request))
+    return render_to_response(
+        "newsletter/subscription_activate.html", env,
+        context_instance=RequestContext(request)
+    )
+
 
 def archive(request, newsletter_slug):
-    my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug, visible=True)
+    my_newsletter = get_object_or_404(
+        Newsletter.on_site, slug=newsletter_slug, visible=True
+    )
 
-    submissions = Submission.objects.filter(newsletter=my_newsletter, publish=True)
+    submissions = Submission.objects.filter(
+        newsletter=my_newsletter, publish=True
+    )
 
-    return date_based.archive_index(request,
-                                    queryset=submissions,
-                                    date_field='publish_date',
-                                    extra_context = {'newsletter': my_newsletter})
+    return date_based.archive_index(
+        request,
+        queryset=submissions,
+        date_field='publish_date',
+        extra_context={'newsletter': my_newsletter}
+    )
+
 
 def archive_detail(request, newsletter_slug, year, month, day, slug):
-    my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug, visible=True)
+    my_newsletter = get_object_or_404(
+        Newsletter.on_site, slug=newsletter_slug, visible=True
+    )
 
-    submission = get_object_or_404(Submission, newsletter=my_newsletter,
-                                               publish=True,
-                                               publish_date__year=year,
-                                               publish_date__month=month,
-                                               publish_date__day=day,
-                                               message__slug=slug)
+    submission = get_object_or_404(
+        Submission,
+        newsletter=my_newsletter,
+        publish=True,
+        publish_date__year=year,
+        publish_date__month=month,
+        publish_date__day=day,
+        message__slug=slug
+    )
 
     message = submission.message
-    (subject_template, text_template, html_template) = EmailTemplate.get_templates('message', message.newsletter)
+    (subject_template, text_template, html_template) = \
+        EmailTemplate.get_templates('message', message.newsletter)
 
     if not html_template:
-        raise Http404(ugettext('No HTML template associated with the newsletter this message belongs to.'))
+        raise Http404(ugettext('No HTML template associated with the '
+                               'newsletter this message belongs to.'))
 
-    c = Context({'message' : message,
-                 'site' : Site.objects.get_current(),
-                 'newsletter' : message.newsletter,
-                 'date' : submission.publish_date,
-                 'STATIC_URL': settings.STATIC_URL,
-                 'MEDIA_URL': settings.MEDIA_URL})
+    c = Context({
+        'message': message,
+        'site': Site.objects.get_current(),
+        'newsletter': message.newsletter,
+        'date': submission.publish_date,
+        'STATIC_URL': settings.STATIC_URL,
+        'MEDIA_URL': settings.MEDIA_URL
+    })
 
     return HttpResponse(html_template.render(c))
-

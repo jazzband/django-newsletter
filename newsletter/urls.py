@@ -1,6 +1,8 @@
 from django.conf.urls.defaults import *
 
+
 urlpatterns = patterns('newsletter.views',
+    # TODO: Use surlex here to simplify regexes
     url(r'^$', 'newsletter_list', name='newsletter_list'),
 
     url(r'^(?P<newsletter_slug>[-\w]+)/$','newsletter_detail', name='newsletter_detail'),
@@ -17,4 +19,3 @@ urlpatterns = patterns('newsletter.views',
     url(r'^(?P<newsletter_slug>[-\w]+)/archive/(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\w{1,2})/(?P<slug>[-\w]+)/$', 'archive_detail', name='newsletter_archive_detail'),
     url(r'^(?P<newsletter_slug>[-\w]+)/archive/$', 'archive', name='newsletter_archive'),
 )
-

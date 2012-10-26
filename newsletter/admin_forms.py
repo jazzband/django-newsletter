@@ -247,13 +247,15 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
         elif not ignore_errors:
                 raise forms.ValidationError(
                     _("Entry '%s' does not contain a valid e-mail address.")
-                        % name)
+                    % name
+                )
 
         if addr:
             if email in addresses and not ignore_errors:
-                raise forms.ValidationError(_(
-                    "The address file contains duplicate entries for '%s'.")
-                        % email)
+                raise forms.ValidationError(
+                    _("The address file contains duplicate entries for '%s'.")
+                    % email
+                )
 
             addresses.update({email: addr})
         elif not ignore_errors:
@@ -443,8 +445,7 @@ class SubscriptionAdminForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(SubscriptionAdminForm, self).clean()
-        if not (
-                cleaned_data.get('user', None) or \
+        if not (cleaned_data.get('user', None) or
                 cleaned_data.get('email_field', None)):
 
             raise forms.ValidationError(_(

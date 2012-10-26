@@ -294,13 +294,15 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         (subject_template, text_template, html_template) = \
             EmailTemplate.get_templates('message', message.newsletter)
 
-        c = Context({'message': message,
-                     'site': Site.objects.get_current(),
-                     'newsletter': message.newsletter,
-                     'date': datetime.now(),
-                     'STATIC_URL': settings.STATIC_URL,
-                     'MEDIA_URL': settings.MEDIA_URL},
-                     autoescape=False)
+        c = Context({
+            'message': message,
+            'site': Site.objects.get_current(),
+            'newsletter': message.newsletter,
+            'date': datetime.now(),
+            'STATIC_URL': settings.STATIC_URL,
+            'MEDIA_URL': settings.MEDIA_URL
+            }, autoescape=False
+        )
 
         return HttpResponse(text_template.render(c), mimetype='text/plain')
 
@@ -485,8 +487,9 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
                 messages.success(
                     request,
-                    _('%s subscriptions have been successfully added.') \
-                        % len(addresses))
+                    _('%s subscriptions have been successfully added.') %
+                    len(addresses)
+                )
 
                 return HttpResponseRedirect('../../')
         else:
