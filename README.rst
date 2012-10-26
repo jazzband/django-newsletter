@@ -51,9 +51,9 @@ Installation
 
 	INSTALLED_APPS = (
 	    'django.contrib.contenttypes',
-    	'django.contrib.sessions',
-    	'django.contrib.auth',
-    	'django.contrib.sites',
+	    'django.contrib.sessions',
+	    'django.contrib.auth',
+	    'django.contrib.sites',
 	    ...
 	    'imperavi',
 	    'django_extensions',
