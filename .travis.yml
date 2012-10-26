@@ -1,7 +1,9 @@
 language: python
 
 python:
-  - "2.5"
+# Disable 2.5 for now due to a bug in django-setuptest
+# Ref: https://github.com/praekelt/django-setuptest/pull/6
+#  - "2.5" 
   - "2.6"
   - "2.7"
 
