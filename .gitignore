@@ -10,3 +10,7 @@ MANIFEST
 *.egg-info
 distribute-*
 .DS_Store
+pep8*
+coverage*
+env
+django_setuptest*
