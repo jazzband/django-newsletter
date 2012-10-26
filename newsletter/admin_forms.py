@@ -144,7 +144,8 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     if mailcol is None:
         raise forms.ValidationError(_(
             "E-mail column not found. The name of this column should be "
-            "either 'email', 'e-mail' or '%s'.") % ugettext("e-mail"))
+            "either 'email', 'e-mail' or '%(email)s'.") %
+            {'email': ugettext("e-mail")})
 
     logger.debug("E-mail column found: '%s'", firstrow[mailcol])
 
@@ -171,8 +172,8 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
                 continue
             else:
                 raise forms.ValidationError(_(
-                    "Row with content '%s' does not contain a name and "
-                    "email field.") % row)
+                    "Row with content '%(row)s' does not contain a name and "
+                    "email field.") % {'row': row})
 
         name = check_name(row[namecol], ignore_errors)
         email = check_email(row[mailcol], ignore_errors)
