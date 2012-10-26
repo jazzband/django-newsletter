@@ -156,7 +156,7 @@ def unsubscribe_user(request, newsletter_slug, confirm=False):
 
 
 def subscribe_request(request, newsletter_slug, confirm=False):
-    if request.user.is_authenticated() or confirm:
+    if request.user.is_authenticated():
         return subscribe_user(request, newsletter_slug, confirm)
 
     my_newsletter = get_object_or_404(
@@ -193,7 +193,7 @@ def subscribe_request(request, newsletter_slug, confirm=False):
 
 
 def unsubscribe_request(request, newsletter_slug, confirm=False):
-    if request.user.is_authenticated() or confirm:
+    if request.user.is_authenticated():
         return unsubscribe_user(request, newsletter_slug, confirm)
 
     my_newsletter = get_object_or_404(
