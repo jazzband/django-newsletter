@@ -206,6 +206,13 @@ class Newsletter(models.Model):
             {'newsletter_slug': self.slug}
         )
 
+    @permalink
+    def archive_url(self):
+        return (
+            'newsletter_archive', (),
+            {'newsletter_slug': self.slug}
+        )
+
     def get_sender(self):
         return u'%s <%s>' % (self.sender, self.email)
 
@@ -679,6 +686,7 @@ class Submission(models.Model):
                     message.send()
 
                 except Exception, e:
+                    # TODO: Test coverage for this branch.
                     logger.error(
                         ugettext(u'Message %(subscription)s failed '
                                  u'with error: %(error)s'),
@@ -694,6 +702,7 @@ class Submission(models.Model):
 
     @classmethod
     def submit_queue(cls):
+        # TODO: Test coverage
         todo = cls.objects.filter(
             prepared=True, sent=False, sending=False,
             publish_date__lt=datetime.now()
@@ -718,6 +727,7 @@ class Submission(models.Model):
 
     @permalink
     def get_absolute_url(self):
+        # TODO: Test coverage
         return (
             'newsletter_archive_detail', (), {
                 'newsletter_slug': self.newsletter.slug,

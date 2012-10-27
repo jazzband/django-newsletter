@@ -87,17 +87,33 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
                 kwargs={'newsletter_slug': n.slug}
             )
 
+            # Check returned URL's exist and equal result of lookup methods
+            self.assertTrue(subscribe_url)
+            self.assertEquals(subscribe_url, n.subscribe_url())
+
+            self.assertTrue(unsubscribe_url)
+            self.assertEquals(unsubscribe_url, n.unsubscribe_url())
+
+            self.assertTrue(update_url)
+            self.assertEquals(update_url, n.update_url())
+
+            self.assertTrue(archive_url)
+            self.assertEquals(archive_url, n.archive_url())
+
+            # Request detail URL and assert it links to all other URL's
             response = self.client.get(detail_url)
 
             if not n.visible:
                 self.assertEqual(response.status_code, 404)
                 continue
 
-            self.assertContains(response, '<a href="%s">' % subscribe_url)
-            self.assertContains(response, '<a href="%s">' % update_url)
-            self.assertContains(response, '<a href="%s">' % unsubscribe_url)
-            self.assertContains(response, '<a href="%s">' % archive_url)
+            self.assertContains(response, subscribe_url)
+            self.assertContains(response, update_url)
+            self.assertContains(response, unsubscribe_url)
+            self.assertContains(response, archive_url)
 
+            # Request each particular newsletter URL and assert
+            # it returns a 200
             response = self.client.get(subscribe_url)
             self.assertContains(response, n.title, status_code=200)
 
