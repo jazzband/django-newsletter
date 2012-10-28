@@ -45,8 +45,10 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
     """ Test case for anonymous views of newsletter. """
 
     def test_list(self):
-        """ Test whether all newsletters are in the list and whether the links
-        to them are correct. """
+        """
+        Test whether all newsletters are in the list and whether the links
+        to them are correct.
+        """
         response = self.client.get(self.list_url)
 
         for n in self.newsletters.filter(visible=True):
@@ -372,6 +374,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_subscribe_request_view(self):
         """ Test the subscription form. """
+
         response = self.client.get(self.subscribe_url)
 
         self.assertContains(response, self.n.title, status_code=200)
@@ -384,6 +387,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_subscribe_request_post(self):
         """ Post the subscription form. """
+
         response = self.client.post(
             self.subscribe_url, {
                 'name_field': 'Test Name',
@@ -416,7 +420,8 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assertEmailContains(full_activate_url)
 
     def test_subscribe_twice(self):
-        """ Subscribing twice should not be possible """
+        """ Subscribing twice should not be possible. """
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com',
@@ -460,6 +465,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_subscribe_request_activate(self):
         """ Test subscription activation. """
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com')
@@ -495,6 +501,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_unsubscribe_request_post(self):
         """ Post the unsubscribe request form. """
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com',
@@ -535,6 +542,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_unsubscribe_request_activate(self):
         """ Update a request. """
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com')
@@ -566,6 +574,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_update_request_view(self):
         """ Test the update request form. """
+
         response = self.client.get(self.update_url)
 
         self.assertContains(response, self.n.title, status_code=200)
@@ -576,6 +585,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_update_request_post(self):
         """ Test the update request post view. """
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com',
@@ -635,6 +645,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_update_request_activate(self):
         """ Update a request. """
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com')
@@ -664,9 +675,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
 class ArchiveTestcase(NewsletterListTestCase):
     def setUp(self):
-        """
-        Make sure we have a few submissions to test with.
-        """
+        """ Make sure we have a few submissions to test with. """
 
         # Pick some newsletter
         self.newsletter = Newsletter.objects.all()[0]
@@ -693,6 +702,7 @@ class ArchiveTestcase(NewsletterListTestCase):
 
     def test_archive_invisible(self):
         """ Test whether an invisible newsletter is indeed not shown. """
+
         self.newsletter.visible = False
         self.newsletter.save()
 
