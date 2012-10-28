@@ -669,13 +669,13 @@ class ArchiveTestcase(NewsletterListTestCase):
         """
 
         # Pick some newsletter
-        newsletter = Newsletter.objects.all()[0]
+        self.newsletter = Newsletter.objects.all()[0]
 
         # Make sure there's a HTML template for this newsletter,
         # otherwise the archive will not function.
 
         (subject_template, text_template, html_template) = \
-            EmailTemplate.get_templates('message', newsletter)
+            EmailTemplate.get_templates('message', self.newsletter)
 
         self.assertTrue(html_template)
 
@@ -683,13 +683,28 @@ class ArchiveTestcase(NewsletterListTestCase):
         message = Message(
             title='Test message',
             slug='test-message',
-            newsletter=newsletter
+            newsletter=self.newsletter
         )
 
         message.save()
 
         # Create a submission
         self.submission = Submission.from_message(message)
+
+    def test_archive_invisible(self):
+        """ Test whether an invisible newsletter is indeed not shown. """
+        self.newsletter.visible = False
+        self.newsletter.save()
+
+        archive_url = self.submission.newsletter.archive_url()
+
+        response = self.client.get(archive_url)
+        self.assertEqual(response.status_code, 404)
+
+        detail_url = self.submission.get_absolute_url()
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 404)
 
     def test_archive_list(self):
         """ Test the Submission list view. """
@@ -716,6 +731,12 @@ class ArchiveTestcase(NewsletterListTestCase):
 
         self.submission.publish = False
         self.submission.save()
+
+        archive_url = self.submission.newsletter.archive_url()
+
+        response = self.client.get(archive_url)
+        self.assertNotContains(response, self.submission.message.title)
+        self.assertNotContains(response, self.submission.get_absolute_url())
 
         detail_url = self.submission.get_absolute_url()
 
