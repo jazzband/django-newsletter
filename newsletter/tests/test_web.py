@@ -45,8 +45,10 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
     """ Test case for anonymous views of newsletter. """
 
     def test_list(self):
-        """ Test whether all newsletters are in the list and whether the links
-        to them are correct. """
+        """
+        Test whether all newsletters are in the list and whether the links
+        to them are correct.
+        """
         response = self.client.get(self.list_url)
 
         for n in self.newsletters.filter(visible=True):
@@ -87,17 +89,33 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
                 kwargs={'newsletter_slug': n.slug}
             )
 
+            # Check returned URL's exist and equal result of lookup methods
+            self.assertTrue(subscribe_url)
+            self.assertEquals(subscribe_url, n.subscribe_url())
+
+            self.assertTrue(unsubscribe_url)
+            self.assertEquals(unsubscribe_url, n.unsubscribe_url())
+
+            self.assertTrue(update_url)
+            self.assertEquals(update_url, n.update_url())
+
+            self.assertTrue(archive_url)
+            self.assertEquals(archive_url, n.archive_url())
+
+            # Request detail URL and assert it links to all other URL's
             response = self.client.get(detail_url)
 
             if not n.visible:
                 self.assertEqual(response.status_code, 404)
                 continue
 
-            self.assertContains(response, '<a href="%s">' % subscribe_url)
-            self.assertContains(response, '<a href="%s">' % update_url)
-            self.assertContains(response, '<a href="%s">' % unsubscribe_url)
-            self.assertContains(response, '<a href="%s">' % archive_url)
+            self.assertContains(response, subscribe_url)
+            self.assertContains(response, update_url)
+            self.assertContains(response, unsubscribe_url)
+            self.assertContains(response, archive_url)
 
+            # Request each particular newsletter URL and assert
+            # it returns a 200
             response = self.client.get(subscribe_url)
             self.assertContains(response, n.title, status_code=200)
 
@@ -356,6 +374,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_subscribe_request_view(self):
         """ Test the subscription form. """
+
         response = self.client.get(self.subscribe_url)
 
         self.assertContains(response, self.n.title, status_code=200)
@@ -368,6 +387,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_subscribe_request_post(self):
         """ Post the subscription form. """
+
         response = self.client.post(
             self.subscribe_url, {
                 'name_field': 'Test Name',
@@ -400,7 +420,8 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assertEmailContains(full_activate_url)
 
     def test_subscribe_twice(self):
-        """ Subscribing twice should not be possible """
+        """ Subscribing twice should not be possible. """
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com',
@@ -444,6 +465,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_subscribe_request_activate(self):
         """ Test subscription activation. """
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com')
@@ -479,6 +501,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_unsubscribe_request_post(self):
         """ Post the unsubscribe request form. """
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com',
@@ -519,6 +542,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_unsubscribe_request_activate(self):
         """ Update a request. """
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com')
@@ -550,6 +574,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_update_request_view(self):
         """ Test the update request form. """
+
         response = self.client.get(self.update_url)
 
         self.assertContains(response, self.n.title, status_code=200)
@@ -560,6 +585,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_update_request_post(self):
         """ Test the update request post view. """
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com',
@@ -619,6 +645,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_update_request_activate(self):
         """ Update a request. """
+
         subscription = Subscription(newsletter=self.n,
                                     name='Test Name',
                                     email='test@email.com')
@@ -644,3 +671,86 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assert_(subscription.subscribed)
         self.assertEqual(subscription.name, testname2)
         self.assertEqual(subscription.email, testemail2)
+
+
+class ArchiveTestcase(NewsletterListTestCase):
+    def setUp(self):
+        """ Make sure we have a few submissions to test with. """
+
+        # Pick some newsletter
+        self.newsletter = Newsletter.objects.all()[0]
+
+        # Make sure there's a HTML template for this newsletter,
+        # otherwise the archive will not function.
+
+        (subject_template, text_template, html_template) = \
+            EmailTemplate.get_templates('message', self.newsletter)
+
+        self.assertTrue(html_template)
+
+        # Create a message first
+        message = Message(
+            title='Test message',
+            slug='test-message',
+            newsletter=self.newsletter
+        )
+
+        message.save()
+
+        # Create a submission
+        self.submission = Submission.from_message(message)
+
+    def test_archive_invisible(self):
+        """ Test whether an invisible newsletter is indeed not shown. """
+
+        self.newsletter.visible = False
+        self.newsletter.save()
+
+        archive_url = self.submission.newsletter.archive_url()
+
+        response = self.client.get(archive_url)
+        self.assertEqual(response.status_code, 404)
+
+        detail_url = self.submission.get_absolute_url()
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_archive_list(self):
+        """ Test the Submission list view. """
+
+        archive_url = self.submission.newsletter.archive_url()
+
+        # When published, this should return properly
+        response = self.client.get(archive_url)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, self.submission.message.title)
+        self.assertContains(response, self.submission.get_absolute_url())
+
+    def test_archive_detail(self):
+        """ Test Submission detail view. """
+
+        detail_url = self.submission.get_absolute_url()
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, self.submission.message.title)
+
+    def test_archive_unpublished_detail(self):
+        """ Assert that an unpublished submission is truly inaccessible. """
+
+        self.submission.publish = False
+        self.submission.save()
+
+        archive_url = self.submission.newsletter.archive_url()
+
+        response = self.client.get(archive_url)
+        self.assertNotContains(response, self.submission.message.title)
+        self.assertNotContains(response, self.submission.get_absolute_url())
+
+        detail_url = self.submission.get_absolute_url()
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 404)

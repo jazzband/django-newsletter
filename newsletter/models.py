@@ -206,6 +206,13 @@ class Newsletter(models.Model):
             {'newsletter_slug': self.slug}
         )
 
+    @permalink
+    def archive_url(self):
+        return (
+            'newsletter_archive', (),
+            {'newsletter_slug': self.slug}
+        )
+
     def get_sender(self):
         return u'%s <%s>' % (self.sender, self.email)
 
@@ -679,6 +686,7 @@ class Submission(models.Model):
                     message.send()
 
                 except Exception, e:
+                    # TODO: Test coverage for this branch.
                     logger.error(
                         ugettext(u'Message %(subscription)s failed '
                                  u'with error: %(error)s'),
@@ -713,11 +721,18 @@ class Submission(models.Model):
         return submission
 
     def save(self):
+        """ Set the newsletter from associated message upon saving. """
+        assert self.message.newsletter
+
         self.newsletter = self.message.newsletter
+
         return super(Submission, self).save()
 
     @permalink
     def get_absolute_url(self):
+        assert self.newsletter.slug
+        assert self.message.slug
+
         return (
             'newsletter_archive_detail', (), {
                 'newsletter_slug': self.newsletter.slug,

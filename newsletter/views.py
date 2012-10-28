@@ -41,6 +41,7 @@ def newsletter_list(request):
             newsletter__in=newsletters, user=request.user)
 
         if request.method == 'POST':
+            # TODO: Make sure this has test coverage
             formset = SubscriptionFormSet(request.POST, queryset=qs)
             if formset.is_valid():
                 formset.save()
@@ -62,6 +63,7 @@ def newsletter_detail(request, newsletter_slug):
     newsletters = Newsletter.on_site.filter(visible=True)
 
     if not newsletters:
+        # TODO: Make sure this has test coverage
         raise Http404
 
     return list_detail.object_detail(
@@ -139,6 +141,7 @@ def unsubscribe_user(request, newsletter_slug, confirm=False):
             })
 
     except Subscription.DoesNotExist:
+        # TODO: Test coverage for this branch
         not_subscribed = True
 
     if not_subscribed:
@@ -174,6 +177,7 @@ def subscribe_request(request, newsletter_slug, confirm=False):
             try:
                 instance.send_activation_email(action='subscribe')
             except Exception, e:
+                # TODO: Test coverage for this branch
                 logger.exception('Error %s while submitting email to %s.',
                     e, instance.email)
                 error = True
@@ -207,6 +211,7 @@ def unsubscribe_request(request, newsletter_slug, confirm=False):
             try:
                 instance.send_activation_email(action='unsubscribe')
             except Exception, e:
+                # TODO: Test coverage of this branch
                 logger.exception(
                     'Error %s while submitting email to %s.',
                     e, instance.email)
@@ -300,6 +305,8 @@ def update_subscription(request, newsletter_slug,
             initial=my_initial
         )
 
+        # TODO: Figure out what the hell this code is doing here.
+
         # If we are activating and activation code is valid and not already
         # subscribed, activate straight away
 
@@ -340,6 +347,8 @@ def archive(request, newsletter_slug):
 
 
 def archive_detail(request, newsletter_slug, year, month, day, slug):
+    """ Detail view for Submissions in the archive. """
+
     my_newsletter = get_object_or_404(
         Newsletter.on_site, slug=newsletter_slug, visible=True
     )
