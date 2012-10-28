@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+from django.core import mail
+
 from newsletter.models import *
 from newsletter.forms import *
 
@@ -162,6 +164,13 @@ class SubmitSubmissionTestCase(MailingTestCase):
 
         self.assert_(submission.sent)
         self.assertFalse(submission.sending)
+
+        # Make sure mail is being sent out
+        self.assertEquals(len(mail.outbox), 1)
+
+        # Make sure a submission contains the title and unsubscribe URL
+        self.assertEmailContains(submission.message.title)
+        self.assertEmailContains(submission.newsletter.unsubscribe_url())
 
 
 class SubscriptionTestCase(UserTestCase, MailingTestCase):
