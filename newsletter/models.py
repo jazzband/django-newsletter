@@ -702,7 +702,6 @@ class Submission(models.Model):
 
     @classmethod
     def submit_queue(cls):
-        # TODO: Test coverage
         todo = cls.objects.filter(
             prepared=True, sent=False, sending=False,
             publish_date__lt=datetime.now()
@@ -722,12 +721,18 @@ class Submission(models.Model):
         return submission
 
     def save(self):
+        """ Set the newsletter from associated message upon saving. """
+        assert self.message.newsletter
+
         self.newsletter = self.message.newsletter
+
         return super(Submission, self).save()
 
     @permalink
     def get_absolute_url(self):
-        # TODO: Test coverage
+        assert self.newsletter.slug
+        assert self.message.slug
+
         return (
             'newsletter_archive_detail', (), {
                 'newsletter_slug': self.newsletter.slug,

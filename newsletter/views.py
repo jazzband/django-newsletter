@@ -349,7 +349,6 @@ def archive(request, newsletter_slug):
 def archive_detail(request, newsletter_slug, year, month, day, slug):
     """ Detail view for Submissions in the archive. """
 
-    # TODO: Test coverage
     my_newsletter = get_object_or_404(
         Newsletter.on_site, slug=newsletter_slug, visible=True
     )

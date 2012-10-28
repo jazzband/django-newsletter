@@ -660,3 +660,64 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assert_(subscription.subscribed)
         self.assertEqual(subscription.name, testname2)
         self.assertEqual(subscription.email, testemail2)
+
+
+class ArchiveTestcase(NewsletterListTestCase):
+    def setUp(self):
+        """
+        Make sure we have a few submissions to test with.
+        """
+
+        # Pick some newsletter
+        newsletter = Newsletter.objects.all()[0]
+
+        # Make sure there's a HTML template for this newsletter,
+        # otherwise the archive will not function.
+
+        (subject_template, text_template, html_template) = \
+            EmailTemplate.get_templates('message', newsletter)
+
+        self.assertTrue(html_template)
+
+        # Create a message first
+        message = Message(
+            title='Test message',
+            slug='test-message',
+            newsletter=newsletter
+        )
+
+        message.save()
+
+        # Create a submission
+        self.submission = Submission.from_message(message)
+
+    def test_archive_list(self):
+        """ Test the Submission list view. """
+
+        archive_url = self.submission.newsletter.archive_url()
+
+        # When published, this should return properly
+        response = self.client.get(archive_url)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, self.submission.message.title)
+        self.assertContains(response, self.submission.get_absolute_url())
+
+    def test_archive_detail(self):
+        """ Test Submission detail view. """
+
+        detail_url = self.submission.get_absolute_url()
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_archive_unpublished_detail(self):
+        """ Assert that an unpublished submission is truly inaccessible. """
+
+        self.submission.publish = False
+        self.submission.save()
+
+        detail_url = self.submission.get_absolute_url()
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 404)
