@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from newsletter.models import *
 from newsletter.forms import *
 
@@ -130,18 +132,36 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.sub.save()
 
     def test_submission(self):
+        """ Assure initial Submission is in expected state. """
+
+        self.assertFalse(self.sub.prepared)
+        self.assertFalse(self.sub.sent)
+        self.assertFalse(self.sub.sending)
+
+    def test_nosubmit(self):
+        """ Assure nothing happends if not prepared. """
+
+        # Assure nothing happends
+        Submission.submit_queue()
+
         self.assertFalse(self.sub.prepared)
         self.assertFalse(self.sub.sent)
         self.assertFalse(self.sub.sending)
 
     def test_submitsubmission(self):
+        """ Test queue-based submission. """
+
         self.sub.prepared = True
+        self.sub.publish_date = datetime.now() - timedelta(seconds=1)
         self.sub.save()
 
-        self.sub.submit()
+        Submission.submit_queue()
 
-        self.assert_(self.sub.sent)
-        self.assertFalse(self.sub.sending)
+        # Get the object fresh from DB, as to assure no caching takes place
+        submission = Submission.objects.get(pk=self.sub.pk)
+
+        self.assert_(submission.sent)
+        self.assertFalse(submission.sending)
 
 
 class SubscriptionTestCase(UserTestCase, MailingTestCase):
