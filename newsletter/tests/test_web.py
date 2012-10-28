@@ -726,6 +726,8 @@ class ArchiveTestcase(NewsletterListTestCase):
         response = self.client.get(detail_url)
         self.assertEqual(response.status_code, 200)
 
+        self.assertContains(response, self.submission.message.title)
+
     def test_archive_unpublished_detail(self):
         """ Assert that an unpublished submission is truly inaccessible. """
 
