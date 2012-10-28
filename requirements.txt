@@ -3,3 +3,4 @@ Django>=1.3
 vobject
 chardet
 PIL
+surlex
