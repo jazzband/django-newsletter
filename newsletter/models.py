@@ -217,7 +217,7 @@ class Newsletter(models.Model):
         return u'%s <%s>' % (self.sender, self.email)
 
     def get_subscriptions(self):
-        logger.debug(_(u'Looking up subscribers for %s'), self)
+        logger.debug(u'Looking up subscribers for %s', self)
 
         return Subscription.objects.filter(newsletter=self, subscribed=True)
 
@@ -509,7 +509,7 @@ class Article(models.Model):
             article = qs.filter(sortorder__lt=self.sortorder)[0]
 
             logger.debug(
-                'Found prev %d of %d.',
+                u'Found prev %d of %d.',
                 article.sortorder, self.sortorder
             )
 
@@ -526,7 +526,7 @@ class Article(models.Model):
             article = qs.filter(sortorder__gt=self.sortorder)[0]
 
             logger.debug(
-                'Found next %d of %d.',
+                u'Found next %d of %d.',
                 article.sortorder, self.sortorder
             )
 
