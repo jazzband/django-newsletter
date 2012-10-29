@@ -8,13 +8,13 @@ python:
   - "2.7"
 
 env:
-  - DJANGO_VERSION=1.3.4
-  - DJANGO_VERSION=1.4.2
-  - DJANGO_VERSION=https://www.djangoproject.com/download/1.5a1/tarball/
+  - DJANGO=Django==1.3.4
+  - DJANGO=Django==1.4.2
+  - DJANGO=https://www.djangoproject.com/download/1.5a1/tarball/
 
 # command to install dependencies
 install:
-  - pip install -q Django==$DJANGO_VERSION --use-mirrors
+  - pip install -q $DJANGO --use-mirrors
   - pip install -r requirements.txt --use-mirrors
 
 # command to run tests
