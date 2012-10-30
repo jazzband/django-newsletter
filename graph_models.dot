@@ -16,14 +16,11 @@ digraph name {
 
 
 
-
-  
     newsletter_models_EmailTemplate [label=<
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
      >EmailTemplate</FONT></TD></TR>
-
     
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -71,13 +68,12 @@ digraph name {
     
     </TABLE>
     >]
-  
+
     newsletter_models_Newsletter [label=<
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
      >Newsletter</FONT></TD></TR>
-
     
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -122,51 +118,15 @@ digraph name {
         ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">BooleanField</FONT
         ></TD></TR>
         
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">subscribe_template</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">unsubscribe_template</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">update_template</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">message_template</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">site</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">ManyToManyField</FONT
-        ></TD></TR>
-        
     
     </TABLE>
     >]
-  
+
     newsletter_models_Subscription [label=<
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
      >Subscription</FONT></TD></TR>
-
     
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -174,13 +134,6 @@ digraph name {
         ></TD>
         <TD ALIGN="LEFT"
         ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">AutoField</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">user</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">ForeignKey</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -202,13 +155,6 @@ digraph name {
         ></TD>
         <TD ALIGN="LEFT"
         ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">IPAddressField</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">newsletter</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -256,13 +202,12 @@ digraph name {
     
     </TABLE>
     >]
-  
+
     newsletter_models_Article [label=<
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
      >Article</FONT></TD></TR>
-
     
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -314,23 +259,15 @@ digraph name {
         ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">CharField</FONT
         ></TD></TR>
         
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">post</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
-        ></TD></TR>
-        
     
     </TABLE>
     >]
-  
+
     newsletter_models_Message [label=<
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
      >Message</FONT></TD></TR>
-
     
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -355,13 +292,6 @@ digraph name {
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">newsletter</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
         ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">date_create</FONT
         ></TD>
         <TD ALIGN="LEFT"
@@ -378,13 +308,12 @@ digraph name {
     
     </TABLE>
     >]
-  
+
     newsletter_models_Submission [label=<
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
      >Submission</FONT></TD></TR>
-
     
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -392,20 +321,6 @@ digraph name {
         ></TD>
         <TD ALIGN="LEFT"
         ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">AutoField</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">newsletter</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">message</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -443,83 +358,86 @@ digraph name {
         ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">BooleanField</FONT
         ></TD></TR>
         
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">subscriptions</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">ManyToManyField</FONT
-        ></TD></TR>
-        
     
     </TABLE>
     >]
-  
 
 
 
-
-  
-    
-  
-    
-    
-    newsletter_models_Newsletter -> newsletter_models_EmailTemplate
-    [label="subscribe_template"] ;
-    
-    
-    newsletter_models_Newsletter -> newsletter_models_EmailTemplate
-    [label="unsubscribe_template"] ;
-    
-    
-    newsletter_models_Newsletter -> newsletter_models_EmailTemplate
-    [label="update_template"] ;
-    
-    
-    newsletter_models_Newsletter -> newsletter_models_EmailTemplate
-    [label="message_template"] ;
-    
-  
-    
-    
-    django_contrib_auth_models_User [label=<
-        <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-        <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
-        ><FONT FACE="Helvetica Bold" COLOR="white"
-        >User</FONT></TD></TR>
-        </TABLE>
-        >]
-    
-    newsletter_models_Subscription -> django_contrib_auth_models_User
-    [label="user"] ;
-    
-    
-    newsletter_models_Subscription -> newsletter_models_Newsletter
-    [label="newsletter"] ;
-    
-  
-    
-    
-    newsletter_models_Article -> newsletter_models_Message
-    [label="post"] ;
-    
-  
-    
-    
-    newsletter_models_Message -> newsletter_models_Newsletter
-    [label="newsletter"] ;
-    
-  
-    
-    
-    newsletter_models_Submission -> newsletter_models_Newsletter
-    [label="newsletter"] ;
-    
-    
-    newsletter_models_Submission -> newsletter_models_Message
-    [label="message"] ;
-    
   
 
+  
+  
+  newsletter_models_Newsletter -> newsletter_models_EmailTemplate
+  [label="subscribe_template (subcribe_template)"] [arrowhead=none, arrowtail=dot];
+  
+  
+  newsletter_models_Newsletter -> newsletter_models_EmailTemplate
+  [label="unsubscribe_template (unsubcribe_template)"] [arrowhead=none, arrowtail=dot];
+  
+  
+  newsletter_models_Newsletter -> newsletter_models_EmailTemplate
+  [label="update_template (update_template)"] [arrowhead=none, arrowtail=dot];
+  
+  
+  newsletter_models_Newsletter -> newsletter_models_EmailTemplate
+  [label="message_template (message_template)"] [arrowhead=none, arrowtail=dot];
+  
+  
+  django_contrib_sites_models_Site [label=<
+      <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
+      ><FONT FACE="Helvetica Bold" COLOR="white"
+      >Site</FONT></TD></TR>
+      </TABLE>
+      >]
+  
+  newsletter_models_Newsletter -> django_contrib_sites_models_Site
+  [label="site (newsletter)"] [arrowhead=dot arrowtail=dot, dir=both];
+  
+
+  
+  
+  django_contrib_auth_models_User [label=<
+      <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
+      ><FONT FACE="Helvetica Bold" COLOR="white"
+      >User</FONT></TD></TR>
+      </TABLE>
+      >]
+  
+  newsletter_models_Subscription -> django_contrib_auth_models_User
+  [label="user (subscription)"] [arrowhead=none, arrowtail=dot];
+  
+  
+  newsletter_models_Subscription -> newsletter_models_Newsletter
+  [label="newsletter (subscription)"] [arrowhead=none, arrowtail=dot];
+  
+
+  
+  
+  newsletter_models_Article -> newsletter_models_Message
+  [label="post (articles)"] [arrowhead=none, arrowtail=dot];
+  
+
+  
+  
+  newsletter_models_Message -> newsletter_models_Newsletter
+  [label="newsletter (message)"] [arrowhead=none, arrowtail=dot];
+  
+
+  
+  
+  newsletter_models_Submission -> newsletter_models_Newsletter
+  [label="newsletter (submission)"] [arrowhead=none, arrowtail=dot];
+  
+  
+  newsletter_models_Submission -> newsletter_models_Message
+  [label="message (submission)"] [arrowhead=none, arrowtail=dot];
+  
+  
+  newsletter_models_Submission -> newsletter_models_Subscription
+  [label="subscriptions (submission)"] [arrowhead=dot arrowtail=dot, dir=both];
+  
 
 }
-
