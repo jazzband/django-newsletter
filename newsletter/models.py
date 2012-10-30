@@ -474,7 +474,7 @@ class Article(models.Model):
     text = models.TextField(verbose_name=_('text'))
 
     url = models.URLField(
-        verbose_name=_('link'), blank=True, null=True, verify_exists=False
+        verbose_name=_('link'), blank=True, null=True
     )
 
     # Make this a foreign key for added elegance
