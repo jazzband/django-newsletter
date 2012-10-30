@@ -10,7 +10,8 @@ python:
 env:
   - DJANGO=Django==1.3.4
   - DJANGO=Django==1.4.2
-  - DJANGO=https://www.djangoproject.com/download/1.5a1/tarball/
+#  - DJANGO=https://www.djangoproject.com/download/1.5a1/tarball/
+# TODO: Migrate to class based views for 1.5 support
 
 # command to install dependencies
 install:
