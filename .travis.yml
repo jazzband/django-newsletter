@@ -1,19 +1,23 @@
 language: python
 
 python:
-  allow_failures:
-    # Disable 2.5 for now due to a bug in django-setuptest
-    # Ref: https://github.com/praekelt/django-setuptest/pull/6
-    - "2.5"
+  - "2.5"
   - "2.6"
   - "2.7"
 
 env:
   - DJANGO=Django==1.3.4
   - DJANGO=Django==1.4.2
+  - DJANGO=https://www.djangoproject.com/download/1.5a1/tarball/
+
+matrix:
   allow_failures:
     # Failing due to Django 1.5 dropping CBV support
-    - DJANGO=https://www.djangoproject.com/download/1.5a1/tarball/
+    - env: DJANGO=https://www.djangoproject.com/download/1.5a1/tarball/
+
+    # Allow failure in 2.5 for now due to a bug in django-setuptest
+    # Ref: https://github.com/praekelt/django-setuptest/pull/6
+    - python: "2.5"
 
 # command to install dependencies
 install:
