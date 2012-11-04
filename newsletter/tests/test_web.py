@@ -438,6 +438,63 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assertContains(response, "already been subscribed to",
                             status_code=200)
 
+    def test_subscribe_unsubscribed(self):
+        """
+        After having been unsubscribed, a user should be able to subscribe
+        again.
+
+        This relates to #5 on GitHub.
+        """
+
+        # Create a subscription
+        subscription = Subscription(newsletter=self.n,
+                                    name='Test Name',
+                                    email='test@email.com',
+                                    subscribed=True)
+        subscription.save()
+
+        # Unsubscribe
+        testname2 = 'Test Name2'
+        testemail2 = 'test2@email.com'
+        response = self.client.post(
+            subscription.unsubscribe_activate_url(), {
+                'name_field': subscription.name,
+                'email_field': subscription.email,
+                'user_activation_code': subscription.activation_code
+        })
+
+        self.assertEquals(response.status_code, 200)
+
+        subscription = getattr(response.context['form'], 'instance', None)
+
+        # self.assertFalse(subscription.subscribed)
+        self.assert_(subscription.unsubscribed)
+
+        # Resubscribe request
+        response = self.client.post(
+            self.subscribe_url, {
+                'name_field': subscription.name,
+                'email_field': subscription.email,
+        })
+
+        self.assertEquals(response.status_code, 200)
+
+        # self.assertFalse(subscription.subscribed)
+        self.assert_(subscription.unsubscribed)
+
+        # Activate subscription
+        response = self.client.post(
+            subscription.subscribe_activate_url(), {
+                'name_field': subscription.name,
+                'email_field': subscription.email,
+                'user_activation_code': subscription.activation_code
+        })
+        self.assertInContext(response, 'form', UpdateForm)
+
+        subscription = getattr(response.context['form'], 'instance', None)
+        self.assert_(subscription.subscribed)
+        self.assertFalse(subscription.unsubscribed)
+
     def test_user_update(self):
         """
         We should not be able to update anonymous for an email address
