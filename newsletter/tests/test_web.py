@@ -419,6 +419,37 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         self.assertEmailContains(full_activate_url)
 
+    def test_retry_subscribe(self):
+        """
+        When requesting a subscription for an e-mail address for which
+        an unconfirmed subscription is already available, make sure
+        only one subscription object gets created.
+
+        This is a regression of #14 on GitHub.
+        """
+
+        self.assertEquals(Subscription.objects.all().count(), 0)
+
+        # Request subscription
+        response = self.client.post(
+            self.subscribe_url, {
+                'name_field': 'Test Name',
+                'email_field': 'test@email.com'
+            }
+        )
+
+        self.assertEquals(Subscription.objects.all().count(), 1)
+
+        # Request subscription
+        response = self.client.post(
+            self.subscribe_url, {
+                'name_field': 'Test Name',
+                'email_field': 'test@email.com'
+            }
+        )
+
+        self.assertEquals(Subscription.objects.all().count(), 1)
+
     def test_subscribe_twice(self):
         """ Subscribing twice should not be possible. """
 
