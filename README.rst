@@ -2,7 +2,7 @@
 django-newsletter
 =================
 
-.. image:: https://secure.travis-ci.org/dokterbob/django-newsletter.png
+.. image:: https://secure.travis-ci.org/dokterbob/django-newsletter.png?branch=master
     :target: http://travis-ci.org/dokterbob/django-newsletter
 
 Newsletter application for the Django web framework.
