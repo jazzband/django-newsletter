@@ -36,7 +36,7 @@ except:
 
 setup(
     name = 'django-newsletter',
-    version = "0.3.0",
+    version = "0.4",
     description = 'Django app for managing multiple mass-mailing lists with both plaintext as well as HTML templates (and TinyMCE editor for HTML messages), images and a smart queueing system all right from the admin interface.',
     long_description = README,
     install_requires=REQUIREMENTS,
