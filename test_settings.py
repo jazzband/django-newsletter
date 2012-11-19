@@ -10,6 +10,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.sites',
     'django_extensions',
+    'sorl.thumbnail',
     'newsletter',
 )
 
