@@ -5,8 +5,6 @@ import random
 
 from datetime import datetime
 
-from django.utils import timezone
-
 from django.db import models
 from django.db.models import permalink
 
@@ -25,6 +23,8 @@ from django.contrib.sites.managers import CurrentSiteManager
 from django.contrib.auth.models import User
 
 from django.conf import settings
+
+from .utils import now
 
 
 def make_activation_code():
@@ -272,7 +272,7 @@ class Subscription(models.Model):
     def subscribe(self):
         logger.debug(u'Subscribing subscription %s.', self)
 
-        self.subscribe_date = timezone.now()
+        self.subscribe_date = now()
         self.subscribed = True
         self.unsubscribed = False
 
@@ -281,7 +281,7 @@ class Subscription(models.Model):
 
         self.subscribed = False
         self.unsubscribed = True
-        self.unsubscribe_date = timezone.now()
+        self.unsubscribe_date = now()
 
     def save(self, *args, **kwargs):
         assert self.user or self.email_field, \
@@ -335,7 +335,7 @@ class Subscription(models.Model):
 
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
 
-    create_date = models.DateTimeField(editable=False, default=timezone.now)
+    create_date = models.DateTimeField(editable=False, default=now)
 
     activation_code = models.CharField(
         verbose_name=_('activation code'), max_length=40,
@@ -640,7 +640,7 @@ class Submission(models.Model):
             {'submission': self, 'count': subscriptions.count()}
         )
 
-        assert self.publish_date < timezone.now(), \
+        assert self.publish_date < now(), \
             'Something smells fishy; submission time in future.'
 
         self.sending = True
@@ -706,7 +706,7 @@ class Submission(models.Model):
     def submit_queue(cls):
         todo = cls.objects.filter(
             prepared=True, sent=False, sending=False,
-            publish_date__lt=timezone.now()
+            publish_date__lt=now()
         )
 
         for submission in todo:
@@ -763,7 +763,7 @@ class Submission(models.Model):
 
     publish_date = models.DateTimeField(
         verbose_name=_('publication date'), blank=True, null=True,
-        default=timezone.now(), db_index=True
+        default=now(), db_index=True
     )
     publish = models.BooleanField(
         default=True, verbose_name=_('publish'),
