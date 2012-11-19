@@ -23,7 +23,8 @@ class MailingTestCase(MailTestCase):
         self.n.site = get_default_sites()
 
         self.m = Message(title='Test message',
-                         newsletter=self.n)
+                         newsletter=self.n,
+                         slug='test-message')
         self.m.save()
 
         self.s = Subscription(
