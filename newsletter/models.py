@@ -515,35 +515,6 @@ class Article(models.Model):
         except IndexError:
             logger.debug('No previous found.')
 
-    # This belongs elsewhere
-    def thumbnail(self):
-        """
-        Display thumbnail-size image of ImageField named src
-        Assumes images are not very large (i.e. no manipulation of the
-        image is done on backend).
-
-        Requires constant named MAX_THUMB_LENGTH to limit longest axis
-
-        TODO: Replace by sorl-thumbnail's functionality.
-        """
-        MAX_THUMB_LENGTH = 200
-        max_img_length = max(self.get_image_width(), self.get_image_height())
-
-        ratio = (
-            max_img_length > MAX_THUMB_LENGTH and
-            float(max_img_length) / MAX_THUMB_LENGTH or
-            1
-        )
-
-        thumb_width = self.get_image_width() / ratio
-        thumb_height = self.get_image_height() / ratio
-        return '<img src="%s" width="%s" height="%s"/>' % (
-            self.image, thumb_width, thumb_height
-        )
-
-    thumbnail.short_description = _('thumbnail')
-    thumbnail.allow_tags = True
-
 
 class Message(models.Model):
     """ Message as sent through a Submission. """
