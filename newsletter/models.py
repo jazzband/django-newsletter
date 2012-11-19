@@ -117,12 +117,10 @@ class Newsletter(models.Model):
         default=True, verbose_name=_('visible'), db_index=True
     )
 
-    # Use this to automatically filter the current site
-    on_site = CurrentSiteManager()
+    objects = models.Manager()
 
-    # TODO: Remove this. It is related to issue #4
-    # https://github.com/dokterbob/django-newsletter/issues/4
-    objects = on_site
+    # Automatically filter the current site
+    on_site = CurrentSiteManager()
 
     subscribe_template = models.ForeignKey(
         'EmailTemplate',
