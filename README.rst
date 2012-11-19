@@ -64,8 +64,10 @@ Installation
 	    ...
 	)
 
-#)  Set the path to your preferred rich text widget (optional). If not set,
-    django-newsletter will fall back to Django's default TextField widget::
+#)  Install and configure your preferred rich text widget (optional).
+    If not set, django-newsletter will fall back to Django's default TextField
+    widget. Make sure to follow your editor's installation instructions
+    closely.::
 
 	# Using django-imperavi
 	NEWSLETTER_RICHTEXT_WIDGET = "imperavi.widget.ImperaviWidget"

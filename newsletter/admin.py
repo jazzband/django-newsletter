@@ -23,6 +23,8 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from django.utils.formats import date_format
 
+from sorl.thumbnail.admin import AdminImageMixin
+
 from .models import (
     EmailTemplate, Newsletter, Subscription, Article, Message, Submission
 )
@@ -209,7 +211,7 @@ if RICHTEXT_WIDGET and RICHTEXT_WIDGET.__name__ == "ImperaviWidget":
         pass
 
 
-class ArticleInline(StackedInline):
+class ArticleInline(AdminImageMixin, StackedInline):
     model = Article
     extra = 2
     fieldsets = (

@@ -18,6 +18,8 @@ from django.contrib.auth.models import User
 
 from django.conf import settings
 
+from sorl.thumbnail import ImageField
+
 from .utils import now, make_activation_code, get_default_sites
 
 
@@ -458,13 +460,9 @@ class Article(models.Model):
     )
 
     # Make this a foreign key for added elegance
-    image = models.ImageField(
+    image = ImageField(
         upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True,
         verbose_name=_('image')
-    )
-    thumb = models.CharField(
-        max_length=600, verbose_name=_('thumbnail url'), editable=False,
-        null=True, blank=True
     )
 
     # Message this article is associated with
@@ -514,35 +512,6 @@ class Article(models.Model):
 
         except IndexError:
             logger.debug('No previous found.')
-
-    # This belongs elsewhere
-    def thumbnail(self):
-        """
-        Display thumbnail-size image of ImageField named src
-        Assumes images are not very large (i.e. no manipulation of the
-        image is done on backend).
-
-        Requires constant named MAX_THUMB_LENGTH to limit longest axis
-
-        TODO: Replace by sorl-thumbnail's functionality.
-        """
-        MAX_THUMB_LENGTH = 200
-        max_img_length = max(self.get_image_width(), self.get_image_height())
-
-        ratio = (
-            max_img_length > MAX_THUMB_LENGTH and
-            float(max_img_length) / MAX_THUMB_LENGTH or
-            1
-        )
-
-        thumb_width = self.get_image_width() / ratio
-        thumb_height = self.get_image_height() / ratio
-        return '<img src="%s" width="%s" height="%s"/>' % (
-            self.image, thumb_width, thumb_height
-        )
-
-    thumbnail.short_description = _('thumbnail')
-    thumbnail.allow_tags = True
 
 
 class Message(models.Model):
