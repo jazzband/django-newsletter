@@ -174,7 +174,7 @@ class UserNewsletterListTestCase(UserTestCase,
             self.assertContains(response, form['id'])
             self.assertContains(response, form['subscribed'])
 
-    # To finish
+    # TODO
     # def test_update(self):
     #     for n in self.newsletters.filter(visible=True):
     #         response = self.client.post(self.list_url, {'form-0-id': n.id,
@@ -433,7 +433,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assertEquals(Subscription.objects.all().count(), 0)
 
         # Request subscription
-        response = self.client.post(
+        self.client.post(
             self.subscribe_url, {
                 'name_field': 'Test Name',
                 'email_field': 'test@email.com'
@@ -443,7 +443,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assertEquals(Subscription.objects.all().count(), 1)
 
         # Request subscription
-        response = self.client.post(
+        self.client.post(
             self.subscribe_url, {
                 'name_field': 'Test Name',
                 'email_field': 'test@email.com'
@@ -487,8 +487,6 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         subscription.save()
 
         # Unsubscribe
-        testname2 = 'Test Name2'
-        testemail2 = 'test2@email.com'
         response = self.client.post(
             subscription.unsubscribe_activate_url(), {
                 'name_field': subscription.name,
