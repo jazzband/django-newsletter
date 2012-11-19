@@ -1,6 +1,8 @@
 import logging
 logger = logging.getLogger(__name__)
 
+from django.db import models
+
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 
