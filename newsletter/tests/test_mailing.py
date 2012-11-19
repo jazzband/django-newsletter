@@ -2,11 +2,12 @@ from datetime import timedelta
 
 from django.core import mail
 
-from newsletter.models import *
-from newsletter.forms import *
-from newsletter.utils import now
+from ..models import (
+    Newsletter, Subscription, Submission, Message, Article, get_default_sites
+)
+from ..utils import now
 
-from utils import *
+from .utils import MailTestCase, UserTestCase
 
 
 class MailingTestCase(MailTestCase):
@@ -61,9 +62,13 @@ class ArticleTestCase(MailingTestCase):
 
 class CreateSubmissionTestCase(MailingTestCase):
     def test_subscription(self):
+        """ Test whether the recipient corresponds for Subscription. """
+
         self.assertEqual(self.s.get_recipient(), 'Test Name <test@test.com>')
 
     def test_submission_from_message(self):
+        """ Test creating a submission from a message. """
+
         sub = Submission.from_message(self.m)
 
         subscriptions = sub.subscriptions.all()
@@ -73,7 +78,9 @@ class CreateSubmissionTestCase(MailingTestCase):
         self.assertFalse(sub.sent)
         self.assertFalse(sub.sending)
 
-    def test_submission_unsubscribed(self):
+    def test_submission_subscribed(self):
+        """ Test a simpel submission with single subscriber. """
+
         self.s.subscribed = False
         self.s.save()
 
@@ -83,6 +90,8 @@ class CreateSubmissionTestCase(MailingTestCase):
         self.assertEqual(list(subscriptions), [])
 
     def test_submission_unsubscribed(self):
+        """ Test submission with unsubscribed activated subscriber. """
+
         self.s.unsubscribed = True
         self.s.save()
 
@@ -91,7 +100,9 @@ class CreateSubmissionTestCase(MailingTestCase):
         subscriptions = sub.subscriptions.all()
         self.assertEqual(list(subscriptions), [])
 
-    def test_submission_unsubscribed_unsubscribed(self):
+    def test_submission_unsubscribed_unactivated(self):
+        """ Test submissions with unsubscribed unactivated subscriber. """
+
         self.s.subscribed = False
         self.s.unsubscribed = True
         self.s.save()
@@ -102,6 +113,8 @@ class CreateSubmissionTestCase(MailingTestCase):
         self.assertEqual(list(subscriptions), [])
 
     def test_twosubmissions(self):
+        """ Test submission with two activated subscribers. """
+
         s2 = Subscription(
             name='Test Name 2', email='test2@test.com',
             newsletter=self.n, subscribed=True
@@ -114,7 +127,9 @@ class CreateSubmissionTestCase(MailingTestCase):
         self.assert_(self.s in list(subscriptions))
         self.assert_(s2 in list(subscriptions))
 
-    def test_twosubmissions(self):
+    def test_twosubmissions_unsubscried(self):
+        """ Test submission with two subscribers, one unactivated. """
+
         s2 = Subscription(
             name='Test Name 2', email='test2@test.com',
             newsletter=self.n, subscribed=False
