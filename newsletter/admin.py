@@ -30,11 +30,12 @@ from .admin_utils import *
 from .settings import RICHTEXT_WIDGET
 
 # Contsruct URL's for icons
-YES_ICON_URL = '%sadmin/img/icon-yes.gif' % settings.STATIC_URL
-WAIT_ICON_URL = '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL
-SUBMIT_ICON_URL = \
-    '%snewsletter/admin/img/submitting.gif' % settings.STATIC_URL
-NO_ICON_URL = '%sadmin/img/icon-no.gif' % settings.STATIC_URL
+ICON_URLS = {
+    'yes': '%sadmin/img/icon-yes.gif' % settings.STATIC_URL,
+    'wait': '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL,
+    'submit': '%snewsletter/admin/img/submitting.gif' % settings.STATIC_URL,
+    'no': '%sadmin/img/icon-no.gif' % settings.STATIC_URL
+}
 
 
 class NewsletterAdmin(admin.ModelAdmin):
@@ -101,19 +102,19 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         if obj.prepared:
             if obj.sent:
                 return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                    YES_ICON_URL, self.admin_status_text(obj))
+                    ICON_URLS['yes'], self.admin_status_text(obj))
             else:
                 if obj.publish_date > now():
                     return \
                         u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                            WAIT_ICON_URL, self.admin_status_text(obj))
+                            ICON_URLS['wait'], self.admin_status_text(obj))
                 else:
                     return \
                         u'<img src="%s" width="12" height="12" alt="%s"/>' % (
-                            SUBMIT_ICON_URL, self.admin_status_text(obj))
+                            ICON_URLS['wait'], self.admin_status_text(obj))
         else:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                NO_ICON_URL, self.admin_status_text(obj))
+                ICON_URLS['no'], self.admin_status_text(obj))
 
     admin_status.short_description = ''
     admin_status.allow_tags = True
@@ -359,14 +360,14 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def admin_status(self, obj):
         if obj.unsubscribed:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                NO_ICON_URL, self.admin_status_text(obj))
+                ICON_URLS['no'], self.admin_status_text(obj))
 
         if obj.subscribed:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                YES_ICON_URL, self.admin_status_text(obj))
+                ICON_URLS['yes'], self.admin_status_text(obj))
         else:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                WAIT_ICON_URL, self.admin_status_text(obj))
+                ICON_URLS['wait'], self.admin_status_text(obj))
 
     admin_status.short_description = ''
     admin_status.allow_tags = True
