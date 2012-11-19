@@ -41,8 +41,7 @@ class EmailTemplate(models.Model):
         assert action in ['subscribe', 'unsubscribe', 'update', 'message'], \
             'Unknown action %s' % action
 
-        # TODO: Remove eval here (or: anywhere)
-        myemail = eval('newsletter.%s_template' % action)
+        myemail = getattr(newsletter, '%s_template' % action)
 
         if myemail.html:
             # If HTML available, return (subject, text, html) tuple

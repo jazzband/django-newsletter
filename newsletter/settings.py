@@ -3,8 +3,6 @@ from django.utils.importlib import import_module
 from django.core.exceptions import ImproperlyConfigured
 
 
-""" TODO: Factor settings out into seperate settings module. """
-
 # Import and set the richtext field
 NEWSLETTER_RICHTEXT_WIDGET = \
     getattr(django_settings, "NEWSLETTER_RICHTEXT_WIDGET", "")
