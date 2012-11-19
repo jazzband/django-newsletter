@@ -1,9 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.core import mail
 
 from newsletter.models import *
 from newsletter.forms import *
+from newsletter.utils import now
 
 from utils import *
 
@@ -154,7 +155,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
         """ Test queue-based submission. """
 
         self.sub.prepared = True
-        self.sub.publish_date = datetime.now() - timedelta(seconds=1)
+        self.sub.publish_date = now() - timedelta(seconds=1)
         self.sub.save()
 
         Submission.submit_queue()
