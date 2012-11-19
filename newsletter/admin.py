@@ -446,7 +446,14 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                 name=self._view_name('import')),
             url(r'^import/confirm/$',
                 self._wrap(self.subscribers_import_confirm),
-                name=self._view_name('import_confirm'))
+                name=self._view_name('import_confirm')),
+
+            # Translated JS strings - these should be app-wide but are
+            # only used in this part of the admin. For now, leave them here.
+            url(r'^jsi18n/$',
+                'django.views.i18n.javascript_catalog',
+                {'packages': ('newsletter',)},
+                name='newsletter_js18n')
         )
 
         return my_urls + urls
