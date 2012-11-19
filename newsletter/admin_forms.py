@@ -2,21 +2,18 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from django import forms
+
+from django.core.validators import email_re
+
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 
-from django import forms
-
-try:
-    # Django 1.2
-    from django.core.validators import email_re
-except ImportError:
-    # Django legacy
-    from django.forms.fields import email_re
-
 from django.conf import settings
 
-from .models import *
+from django.template import Template
+
+from .models import Subscription, Newsletter, EmailTemplate, Submission
 
 
 def make_subscription(newsletter, email, name=None):

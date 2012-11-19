@@ -4,9 +4,7 @@ logger = logging.getLogger(__name__)
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 
-from django.contrib import admin
-from django.contrib import messages
-from django.contrib.admin.util import force_unicode
+from django.contrib import admin, messages
 from django.contrib.sites.models import Site
 
 from django.core import serializers
@@ -20,7 +18,6 @@ from django.shortcuts import render_to_response
 
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext, ugettext_lazy as _
-
 from django.utils.formats import date_format
 
 from .models import (
