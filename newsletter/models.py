@@ -462,10 +462,6 @@ class Article(models.Model):
         upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True,
         verbose_name=_('image')
     )
-    thumb = models.CharField(
-        max_length=600, verbose_name=_('thumbnail url'), editable=False,
-        null=True, blank=True
-    )
 
     # Message this article is associated with
     # TODO: Refactor post to message (post is legacy notation).
