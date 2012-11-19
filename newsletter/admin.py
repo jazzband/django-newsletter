@@ -164,20 +164,6 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         return my_urls + urls
 
 
-class OrderingWidget(forms.Widget):
-    def __init__(self):
-        super(OrderingWidget, self).__init__()
-
-    def render(self, name, value, attrs=None):
-        return unicode('Bananas')
-        if self.display_value is not None:
-            return unicode(self.display_value)
-        return unicode(self.original_value)
-
-    # def value_from_datadict(self, data, files, name):
-    #     return self.original_value
-
-
 StackedInline = admin.StackedInline
 if RICHTEXT_WIDGET and RICHTEXT_WIDGET.__name__ == "ImperaviWidget":
     # Imperavi works a little differently
