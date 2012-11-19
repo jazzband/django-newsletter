@@ -1,8 +1,5 @@
 import logging
-
 logger = logging.getLogger(__name__)
-
-from datetime import datetime
 
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
@@ -29,6 +26,8 @@ from django.utils.formats import date_format
 from .models import (
     EmailTemplate, Newsletter, Subscription, Article, Message, Submission
 )
+
+from .utils import now
 
 from .admin_forms import *
 from .admin_utils import *
@@ -128,7 +127,7 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                 return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
                     YES_ICON_URL, self.admin_status_text(obj))
             else:
-                if obj.publish_date > datetime.now():
+                if obj.publish_date > now():
                     return \
                         u'<img src="%s" width="10" height="10" alt="%s"/>' % (
                             WAIT_ICON_URL, self.admin_status_text(obj))
@@ -148,7 +147,7 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             if obj.sent:
                 return ugettext("Sent.")
             else:
-                if obj.publish_date > datetime.now():
+                if obj.publish_date > now():
                     return ugettext("Delayed submission.")
                 else:
                     return ugettext("Submitting.")
@@ -282,7 +281,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         c = Context({'message': message,
                      'site': Site.objects.get_current(),
                      'newsletter': message.newsletter,
-                     'date': datetime.now(),
+                     'date': now(),
                      'STATIC_URL': settings.STATIC_URL,
                      'MEDIA_URL': settings.MEDIA_URL})
 
@@ -298,7 +297,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             'message': message,
             'site': Site.objects.get_current(),
             'newsletter': message.newsletter,
-            'date': datetime.now(),
+            'date': now(),
             'STATIC_URL': settings.STATIC_URL,
             'MEDIA_URL': settings.MEDIA_URL
             }, autoescape=False
