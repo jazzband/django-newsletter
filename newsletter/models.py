@@ -476,40 +476,6 @@ class Article(models.Model):
     def __unicode__(self):
         return self.title
 
-    def get_prev(self):
-        """ Return the previous message according to sortorder. """
-
-        try:
-            qs = Article.objects.all().order_by('-sortorder')
-            article = qs.filter(sortorder__lt=self.sortorder)[0]
-
-            logger.debug(
-                u'Found prev %d of %d.',
-                article.sortorder, self.sortorder
-            )
-
-            return article
-
-        except IndexError:
-            logger.debug('No previous found.')
-
-    def get_next(self):
-        """ Return the next message according to sortorder. """
-
-        try:
-            qs = Article.objects.all().order_by('-sortorder')
-            article = qs.filter(sortorder__gt=self.sortorder)[0]
-
-            logger.debug(
-                u'Found next %d of %d.',
-                article.sortorder, self.sortorder
-            )
-
-            return article
-
-        except IndexError:
-            logger.debug('No previous found.')
-
 
 class Message(models.Model):
     """ Message as sent through a Submission. """
