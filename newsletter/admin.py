@@ -8,7 +8,6 @@ from django.contrib import admin, messages
 from django.contrib.sites.models import Site
 
 from django.core import serializers
-from django.core.exceptions import ImproperlyConfigured
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
@@ -16,7 +15,6 @@ from django.template import RequestContext, Context
 
 from django.shortcuts import render_to_response
 
-from django.utils.importlib import import_module
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.utils.formats import date_format
 
@@ -29,28 +27,9 @@ from .utils import now
 from .admin_forms import *
 from .admin_utils import *
 
-""" TODO: Factor settings out into seperate settings module. """
+from .settings import RICHTEXT_WIDGET
 
-# Import and set the richtext field
-NEWSLETTER_RICHTEXT_WIDGET = \
-    getattr(settings, "NEWSLETTER_RICHTEXT_WIDGET", "")
-RICHTEXT_WIDGET = None
-if NEWSLETTER_RICHTEXT_WIDGET:
-    module, attr = NEWSLETTER_RICHTEXT_WIDGET.rsplit(".", 1)
-    try:
-        mod = import_module(module)
-        RICHTEXT_WIDGET = getattr(mod, attr)
-    except Exception as e:
-        # Catch ImportError and other exceptions too
-        # (e.g. user sets setting to an integer)
-        raise ImproperlyConfigured(
-            "Error while importing setting "
-            "NEWSLETTER_RICHTEXT_WIDGET %r: %s" % (
-                NEWSLETTER_RICHTEXT_WIDGET, e
-            )
-        )
-
-
+# Contsruct URL's for icons
 YES_ICON_URL = '%sadmin/img/icon-yes.gif' % settings.STATIC_URL
 WAIT_ICON_URL = '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL
 SUBMIT_ICON_URL = \
@@ -203,7 +182,11 @@ if RICHTEXT_WIDGET and RICHTEXT_WIDGET.__name__ == "ImperaviWidget":
         from imperavi.admin import ImperaviStackedInlineAdmin
         StackedInline = ImperaviStackedInlineAdmin
     except ImportError:
-        pass
+        # Log a warning when import fails as to aid debugging.
+        logger.warning(
+            'Error importing ImperaviStackedInlineAdmin. '
+            'Imperavi WYSIWYG text editor might not work.'
+        )
 
 
 class ArticleInline(StackedInline):
