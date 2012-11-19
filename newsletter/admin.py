@@ -4,13 +4,10 @@ logger = logging.getLogger(__name__)
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 
-from django.contrib import admin
-from django.contrib import messages
-from django.contrib.admin.util import force_unicode
+from django.contrib import admin, messages
 from django.contrib.sites.models import Site
 
 from django.core import serializers
-from django.core.exceptions import ImproperlyConfigured
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
@@ -18,9 +15,7 @@ from django.template import RequestContext, Context
 
 from django.shortcuts import render_to_response
 
-from django.utils.importlib import import_module
 from django.utils.translation import ugettext, ugettext_lazy as _
-
 from django.utils.formats import date_format
 
 from .models import (
@@ -32,33 +27,15 @@ from .utils import now
 from .admin_forms import *
 from .admin_utils import *
 
-""" TODO: Factor settings out into seperate settings module. """
+from .settings import RICHTEXT_WIDGET
 
-# Import and set the richtext field
-NEWSLETTER_RICHTEXT_WIDGET = \
-    getattr(settings, "NEWSLETTER_RICHTEXT_WIDGET", "")
-RICHTEXT_WIDGET = None
-if NEWSLETTER_RICHTEXT_WIDGET:
-    module, attr = NEWSLETTER_RICHTEXT_WIDGET.rsplit(".", 1)
-    try:
-        mod = import_module(module)
-        RICHTEXT_WIDGET = getattr(mod, attr)
-    except Exception as e:
-        # Catch ImportError and other exceptions too
-        # (e.g. user sets setting to an integer)
-        raise ImproperlyConfigured(
-            "Error while importing setting "
-            "NEWSLETTER_RICHTEXT_WIDGET %r: %s" % (
-                NEWSLETTER_RICHTEXT_WIDGET, e
-            )
-        )
-
-
-YES_ICON_URL = '%sadmin/img/icon-yes.gif' % settings.STATIC_URL
-WAIT_ICON_URL = '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL
-SUBMIT_ICON_URL = \
-    '%snewsletter/admin/img/submitting.gif' % settings.STATIC_URL
-NO_ICON_URL = '%sadmin/img/icon-no.gif' % settings.STATIC_URL
+# Contsruct URL's for icons
+ICON_URLS = {
+    'yes': '%sadmin/img/icon-yes.gif' % settings.STATIC_URL,
+    'wait': '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL,
+    'submit': '%snewsletter/admin/img/submitting.gif' % settings.STATIC_URL,
+    'no': '%sadmin/img/icon-no.gif' % settings.STATIC_URL
+}
 
 
 class NewsletterAdmin(admin.ModelAdmin):
@@ -125,19 +102,19 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         if obj.prepared:
             if obj.sent:
                 return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                    YES_ICON_URL, self.admin_status_text(obj))
+                    ICON_URLS['yes'], self.admin_status_text(obj))
             else:
                 if obj.publish_date > now():
                     return \
                         u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                            WAIT_ICON_URL, self.admin_status_text(obj))
+                            ICON_URLS['wait'], self.admin_status_text(obj))
                 else:
                     return \
                         u'<img src="%s" width="12" height="12" alt="%s"/>' % (
-                            SUBMIT_ICON_URL, self.admin_status_text(obj))
+                            ICON_URLS['wait'], self.admin_status_text(obj))
         else:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                NO_ICON_URL, self.admin_status_text(obj))
+                ICON_URLS['no'], self.admin_status_text(obj))
 
     admin_status.short_description = ''
     admin_status.allow_tags = True
@@ -206,7 +183,11 @@ if RICHTEXT_WIDGET and RICHTEXT_WIDGET.__name__ == "ImperaviWidget":
         from imperavi.admin import ImperaviStackedInlineAdmin
         StackedInline = ImperaviStackedInlineAdmin
     except ImportError:
-        pass
+        # Log a warning when import fails as to aid debugging.
+        logger.warning(
+            'Error importing ImperaviStackedInlineAdmin. '
+            'Imperavi WYSIWYG text editor might not work.'
+        )
 
 
 class ArticleInline(StackedInline):
@@ -379,14 +360,14 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def admin_status(self, obj):
         if obj.unsubscribed:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                NO_ICON_URL, self.admin_status_text(obj))
+                ICON_URLS['no'], self.admin_status_text(obj))
 
         if obj.subscribed:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                YES_ICON_URL, self.admin_status_text(obj))
+                ICON_URLS['yes'], self.admin_status_text(obj))
         else:
             return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                WAIT_ICON_URL, self.admin_status_text(obj))
+                ICON_URLS['wait'], self.admin_status_text(obj))
 
     admin_status.short_description = ''
     admin_status.allow_tags = True

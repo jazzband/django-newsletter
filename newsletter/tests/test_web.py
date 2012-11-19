@@ -6,12 +6,17 @@ from django.core import mail
 
 from django.core.urlresolvers import reverse
 
-from newsletter.models import *
-from newsletter.forms import *
-from newsletter.utils import now
+from ..models import (
+    Newsletter, Subscription, Submission, Message,
+    EmailTemplate, get_default_sites
+)
+from ..forms import SubscribeRequestForm, UpdateForm, UpdateRequestForm
+from ..utils import now
 
-from utils import *
+from .utils import MailTestCase, UserTestCase, WebTestCase, ComparingTestCase
 
+
+# Amount of seconds to wait to test time comparisons in submissions.
 WAIT_TIME = 1
 
 

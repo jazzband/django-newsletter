@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 
 from django.conf import settings
 
-from django.template import RequestContext
+from django.template import RequestContext, Context
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponse, Http404
@@ -17,10 +17,13 @@ from django.contrib.auth.decorators import login_required
 
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from newsletter.models import *
-from newsletter.forms import *
-
 from django.forms.models import modelformset_factory
+
+from .models import Newsletter, Subscription, Submission, EmailTemplate
+from .forms import (
+    SubscribeRequestForm, UserUpdateForm, UpdateRequestForm,
+    UnsubscribeRequestForm, UpdateForm
+)
 
 
 def newsletter_list(request):
