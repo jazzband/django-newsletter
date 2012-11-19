@@ -18,3 +18,6 @@ ROOT_URLCONF = 'test_urls'
 SITE_ID = 1
 
 TEMPLATE_DIRS = ('test_templates', )
+
+# Enable time-zone support for Django 1.4 (ignored in older versions)
+USE_TZ = True
