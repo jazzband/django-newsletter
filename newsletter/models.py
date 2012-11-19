@@ -18,6 +18,8 @@ from django.contrib.auth.models import User
 
 from django.conf import settings
 
+from sorl.thumbnail import ImageField
+
 from .utils import now, make_activation_code, get_default_sites
 
 
@@ -458,7 +460,7 @@ class Article(models.Model):
     )
 
     # Make this a foreign key for added elegance
-    image = models.ImageField(
+    image = ImageField(
         upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True,
         verbose_name=_('image')
     )
