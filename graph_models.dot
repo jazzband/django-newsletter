@@ -252,13 +252,6 @@ digraph name {
         ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">ImageField</FONT
         ></TD></TR>
         
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">thumb</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">CharField</FONT
-        ></TD></TR>
-        
     
     </TABLE>
     >]
