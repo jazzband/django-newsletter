@@ -6,14 +6,14 @@ python:
   - "2.7"
 
 env:
-  - DJANGO=Django==1.3.4
-  - DJANGO=Django==1.4.2
+  - DJANGO=Django==1.3.5
+  - DJANGO=Django==1.4.3
   - DJANGO=https://www.djangoproject.com/download/1.5a1/tarball/
 
 matrix:
   allow_failures:
     # Failing due to Django 1.5 dropping CBV support
-    - env: DJANGO=https://www.djangoproject.com/download/1.5a1/tarball/
+    - env: DJANGO=https://www.djangoproject.com/download/1.5b2/tarball/
 
 # command to install dependencies
 install:
