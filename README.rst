@@ -49,8 +49,8 @@ Installation
 
 #)  Add newsletter and to ``INSTALLED_APPS`` in settings.py and make sure that
     your favourite rich text widget (optional), some Django contrib dependencies,
-    `sorl-thumbnail <http://sorl-thumbnail.readthedocs.org/en/latest/installation.html>`_ 
-    and `django-extensions <https://github.com/django-extensions/django-extensions>`_  
+    `sorl-thumbnail <http://sorl-thumbnail.readthedocs.org/en/latest/installation.html>`_
+    and `django-extensions <https://github.com/django-extensions/django-extensions>`_
     (the latter is used for the submission jobs) are there as well::
 
 	INSTALLED_APPS = (
@@ -62,21 +62,27 @@ Installation
 	    # Imperavi (or tinymce) rich text editor is optional
 	    'imperavi',
 	    'django_extensions',
-            'sorl.thumbnail',
+	    'sorl.thumbnail',
 	    ...
 	    'newsletter',
 	    ...
 	)
 
 #)  Install and configure your preferred rich text widget (optional).
-    If not set, django-newsletter will fall back to Django's default TextField
-    widget::
 
-	# Using django-imperavi (make sure to update urls.py when installing this)
+    Known to work are `django-imperavi <http://pypi.python.org/pypi/django-imperavi>`_
+    as well as for `django-tinymce <http://pypi.python.org/pypi/django-tinymce>`_.
+    Be sure to follow installation instructions for respective widgets. After
+    installation, the widgets can be selected as follows::
+
+	# Using django-imperavi
 	NEWSLETTER_RICHTEXT_WIDGET = "imperavi.widget.ImperaviWidget"
 
-        # Using django-tinymce
+	# Using django-tinymce
 	NEWSLETTER_RICHTEXT_WIDGET = "tinymce.widgets.TinyMCE"
+
+    If not set, django-newsletter will fall back to Django's default TextField
+    widget.
 
 #)  Import subscription, unsubscription and archive URL's somewhere in your
     `urls.py`::
@@ -150,7 +156,7 @@ Feedback
 ========
 If you find any bugs or have feature request for django-newsletter, don't hesitate to
 open up an issue on `GitHub <https://github.com/dokterbob/django-newsletter/issues>`_
-(but please make sure your issue hasn't been noticed before, finding duplicates is a 
+(but please make sure your issue hasn't been noticed before, finding duplicates is a
 waste of time). When modifying or adding features to django-newsletter in a fork, be
 sure to let me know what you're building and how you're building it. That way we can
 coordinate whether, when and how it will end up in the main fork and (eventually) an
