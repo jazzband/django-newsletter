@@ -19,6 +19,7 @@ matrix:
 install:
   - pip install -q $DJANGO --use-mirrors
   - pip install -r requirements.txt --use-mirrors
+  - pip install -q https://github.com/praekelt/django-setuptest/archive/f4eacb4a929cdcc853a5c053c282dada5bdedc99.tar.gz --use-mirrors
 
 # command to run tests
 script: python setup.py test
