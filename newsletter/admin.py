@@ -341,6 +341,8 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         'ip', 'subscribe_date', 'unsubscribe_date', 'activation_code'
     )
     date_hierarchy = 'subscribe_date'
+    actions = ['make_subscribed', 'make_unsubscribed']
+    
 
     """ List extensions """
     def admin_newsletter(self, obj):
@@ -388,6 +390,25 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             return ''
     admin_unsubscribe_date.short_description = _("unsubscribe date")
 
+    """ Actions """
+    def make_subscribed(self, request, queryset):
+        rows_updated = queryset.update(subscribed=True)
+        if rows_updated == 1:
+            message_bit = "1 user has been"
+        else:
+            message_bit = "%s users have been" % rows_updated
+        self.message_user(request, "%s successfully subscribed" % message_bit)
+    make_subscribed.short_description = _("Subscribe selected users")
+    
+    def make_unsubscribed(self, request, queryset):
+        rows_updated = queryset.update(subscribed=False)
+        if rows_updated == 1:
+            message_bit = "1 user has been"
+        else:
+            message_bit = "%s users have been" % rows_updated
+        self.message_user(request, "%s successfully unsubscribed" % message_bit)
+    make_unsubscribed.short_description = _("Unsubscribe selected users")
+        
     """ Views """
     def subscribers_import(self, request):
         if request.POST:
