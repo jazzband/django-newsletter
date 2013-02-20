@@ -17,7 +17,7 @@ matrix:
   exclude:
     # Django 1.5 drops support for Python 2.5
     - env: DJANGO=https://www.djangoproject.com/download/1.5c2/tarball/
-      python: 2.5
+      python: "2.5"
 
 # command to install dependencies
 install:
