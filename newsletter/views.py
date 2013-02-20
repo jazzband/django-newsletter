@@ -246,6 +246,7 @@ def update_request(request, newsletter_slug):
             try:
                 instance.send_activation_email(action='update')
             except Exception, e:
+                # TODO: Test coverage of this branch
                 logger.exception(
                     'Error %s while submitting email to %s.',
                     e, instance.email)
@@ -269,6 +270,7 @@ def update_subscription(request, newsletter_slug,
         email, action, activation_code=None):
 
     if not action in ['subscribe', 'update', 'unsubscribe']:
+        # TODO: Test coverage of this branch
         raise Http404
 
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
@@ -279,6 +281,7 @@ def update_subscription(request, newsletter_slug,
     if activation_code:
         my_initial = {'user_activation_code': activation_code}
     else:
+        # TODO: Test coverage of this branch
         my_initial = None
 
     if request.POST:
@@ -371,6 +374,7 @@ def archive_detail(request, newsletter_slug, year, month, day, slug):
         EmailTemplate.get_templates('message', message.newsletter)
 
     if not html_template:
+        # TODO: Test coverage of this branch
         raise Http404(ugettext('No HTML template associated with the '
                                'newsletter this message belongs to.'))
 
