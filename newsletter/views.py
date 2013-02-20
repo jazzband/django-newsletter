@@ -81,10 +81,6 @@ def newsletter_list(request):
 def newsletter_detail(request, newsletter_slug):
     newsletters = Newsletter.on_site.filter(visible=True)
 
-    if not newsletters:
-        # TODO: Make sure this has test coverage
-        raise Http404
-
     return list_detail.object_detail(
         request, newsletters, slug=newsletter_slug)
 

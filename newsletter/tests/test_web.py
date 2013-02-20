@@ -128,6 +128,23 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
             response = self.client.get(archive_url)
             self.assertContains(response, n.title, status_code=200)
 
+    def test_detail_invisible_not_found(self):
+        """
+        Test whether an invisible newsletter causes a 404 in detail view.
+        """
+
+        # Get an invisible newsletter
+        n = Newsletter.objects.filter(visible=False)[0]
+
+        detail_url = reverse(
+            'newsletter_detail',
+            kwargs={'newsletter_slug': n.slug}
+        )
+
+        response = self.client.get(detail_url)
+
+        self.assertEquals(response.status_code, 404)
+
 
 class UserNewsletterListTestCase(UserTestCase,
                                  NewsletterListTestCase):
