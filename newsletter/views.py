@@ -183,8 +183,10 @@ def subscribe_request(request, newsletter_slug, confirm=False):
     error = None
     if request.POST:
         form = SubscribeRequestForm(
-            request.POST, newsletter=my_newsletter,
-            ip=request.META.get('REMOTE_ADDR'))
+            request.POST,
+            newsletter=my_newsletter,
+            ip=request.META.get('REMOTE_ADDR')
+        )
 
         if form.is_valid():
             instance = form.save()

@@ -397,6 +397,16 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         self.assert_(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
 
+    def test_unsubscribe_not_subscribed_view(self):
+        """
+        Test attempting to unsubscriped a user without a subscription.
+        """
+
+        response = self.client.get(self.unsubscribe_url)
+
+        self.assertIn('You are not subscribed to',
+            unicode(list(response.context['messages'])[0]))
+
     def test_unsubscribe_post(self):
         """ Test unsubscription confirmation. """
         subscription = Subscription(user=self.user, newsletter=self.n)
