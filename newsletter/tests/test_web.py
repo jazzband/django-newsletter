@@ -6,6 +6,15 @@ from django.core import mail
 
 from django.core.urlresolvers import reverse
 
+from django.utils.unittest import skipUnless
+
+# Settings overrides are only available in => 1.4
+try:
+    from django.test.utils import override_settings
+
+except ImportError:
+    override_settings = None
+
 from ..models import (
     Newsletter, Subscription, Submission, Message,
     EmailTemplate, get_default_sites
@@ -496,6 +505,29 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         full_activate_url = 'http://%s%s' % (self.site.domain, activate_url)
 
         self.assertEmailContains(full_activate_url)
+
+    # Only run this test when settings overrides are available
+    @skipUnless(override_settings,
+        'Settings override not available for Django < 1.4')
+    def test_subscrube_request_post_error(self):
+        """
+        Test whether a failing subscribe request email generated an error in
+        the context.
+
+        We do this by overriding the default mail backend to a settings which
+        we know pretty sure is bound to fail.
+        """
+
+        with override_settings(EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'):
+            with override_settings(EMAIL_PORT=12345678):
+                response = self.client.post(
+                    self.subscribe_url, {
+                        'name_field': 'Test Name',
+                        'email_field': 'test@ifjoidjsufhdsidhsuufihs.dfs'
+                    }
+                )
+
+        self.assertTrue(response.context['error'])
 
     def test_retry_subscribe(self):
         """

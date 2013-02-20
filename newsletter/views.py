@@ -193,11 +193,12 @@ def subscribe_request(request, newsletter_slug, confirm=False):
 
             try:
                 instance.send_activation_email(action='subscribe')
+
             except Exception, e:
-                # TODO: Test coverage for this branch
                 logger.exception('Error %s while submitting email to %s.',
                     e, instance.email)
                 error = True
+
     else:
         form = SubscribeRequestForm(newsletter=my_newsletter)
 
