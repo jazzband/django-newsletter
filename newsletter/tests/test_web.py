@@ -20,23 +20,6 @@ from .utils import MailTestCase, UserTestCase, WebTestCase, ComparingTestCase
 WAIT_TIME = 1
 
 
-class NoNewsLetterListTestCase(WebTestCase):
-    """ Test case for when no newsletter exists """
-
-    def setUp(self):
-        Newsletter.objects.all().delete()
-
-        self.list_url = reverse('newsletter_list')
-
-    def test_list(self):
-        """ Test whether all newsletters are in the list and whether the links
-            to them are correct. """
-
-        response = self.client.get(self.list_url)
-
-        self.assertEqual(response.status_code, 404)
-
-
 class NewsletterListTestCase(WebTestCase):
     """ Base class for newsletter test cases. """
 
@@ -50,6 +33,16 @@ class NewsletterListTestCase(WebTestCase):
 
 class AnonymousNewsletterListTestCase(NewsletterListTestCase):
     """ Test case for anonymous views of newsletter. """
+
+    def test_emptylist(self):
+        """ No newsletters should yield an emtpy list. """
+
+        # Delete existing newsletters
+        Newsletter.objects.all().delete()
+
+        # Assert a 404 is returned
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, 404)
 
     def test_list(self):
         """
