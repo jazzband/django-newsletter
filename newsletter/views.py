@@ -2,6 +2,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from django.core.exceptions import ValidationError
 from django.conf import settings
 
 from django.template import RequestContext, Context
@@ -44,14 +45,29 @@ def newsletter_list(request):
             newsletter__in=newsletters, user=request.user)
 
         if request.method == 'POST':
-            # TODO: Make sure this has test coverage
-            formset = SubscriptionFormSet(request.POST, queryset=qs)
-            if formset.is_valid():
+            try:
+                formset = SubscriptionFormSet(request.POST, queryset=qs)
+
+                if not formset.is_valid():
+                    raise ValidationError('Update form invalid.')
+
+                # Everything's allright, let's save
                 formset.save()
+
                 messages.info(request,
                     ugettext("Your changes have been saved."))
-            else:
-                assert False, 'An invalid user update request was recieved.'
+
+            except ValidationError:
+                # Invalid form posted. As there is no way for a user to
+                # enter data - invalid forms should be ignored from the UI.
+
+                # However, we log them for debugging purposes.
+                logger.warning('Invalid form post received',
+                    exc_info=True, extra={'request': request})
+
+                # Present a pristine form
+                formset = SubscriptionFormSet(queryset=qs)
+
         else:
             formset = SubscriptionFormSet(queryset=qs)
 

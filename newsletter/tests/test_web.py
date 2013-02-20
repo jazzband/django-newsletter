@@ -142,8 +142,8 @@ class UserNewsletterListTestCase(UserTestCase,
 
         return subscriptions[0]
 
-    def test_form(self):
-        """ Test whether form elements are present. """
+    def test_listform(self):
+        """ Test whether form elements are present in list. """
 
         response = self.client.get(self.list_url)
 
@@ -172,30 +172,81 @@ class UserNewsletterListTestCase(UserTestCase,
             self.assertContains(response, form['id'])
             self.assertContains(response, form['subscribed'])
 
-    # TODO
-    # def test_update(self):
-    #     for n in self.newsletters.filter(visible=True):
-    #         response = self.client.post(self.list_url, {'form-0-id': n.id,
-    #                                              'form-0-subscribed': ''})
-    #
-    #         self.assert_(n.subscribed)
-    #
-    # def test_update(self):
-    #     response = self.client.get(self.list_url)
-    #
-    #     formset = response.context['formset']
-    #
-    #     total_forms = self.newsletters.count()
-    #     params = {'form-TOTAL_FORMS' : total_forms,
-    #               'form-INITIAL_FORMS' : total_forms}
-    #
-    #     for n in self.newsletters:
-    #         for x in xrange(0, total_forms):
-    #             field = 'form-%d-id' % x
-    #             params.update({field: self.newsletters[x-1]})
-    #             if n == self.newsletters[x-1]:
-    #                 params.update('form-%d-subscribed' % x: 'checked'})
-    #         response = self.client.post(self.list_url, params)
+    def test_update(self):
+        # Make sure no subscriptions exist on beforehand
+        Subscription.objects.all().delete()
+
+        # Construct management form data
+        total_forms = self.newsletters.filter(visible=True).count()
+
+        params = {
+            'form-TOTAL_FORMS': total_forms,
+            'form-INITIAL_FORMS': total_forms
+        }
+
+        # Add subscribe to all newsletters
+        count = 0
+        for n in self.newsletters.filter(visible=True):
+            params.update({
+                'form-%d-id' % count: n.id,
+                'form-%d-subscribed' % count: '1'
+            })
+
+            count += 1
+
+        # Post the form
+        self.client.post(self.list_url, params)
+
+        subscriptions = Subscription.objects.filter(
+            user=self.user
+        )
+
+        # Assert all newsletters have related subscriptions now
+        self.assertTrue(subscriptions.count())
+        self.assertEquals(
+            subscriptions.count(),
+            self.newsletters.filter(visible=True).count()
+        )
+
+    def test_invalid_update(self):
+        """ Test an invalid update, which should fail. """
+        # Make sure no subscriptions exist on beforehand
+        Subscription.objects.all().delete()
+
+        # TODO: Use a Mock to assert a warning has been logged
+        # Ref: http://www.michaelpollmeier.com/python-mock-how-to-assert-a-substring-of-logger-output/
+
+        # A post without any form elements should fail, horribly
+        self.client.post(self.list_url)
+
+        # A post with correct management data with weird values
+        # should cause the formset not to validate.
+
+        # Construct management form data
+        total_forms = self.newsletters.filter(visible=True).count()
+
+        params = {
+            'form-TOTAL_FORMS': total_forms,
+            'form-INITIAL_FORMS': total_forms
+        }
+
+        # Add subscribe to all newsletters
+        count = 0
+        for n in self.newsletters.filter(visible=True):
+            params.update({
+                # Use a wrong value here
+                'form-%d-id' % count: 1000,
+                'form-%d-subscribed' % count: '1'
+            })
+
+            count += 1
+
+        # Post the form
+        self.client.post(self.list_url, params)
+
+        # Assert no subscriptions have been created
+        self.assertFalse(
+            Subscription.objects.filter(subscribed=True).exists())
 
 
 class WebSubscribeTestCase(WebTestCase, MailTestCase):
