@@ -28,6 +28,11 @@ Contributions to translations are welcome through `Transifex <http://www.transif
 .. image:: https://www.transifex.com/projects/p/django-newsletter/resource/django/chart/image_png
     :target: http://www.transifex.net/projects/p/django-newsletter/
 
+Compatibility
+=============
+Currently, django-newsletter is being tested to run on Python 2.5-2.7 and the
+latest Django 1.3 and 1.4 releases. Django 1.5 support is underway.
+
 Requirements
 ============
 Please refer to `requirements.txt <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_ for an updated list of required packes.
