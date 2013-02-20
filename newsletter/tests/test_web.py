@@ -1,3 +1,7 @@
+# Python 2.5 compatibility
+# Get the with statement from the future
+from __future__ import with_statement
+
 from datetime import timedelta
 
 import time
