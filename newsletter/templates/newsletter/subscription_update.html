@@ -1,6 +1,9 @@
 {% extends "newsletter/common.html" %}
+
 {% load i18n %}
+
 {% block title %}{% trans "Newsletter update" %}{% endblock title %}
+
 {% block body %}
 <h1>{% trans "Newsletter update" %} {{ newsletter.title }}</h1>
 {% if error %}
