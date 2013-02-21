@@ -1013,6 +1013,18 @@ class ArchiveTestcase(NewsletterListTestCase):
 
         self.assertContains(response, self.submission.message.title)
 
+    def test_archive_notemplate(self):
+        """
+        The archive detail should return 404 when the template has no HTML. """
+
+        # Make sure the HTML is deleted
+        EmailTemplate.objects.update(html=None)
+
+        detail_url = self.submission.get_absolute_url()
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 404)
+
     def test_archive_unpublished_detail(self):
         """ Assert that an unpublished submission is truly inaccessible. """
 
