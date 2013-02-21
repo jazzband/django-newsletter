@@ -185,7 +185,6 @@ def unsubscribe_user(request, newsletter_slug, confirm=False):
             })
 
     except Subscription.DoesNotExist:
-        # TODO: Test coverage for this branch
         not_subscribed = True
 
     if not_subscribed:
@@ -418,7 +417,6 @@ def archive_detail(request, newsletter_slug, year, month, day, slug):
         EmailTemplate.get_templates('message', message.newsletter)
 
     if not html_template:
-        # TODO: Test coverage of this branch
         raise Http404(ugettext('No HTML template associated with the '
                                'newsletter this message belongs to.'))
 
