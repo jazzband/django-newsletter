@@ -410,11 +410,12 @@ class SubmissionViewBase(object):
         """ Return the newsletter for the current request. """
         assert 'newsletter_slug' in kwargs
 
-        # Use the newsletter view here - we want to have exactly the same QS
-        newsletter_view = NewsletterDetailView(
-            request=request, kwargs=kwargs, **kwargs
+        newsletter_slug = self.kwargs['newsletter_slug']
+
+        # Directly use the queryset from the Newsletter view
+        newsletter = get_object_or_404(
+            NewsletterViewBase.queryset, slug=newsletter_slug,
         )
-        newsletter = newsletter_view.get_object()
 
         return newsletter
 
