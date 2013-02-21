@@ -396,11 +396,12 @@ class SubmissionViewBase(object):
     def get_newsletter(self):
         """ Return the newsletter for the current request. """
         assert 'newsletter_slug' in self.kwargs
-        newsletter_slug = self.kwargs['newsletter_slug']
 
-        newsletter = get_object_or_404(
-            Newsletter.on_site, slug=newsletter_slug, visible=True
+        # Use the newsletter view here - we want to have exactly the same QS
+        newsletter_view = NewsletterDetailView(
+            request=self.request, kwargs=self.kwargs
         )
+        newsletter = newsletter_view.get_object()
 
         return newsletter
 
