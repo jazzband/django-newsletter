@@ -405,7 +405,7 @@ class SubmissionViewBase(object):
 
         # Use the newsletter view here - we want to have exactly the same QS
         newsletter_view = NewsletterDetailView(
-            request=request, kwargs=kwargs
+            request=request, kwargs=kwargs, **kwargs
         )
         newsletter = newsletter_view.get_object()
 
