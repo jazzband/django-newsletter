@@ -393,30 +393,37 @@ class SubmissionViewBase(object):
     month_format = '%m'
     day_format = '%d'
 
-    def get_newsletter(self):
+    def get(self, request, *args, **kwargs):
+        # Make sure newsletter is available for further processing
+        self.newsletter = self.get_newsletter(request, **kwargs)
+
+        return super(SubmissionViewBase, self).get(request, *args, **kwargs)
+
+    def get_newsletter(self, request, **kwargs):
         """ Return the newsletter for the current request. """
-        assert 'newsletter_slug' in self.kwargs
+        assert 'newsletter_slug' in kwargs
 
         # Use the newsletter view here - we want to have exactly the same QS
         newsletter_view = NewsletterDetailView(
-            request=self.request, kwargs=self.kwargs
+            request=request, kwargs=kwargs
         )
         newsletter = newsletter_view.get_object()
 
         return newsletter
 
     def get_queryset(self):
+        """ Filter out submissions for current newsletter. """
         qs = super(SubmissionViewBase, self).get_queryset()
-        newsletter = self.get_newsletter()
 
-        qs = qs.filter(newsletter=newsletter)
+        qs = qs.filter(newsletter=self.newsletter)
 
         return qs
 
     def get_context_data(self, **kwargs):
+        """ Add newsletter to context. """
         context = super(SubmissionViewBase, self).get_context_data(**kwargs)
 
-        context['newsletter'] = self.get_newsletter()
+        context['newsletter'] = self.newsletter
 
         return context
 
