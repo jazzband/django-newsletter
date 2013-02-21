@@ -925,6 +925,28 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assertEqual(subscription.name, testname2)
         self.assertEqual(subscription.email, testemail2)
 
+    def test_update_request_activate_form(self):
+        """
+        Test requesting a form for activating an update without activation
+        code in the URL.
+        """
+
+        subscription = Subscription(newsletter=self.n,
+                                    name='Test Name',
+                                    email='test@email.com')
+        subscription.save()
+
+        activate_url = reverse('newsletter_update', kwargs={
+            'newsletter_slug': self.n.slug,
+            'action': 'update',
+            'email': subscription.email
+        })
+
+        response = self.client.get(activate_url)
+
+        # Make sure the form is there
+        self.assertInContext(response, 'form', UpdateForm)
+
 
 class ArchiveTestcase(NewsletterListTestCase):
     def setUp(self):
