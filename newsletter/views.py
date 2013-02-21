@@ -5,13 +5,16 @@ logger = logging.getLogger(__name__)
 from django.core.exceptions import ValidationError
 from django.conf import settings
 
-from django.template import RequestContext, Context
+from django.template import RequestContext
+from django.template.response import SimpleTemplateResponse
 
 from django.shortcuts import get_object_or_404, render_to_response
-from django.http import HttpResponse, Http404
+from django.http import Http404
 
-from django.views.generic import date_based
-from django.views.generic import ListView, DetailView
+from django.views.generic import (
+    ListView, DetailView,
+    ArchiveIndexView, DateDetailView
+)
 
 from django.contrib import messages
 from django.contrib.sites.models import Site
@@ -378,55 +381,90 @@ def update_subscription(request, newsletter_slug,
     )
 
 
-def archive(request, newsletter_slug):
-    my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug, visible=True
-    )
+class SubmissionViewBase(object):
+    """ Base class for submission archive views. """
+    date_field = 'publish_date'
+    allow_empty = True
+    queryset = Submission.objects.filter(publish=True)
+    slug_field = 'message__slug'
 
-    submissions = Submission.objects.filter(
-        newsletter=my_newsletter, publish=True
-    )
+    # Specify date element notation
+    year_format = '%Y'
+    month_format = '%m'
+    day_format = '%d'
 
-    return date_based.archive_index(
-        request,
-        queryset=submissions,
-        date_field='publish_date',
-        extra_context={'newsletter': my_newsletter}
-    )
+    def get_newsletter(self):
+        """ Return the newsletter for the current request. """
+        assert 'newsletter_slug' in self.kwargs
+        newsletter_slug = self.kwargs['newsletter_slug']
+
+        newsletter = get_object_or_404(
+            Newsletter.on_site, slug=newsletter_slug, visible=True
+        )
+
+        return newsletter
+
+    def get_queryset(self):
+        qs = super(SubmissionViewBase, self).get_queryset()
+        newsletter = self.get_newsletter()
+
+        qs = qs.filter(newsletter=newsletter)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(SubmissionViewBase, self).get_context_data(**kwargs)
+
+        context['newsletter'] = self.get_newsletter()
+
+        return context
 
 
-def archive_detail(request, newsletter_slug, year, month, day, slug):
-    """ Detail view for Submissions in the archive. """
+class SubmissionArchiveIndexView(SubmissionViewBase, ArchiveIndexView):
+    pass
 
-    my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug, visible=True
-    )
 
-    submission = get_object_or_404(
-        Submission,
-        newsletter=my_newsletter,
-        publish=True,
-        publish_date__year=year,
-        publish_date__month=month,
-        publish_date__day=day,
-        message__slug=slug
-    )
+class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
+    def get_context_data(self, **kwargs):
+        """
+        Make sure the actual message is available.
+        """
+        context = \
+            super(SubmissionArchiveDetailView, self).get_context_data(**kwargs)
 
-    message = submission.message
-    (subject_template, text_template, html_template) = \
-        EmailTemplate.get_templates('message', message.newsletter)
+        message = self.object.message
 
-    if not html_template:
-        raise Http404(ugettext('No HTML template associated with the '
-                               'newsletter this message belongs to.'))
+        context.update({
+            'message': message,
+            'site': Site.objects.get_current(),
+            'date': self.object.publish_date,
+            'STATIC_URL': settings.STATIC_URL,
+            'MEDIA_URL': settings.MEDIA_URL
+        })
 
-    c = Context({
-        'message': message,
-        'site': Site.objects.get_current(),
-        'newsletter': message.newsletter,
-        'date': submission.publish_date,
-        'STATIC_URL': settings.STATIC_URL,
-        'MEDIA_URL': settings.MEDIA_URL
-    })
+        return context
 
-    return HttpResponse(html_template.render(c))
+    def get_template(self):
+        """ Get the message template for the current newsletter. """
+
+        (subject_template, text_template, html_template) = \
+            EmailTemplate.get_templates('message', self.object.newsletter)
+
+        # No HTML -> no party!
+        if not html_template:
+            raise Http404(ugettext('No HTML template associated with the '
+                                   'newsletter this message belongs to.'))
+
+        return html_template
+
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Return a simplified response; the template should be rendered without
+        any context. Use a SimpleTemplateResponse as a RequestContext should
+        not be used.
+        """
+        return SimpleTemplateResponse(
+            template=self.get_template(),
+            context=context,
+            **response_kwargs
+        )

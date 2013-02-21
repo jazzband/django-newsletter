@@ -3,7 +3,8 @@ from django.conf.urls.defaults import *
 from surlex.dj import surl
 
 from .views import (
-    NewsletterListView, NewsletterDetailView
+    NewsletterListView, NewsletterDetailView,
+    SubmissionArchiveIndexView, SubmissionArchiveDetailView
 )
 
 urlpatterns = patterns('newsletter.views',
@@ -34,7 +35,7 @@ urlpatterns = patterns('newsletter.views',
 
     # Archive views
     surl('^<newsletter_slug:s>/archive/<year:Y>/<month:m>/<day:d>/<slug:s>/$',
-        'archive_detail', name='newsletter_archive_detail'),
+        SubmissionArchiveDetailView.as_view(), name='newsletter_archive_detail'),
     surl('^<newsletter_slug:s>/archive/$',
-        'archive', name='newsletter_archive'),
+        SubmissionArchiveIndexView.as_view(), name='newsletter_archive'),
 )
