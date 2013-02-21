@@ -2,12 +2,15 @@ from django.conf.urls.defaults import *
 
 from surlex.dj import surl
 
+from .views import (
+    NewsletterListView, NewsletterDetailView
+)
 
 urlpatterns = patterns('newsletter.views',
     # Newsletter list and detail view
-    surl('^$', 'newsletter_list', name='newsletter_list'),
+    surl('^$', NewsletterListView.as_view(), name='newsletter_list'),
     surl('^<newsletter_slug:s>/$',
-        'newsletter_detail', name='newsletter_detail'),
+        NewsletterDetailView.as_view(), name='newsletter_detail'),
 
     # Action request views
     surl('^<newsletter_slug:s>/subscribe/$', 'subscribe_request',

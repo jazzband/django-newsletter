@@ -10,7 +10,8 @@ from django.template import RequestContext, Context
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponse, Http404
 
-from django.views.generic import list_detail, date_based
+from django.views.generic import date_based
+from django.views.generic import ListView, DetailView
 
 from django.contrib import messages
 from django.contrib.sites.models import Site
@@ -27,22 +28,61 @@ from .forms import (
 )
 
 
-def newsletter_list(request):
-    newsletters = Newsletter.on_site.filter(visible=True)
+class NewsletterViewBase(object):
+    """ Base class for newsletter views. """
+    queryset = Newsletter.on_site.filter(visible=True)
+    allow_empty = False
+    slug_url_kwarg = 'newsletter_slug'
 
-    if not newsletters:
-        raise Http404
 
-    if request.user.is_authenticated():
+class NewsletterDetailView(NewsletterViewBase, DetailView):
+    pass
+
+
+class NewsletterListView(NewsletterViewBase, ListView):
+    """
+    List available newsletters and generate a formset for (un)subscription for
+    authenticated users.
+    """
+
+    def post(self, request, **kwargs):
+        """ Allow post requests. """
+
+        # All logic (for now) occurs in the form logic
+        return super(NewsletterListView, self).get(request, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(NewsletterListView, self).get_context_data(**kwargs)
+
+        if self.request.user.is_authenticated():
+            # Add a formset for logged in users.
+            context['formset'] = self.get_formset()
+
+        return context
+
+    def get_formset(self):
+        """ Return a formset with newsletters for logged in users, or None. """
+
+        # Short-hand variable names
+        newsletters = self.get_queryset()
+        request = self.request
+        user = request.user
+
         SubscriptionFormSet = modelformset_factory(
-            Subscription, form=UserUpdateForm, extra=0)
+            Subscription, form=UserUpdateForm, extra=0
+        )
 
+        # Before rendering the formset, subscription objects should
+        # already exist.
         for n in newsletters:
             Subscription.objects.get_or_create(
-                newsletter=n, user=request.user)
+                newsletter=n, user=user
+            )
 
+        # Get all subscriptions for use in the formset
         qs = Subscription.objects.filter(
-            newsletter__in=newsletters, user=request.user)
+            newsletter__in=newsletters, user=user
+        )
 
         if request.method == 'POST':
             try:
@@ -71,18 +111,7 @@ def newsletter_list(request):
         else:
             formset = SubscriptionFormSet(queryset=qs)
 
-    else:
-        formset = None
-
-    return list_detail.object_list(
-        request, newsletters, extra_context={'formset': formset})
-
-
-def newsletter_detail(request, newsletter_slug):
-    newsletters = Newsletter.on_site.filter(visible=True)
-
-    return list_detail.object_detail(
-        request, newsletters, slug=newsletter_slug)
+        return formset
 
 
 @login_required
