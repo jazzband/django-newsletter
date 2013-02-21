@@ -224,12 +224,14 @@ def unsubscribe_request(request, newsletter_slug, confirm=False):
     error = None
     if request.POST:
         form = UnsubscribeRequestForm(request.POST, newsletter=my_newsletter)
+
         if form.is_valid():
             instance = form.instance
+
             try:
                 instance.send_activation_email(action='unsubscribe')
+
             except Exception, e:
-                # TODO: Test coverage of this branch
                 logger.exception(
                     'Error %s while submitting email to %s.',
                     e, instance.email)
@@ -260,8 +262,8 @@ def update_request(request, newsletter_slug):
             instance = form.instance
             try:
                 instance.send_activation_email(action='update')
+
             except Exception, e:
-                # TODO: Test coverage of this branch
                 logger.exception(
                     'Error %s while submitting email to %s.',
                     e, instance.email)
