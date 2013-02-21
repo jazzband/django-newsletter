@@ -286,9 +286,7 @@ def update_request(request, newsletter_slug):
 def update_subscription(request, newsletter_slug,
         email, action, activation_code=None):
 
-    if not action in ['subscribe', 'update', 'unsubscribe']:
-        # TODO: Test coverage of this branch
-        raise Http404
+    assert action in ['subscribe', 'update', 'unsubscribe']
 
     my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
     my_subscription = get_object_or_404(

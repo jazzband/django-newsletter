@@ -23,10 +23,10 @@ urlpatterns = patterns('newsletter.views',
 
     # Action confirmation views
     surl('^<newsletter_slug:s>/subscription/<email=[-_a-zA-Z0-9@\.\+~]+>/'
-         '<action:s>/activate/<activation_code:s>/$',
+         '<action=subscribe|update|unsubscribe>/activate/<activation_code:s>/$',
         'update_subscription', name='newsletter_update_activate'),
     surl('^<newsletter_slug:s>/subscription/<email=[-_a-zA-Z0-9@\.\+~]+>/'
-         '<action:s>/activate/$',
+         '<action=subscribe|update|unsubscribe>/activate/$',
         'update_subscription', name='newsletter_update'),
 
     # Archive views
