@@ -1,20 +1,27 @@
 {% extends "newsletter/common.html" %}
 {% load i18n %}
 {% block title %}{% trans "Newsletter update" %}{% endblock title %}
+
 {% block body %}
-<h1>{% trans "Newsletter update" %} {{ newsletter.title }}</h1>
-{% if error %}
-<p>{% trans "Due to a technical error we were not able to submit your confirmation email. This could be because your email address is invalid." %}</p>
-<p>{% trans "If the error persists, please don't hesitate to contact us at the following email address:" %} <a href="mailto:info@{{ current_site.domain }}">info@{{ current_site.domain }}</a></p>
-{% else %}
-{% if form.is_valid %}
-<p>{% trans "Your update request was successfully recieved and an activation email has been sent to you. In that email you will find a link which you need to follow in order to update your subscription." %}</p>
-{% else %}
-<form enctype="multipart/form-data" method="post" action=".">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <p><input id="id_submit" name="submit" value="{% trans "Subscribe" %}" type="submit" /></p>
-</form>
-{% endif %}
-{% endif %}
+	<h1>{% trans "Newsletter update" %} {{ newsletter.title }}</h1>
+
+	{% if error %}
+		<p>{% trans "Due to a technical error we were not able to submit your confirmation email. This could be because your email address is invalid." %}</p>
+
+		{% comment %} Replace the the following dummy with a valid email address and remove this comment.
+
+		<p>{% trans "If the error persists, please don't hesitate to contact us at the following email address:" %} <a href="mailto:info@foobar.com }}">info@foobar.com }}</a></p>
+
+		{% endcomment %}
+	{% else %}
+		{% if form.is_valid %}
+			<p>{% trans "Your update request was successfully recieved and an activation email has been sent to you. In that email you will find a link which you need to follow in order to update your subscription." %}</p>
+			{% else %}
+			<form enctype="multipart/form-data" method="post" action=".">
+			    {% csrf_token %}
+			    {{ form.as_p }}
+			    <p><input id="id_submit" name="submit" value="{% trans "Subscribe" %}" type="submit" /></p>
+			</form>
+		{% endif %}
+	{% endif %}
 {% endblock body %}
