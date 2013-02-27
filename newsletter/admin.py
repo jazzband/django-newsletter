@@ -394,19 +394,19 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def make_subscribed(self, request, queryset):
         rows_updated = queryset.update(subscribed=True)
         if rows_updated == 1:
-            message_bit = "1 user has been"
+            message_bit = _("1 user has been")
         else:
-            message_bit = "%s users have been" % rows_updated
-        self.message_user(request, "%s successfully subscribed" % message_bit)
+            message_bit = _("%s users have been") % rows_updated
+        self.message_user(request, _("%s successfully subscribed") % message_bit)
     make_subscribed.short_description = _("Subscribe selected users")
     
     def make_unsubscribed(self, request, queryset):
         rows_updated = queryset.update(subscribed=False)
         if rows_updated == 1:
-            message_bit = "1 user has been"
+            message_bit = _("1 user has been")
         else:
-            message_bit = "%s users have been" % rows_updated
-        self.message_user(request, "%s successfully unsubscribed" % message_bit)
+            message_bit = _("%s users have been") % rows_updated
+        self.message_user(request, _("%s successfully unsubscribed") % message_bit)
     make_unsubscribed.short_description = _("Unsubscribe selected users")
         
     """ Views """
