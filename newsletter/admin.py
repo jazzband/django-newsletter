@@ -17,7 +17,7 @@ from django.template import RequestContext, Context
 
 from django.shortcuts import render_to_response
 
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext, ungettext, ugettext_lazy as _
 from django.utils.formats import date_format
 
 from sorl.thumbnail.admin import AdminImageMixin
@@ -393,20 +393,18 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     """ Actions """
     def make_subscribed(self, request, queryset):
         rows_updated = queryset.update(subscribed=True)
-        if rows_updated == 1:
-            message_bit = _("1 user has been")
-        else:
-            message_bit = _("%s users have been") % rows_updated
-        self.message_user(request, _("%s successfully subscribed") % message_bit)
+        self.message_user(request, ungettext(
+                "%s user has been successfully subscribed.",
+                "%s users have been successfully subscribed.", 
+                rows_updated) % rows_updated)
     make_subscribed.short_description = _("Subscribe selected users")
     
     def make_unsubscribed(self, request, queryset):
         rows_updated = queryset.update(subscribed=False)
-        if rows_updated == 1:
-            message_bit = _("1 user has been")
-        else:
-            message_bit = _("%s users have been") % rows_updated
-        self.message_user(request, _("%s successfully unsubscribed") % message_bit)
+        self.message_user(request, ungettext(
+                "%s user has been successfully unsubscribed.",
+                "%s users have been successfully unsubscribed.", 
+                rows_updated) % rows_updated)
     make_unsubscribed.short_description = _("Unsubscribe selected users")
         
     """ Views """
