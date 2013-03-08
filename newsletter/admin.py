@@ -17,7 +17,7 @@ from django.template import RequestContext, Context
 
 from django.shortcuts import render_to_response
 
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext, ungettext, ugettext_lazy as _
 from django.utils.formats import date_format
 
 from sorl.thumbnail.admin import AdminImageMixin
@@ -341,6 +341,8 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         'ip', 'subscribe_date', 'unsubscribe_date', 'activation_code'
     )
     date_hierarchy = 'subscribe_date'
+    actions = ['make_subscribed', 'make_unsubscribed']
+    
 
     """ List extensions """
     def admin_newsletter(self, obj):
@@ -388,6 +390,23 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             return ''
     admin_unsubscribe_date.short_description = _("unsubscribe date")
 
+    """ Actions """
+    def make_subscribed(self, request, queryset):
+        rows_updated = queryset.update(subscribed=True)
+        self.message_user(request, ungettext(
+                "%s user has been successfully subscribed.",
+                "%s users have been successfully subscribed.", 
+                rows_updated) % rows_updated)
+    make_subscribed.short_description = _("Subscribe selected users")
+    
+    def make_unsubscribed(self, request, queryset):
+        rows_updated = queryset.update(subscribed=False)
+        self.message_user(request, ungettext(
+                "%s user has been successfully unsubscribed.",
+                "%s users have been successfully unsubscribed.", 
+                rows_updated) % rows_updated)
+    make_unsubscribed.short_description = _("Unsubscribe selected users")
+        
     """ Views """
     def subscribers_import(self, request):
         if request.POST:
