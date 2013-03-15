@@ -3,7 +3,11 @@ logger = logging.getLogger(__name__)
 
 import random
 
-from django.utils.hashcompat import sha_constructor
+try:
+    from hashlib import sha1
+except ImportError:
+    from django.utils.hashcompat import sha_constructor as sha1
+    
 from django.contrib.sites.models import Site
 
 from datetime import datetime
@@ -21,12 +25,12 @@ except ImportError:
 def make_activation_code():
     """ Generate a unique activation code. """
     random_string = str(random.random())
-    random_digest = sha_constructor(random_string).hexdigest()[:5]
+    random_digest = sha1(random_string).hexdigest()[:5]
     time_string = str(datetime.now().microsecond)
 
     combined_string = random_digest + time_string
 
-    return sha_constructor(combined_string).hexdigest()
+    return sha1(combined_string).hexdigest()
 
 
 def get_default_sites():
