@@ -5,12 +5,16 @@ logger = logging.getLogger(__name__)
 from django.core.exceptions import ValidationError
 from django.conf import settings
 
-from django.template import RequestContext, Context
+from django.template import RequestContext
+from django.template.response import SimpleTemplateResponse
 
 from django.shortcuts import get_object_or_404, render_to_response
-from django.http import HttpResponse, Http404
+from django.http import Http404
 
-from django.views.generic import list_detail, date_based
+from django.views.generic import (
+    ListView, DetailView,
+    ArchiveIndexView, DateDetailView
+)
 
 from django.contrib import messages
 from django.contrib.sites.models import Site
@@ -27,22 +31,68 @@ from .forms import (
 )
 
 
-def newsletter_list(request):
-    newsletters = Newsletter.on_site.filter(visible=True)
+class NewsletterViewBase(object):
+    """ Base class for newsletter views. """
+    queryset = Newsletter.on_site.filter(visible=True)
+    allow_empty = False
 
-    if not newsletters:
-        raise Http404
+    def get_object(self, queryset=None):
+        # This is a workaround for Django 1.3 and should be replaced by
+        # the `slug_url_kwarg = 'newsletter_slug'` view attribute as soon
+        # as 1.3 support is dropped.
+        self.kwargs['slug'] = self.kwargs['newsletter_slug']
 
-    if request.user.is_authenticated():
+        return super(NewsletterViewBase, self).get_object(queryset)
+
+
+class NewsletterDetailView(NewsletterViewBase, DetailView):
+    pass
+
+
+class NewsletterListView(NewsletterViewBase, ListView):
+    """
+    List available newsletters and generate a formset for (un)subscription for
+    authenticated users.
+    """
+
+    def post(self, request, **kwargs):
+        """ Allow post requests. """
+
+        # All logic (for now) occurs in the form logic
+        return super(NewsletterListView, self).get(request, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(NewsletterListView, self).get_context_data(**kwargs)
+
+        if self.request.user.is_authenticated():
+            # Add a formset for logged in users.
+            context['formset'] = self.get_formset()
+
+        return context
+
+    def get_formset(self):
+        """ Return a formset with newsletters for logged in users, or None. """
+
+        # Short-hand variable names
+        newsletters = self.get_queryset()
+        request = self.request
+        user = request.user
+
         SubscriptionFormSet = modelformset_factory(
-            Subscription, form=UserUpdateForm, extra=0)
+            Subscription, form=UserUpdateForm, extra=0
+        )
 
+        # Before rendering the formset, subscription objects should
+        # already exist.
         for n in newsletters:
             Subscription.objects.get_or_create(
-                newsletter=n, user=request.user)
+                newsletter=n, user=user
+            )
 
+        # Get all subscriptions for use in the formset
         qs = Subscription.objects.filter(
-            newsletter__in=newsletters, user=request.user)
+            newsletter__in=newsletters, user=user
+        )
 
         if request.method == 'POST':
             try:
@@ -71,18 +121,7 @@ def newsletter_list(request):
         else:
             formset = SubscriptionFormSet(queryset=qs)
 
-    else:
-        formset = None
-
-    return list_detail.object_list(
-        request, newsletters, extra_context={'formset': formset})
-
-
-def newsletter_detail(request, newsletter_slug):
-    newsletters = Newsletter.on_site.filter(visible=True)
-
-    return list_detail.object_detail(
-        request, newsletters, slug=newsletter_slug)
+        return formset
 
 
 @login_required
@@ -156,7 +195,6 @@ def unsubscribe_user(request, newsletter_slug, confirm=False):
             })
 
     except Subscription.DoesNotExist:
-        # TODO: Test coverage for this branch
         not_subscribed = True
 
     if not_subscribed:
@@ -350,56 +388,99 @@ def update_subscription(request, newsletter_slug,
     )
 
 
-def archive(request, newsletter_slug):
-    my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug, visible=True
-    )
+class SubmissionViewBase(object):
+    """ Base class for submission archive views. """
+    date_field = 'publish_date'
+    allow_empty = True
+    queryset = Submission.objects.filter(publish=True)
+    slug_field = 'message__slug'
 
-    submissions = Submission.objects.filter(
-        newsletter=my_newsletter, publish=True
-    )
+    # Specify date element notation
+    year_format = '%Y'
+    month_format = '%m'
+    day_format = '%d'
 
-    return date_based.archive_index(
-        request,
-        queryset=submissions,
-        date_field='publish_date',
-        extra_context={'newsletter': my_newsletter}
-    )
+    def get(self, request, *args, **kwargs):
+        # Make sure newsletter is available for further processing
+        self.newsletter = self.get_newsletter(request, **kwargs)
+
+        return super(SubmissionViewBase, self).get(request, *args, **kwargs)
+
+    def get_newsletter(self, request, **kwargs):
+        """ Return the newsletter for the current request. """
+        assert 'newsletter_slug' in kwargs
+
+        newsletter_slug = self.kwargs['newsletter_slug']
+
+        # Directly use the queryset from the Newsletter view
+        newsletter = get_object_or_404(
+            NewsletterViewBase.queryset, slug=newsletter_slug,
+        )
+
+        return newsletter
+
+    def get_queryset(self):
+        """ Filter out submissions for current newsletter. """
+        qs = super(SubmissionViewBase, self).get_queryset()
+
+        qs = qs.filter(newsletter=self.newsletter)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        """ Add newsletter to context. """
+        context = super(SubmissionViewBase, self).get_context_data(**kwargs)
+
+        context['newsletter'] = self.newsletter
+
+        return context
 
 
-def archive_detail(request, newsletter_slug, year, month, day, slug):
-    """ Detail view for Submissions in the archive. """
+class SubmissionArchiveIndexView(SubmissionViewBase, ArchiveIndexView):
+    pass
 
-    my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug, visible=True
-    )
 
-    submission = get_object_or_404(
-        Submission,
-        newsletter=my_newsletter,
-        publish=True,
-        publish_date__year=year,
-        publish_date__month=month,
-        publish_date__day=day,
-        message__slug=slug
-    )
+class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
+    def get_context_data(self, **kwargs):
+        """
+        Make sure the actual message is available.
+        """
+        context = \
+            super(SubmissionArchiveDetailView, self).get_context_data(**kwargs)
 
-    message = submission.message
-    (subject_template, text_template, html_template) = \
-        EmailTemplate.get_templates('message', message.newsletter)
+        message = self.object.message
 
-    if not html_template:
-        # TODO: Test coverage of this branch
-        raise Http404(ugettext('No HTML template associated with the '
-                               'newsletter this message belongs to.'))
+        context.update({
+            'message': message,
+            'site': Site.objects.get_current(),
+            'date': self.object.publish_date,
+            'STATIC_URL': settings.STATIC_URL,
+            'MEDIA_URL': settings.MEDIA_URL
+        })
 
-    c = Context({
-        'message': message,
-        'site': Site.objects.get_current(),
-        'newsletter': message.newsletter,
-        'date': submission.publish_date,
-        'STATIC_URL': settings.STATIC_URL,
-        'MEDIA_URL': settings.MEDIA_URL
-    })
+        return context
 
-    return HttpResponse(html_template.render(c))
+    def get_template(self):
+        """ Get the message template for the current newsletter. """
+
+        (subject_template, text_template, html_template) = \
+            EmailTemplate.get_templates('message', self.object.newsletter)
+
+        # No HTML -> no party!
+        if not html_template:
+            raise Http404(ugettext('No HTML template associated with the '
+                                   'newsletter this message belongs to.'))
+
+        return html_template
+
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Return a simplified response; the template should be rendered without
+        any context. Use a SimpleTemplateResponse as a RequestContext should
+        not be used.
+        """
+        return SimpleTemplateResponse(
+            template=self.get_template(),
+            context=context,
+            **response_kwargs
+        )

@@ -1,6 +1,10 @@
 {% extends "newsletter/common.html" %}
+
 {% load i18n %}
+{% load url from future %}
+
 {% block title %}{% trans "Newsletter list" %}{% endblock title %}
+
 {% block body %}
 {% if user.is_authenticated %}
 <form method="POST" action="">
@@ -16,7 +20,7 @@
     {% for form in formset.forms %}
       <tr>
         <td>{{ form.id }}{{ form.newsletter }}
-<a href="{% url newsletter_detail form.instance.newsletter.slug %}">{{ form.instance.newsletter.title }}</a></td>
+<a href="{% url "newsletter_detail" form.instance.newsletter.slug %}">{{ form.instance.newsletter.title }}</a></td>
         <td>{{ form.subscribed }}</td>
       </tr>
     {% endfor %}
@@ -30,7 +34,7 @@
     </tr>
     {% for newsletter in object_list %}
     <tr>
-        <td><a href="{% url newsletter_detail newsletter.slug %}">{{ newsletter.title }}</a></td>
+        <td><a href="{% url "newsletter_detail" newsletter.slug %}">{{ newsletter.title }}</a></td>
     </tr>
     {% endfor %}
 </table>

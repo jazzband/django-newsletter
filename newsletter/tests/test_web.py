@@ -203,6 +203,8 @@ class UserNewsletterListTestCase(UserTestCase,
             self.assertContains(response, form['subscribed'])
 
     def test_update(self):
+        """ Attempt to subscribe a user to newsletters. """
+
         # Make sure no subscriptions exist on beforehand
         Subscription.objects.all().delete()
 
@@ -225,7 +227,10 @@ class UserNewsletterListTestCase(UserTestCase,
             count += 1
 
         # Post the form
-        self.client.post(self.list_url, params)
+        response = self.client.post(self.list_url, params)
+
+        # Make sure the result is a success
+        self.assertEquals(response.status_code, 200)
 
         subscriptions = Subscription.objects.filter(
             user=self.user
