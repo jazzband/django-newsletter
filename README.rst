@@ -177,7 +177,7 @@ Donations are welcome in Bitcoin or Paypal through
 in the note. I love to hear what people are using it for!
 
 .. image:: http://qr.ma.eatgold.com/temp/bitcoin12omMNyLirypArtqwDtoKM2av1wsLMbVWs.png
-    :target: bitcoin:12omMNyLirypArtqwDtoKM2av1wsLMbVWs
+    :target: https://propster.me/tipjar/0D3UYAI13
 
 License
 =======
