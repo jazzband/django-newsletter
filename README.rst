@@ -173,7 +173,12 @@ over the years! Django has a truly great community. <3
 Donations
 =========
 Donations are welcome in Bitcoin or Paypal through 
-`Properster <https://propster.me/tipjar/0D3UYAI13>`_. If you donate, be sure to fill
+`Properster <https://propster.me/tipjar/0D3UYAI13>`_. For Bitcoin, the link/QRCode below should suffice.
+
+.. image:: http://qr.ma.eatgold.com/temp/bitcoin12omMNyLirypArtqwDtoKM2av1wsLMbVWs.png
+    :target: bitcoin:12omMNyLirypArtqwDtoKM2av1wsLMbVWs
+
+If you donate, be sure to fill
 in the note. I love to hear what people are using it for!
 
 License
