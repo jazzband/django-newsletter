@@ -3,179 +3,180 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Ali Javadi <rohamn@hotmail.com>, 2013.
-# hooman zabeti <hoomanzabeti@gmail.com>, 2013.
+# Santiago Malter-Terrada <s@yop.li>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: http://github.com/dokterbob/django-newsletter/issues\n"
 "POT-Creation-Date: 2013-03-08 14:14+0100\n"
-"PO-Revision-Date: 2013-03-08 13:14+0000\n"
-"Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
+"PO-Revision-Date: 2013-03-08 16:40+0000\n"
+"Last-Translator: smalter <s@yop.li>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fa\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: admin.py:54
 msgid "Messages"
-msgstr "پیام‌ها"
+msgstr "Messages"
 
 #: admin.py:62
 #: templates/admin/newsletter/subscription/confirmimportform.html:16
 #: templates/admin/newsletter/subscription/importform.html:16
 msgid "Subscriptions"
-msgstr "عضویت"
+msgstr "Inscriptions"
 
 #: admin.py:68
 msgid "Submissions"
-msgstr "ارسال"
+msgstr "Publications"
 
 #: admin.py:88 models.py:536
 msgid "submission"
-msgstr "ارسال"
+msgstr "publication"
 
 #: admin.py:95 admin.py:229 admin.py:352 models.py:157 models.py:313
 #: models.py:487 models.py:659
 msgid "newsletter"
-msgstr "خبرنامه"
+msgstr "newsletter"
 
 #: admin.py:103
 msgid "publish date"
-msgstr "تاریخ انتشار"
+msgstr "date de publication"
 
 #: admin.py:129
 msgid "Sent."
-msgstr "فرستاده شده"
+msgstr "Envoyé."
 
 #: admin.py:132
 msgid "Delayed submission."
-msgstr "ارسال با تأخیر"
+msgstr "Publication délayée."
 
 #: admin.py:134
 msgid "Submitting."
-msgstr "ارسال."
+msgstr "Envoi en cours."
 
 #: admin.py:136
 msgid "Not sent."
-msgstr "فرستاده نشده"
+msgstr "Pas envoyé."
 
 #: admin.py:137 admin.py:377
 msgid "Status"
-msgstr "وضعیت"
+msgstr "Statût"
 
 #: admin.py:144
 msgid "Submission already sent."
-msgstr "ارسال انجام شد."
+msgstr "Publication déjà envoyée."
 
 #: admin.py:150
 msgid "Your submission is being sent."
-msgstr "ارسال انجام شد."
+msgstr "Votre publication est en cours d'envoi."
 
 #: admin.py:190
 msgid "Optional"
-msgstr "انتخابی"
+msgstr "Optionnel"
 
 #: admin.py:217 models.py:468 models.py:513 models.py:662
 msgid "message"
-msgstr "پیام"
+msgstr "message"
 
 #: admin.py:221 templates/admin/newsletter/message/change_form.html:9
 #: templates/admin/newsletter/message/preview.html:11
 msgid "Preview"
-msgstr "پیش‌نمایش"
+msgstr "Prévisualisation"
 
 #: admin.py:248 views.py:393
 msgid ""
 "No HTML template associated with the newsletter this message belongs to."
-msgstr "هیچ نمونه اچ‌تی‌ام‌الی برای خبرنامه‌ای که این پیام متعلق به آن است، موجود نیست."
+msgstr "Pas de templates HTML associé à la newsletter relative à ce message."
 
 #: admin.py:372
 msgid "Subscribed"
-msgstr "عضو شده"
+msgstr "Inscrit"
 
 #: admin.py:374
 msgid "Unsubscribed"
-msgstr "لغو عضویت شده"
+msgstr "Non-inscrit"
 
 #: admin.py:376
 msgid "Unactivated"
-msgstr "غیر فعال"
+msgstr "Non-actif"
 
 #: admin.py:384 models.py:326
 msgid "subscribe date"
-msgstr "تاریخ عضویت"
+msgstr "date d'inscription"
 
 #: admin.py:391 models.py:334
 msgid "unsubscribe date"
-msgstr "تاریخ لغو عضویت"
+msgstr "date de désinscription"
 
 #: admin.py:397
 #, python-format
 msgid "%s user has been successfully subscribed."
 msgid_plural "%s users have been successfully subscribed."
-msgstr[0] ""
+msgstr[0] "L'utilisateur %s a bien été inscrit."
+msgstr[1] "Les utilisateurs %s ont bien été inscrits."
 
 #: admin.py:400
 msgid "Subscribe selected users"
-msgstr ""
+msgstr "Inscrire les utilisateurs sélectionnés"
 
 #: admin.py:405
 #, python-format
 msgid "%s user has been successfully unsubscribed."
 msgid_plural "%s users have been successfully unsubscribed."
-msgstr[0] ""
+msgstr[0] "L'utilisateur %s a été désinscrit."
+msgstr[1] "%s utilisateurs ont été désinscrits."
 
 #: admin.py:408
 msgid "Unsubscribe selected users"
-msgstr ""
+msgstr "Désinscrire les utilisateurs sélectionnés"
 
 #: admin.py:444
 #, python-format
 msgid "%s subscriptions have been successfully added."
-msgstr "%s عضویت به صورت موفقیت آمیز اضافه شد."
+msgstr "%s inscriptions ont étées ajoutées"
 
 #: admin_forms.py:50
 #, python-format
 msgid ""
 "E-mail address %(email)s too long, maximum length is %(email_length)s "
 "characters."
-msgstr "آدرس ایمیل %(email)s بسیار بلند است، حداکثر %(email_length)s کاراکتر پذیرفته می‌شود."
+msgstr "L'adresse e-mail %(email)s est trop longue. La taille maximum est %(email_length)s caractères."
 
 #: admin_forms.py:66
 #, python-format
 msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
-msgstr "نام %(name)s بسیار بلند است، حداکثر %(name_length)s  کاراکتر پذیرفته می‌شود."
+msgstr "Le nom  %(name)s est trop long. La taille maximum est de %(name_length)s caractères."
 
 #: admin_forms.py:111 admin_forms.py:123 admin_forms.py:156 models.py:80
 #: models.py:221
 msgid "name"
-msgstr "نام"
+msgstr "nom"
 
 #: admin_forms.py:115
 msgid "display"
-msgstr "نمایش"
+msgstr "afficher"
 
 #: admin_forms.py:122
 #, python-format
 msgid ""
 "Name column not found. The name of this column should be either 'name' or "
 "'%s'."
-msgstr "نام این ستون پیدا نشده است.نام این ستون می بایست 'name' یا '%s' باشد"
+msgstr "La colonne du nom n'a pas été trouvée. Le nom de cette colonne doit être 'name' ou '%s'."
 
 #: admin_forms.py:133 admin_forms.py:145 admin_forms.py:157 models.py:110
 #: models.py:235
 msgid "e-mail"
-msgstr "ایمیل"
+msgstr "e-mail"
 
 #: admin_forms.py:143
 #, python-format
 msgid ""
 "E-mail column not found. The name of this column should be either 'email', "
 "'e-mail' or '%(email)s'."
-msgstr "ستون ایمیل پیدا نشد.نام این ستون می بایست 'email','e-mail' یا '%(email) s'باشد"
+msgstr "La colonne de l'e-mail n'a pas été trouvée. Le nom de cette colonne doit être 'email, 'e-mail' ou '%(email)s'."
 
 #: admin_forms.py:153
 #, python-format
@@ -183,49 +184,49 @@ msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
 "'%(e-mail)s'."
-msgstr "سیستم به‌درستی نمی‌تواند ستون‌های فایل سی‌اس‌وی را تشخیص دهد. در فایل باید یک ستون به نام 'name' یا '%(name)s' و ستونی به نام 'e-mail' یا '%(e-mail)s' وجود داشته باشند."
+msgstr "Impossible de déterminer les colonnes dans ce fichier CSV. Il doit y avoir un champ nommé 'name' ou '%(name)s' et un nommé 'e-mail' ou '%(e-mail)s'."
 
 #: admin_forms.py:172
 #, python-format
 msgid "Row with content '%(row)s' does not contain a name and email field."
-msgstr "ردیف '%(row)s' دارای فیلد نام و ایمیل نمی باشد."
+msgstr "La ligne '%(row)s' ne contient pas d'e-mail et de nom."
 
 #: admin_forms.py:184 admin_forms.py:247 admin_forms.py:284
 #, python-format
 msgid "Entry '%s' does not contain a valid e-mail address."
-msgstr "ورودی '%s' دارای آدرس ایمیل معتبر نمی باشد."
+msgstr "L'entrée '%s' ne contient pas d'adresse e-mail valide."
 
 #: admin_forms.py:202 admin_forms.py:254 admin_forms.py:290
 #, python-format
 msgid "The address file contains duplicate entries for '%s'."
-msgstr "آدرس فایل شامل نوشته های تکراری برای '%s' است."
+msgstr "Le fichier d'adresses comporte des doublons pour '%s'."
 
 #: admin_forms.py:214 admin_forms.py:261 admin_forms.py:296
 msgid "Some entries are already subscribed to."
-msgstr "بعضی از ورودی‌ها هم‌اکنون عضو هستند."
+msgstr "Certaines entrées sont déjà abonnées."
 
 #: admin_forms.py:239
 #, python-format
 msgid "Entry '%s' contains no email address."
-msgstr "ورودی '%s' حاوی آدرس ایمیل نمی باشد."
+msgstr "L'entrée '%s' ne contient pas d'adresse e-mail."
 
 #: admin_forms.py:300
 msgid "Some entries have no e-mail address."
-msgstr "برخی از ورودی ها حاوی آدرس ایمیل نمی باشند."
+msgstr "Plusieurs entrées n'ont pas d'adresse e-mail. "
 
 #: admin_forms.py:338
 #, python-format
 msgid "File type '%s' was not recognized."
-msgstr "نوع فایل '%s' قابل شناسایی نمی باشد."
+msgstr "Le type de fichier '%s' n'a pas été reconnu."
 
 #: admin_forms.py:357
 #, python-format
 msgid "File extention '%s' was not recognized."
-msgstr "پسوند فایل '%s' قابل شناسایی نمی باشد."
+msgstr "L'extension '%s' de ce fichier n'a pas été reconnue."
 
 #: admin_forms.py:361
 msgid "No entries could found in this file."
-msgstr "دراین فایل هیچ ورودی پیدا نشد."
+msgstr "Aucune entrée trouvée dans ce fichier."
 
 #: admin_forms.py:373
 #: templates/admin/newsletter/subscription/confirmimportform.html:12
@@ -237,444 +238,444 @@ msgstr "دراین فایل هیچ ورودی پیدا نشد."
 #: templates/newsletter/subscription_activate.html:3
 #: templates/newsletter/subscription_activate.html:6
 msgid "Newsletter"
-msgstr "خبرنامه"
+msgstr "Newsletter"
 
 #: admin_forms.py:376
 msgid "Address file"
-msgstr "فایل آدرس"
+msgstr "Fichier d'adresses"
 
 #: admin_forms.py:378
 msgid "Ignore non-fatal errors"
-msgstr "نادیده گرفتن خطاهای غیراساسی"
+msgstr "Ignorer les erreurs non-bloquantes"
 
 #: admin_forms.py:389
 msgid "You should confirm in order to continue."
-msgstr "شما قبل از اینکه ادامه دهید باید تأیید کنید"
+msgstr "Vous devez confirmer avant pouvoir de continuer."
 
 #: admin_forms.py:392
 #: templates/admin/newsletter/subscription/confirmimportform.html:23
 #: templates/admin/newsletter/subscription/confirmimportform.html:28
 msgid "Confirm import"
-msgstr "تأیید ورود اطلاعات"
+msgstr "Confirmer l'import"
 
 #: admin_forms.py:407
 #, python-format
 msgid "There was an error parsing your template: %s"
-msgstr "خطا در تجزیه ی قالب شما وجود دارد:%s"
+msgstr "Il y a eu une erreur pendant l'analyse de votre template: %s"
 
 #: admin_forms.py:429 admin_forms.py:437
 msgid "If a user has been selected this field should remain empty."
-msgstr "اگر کاربری این فیلد را انتخاب کرده باشد باید خالی بماند."
+msgstr "Si un utilisateur a été choisi ce champ doit rester vide."
 
 #: admin_forms.py:447
 msgid "Either a user must be selected or an email address must be specified."
-msgstr "یک کاربر یا یک ایمیل باید انتخاب شود."
+msgstr "Au moins n utilisateur ou une adresse e-mail doivent être choisis au minimum."
 
 #: admin_forms.py:470
 msgid ""
 "This message has already been published in some other submission. Messages "
 "can only be published once."
-msgstr "این پیام در یکی از ارسال های گذشته استفاده شده.هر پیام تنها یک بار قابلیت نشر را دارد."
+msgstr "Ce message a été publié. Les messages ne peuvent être publiés qu'une seule fois."
 
 #: admin_utils.py:24
 #, python-format
 msgid "%(name)s object with primary key %(key)r does not exist."
-msgstr "%(name)s شی با کلید اساسی  %(key)r وجود ندارد."
+msgstr "L'objet %(name)s  avec la clé %(key)r n'existe pas."
 
 #: forms.py:49 forms.py:107
 msgid "An e-mail address is required."
-msgstr "آدرس ایمیل اجباری است"
+msgstr "Une adresse e-mail est requise."
 
 #: forms.py:56
 #, python-format
 msgid ""
 "The e-mail address '%(email)s' belongs to a user with an account on this "
 "site. Please log in as that user and try again."
-msgstr "این آدرس ایمیل '%(email)s' متعلق به یکی از اعضاء سایت می باشد.در صورتی که این اشتراک متعلق به شماست لطفا با آن وارد شوید"
+msgstr "L'adresse e-mail '%(email)s' correspond à un utilisateur avec un compte sur ce site. Veuillez-vous connecter en tant que cet utilisateur et essayer à nouveau."
 
 #: forms.py:73
 msgid "Your e-mail address has already been subscribed to."
-msgstr "آدرس ایمیل شما عضو این خبرنامه است."
+msgstr "Votre adresse -email est déjà inscrite."
 
 #: forms.py:98
 msgid "This subscription has not yet been activated."
-msgstr "این عضویت هنوز فعال نشده است."
+msgstr "L'inscription n'a pas encore été activée."
 
 #: forms.py:114
 #, python-format
 msgid ""
 "This e-mail address belongs to the user '%(username)s'. Please log in as "
 "that user and try again."
-msgstr "این آدرس ایمیل متعلق به کاربر '%(username)s' می باشد. اگر این نام کاربری به شما تعلق دارد لطفا با آن وارد شوید."
+msgstr "Cette adresse e-mail est liée à l'utilisateur '%(username)s'. Veuillez vous connecter en tant que cet utilisateur et essayez à nouveau."
 
 #: forms.py:132
 msgid "This e-mail address has not been subscribed to."
-msgstr "این آدرس ایمیل عضو این خبرنامه نیست."
+msgstr "Cette adresse e-mail n'a pas été inscrite."
 
 #: forms.py:147
 msgid "This subscription has already been unsubscribed from."
-msgstr "این عضویت لغو شده است"
+msgstr "Cette inscription a déjà été annulée."
 
 #: forms.py:163
 msgid "The validation code supplied by you does not match."
-msgstr "کد اعتباری که توسط شما ارایه شده است"
+msgstr "Le code de validation que vous avez entré ne correspond pas."
 
 #: forms.py:169
 msgid "Activation code"
-msgstr "کد فعال‌سازی"
+msgstr "Code d'activation"
 
 #: models.py:30 templates/newsletter/newsletter_list.html:13
 #: templates/newsletter/subscription_subscribe.html:16
 #: templates/newsletter/subscription_subscribe_user.html:19
 #: templates/newsletter/subscription_update.html:16
 msgid "Subscribe"
-msgstr "عضویت"
+msgstr "Inscription"
 
 #: models.py:31 templates/newsletter/subscription_unsubscribe.html:12
 #: templates/newsletter/subscription_unsubscribe_user.html:20
 msgid "Unsubscribe"
-msgstr "لغو عضویت"
+msgstr "Désinscription"
 
 #: models.py:32
 msgid "Update"
-msgstr "به‌روزرسانی"
+msgstr "Mise à jour"
 
 #: models.py:33 templates/admin/newsletter/message/preview.html:9
 msgid "Message"
-msgstr "پیام"
+msgstr "Message"
 
 #: models.py:57
 msgid "e-mail template"
-msgstr "نمونه‌ی ایمیل"
+msgstr "template d'e-mail"
 
 #: models.py:58
 msgid "e-mail templates"
-msgstr "نمونه‌های ایمیل"
+msgstr "templates d'e-mail"
 
 #: models.py:70 models.py:80
 msgid "Default"
-msgstr "یش‌فرض"
+msgstr "Par défaut"
 
 #: models.py:84
 msgid "action"
-msgstr "عمل"
+msgstr "action"
 
 #: models.py:87
 msgid "subject"
-msgstr "موضوع"
+msgstr "sujet"
 
 #: models.py:90 templates/admin/newsletter/message/preview.html:28
 msgid "Text"
-msgstr "متن"
+msgstr "Texte"
 
 #: models.py:91
 msgid ""
 "Plain text e-mail message. Available objects: date, subscription, site, "
 "submission, newsletter, STATIC_URL, MEDIA_URL and message."
-msgstr "Plain text e-mail message. Available objects: date, subscription, site, submission, newsletter, STATIC_URL, MEDIA_URL and message"
+msgstr "E-mail en texte brut. Objets disponibles: date, inscription, site, publication, newsletter, STATIC_URL, MEDIA_URL et message."
 
 #: models.py:96 templates/admin/newsletter/message/preview.html:24
 msgid "HTML"
-msgstr "اچ‌تی‌ام‌ال"
+msgstr "HTML"
 
 #: models.py:96
 msgid "HTML e-mail alternative."
-msgstr "گزینه‌ی ایمیل اچ‌تی‌ام‌ال"
+msgstr "Alternative HTML pour l'e-mail."
 
 #: models.py:105
 msgid "newsletter title"
-msgstr "عنوان خبرنامه"
+msgstr "titre de la newsletter"
 
 #: models.py:110
 msgid "Sender e-mail"
-msgstr "ایمیل ارسال کننده"
+msgstr "E-mail expéditeur"
 
 #: models.py:113
 msgid "sender"
-msgstr "فرستنده"
+msgstr "expéditeur"
 
 #: models.py:113
 msgid "Sender name"
-msgstr "نام فرستنده"
+msgstr "nom de l'expéditeur"
 
 #: models.py:117
 msgid "visible"
-msgstr "نمایان"
+msgstr "visible"
 
 #: models.py:128
 msgid "subscribe template"
-msgstr "نمونه‌ی عضویت"
+msgstr "template d'inscription"
 
 #: models.py:135
 msgid "unsubscribe template"
-msgstr "نمونه‌ی لغو عضویت"
+msgstr "template de désinscription"
 
 #: models.py:142
 msgid "update template"
-msgstr "نمونه‌ی به‌روزرسانی"
+msgstr "mettre à jour le template"
 
 #: models.py:149
 msgid "message template"
-msgstr "نمونه‌ی پیام"
+msgstr "template du message"
 
 #: models.py:158
 msgid "newsletters"
-msgstr "خبرنامه‌ها"
+msgstr "newsletters"
 
 #: models.py:216
 msgid "user"
-msgstr "کاربر"
+msgstr "utilisateur"
 
 #: models.py:221
 msgid "optional"
-msgstr "انتخابی"
+msgstr "optionnel"
 
 #: models.py:265
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
-msgstr "نه ایمیل و نه نام کاربری انتخاب نشده است. "
+msgstr "Ni e-mail ni nom d'utilisateur fourni."
 
 #: models.py:269
 msgid "If user is set, email must be null and vice versa."
-msgstr "اگر کاربر انتخاب شود، ایمیل باید خالی باشد و بر عکس."
+msgstr "Si un utilisateur est déterminé, l'e-mail doit être nul et inversément."
 
 #: models.py:311
 msgid "IP address"
-msgstr "آدرس آی‌پی"
+msgstr "Adresse IP"
 
 #: models.py:318
 msgid "activation code"
-msgstr "کد فعال‌سازی"
+msgstr "code d'activation"
 
 #: models.py:323
 msgid "subscribed"
-msgstr "عضو شده"
+msgstr "inscrit"
 
 #: models.py:331
 msgid "unsubscribed"
-msgstr "لغو عضویت شده"
+msgstr "désinscrit"
 
 #: models.py:339
 #, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
-msgstr "%(name)s <%(email)s> به %(newsletter)s"
+msgstr "%(name)s <%(email)s> à %(newsletter)s"
 
 #: models.py:346
 #, python-format
 msgid "%(email)s to %(newsletter)s"
-msgstr "%(email)s به %(newsletter)s"
+msgstr "%(email)s à %(newsletter)s"
 
 #: models.py:352
 msgid "subscription"
-msgstr "اشتراک"
+msgstr "inscription"
 
 #: models.py:353
 msgid "subscriptions"
-msgstr "اشتراک ها"
+msgstr "inscriptions"
 
 #: models.py:447
 msgid ""
 "Sort order determines the order in which articles are concatenated in a "
 "post."
-msgstr "روش مرتب کردن مشخص می کند روش پشت سر هم گذاشتن مقالات چگونه باشد."
+msgstr "L'orde de tri détermine l'ordre dans lequel les articles sont concaténés dans un post."
 
 #: models.py:449
 msgid "sort order"
-msgstr "مرتب کردن بر اساس"
+msgstr "ordre de tri"
 
 #: models.py:452 models.py:483
 msgid "title"
-msgstr "عنوان"
+msgstr "titre"
 
 #: models.py:453
 msgid "text"
-msgstr "متن"
+msgstr "texte"
 
 #: models.py:456
 msgid "link"
-msgstr "لینک"
+msgstr "lien"
 
 #: models.py:462
 msgid "image"
-msgstr "تصویر"
+msgstr "image"
 
 #: models.py:473
 msgid "article"
-msgstr "مقاله"
+msgstr "article"
 
 #: models.py:474
 msgid "articles"
-msgstr "مقالات"
+msgstr "articles"
 
 #: models.py:484
 msgid "slug"
-msgstr "نام ماشینی"
+msgstr "slug"
 
 #: models.py:492
 msgid "created"
-msgstr "تولید شده"
+msgstr "créé"
 
 #: models.py:495
 msgid "modified"
-msgstr "ویرایش شده"
+msgstr "modifié"
 
 #: models.py:500
 #, python-format
 msgid "%(title)s in %(newsletter)s"
-msgstr "%(title)s در%(newsletter)s"
+msgstr "%(title)s dans %(newsletter)s"
 
 #: models.py:514
 msgid "messages"
-msgstr "پیام "
+msgstr "messages"
 
 #: models.py:537
 msgid "submissions"
-msgstr "ارسالی"
+msgstr "publications"
 
 #: models.py:540
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
-msgstr "%(newsletter)s در %(publish_date)s"
+msgstr "%(newsletter)s à %(publish_date)s"
 
 #: models.py:549
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
-msgstr "ارسال %(submission)s  به %(count)d نفر"
+msgstr "Publication en cours de %(submission)s à %(count)d personnes."
 
 #: models.py:594
 #, python-format
 msgid "Submitting message to: %s."
-msgstr "ارسال پیام به: %s."
+msgstr "Publication en cours du message à: %s."
 
 #: models.py:603
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
-msgstr "پیام %(subscription)s به علت مشکل  %(error)s ارسال نشد"
+msgstr "Le message %(subscription)s a échoué avec cette erreur: %(error)s"
 
 #: models.py:627
 #, python-format
 msgid "Submission of message %s"
-msgstr "پیام های ارسالی %s"
+msgstr "Publication du message %s"
 
 #: models.py:668
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
-msgstr "اگر شما گزینه ی هیچکدام را انتخاب کنید،سیستم به صورت خودکار اشتراکی را برای شما پیدا می کند"
+msgstr "Si vous n'en choisissez pas, le système va automatiquement choisir les destinataires pour vous."
 
 #: models.py:670
 msgid "recipients"
-msgstr "دریافت کنندگان"
+msgstr "destinataires"
 
 #: models.py:675
 msgid "publication date"
-msgstr "تاریخ انتشار"
+msgstr "date de publication"
 
 #: models.py:679
 msgid "publish"
-msgstr "انتشار"
+msgstr "publier"
 
 #: models.py:680
 msgid "Publish in archive."
-msgstr "انتشار در ارشیو"
+msgstr "Publier dans l'archive."
 
 #: models.py:684
 msgid "prepared"
-msgstr "مهیا"
+msgstr "préparé"
 
 #: models.py:688
 msgid "sent"
-msgstr "ارسال شده "
+msgstr "envoyé"
 
 #: models.py:692
 msgid "sending"
-msgstr "در حال ارسال"
+msgstr "envoi en cours"
 
 #: views.py:58
 msgid "Your changes have been saved."
-msgstr "تغییرات شما ثبت شد."
+msgstr "Vos modifications ont été enregistrées."
 
 #: views.py:106
 #, python-format
 msgid "You have been subscribed to %s."
-msgstr "شما در %s عضو شدید."
+msgstr "Vous avez été inscrit à %s."
 
 #: views.py:109
 #, python-format
 msgid "User %(rs)s subscribed to %(my_newsletter)s."
-msgstr "User %(rs)s مشترک %(my_newsletter)s. شد"
+msgstr "L'utilisateur %(rs)s s'est inscrit à %(my_newsletter)s."
 
 #: views.py:116
 #, python-format
 msgid "You are already subscribed to %s."
-msgstr "شما عضو خبر نامه '%s' می باشید"
+msgstr "Vous êtes déjà inscrit à %s."
 
 #: views.py:149
 #, python-format
 msgid "You have been unsubscribed from %s."
-msgstr "عضویت شما از %s لغو شد"
+msgstr "Vous avez été désinscrit de %s."
 
 #: views.py:153
 #, python-format
 msgid "User %(rs)s unsubscribed from %(my_newsletter)s."
-msgstr "User %(rs)s اشتراک خود را از %(my_newsletter)s. لغو کرد"
+msgstr "L'utilisateur %(rs)s s'est désinscrit de %(my_newsletter)s."
 
 #: views.py:164
 #, python-format
 msgid "You are not subscribed to %s."
-msgstr "شما عضو خبرنامه %s نیستید"
+msgstr "Vous n'êtes pas inscrit à %s."
 
 #: views.py:319
 #, python-format
 msgid "Updated subscription %(subscription)s through the web."
-msgstr "بروز رسانی  اشتراک %(subscription)s از طریق وب."
+msgstr "Inscription %(subscription)s mise à jour par internet."
 
 #: jobs/hourly/submit.py:15
 msgid "Submitting queued newsletter mailings"
-msgstr "ارسال نامه صف خبرنامه"
+msgstr "Envoi des newsletter dans la queue"
 
 #: templates/admin/newsletter/message/change_form.html:7
 #: templates/admin/newsletter/submission/change_form.html:13
 msgid "History"
-msgstr "تاریخچه"
+msgstr "Historique"
 
 #: templates/admin/newsletter/message/change_form.html:8
 #: templates/admin/newsletter/submission/change_form.html:15
 msgid "View on site"
-msgstr "نمایش در سایت"
+msgstr "Voir sur le site"
 
 #: templates/admin/newsletter/message/preview.html:3
 #: templates/admin/newsletter/message/preview.html:17
 msgid "Preview message"
-msgstr "پیش نمایش پیام"
+msgstr "Prévisualiser le message"
 
 #: templates/admin/newsletter/message/preview.html:7
 #: templates/admin/newsletter/subscription/confirmimportform.html:8
 #: templates/admin/newsletter/subscription/importform.html:8
 msgid "Home"
-msgstr "خانه"
+msgstr "Accueil"
 
 #: templates/admin/newsletter/message/preview.html:20
 #: templates/admin/newsletter/subscription/importform.html:28
 msgid "Change"
-msgstr "ویرایش"
+msgstr "Changer"
 
 #: templates/admin/newsletter/message/preview.html:21
 #: templates/admin/newsletter/subscription/importform.html:29
 msgid "Create submission"
-msgstr "ایجاد شماره‌ی جدید خبرنامه"
+msgstr "Créer une publication"
 
 #: templates/admin/newsletter/submission/change_form.html:16
 msgid "Submit"
-msgstr "ثبت"
+msgstr "Soumettre"
 
 #: templates/admin/newsletter/subscription/change_list.html:8
 msgid "import"
-msgstr "ورود"
+msgstr "importer"
 
 #: templates/admin/newsletter/subscription/change_list.html:12
 #, python-format
 msgid "Add %(name)s"
-msgstr "اضافه‌کردن %(name)s"
+msgstr "Ajouter %(name)s"
 
 #: templates/admin/newsletter/subscription/confirmimportform.html:3
 #: templates/admin/newsletter/subscription/confirmimportform.html:20
@@ -682,120 +683,120 @@ msgstr "اضافه‌کردن %(name)s"
 #: templates/admin/newsletter/subscription/importform.html:19
 #: templates/admin/newsletter/subscription/importform.html:24
 msgid "Import addresses"
-msgstr "ورود آدرس‌ها"
+msgstr "Importer les adresses"
 
 #: templates/admin/newsletter/subscription/confirmimportform.html:40
 msgid "Confirm"
-msgstr "تأیید"
+msgstr "Confirmer"
 
 #: templates/admin/newsletter/subscription/importform.html:37
 msgid "Upload"
-msgstr "بارگذاری"
+msgstr "Uploader"
 
 #: templates/newsletter/newsletter_detail.html:3
 msgid "Newsletter detail"
-msgstr "جزئیات خبرنامه"
+msgstr "Détail de la newsletter"
 
 #: templates/newsletter/newsletter_list.html:3
 msgid "Newsletter list"
-msgstr "لیست خبرنامه‌ها"
+msgstr "Liste de newsletter"
 
 #: templates/newsletter/newsletter_list.html:24
 msgid "Update subscriptions"
-msgstr "بروز رسانی اشتراک ها"
+msgstr "Mettre à jour les inscriptions"
 
 #: templates/newsletter/submission_archive.html:3
 #: templates/newsletter/submission_archive.html:7
 msgid "Newsletter archive"
-msgstr "آرشیو خبرنامه"
+msgstr "Archive de la newsletter"
 
 #: templates/newsletter/subscription_activate.html:3
 #: templates/newsletter/subscription_activate.html:6
 msgid "activate"
-msgstr "فعال"
+msgstr "activer"
 
 #: templates/newsletter/subscription_activate.html:10
 msgid "Your subscription has successfully been activated."
-msgstr "اشتراک شما با موفقیت فعال شد."
+msgstr "Votre inscription a déjà été activée."
 
 #: templates/newsletter/subscription_activate.html:13
 msgid "You have successfully been unsubscribed."
-msgstr "عضویت شما با موفقیت لغو شد."
+msgstr "Vous avez été désinscrit."
 
 #: templates/newsletter/subscription_activate.html:16
 msgid "Your subscription has successfully been updated."
-msgstr "اشتراک شما با موفقیت به روز رسانی شد."
+msgstr "Votre inscription a été mise à jour."
 
 #: templates/newsletter/subscription_activate.html:23
 msgid "Activate"
-msgstr "فعال"
+msgstr "Activer"
 
 #: templates/newsletter/subscription_subscribe.html:3
 #: templates/newsletter/subscription_subscribe.html:5
 #: templates/newsletter/subscription_subscribe_user.html:3
 #: templates/newsletter/subscription_subscribe_user.html:5
 msgid "Newsletter subscribe"
-msgstr "عضویت خبرنامه"
+msgstr "Inscription newsletter"
 
 #: templates/newsletter/subscription_subscribe.html:7
 #: templates/newsletter/subscription_update.html:7
 msgid ""
 "Due to a technical error we were not able to submit your confirmation email."
 " This could be because your email address is invalid."
-msgstr "متاسفانه به دلیل مشکل فنی قادر به ارسال ایمیل تایید برای شما نمی باشیم.این مشکل ممکن است به دلیل نامعتبر بودن آدرس ایمیل شما باشد."
+msgstr "En raison d'un problème technique nous n'avons pas pu vous envoyer votre e-mail de confirmation. Votre adresse e-mail n'est peut-être pas valide."
 
 #: templates/newsletter/subscription_subscribe.html:8
 #: templates/newsletter/subscription_update.html:8
 msgid ""
 "If the error persists, please don't hesitate to contact us at the following "
 "email address:"
-msgstr "اگر خطا همچنان ادامه دارد لطفا از طریق ایمیل به ما اطلاع دهید:"
+msgstr "Si l'erreur persiste, n'hésitez pas à nous contacter à l'adresse suivante:"
 
 #: templates/newsletter/subscription_subscribe.html:11
 msgid ""
 "Your subscription was successfully recieved and an activation email has been"
 " sent to you. In that email you will find a link which you need to follow in"
 " order to activate your subscription."
-msgstr "در خواست اشتراک شما با موفقیت دریافت شد و ایمیل فعال سازی برای شما ارسال گردید.دستورات و لینک فعال سازی در ایمیل قرار دارد."
+msgstr "Votre inscription a bien été prise en compte et un e-mail vous a été envoyé. Veuillez cliquer sur le lien s'y trouvant afin d'activer votre inscription."
 
 #: templates/newsletter/subscription_subscribe_user.html:16
 msgid "Do you want to subscribe to this newsletter?"
-msgstr "آیا می خواهید مشترک خبرنامه شوید؟"
+msgstr "Voulez-vous vous inscrire à cette newsletter?"
 
 #: templates/newsletter/subscription_unsubscribe.html:3
 #: templates/newsletter/subscription_unsubscribe.html:5
 #: templates/newsletter/subscription_unsubscribe_user.html:3
 #: templates/newsletter/subscription_unsubscribe_user.html:5
 msgid "Newsletter unsubscribe"
-msgstr "لغو عضویت خبرنامه"
+msgstr "Désinscription newsletter"
 
 #: templates/newsletter/subscription_unsubscribe.html:7
 msgid ""
 "Your unsubscription request has successfully been recieved. An email has "
 "been sent to you with a link you need to follow in order to confirm your "
 "unsubscription."
-msgstr "درخواست لغو اشتراک شما با موفقیت دریافت شد.ایمیلی حاوی لینک لغو اشتراک برای شما ارسال گردید."
+msgstr "Votre désinscription a bien été prise en compte et un e-mail vous a été envoyé. Veuillez cliquer sur le lien s'y trouvant afin de confirmer votre désinscription."
 
 #: templates/newsletter/subscription_unsubscribe_user.html:17
 msgid "Do you want to unsubscribe from this newsletter?"
-msgstr "آیا می خواهید اشتراک خبرنامه خود را لغو کنید؟"
+msgstr "Voulez-vous vous désinscrire de cette newsletter?"
 
 #: templates/newsletter/subscription_update.html:3
 #: templates/newsletter/subscription_update.html:5
 msgid "Newsletter update"
-msgstr "بروز رسانی خبرنامه"
+msgstr "Mise à jour newsletter"
 
 #: templates/newsletter/subscription_update.html:11
 msgid ""
 "Your update request was successfully recieved and an activation email has "
 "been sent to you. In that email you will find a link which you need to "
 "follow in order to update your subscription."
-msgstr "درخواست بروز رسانی شما با موفقیت دریافت شد و ایمیل دستورات به همراه لینک بروز رسانی برای شما ارسال گردید."
+msgstr "Votre demande de mise à jour a bien été reçue et un e-mail de confirmation vous a été envoyé. Veuillez cliquer sur le lien s'y trouvant afin de mettre à jour votre inscription."
 
 #: templates/widget/image.html:2
 msgid "Currently:"
-msgstr "در حال حاضر:"
+msgstr "Actuellement:"
 
 #: templates/widget/image.html:4
 msgid "Change:"
-msgstr "تغییر:"
+msgstr "Changement:"

@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Jannis <jvajen@gmail.com>, 2013.
 # Jannis  <jvajen@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: http://github.com/dokterbob/django-newsletter/issues\n"
-"POT-Creation-Date: 2012-11-19 21:55+0100\n"
-"PO-Revision-Date: 2012-11-20 09:45+0000\n"
+"POT-Creation-Date: 2013-03-08 14:14+0100\n"
+"PO-Revision-Date: 2013-03-14 13:09+0000\n"
 "Last-Translator: Jannis <jvajen@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -32,12 +33,12 @@ msgstr "Abonnenten"
 msgid "Submissions"
 msgstr "Ausgaben"
 
-#: admin.py:88 models.py:570
+#: admin.py:88 models.py:536
 msgid "submission"
 msgstr "Ausgabe"
 
-#: admin.py:95 admin.py:243 admin.py:361 models.py:157 models.py:313
-#: models.py:521 models.py:693
+#: admin.py:95 admin.py:229 admin.py:352 models.py:157 models.py:313
+#: models.py:487 models.py:659
 msgid "newsletter"
 msgstr "Newsletter"
 
@@ -61,7 +62,7 @@ msgstr "Wird versendet."
 msgid "Not sent."
 msgstr "Nicht versendet."
 
-#: admin.py:137 admin.py:386
+#: admin.py:137 admin.py:377
 msgid "Status"
 msgstr "Status"
 
@@ -73,45 +74,67 @@ msgstr "Ausgabe wurde bereits verschickt."
 msgid "Your submission is being sent."
 msgstr "Die Ausgabe wird versandt."
 
-#: admin.py:204
+#: admin.py:190
 msgid "Optional"
 msgstr "Optional"
 
-#: admin.py:231 models.py:468 models.py:547 models.py:696
+#: admin.py:217 models.py:468 models.py:513 models.py:662
 msgid "message"
 msgstr "Nachricht"
 
-#: admin.py:235 templates/admin/newsletter/message/change_form.html:9
+#: admin.py:221 templates/admin/newsletter/message/change_form.html:9
 #: templates/admin/newsletter/message/preview.html:11
 msgid "Preview"
 msgstr "Vorschau"
 
-#: admin.py:262 views.py:374
+#: admin.py:248 views.py:393
 msgid ""
 "No HTML template associated with the newsletter this message belongs to."
 msgstr "Es wurde keine HTML-Vorlage für den Newsletter gefunden, zu dem diese Nachricht gehört."
 
-#: admin.py:381
+#: admin.py:372
 msgid "Subscribed"
 msgstr "Abonniert"
 
-#: admin.py:383
+#: admin.py:374
 msgid "Unsubscribed"
 msgstr "Ausgetragen"
 
-#: admin.py:385
+#: admin.py:376
 msgid "Unactivated"
 msgstr "noch nicht aktiviert"
 
-#: admin.py:393 models.py:326
+#: admin.py:384 models.py:326
 msgid "subscribe date"
 msgstr "Abonnierungsdatum"
 
-#: admin.py:400 models.py:334
+#: admin.py:391 models.py:334
 msgid "unsubscribe date"
 msgstr "Austragungsdatum"
 
-#: admin.py:436
+#: admin.py:397
+#, python-format
+msgid "%s user has been successfully subscribed."
+msgid_plural "%s users have been successfully subscribed."
+msgstr[0] "%s Benutzer wurde erfolgreich als Abonnent_in hinzugefügt."
+msgstr[1] "%s Benutzer wurden erfolgreich als Abonnenten hinzugefügt."
+
+#: admin.py:400
+msgid "Subscribe selected users"
+msgstr "Ausgewählte als Abonnenten_innen hinzufügen."
+
+#: admin.py:405
+#, python-format
+msgid "%s user has been successfully unsubscribed."
+msgid_plural "%s users have been successfully unsubscribed."
+msgstr[0] "%s Nutzer_in wurde erfolgreich ausgetragen."
+msgstr[1] "%s Nutzer_innen wurden erfolgreich ausgetragen."
+
+#: admin.py:408
+msgid "Unsubscribe selected users"
+msgstr "Ausgewählte Nutzer_innen austragen"
+
+#: admin.py:444
 #, python-format
 msgid "%s subscriptions have been successfully added."
 msgstr "%s Abonnements wurden erfolgreich hinzugefügt."
@@ -255,7 +278,7 @@ msgid ""
 "can only be published once."
 msgstr "Diese Nachricht wurde bereits durch eine andere Ausgabe im Archiv veröffentlicht. Nachrichten können aber nur einmal veröffentlicht werden."
 
-#: admin_utils.py:23
+#: admin_utils.py:24
 #, python-format
 msgid "%(name)s object with primary key %(key)r does not exist."
 msgstr "Objekt %(name)s mit Primärschlüssel %(key)r existiert nicht. "
@@ -460,7 +483,7 @@ msgstr "Sortierung legt fest, in welcher Reihenfolge die Artikel in der Nachrich
 msgid "sort order"
 msgstr "Sortierung"
 
-#: models.py:452 models.py:517
+#: models.py:452 models.py:483
 msgid "title"
 msgstr "Titel"
 
@@ -484,125 +507,125 @@ msgstr "Artikel"
 msgid "articles"
 msgstr "Artikel"
 
-#: models.py:518
+#: models.py:484
 msgid "slug"
 msgstr "Kurzform"
 
-#: models.py:526
+#: models.py:492
 msgid "created"
 msgstr "Erstellt"
 
-#: models.py:529
+#: models.py:495
 msgid "modified"
 msgstr "verändert"
 
-#: models.py:534
+#: models.py:500
 #, python-format
 msgid "%(title)s in %(newsletter)s"
 msgstr "%(title)s in %(newsletter)s"
 
-#: models.py:548
+#: models.py:514
 msgid "messages"
 msgstr "Nachrichten"
 
-#: models.py:571
+#: models.py:537
 msgid "submissions"
 msgstr "Ausgaben"
 
-#: models.py:574
+#: models.py:540
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
 msgstr "%(newsletter)s vom %(publish_date)s"
 
-#: models.py:583
+#: models.py:549
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
 msgstr "Verschicke %(submission)s an %(count)d Personen"
 
-#: models.py:628
+#: models.py:594
 #, python-format
 msgid "Submitting message to: %s."
 msgstr "Verschicke Nachricht an: %s."
 
-#: models.py:637
+#: models.py:603
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
 msgstr "Nachricht %(subscription)s schlug fehl: %(error)s"
 
-#: models.py:661
+#: models.py:627
 #, python-format
 msgid "Submission of message %s"
 msgstr "Ausgabe der Nachricht %s"
 
-#: models.py:702
+#: models.py:668
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
 msgstr "Falls Sie keine auswählen, wird das System automatisch Abonnenten auswählen."
 
-#: models.py:704
+#: models.py:670
 msgid "recipients"
 msgstr "Empfänger"
 
-#: models.py:709
+#: models.py:675
 msgid "publication date"
 msgstr "Veröffentlichungsdatum"
 
-#: models.py:713
+#: models.py:679
 msgid "publish"
 msgstr "veröffentlichen"
 
-#: models.py:714
+#: models.py:680
 msgid "Publish in archive."
 msgstr "Im Archiv einsehbar."
 
-#: models.py:718
+#: models.py:684
 msgid "prepared"
 msgstr "vorbereitet"
 
-#: models.py:722
+#: models.py:688
 msgid "sent"
 msgstr "Versendet"
 
-#: models.py:726
+#: models.py:692
 msgid "sending"
 msgstr "Sende"
 
-#: views.py:52
+#: views.py:58
 msgid "Your changes have been saved."
 msgstr "Ihre Änderungen wurden gespeichert."
 
-#: views.py:94
+#: views.py:106
 #, python-format
 msgid "You have been subscribed to %s."
 msgstr "Sie haben %s abonniert."
 
-#: views.py:97
+#: views.py:109
 #, python-format
 msgid "User %(rs)s subscribed to %(my_newsletter)s."
 msgstr "Benutzer %(rs)s abonnierte %(my_newsletter)s."
 
-#: views.py:104
+#: views.py:116
 #, python-format
 msgid "You are already subscribed to %s."
 msgstr "Sie haben %s bereits abonniert."
 
-#: views.py:137
+#: views.py:149
 #, python-format
 msgid "You have been unsubscribed from %s."
 msgstr "Sie haben das Abonnement von %s gekündigt."
 
-#: views.py:141
+#: views.py:153
 #, python-format
 msgid "User %(rs)s unsubscribed from %(my_newsletter)s."
 msgstr "Benutzer %(rs)s kündigte Abonnement von %(my_newsletter)s."
 
-#: views.py:152
+#: views.py:164
 #, python-format
 msgid "You are not subscribed to %s."
 msgstr "Sie haben %s nicht abonniert."
 
-#: views.py:301
+#: views.py:319
 #, python-format
 msgid "Updated subscription %(subscription)s through the web."
 msgstr "Abonnement %(subscription)s wurde über die Weboberfläche aktualisiert."
