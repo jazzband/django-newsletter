@@ -170,6 +170,12 @@ official release.
 In general: thanks for the support, feedback, patches and code that's been flowing in
 over the years! Django has a truly great community. <3
 
+Donations
+=========
+Donations are welcome in Bitcoin or Paypal through 
+`Properster <https://propster.me/tipjar/0D3UYAI13>`_. If you donate, be sure to fill
+in the note. I love to hear what people are using it for!
+
 License
 =======
 This application is released
