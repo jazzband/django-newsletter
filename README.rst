@@ -36,7 +36,7 @@ with Python 2.5 as well.
 
 Requirements
 ============
-Please refer to `requirements.txt <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_ for an updated list of required packes.
+Please refer to `requirements.txt <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_ for an updated list of required packages.
 
 Installation
 ============
