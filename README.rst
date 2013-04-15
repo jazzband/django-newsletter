@@ -22,7 +22,7 @@ progress.
 
 Translations
 ============
-Most if not all strings are available in Dutch, German and English.
+Most if not all strings are available in Dutch, German, French Farsi and English.
 Contributions to translations are welcome through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_.
 
 .. image:: https://www.transifex.com/projects/p/django-newsletter/resource/django/chart/image_png
