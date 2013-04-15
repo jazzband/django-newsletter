@@ -190,8 +190,10 @@ class UserNewsletterListTestCase(UserTestCase,
         )
 
         for form in formset.forms:
-            self.assert_(form.instance.newsletter in self.newsletters,
-                "%s not in %s" % (form.instance.newsletter, self.newsletters))
+            self.assert_(
+                form.instance.newsletter in self.newsletters,
+                "%s not in %s" % (form.instance.newsletter, self.newsletters)
+            )
             self.assertContains(response, form['id'])
             self.assertContains(response, form['subscribed'])
 
@@ -343,8 +345,10 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         self.assertEqual(response.context['newsletter'], self.n)
         self.assertEqual(response.context['user'], self.user)
 
-        self.assertContains(response,
-            'action="%s"' % self.subscribe_confirm_url)
+        self.assertContains(
+            response,
+            'action="%s"' % self.subscribe_confirm_url
+        )
         self.assertContains(response, 'id="id_submit"')
 
         subscription = self.get_user_subscription()
@@ -415,8 +419,10 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
 
         response = self.client.get(self.unsubscribe_url)
 
-        self.assertIn('You are not subscribed to',
-            unicode(list(response.context['messages'])[0]))
+        self.assertIn(
+            'You are not subscribed to',
+            unicode(list(response.context['messages'])[0])
+        )
 
     def test_unsubscribe_post(self):
         """ Test unsubscription confirmation. """
@@ -453,8 +459,10 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         self.assertEqual(response.context['newsletter'], self.n)
         self.assertEqual(response.context['user'], self.user)
 
-        self.assertNotContains(response,
-            'action="%s"' % self.unsubscribe_confirm_url)
+        self.assertNotContains(
+            response,
+            'action="%s"' % self.unsubscribe_confirm_url
+        )
         self.assertNotContains(response, 'id="id_submit"')
 
 
@@ -602,11 +610,13 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         # Unsubscribe
         response = self.client.post(
-            subscription.unsubscribe_activate_url(), {
+            subscription.unsubscribe_activate_url(),
+            {
                 'name_field': subscription.name,
                 'email_field': subscription.email,
                 'user_activation_code': subscription.activation_code
-        })
+            }
+        )
 
         self.assertEquals(response.status_code, 200)
 
@@ -617,10 +627,12 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         # Resubscribe request
         response = self.client.post(
-            self.subscribe_url, {
+            self.subscribe_url,
+            {
                 'name_field': subscription.name,
                 'email_field': subscription.email,
-        })
+            }
+        )
 
         self.assertEquals(response.status_code, 200)
 
@@ -629,11 +641,13 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         # Activate subscription
         response = self.client.post(
-            subscription.subscribe_activate_url(), {
+            subscription.subscribe_activate_url(),
+            {
                 'name_field': subscription.name,
                 'email_field': subscription.email,
                 'user_activation_code': subscription.activation_code
-        })
+            }
+        )
         self.assertInContext(response, 'form', UpdateForm)
 
         subscription = getattr(response.context['form'], 'instance', None)
@@ -661,9 +675,11 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
                 }
             )
 
-            self.assertContains(response,
+            self.assertContains(
+                response,
                 "Please log in as that user and try again.",
-                status_code=200)
+                status_code=200
+            )
 
     def test_subscribe_request_activate(self):
         """ Test subscription activation. """
@@ -760,8 +776,10 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         response = self.client.get(self.unsubscribe_url)
 
         self.assertContains(response, self.n.title, status_code=200)
-        self.assertContains(response,
-            'input id="id_email_field" type="text" name="email_field"')
+        self.assertContains(
+            response,
+            'input id="id_email_field" type="text" name="email_field"'
+        )
 
         self.assertEqual(response.context['newsletter'], self.n)
 
@@ -803,8 +821,10 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         response = self.client.get(self.update_url)
 
         self.assertContains(response, self.n.title, status_code=200)
-        self.assertContains(response,
-            'input id="id_email_field" type="text" name="email_field"')
+        self.assertContains(
+            response,
+            'input id="id_email_field" type="text" name="email_field"'
+        )
 
         self.assertEqual(response.context['newsletter'], self.n)
 
