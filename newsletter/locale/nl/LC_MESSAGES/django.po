@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: http://github.com/dokterbob/django-newsletter/issues\n"
 "POT-Creation-Date: 2013-03-08 14:14+0100\n"
-"PO-Revision-Date: 2013-03-08 13:14+0000\n"
+"PO-Revision-Date: 2013-04-15 13:08+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -117,23 +117,23 @@ msgstr "opzegdatum"
 #, python-format
 msgid "%s user has been successfully subscribed."
 msgid_plural "%s users have been successfully subscribed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s gebruiker is succesvol ingeschreven."
+msgstr[1] "%s gebruikers zijn succesvol ingeschreven."
 
 #: admin.py:400
 msgid "Subscribe selected users"
-msgstr ""
+msgstr "Schrijf geselecteerde gebruikers in"
 
 #: admin.py:405
 #, python-format
 msgid "%s user has been successfully unsubscribed."
 msgid_plural "%s users have been successfully unsubscribed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s gebruiker is succesvol uitgeschreven."
+msgstr[1] "%s gebruikers zijn succesvol uitgeschreven."
 
 #: admin.py:408
 msgid "Unsubscribe selected users"
-msgstr ""
+msgstr "Geselecteerde gebruikers uitschrijven"
 
 #: admin.py:444
 #, python-format
