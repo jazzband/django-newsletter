@@ -6,6 +6,8 @@ from datetime import timedelta
 
 import time
 
+from django import VERSION as DJANGO_VERSION
+
 from django.core import mail
 from django.core.urlresolvers import reverse
 
@@ -177,17 +179,33 @@ class UserNewsletterListTestCase(UserTestCase,
             total_forms, len(self.newsletters.filter(visible=True))
         )
 
-        self.assertContains(
-            response,
-            '<input type="hidden" name="form-TOTAL_FORMS" value="%d" '
-            'id="id_form-TOTAL_FORMS" />' % total_forms
-        )
+        if DJANGO_VERSION[:2] == (1, 4):
+            # Django 1.4
+            self.assertContains(
+                response,
+                '<input type="hidden" name="form-TOTAL_FORMS" value="%d" '
+                'id="id_form-TOTAL_FORMS" />' % total_forms
+            )
 
-        self.assertContains(
-            response,
-            '<input type="hidden" name="form-INITIAL_FORMS" value="%d" '
-            'id="id_form-INITIAL_FORMS" />' % total_forms
-        )
+            self.assertContains(
+                response,
+                '<input type="hidden" name="form-INITIAL_FORMS" value="%d" '
+                'id="id_form-INITIAL_FORMS" />' % total_forms
+            )
+
+        else:
+            # Django 1.5
+            self.assertContains(
+                response,
+                '<input id="id_form-TOTAL_FORMS" name="form-TOTAL_FORMS" '
+                'type="hidden" value="%d" />' % total_forms
+            )
+
+            self.assertContains(
+                response,
+                '<input id="id_form-INITIAL_FORMS" name="form-INITIAL_FORMS" '
+                'type="hidden" value="%d" />' % total_forms
+            )
 
         for form in formset.forms:
             self.assert_(
@@ -472,18 +490,12 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
     def test_subscribe_request_view(self):
         """ Test the subscription form. """
 
-        response = self.client.get(self.subscribe_url)
+        response = self.app.get(self.subscribe_url)
 
         self.assertContains(response, self.n.title, status_code=200)
 
-        self.assertContains(
-            response,
-            'input id="id_name_field" type="text" name="name_field"'
-        )
-        self.assertContains(
-            response,
-            'input id="id_email_field" type="text" name="email_field"'
-        )
+        self.assertIn('name_field', response.form.fields)
+        self.assertIn('email_field', response.form.fields)
 
         self.assertEqual(response.context['newsletter'], self.n)
 
@@ -773,13 +785,11 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     def test_unsubscribe_request_view(self):
         """ Test the unsubscribe request form. """
-        response = self.client.get(self.unsubscribe_url)
+        response = self.app.get(self.unsubscribe_url)
 
         self.assertContains(response, self.n.title, status_code=200)
-        self.assertContains(
-            response,
-            'input id="id_email_field" type="text" name="email_field"'
-        )
+
+        self.assertIn('email_field', response.form.fields)
 
         self.assertEqual(response.context['newsletter'], self.n)
 
@@ -818,13 +828,10 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
     def test_update_request_view(self):
         """ Test the update request form. """
 
-        response = self.client.get(self.update_url)
+        response = self.app.get(self.update_url)
 
         self.assertContains(response, self.n.title, status_code=200)
-        self.assertContains(
-            response,
-            'input id="id_email_field" type="text" name="email_field"'
-        )
+        self.assertIn('email_field', response.form.fields)
 
         self.assertEqual(response.context['newsletter'], self.n)
 

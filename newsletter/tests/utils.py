@@ -10,8 +10,10 @@ from django.test.client import Client
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 
+from django_webtest import WebTest
 
-class WebTestCase(TestCase):
+
+class WebTestCase(WebTest):
     def setUp(self):
         self.site = Site.objects.get_current()
 

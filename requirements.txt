@@ -4,3 +4,7 @@ vobject
 chardet
 surlex
 sorl-thumbnail
+
+# Test requirements
+webtest
+django-webtest

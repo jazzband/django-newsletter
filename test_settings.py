@@ -1,5 +1,5 @@
 DATABASES = {
-    'default' : {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3'
     }
 }
@@ -22,3 +22,6 @@ TEMPLATE_DIRS = ('test_templates', )
 
 # Enable time-zone support for Django 1.4 (ignored in older versions)
 USE_TZ = True
+
+# Required for django-webtest to work
+STATIC_URL = '/static/'
