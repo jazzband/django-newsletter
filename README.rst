@@ -30,8 +30,9 @@ Contributions to translations are welcome through `Transifex <http://www.transif
 
 Compatibility
 =============
-Currently, django-newsletter is being tested to run on Python 2.5-2.7 and the
-latest Django 1.4 and 1.5 releases.
+Currently, django-newsletter is being tested to run on Python 2.6, 2.7 and the
+latest Django 1.4 and 1.5 releases. Except for tests it *should* be compatible
+with Python 2.5 as well.
 
 Requirements
 ============

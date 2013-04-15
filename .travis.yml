@@ -1,7 +1,6 @@
 language: python
 
 python:
-  - "2.5"
   - "2.6"
   - "2.7"
 
@@ -10,10 +9,6 @@ env:
   - DJANGO=Django==1.5.1
 
 matrix:
-  exclude:
-    # Django 1.5 drops support for Python 2.5
-   - python: "2.5"
-     env: DJANGO=Django==1.5.1
   allow_failures:
     # Failing due to Django 1.5 dropping CBV support
     - env: DJANGO=Django==1.5.1
