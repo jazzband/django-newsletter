@@ -20,6 +20,8 @@ from django.shortcuts import render_to_response
 from django.utils.translation import ugettext, ungettext, ugettext_lazy as _
 from django.utils.formats import date_format
 
+from django.views.decorators.clickjacking import xframe_options_sameorigin
+
 from sorl.thumbnail.admin import AdminImageMixin
 
 from .models import (
@@ -237,6 +239,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             RequestContext(request, {}),
         )
 
+    @xframe_options_sameorigin
     def preview_html(self, request, object_id):
         message = self._getobj(request, object_id)
 
@@ -258,6 +261,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
         return HttpResponse(html_template.render(c))
 
+    @xframe_options_sameorigin
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
 
@@ -271,8 +275,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             'date': now(),
             'STATIC_URL': settings.STATIC_URL,
             'MEDIA_URL': settings.MEDIA_URL
-            }, autoescape=False
-        )
+        }, autoescape=False)
 
         return HttpResponse(text_template.render(c), mimetype='text/plain')
 
