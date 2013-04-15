@@ -26,7 +26,7 @@ from .models import (
     EmailTemplate, Newsletter, Subscription, Article, Message, Submission
 )
 
-from .utils import now
+from django.utils.timezone import now
 
 from .admin_forms import *
 from .admin_utils import *
@@ -342,7 +342,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     )
     date_hierarchy = 'subscribe_date'
     actions = ['make_subscribed', 'make_unsubscribed']
-    
+
 
     """ List extensions """
     def admin_newsletter(self, obj):
@@ -395,18 +395,18 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         rows_updated = queryset.update(subscribed=True)
         self.message_user(request, ungettext(
                 "%s user has been successfully subscribed.",
-                "%s users have been successfully subscribed.", 
+                "%s users have been successfully subscribed.",
                 rows_updated) % rows_updated)
     make_subscribed.short_description = _("Subscribe selected users")
-    
+
     def make_unsubscribed(self, request, queryset):
         rows_updated = queryset.update(subscribed=False)
         self.message_user(request, ungettext(
                 "%s user has been successfully unsubscribed.",
-                "%s users have been successfully unsubscribed.", 
+                "%s users have been successfully unsubscribed.",
                 rows_updated) % rows_updated)
     make_unsubscribed.short_description = _("Unsubscribe selected users")
-        
+
     """ Views """
     def subscribers_import(self, request):
         if request.POST:

@@ -7,24 +7,17 @@ from datetime import timedelta
 import time
 
 from django.core import mail
-
 from django.core.urlresolvers import reverse
 
-from django.utils.unittest import skipUnless
+from django.utils.timezone import now
 
-# Settings overrides are only available in => 1.4
-try:
-    from django.test.utils import override_settings
-
-except ImportError:
-    override_settings = None
+from django.test.utils import override_settings
 
 from ..models import (
     Newsletter, Subscription, Submission, Message,
     EmailTemplate, get_default_sites
 )
 from ..forms import SubscribeRequestForm, UpdateForm, UpdateRequestForm
-from ..utils import now
 
 from .utils import MailTestCase, UserTestCase, WebTestCase, ComparingTestCase
 
@@ -474,10 +467,15 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         response = self.client.get(self.subscribe_url)
 
         self.assertContains(response, self.n.title, status_code=200)
-        self.assertContains(response,
-            'input id="id_name_field" type="text" name="name_field"')
-        self.assertContains(response,
-            'input id="id_email_field" type="text" name="email_field"')
+
+        self.assertContains(
+            response,
+            'input id="id_name_field" type="text" name="name_field"'
+        )
+        self.assertContains(
+            response,
+            'input id="id_email_field" type="text" name="email_field"'
+        )
 
         self.assertEqual(response.context['newsletter'], self.n)
 
@@ -517,8 +515,6 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assertEmailContains(full_activate_url)
 
     # Only run this test when settings overrides are available
-    @skipUnless(override_settings,
-        'Settings override not available for Django < 1.4')
     def test_subscrube_request_post_error(self):
         """
         Test whether a failing subscribe request email generated an error in
@@ -737,9 +733,6 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         self.assertEmailContains(full_activate_url)
 
-    # Only run this test when settings overrides are available
-    @skipUnless(override_settings,
-        'Settings override not available for Django < 1.4')
     def test_unsubscribe_request_post_error(self):
         """
         Test whether a failing unsubscribe request email generated an error in
@@ -847,9 +840,6 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         self.assertEmailContains(full_activate_url)
 
-    # Only run this test when settings overrides are available
-    @skipUnless(override_settings,
-        'Settings override not available for Django < 1.4')
     def test_update_request_post_error(self):
         """
         Test whether a failing update request email generated an error in

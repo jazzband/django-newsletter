@@ -7,18 +7,10 @@ try:
     from hashlib import sha1
 except ImportError:
     from django.utils.hashcompat import sha_constructor as sha1
-    
+
 from django.contrib.sites.models import Site
 
 from datetime import datetime
-
-# Conditional import of 'now'
-# Django 1.4 should use timezone.now, Django 1.3 datetime.now
-try:
-    from django.utils.timezone import now
-except ImportError:
-    logger.warn('Timezone support not enabled.')
-    now = datetime.now
 
 
 # Generic helper functions

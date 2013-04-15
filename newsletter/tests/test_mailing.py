@@ -2,10 +2,11 @@ from datetime import timedelta
 
 from django.core import mail
 
+from django.utils.timezone import now
+
 from ..models import (
     Newsletter, Subscription, Submission, Message, Article, get_default_sites
 )
-from ..utils import now
 
 from .utils import MailTestCase, UserTestCase
 

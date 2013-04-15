@@ -8,6 +8,7 @@ from django.template import Template, Context
 
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
+from django.utils.timezone import now
 
 from django.core.mail import EmailMultiAlternatives
 
@@ -20,7 +21,7 @@ from django.conf import settings
 
 from sorl.thumbnail import ImageField
 
-from .utils import now, make_activation_code, get_default_sites
+from .utils import make_activation_code, get_default_sites
 
 
 class EmailTemplate(models.Model):

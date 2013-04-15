@@ -31,7 +31,7 @@ Contributions to translations are welcome through `Transifex <http://www.transif
 Compatibility
 =============
 Currently, django-newsletter is being tested to run on Python 2.5-2.7 and the
-latest Django 1.3 and 1.4 releases. Django 1.5 support is underway.
+latest Django 1.4 and 1.5 releases.
 
 Requirements
 ============
@@ -172,7 +172,7 @@ over the years! Django has a truly great community. <3
 
 Donations
 =========
-Donations are welcome in Bitcoin or Paypal through 
+Donations are welcome in Bitcoin or Paypal through
 `Properster <https://propster.me/tipjar/0D3UYAI13>`_. For Bitcoin, the link/QRCode below should suffice. If you donate, be sure to fill
 in the note. I love to hear what people are using it for!
 
