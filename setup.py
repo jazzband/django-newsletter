@@ -25,7 +25,8 @@ distribute_setup.use_setuptools('0.6.10')
 from setuptools import setup, find_packages
 
 try:
-    README = open('README.rst').read()
+    README = open('README.rst').read() + '\n\n'
+    README += open('CHANGES.rst').read()
 except:
     README = None
 
