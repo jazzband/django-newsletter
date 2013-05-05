@@ -3,7 +3,13 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.forms.util import ValidationError
 
-from django.contrib.auth.models import User
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    # django < v1.5
+    from django.contrib.auth.models import User
+else:
+    User = get_user_model()
 
 from .models import Subscription
 
