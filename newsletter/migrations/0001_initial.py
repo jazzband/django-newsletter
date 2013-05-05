@@ -3,7 +3,13 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
-
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    # django < v1.5
+    from django.contrib.auth.models import User
+else:
+    User = get_user_model()
 
 class Migration(SchemaMigration):
 
@@ -48,7 +54,7 @@ class Migration(SchemaMigration):
         # Adding model 'Subscription'
         db.create_table('newsletter_subscription', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=User, null=True, blank=True)),
             ('name_field', self.gf('django.db.models.fields.CharField')(max_length=30, null=True, db_column='name', blank=True)),
             ('email_field', self.gf('django.db.models.fields.EmailField')(db_index=True, max_length=75, null=True, db_column='email', blank=True)),
             ('ip', self.gf('django.db.models.fields.IPAddressField')(max_length=15, null=True, blank=True)),
