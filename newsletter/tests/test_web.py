@@ -16,8 +16,7 @@ from django.utils.timezone import now
 from django.test.utils import override_settings
 
 from ..models import (
-    Newsletter, Subscription, Submission, Message,
-    EmailTemplate, get_default_sites
+    Newsletter, Subscription, Submission, Message, get_default_sites
 )
 from ..forms import SubscribeRequestForm, UpdateForm, UpdateRequestForm
 
@@ -981,7 +980,7 @@ class ArchiveTestcase(NewsletterListTestCase):
         # otherwise the archive will not function.
 
         (subject_template, text_template, html_template) = \
-            EmailTemplate.get_templates('message', self.newsletter)
+            self.newsletter.get_templates('message')
 
         self.assertTrue(html_template)
 
@@ -1034,18 +1033,6 @@ class ArchiveTestcase(NewsletterListTestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, self.submission.message.title)
-
-    def test_archive_notemplate(self):
-        """
-        The archive detail should return 404 when the template has no HTML. """
-
-        # Make sure the HTML is deleted
-        EmailTemplate.objects.update(html=None)
-
-        detail_url = self.submission.get_absolute_url()
-
-        response = self.client.get(detail_url)
-        self.assertEqual(response.status_code, 404)
 
     def test_archive_unpublished_detail(self):
         """ Assert that an unpublished submission is truly inaccessible. """

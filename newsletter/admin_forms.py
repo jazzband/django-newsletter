@@ -13,7 +13,7 @@ from django.conf import settings
 
 from django.template import Template
 
-from .models import Subscription, Newsletter, EmailTemplate, Submission
+from .models import Subscription, Newsletter, Submission
 
 
 def make_subscription(newsletter, email, name=None):
@@ -391,30 +391,6 @@ class ConfirmForm(forms.Form):
     confirm = forms.BooleanField(
         label=_("Confirm import"),
         initial=True, widget=forms.HiddenInput)
-
-
-class EmailTemplateAdminForm(forms.ModelForm):
-
-    class Meta:
-        model = EmailTemplate
-
-    def TemplateValidator(self, field):
-        data = self.cleaned_data[field]
-        try:
-            Template(data)
-        except Exception, e:
-            raise forms.ValidationError(
-                _('There was an error parsing your template: %s') % e)
-        return data
-
-    def clean_subject(self):
-        return self.TemplateValidator('subject')
-
-    def clean_text(self):
-        return self.TemplateValidator('text')
-
-    def clean_html(self):
-        return self.TemplateValidator('html')
 
 
 class SubscriptionAdminForm(forms.ModelForm):

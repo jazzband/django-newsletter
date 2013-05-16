@@ -103,14 +103,18 @@ Installation
     app so the admin icons, CSS and JavaScript will be available where
     we expect it.
 
-#)  Create required data structure and load default template fixture::
+#)  Create required data structure::
 
 	./manage.py syncdb
-	./manage.py loaddata default_templates
 
 #)  Change the default contact email listed in
     ``templates/newsletter/subscription_subscribe.html`` and
     ``templates/newsletter/subscription_update.html``.
+
+#)  (Optionally) Create message template overrides for specific newsletters in
+    ``templates/newsletter/message/<newsletter_slug>/<message_type>[_subject].<html|txt>``
+    where ``<message_type>`` can be one from `subscribe`, `unsubscribe`, `message`
+    or `update`.
 
 #)  (Optionally) Run the tests to see if it all works::
 
@@ -126,8 +130,18 @@ Installation
 	@weekly /path/to/my/project/manage.py runjobs weekly
 	@monthly /path/to/my/project/manage.py runjobs monthly
 
-South migrations / upgrading
-============================
+Upgrading
+=========
+
+0.5: Message templates in files
+-------------------------------
+As of 0.5 message templates are living in the filesystem like normal files
+instead of resorting in the EmailTemplate in the database. In most cases,
+South should take care of writing your existing templates to disk and deleting
+the database models.
+
+0.4: South migrations
+----------------------
 Since 5f79f40, the app makes use of `South <http://south.aeracode.org/>`_ for
 schema migrations. As of this version, using South with django-newsletter
 is the official recommendation and `installing it <http://south.readthedocs.org/en/latest/installation.html>`_ is easy.
