@@ -112,12 +112,11 @@ Installation
     ``templates/newsletter/subscription_subscribe.html`` and
     ``templates/newsletter/subscription_update.html``.
 
-#)  Run the tests to see if it all works::
+#)  (Optionally) Run the tests to see if it all works::
 
 	./manage.py test
 
-    If this fails, please contact me!
-    If it doesn't: that's a good sign, chap. You'll probably have yourself a
+    If it does: that's a good sign. You'll probably have yourself a
     working configuration!
 
 #)  Add jobs for sending out mail queues to `crontab <http://linuxmanpages.com/man5/crontab.5.php>`_::
