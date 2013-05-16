@@ -25,7 +25,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from sorl.thumbnail.admin import AdminImageMixin
 
 from .models import (
-    EmailTemplate, Newsletter, Subscription, Article, Message, Submission
+    Newsletter, Subscription, Article, Message, Submission
 )
 
 from django.utils.timezone import now
@@ -244,7 +244,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         message = self._getobj(request, object_id)
 
         (subject_template, text_template, html_template) = \
-            EmailTemplate.get_templates('message', message.newsletter)
+            message.newsletter.get_templates('message')
 
         if not html_template:
             raise Http404(_(
@@ -266,7 +266,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         message = self._getobj(request, object_id)
 
         (subject_template, text_template, html_template) = \
-            EmailTemplate.get_templates('message', message.newsletter)
+            message.newsletter.get_templates('message')
 
         c = Context({
             'message': message,
@@ -315,15 +315,6 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         )
 
         return my_urls + urls
-
-
-class EmailTemplateAdmin(admin.ModelAdmin):
-    list_display = ('title', 'action')
-    list_display_links = ('title',)
-    list_filter = ('action',)
-    save_as = True
-
-    form = EmailTemplateAdminForm
 
 
 class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
@@ -484,5 +475,4 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 admin.site.register(Newsletter, NewsletterAdmin)
 admin.site.register(Submission, SubmissionAdmin)
 admin.site.register(Message, MessageAdmin)
-admin.site.register(EmailTemplate, EmailTemplateAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
