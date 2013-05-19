@@ -4,7 +4,8 @@ logger = logging.getLogger(__name__)
 from django.db import models
 from django.db.models import permalink
 
-from django.template import Template, Context
+from django.template import Context, TemplateDoesNotExist
+from django.template.loader import select_template
 
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
@@ -22,81 +23,6 @@ from django.conf import settings
 from sorl.thumbnail import ImageField
 
 from .utils import make_activation_code, get_default_sites
-
-
-class EmailTemplate(models.Model):
-    """ Model we use to store email (Django) templates in the database. """
-
-    ACTION_CHOICES = (
-        ('subscribe', _('Subscribe')),
-        ('unsubscribe', _('Unsubscribe')),
-        ('update', _('Update')),
-        ('message', _('Message')),
-    )
-
-    def __unicode__(self):
-        return u"%s '%s'" % (self.get_action_display(), self.title)
-
-    @classmethod
-    def get_templates(cls, action, newsletter):
-        assert action in ['subscribe', 'unsubscribe', 'update', 'message'], \
-            'Unknown action %s' % action
-
-        myemail = getattr(newsletter, '%s_template' % action)
-
-        if myemail.html:
-            # If HTML available, return (subject, text, html) tuple
-            return (
-                Template(myemail.subject),
-                Template(myemail.text),
-                Template(myemail.html)
-            )
-        else:
-            return (Template(myemail.subject), Template(myemail.text), None)
-
-    class Meta:
-        verbose_name = _('e-mail template')
-        verbose_name_plural = _('e-mail templates')
-
-        unique_together = ("title", "action")
-        ordering = ('title', )
-
-    @classmethod
-    def get_default_id(cls, action):
-        try:
-            ls = EmailTemplate.objects.filter(action__exact=action)
-            if ls.count() == 1:
-                return ls[0].id
-            else:
-                ls = ls.filter(title__exact=_('Default'))
-                if ls.count():
-                    #There can be only one of these
-                    return ls[0].id
-        except:
-            pass
-
-        return None
-
-    title = models.CharField(
-        max_length=200, verbose_name=_('name'), default=_('Default')
-    )
-    action = models.CharField(
-        max_length=16, choices=ACTION_CHOICES, db_index=True,
-        verbose_name=_('action')
-    )
-
-    subject = models.CharField(max_length=255, verbose_name=_('subject'))
-
-    text = models.TextField(
-        verbose_name=_('Text'),
-        help_text=_('Plain text e-mail message. Available objects: date, '
-                    'subscription, site, submission, newsletter, STATIC_URL, '
-                    'MEDIA_URL and message.')
-    )
-    html = models.TextField(
-        verbose_name=_('HTML'), help_text=_('HTML e-mail alternative.'),
-        null=True, blank=True
-    )
 
 
 class Newsletter(models.Model):
@@ -123,33 +49,47 @@ class Newsletter(models.Model):
     # Automatically filter the current site
     on_site = CurrentSiteManager()
 
-    subscribe_template = models.ForeignKey(
-        'EmailTemplate',
-        default=lambda: EmailTemplate.get_default_id('subscribe'),
-        related_name='subcribe_template', verbose_name=_('subscribe template'),
-        limit_choices_to={'action': 'subscribe'}
-    )
-    unsubscribe_template = models.ForeignKey(
-        'EmailTemplate',
-        default=lambda: EmailTemplate.get_default_id('unsubscribe'),
-        related_name='unsubcribe_template',
-        verbose_name=_('unsubscribe template'),
-        limit_choices_to={'action': 'unsubscribe'}
-    )
-    update_template = models.ForeignKey(
-        'EmailTemplate',
-        default=lambda: EmailTemplate.get_default_id('update'),
-        related_name='update_template',
-        verbose_name=_('update template'),
-        limit_choices_to={'action': 'update'}
-    )
-    message_template = models.ForeignKey(
-        'EmailTemplate',
-        default=lambda: EmailTemplate.get_default_id('message'),
-        related_name='message_template',
-        verbose_name=_('message template'),
-        limit_choices_to={'action': 'message'}
-    )
+    def get_templates(self, action):
+        """
+        Return a subject, text, HTML tuple with e-mail templates for
+        a particular action. Returns a tuple with subject, text and e-mail
+        template.
+        """
+
+        assert action in [
+            'subscribe', 'unsubscribe', 'update', 'message'
+        ], 'Unknown action %s' % action
+
+        # Common substitutions for filenames
+        template_subst = {
+            'action': action,
+            'newsletter': self.slug
+        }
+
+        # Common root path for all the templates
+        template_root = 'newsletter/message/'
+
+        subject_template = select_template([
+            template_root + '%(action)s_subject.txt' % template_subst,
+            template_root + '%(newsletter)s/%(action)s_subject.txt' % template_subst
+        ])
+
+        text_template = select_template([
+            template_root + '%(action)s.txt' % template_subst,
+            template_root + '%(newsletter)s/%(action)s.txt' % template_subst
+        ])
+
+        try:
+            html_template = select_template([
+                template_root + '%(action)s.html' % template_subst,
+                template_root + '%(newsletter)s/%(action)s.html' % template_subst
+            ])
+
+        except TemplateDoesNotExist:
+            # HTML templates are not required
+            html_template = None
+
+        return (subject_template, text_template, html_template)
 
     def __unicode__(self):
         return self.title
@@ -361,11 +301,12 @@ class Subscription(models.Model):
         return u'%s' % (self.email)
 
     def send_activation_email(self, action):
-        assert action in ['subscribe', 'unsubscribe', 'update'], \
-            'Unknown action'
+        assert action in [
+            'subscribe', 'unsubscribe', 'update'
+        ], 'Unknown action'
 
         (subject_template, text_template, html_template) = \
-            EmailTemplate.get_templates(action, self.newsletter)
+            self.newsletter.get_templates(action)
 
         variable_dict = {
             'subscription': self,
@@ -398,7 +339,8 @@ class Subscription(models.Model):
             u'with activation code "%(action_code)s".', {
                 'action_code': self.activation_code,
                 'action': action,
-                'subscriber': self}
+                'subscriber': self
+            }
         )
 
     @permalink
@@ -513,7 +455,7 @@ class Message(models.Model):
     class Meta:
         verbose_name = _('message')
         verbose_name_plural = _('messages')
-        unique_together = ("slug", "newsletter")
+        unique_together = ('slug', 'newsletter')
 
     @classmethod
     def get_default_id(cls):
@@ -559,7 +501,7 @@ class Submission(models.Model):
 
         try:
             (subject_template, text_template, html_template) = \
-                EmailTemplate.get_templates('message', self.message.newsletter)
+                self.message.newsletter.get_templates('message')
 
             for subscription in subscriptions:
                 variable_dict = {

@@ -24,7 +24,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from django.forms.models import modelformset_factory
 
-from .models import Newsletter, Subscription, Submission, EmailTemplate
+from .models import Newsletter, Subscription, Submission
 from .forms import (
     SubscribeRequestForm, UserUpdateForm, UpdateRequestForm,
     UnsubscribeRequestForm, UpdateForm
@@ -464,7 +464,7 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
         """ Get the message template for the current newsletter. """
 
         (subject_template, text_template, html_template) = \
-            EmailTemplate.get_templates('message', self.object.newsletter)
+            self.object.newsletter.get_templates('message')
 
         # No HTML -> no party!
         if not html_template:
