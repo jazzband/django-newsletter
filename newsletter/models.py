@@ -70,19 +70,19 @@ class Newsletter(models.Model):
         template_root = 'newsletter/message/'
 
         subject_template = select_template([
+            template_root + '%(newsletter)s/%(action)s_subject.txt' % template_subst,
             template_root + '%(action)s_subject.txt' % template_subst,
-            template_root + '%(newsletter)s/%(action)s_subject.txt' % template_subst
         ])
 
         text_template = select_template([
+            template_root + '%(newsletter)s/%(action)s.txt' % template_subst,
             template_root + '%(action)s.txt' % template_subst,
-            template_root + '%(newsletter)s/%(action)s.txt' % template_subst
         ])
 
         try:
             html_template = select_template([
+                template_root + '%(newsletter)s/%(action)s.html' % template_subst,
                 template_root + '%(action)s.html' % template_subst,
-                template_root + '%(newsletter)s/%(action)s.html' % template_subst
             ])
 
         except TemplateDoesNotExist:
