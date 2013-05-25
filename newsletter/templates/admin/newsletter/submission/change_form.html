@@ -22,5 +22,5 @@
 
 {% block after_related_objects %}{{ block.super }}<script type="text/javascript">
 addEvent(window, "load", function(e) { JsonSubscribers.init('id_message'{% if add %}, add=true{% endif %}); });
-addEvent(window, "load", function(e) { SubmitInterface.init('submitlink'); });
+{% if change %}{% if not is_popup %}addEvent(window, "load", function(e) { SubmitInterface.init('submitlink'); });{% endif %}{% endif %}
 </script>{% endblock %}
