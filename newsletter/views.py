@@ -13,13 +13,15 @@ from django.http import Http404
 
 from django.views.generic import (
     ListView, DetailView,
-    ArchiveIndexView, DateDetailView
+    ArchiveIndexView, DateDetailView,
+    TemplateView
 )
 
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.contrib.auth.decorators import login_required
 
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from django.forms.models import modelformset_factory
@@ -178,96 +180,113 @@ class NewsletterMixin(object):
         return context
 
 
-@login_required
-def subscribe_user(request, newsletter_slug, confirm=False):
-    my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug
-    )
+class ActionUserView(NewsletterMixin, TemplateView):
+    """ Base class for subscribe and unsubscribe user views. """
+    newsletter_queryset = Newsletter.on_site.all()
+    action = None
 
-    already_subscribed = False
-    instance = Subscription.objects.get_or_create(
-        newsletter=my_newsletter, user=request.user
-    )[0]
+    def get_context_data(self, **kwargs):
+        """ Add action to context. """
+        context = super(ActionUserView, self).get_context_data(**kwargs)
 
-    if instance.subscribed:
-        already_subscribed = True
-    elif confirm:
-        instance.subscribed = True
-        instance.save()
+        context['action'] = self.action
 
-        messages.success(
-            request, _('You have been subscribed to %s.') % my_newsletter)
+        return context
 
-        logger.debug(
-            _('User %(rs)s subscribed to %(my_newsletter)s.'), {
-                "rs": request.user,
-                "my_newsletter": my_newsletter
-        })
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
 
-    if already_subscribed:
-        messages.info(
-            request, _('You are already subscribed to %s.') % my_newsletter)
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        self.newsletter = self.get_newsletter(**kwargs)
 
-    env = {
-        'newsletter': my_newsletter,
-        'action': 'subscribe'
-    }
+        # confirm is optional kwarg defaulting to False
+        self.confirm = kwargs.get('confirm', False)
 
-    return render_to_response(
-        "newsletter/subscription_subscribe_user.html",
-        env, context_instance=RequestContext(request))
+        return super(ActionUserView, self).dispatch(*args, **kwargs)
 
 
-@login_required
-def unsubscribe_user(request, newsletter_slug, confirm=False):
-    my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug
-    )
+class SubscribeUserView(ActionUserView):
+    action = 'subscribe'
+    template_name = "newsletter/subscription_subscribe_user.html"
 
-    not_subscribed = False
+    def get(self, request, *args, **kwargs):
+        already_subscribed = False
+        instance = Subscription.objects.get_or_create(
+            newsletter=self.newsletter, user=request.user
+        )[0]
 
-    try:
-        instance = Subscription.objects.get(
-            newsletter=my_newsletter, user=request.user
-        )
-
-        if not instance.subscribed:
-            not_subscribed = True
-        elif confirm:
-            instance.subscribed = False
+        if instance.subscribed:
+            already_subscribed = True
+        elif self.confirm:
+            instance.subscribed = True
             instance.save()
 
             messages.success(
                 request,
-                _('You have been unsubscribed from %s.') % my_newsletter
+                _('You have been subscribed to %s.') % self.newsletter
             )
 
             logger.debug(
-                _('User %(rs)s unsubscribed from %(my_newsletter)s.'), {
+                _('User %(rs)s subscribed to %(my_newsletter)s.'), {
                     "rs": request.user,
-                    "my_newsletter": my_newsletter
+                    "my_newsletter": self.newsletter
             })
 
-    except Subscription.DoesNotExist:
-        not_subscribed = True
+        if already_subscribed:
+            messages.info(
+                request,
+                _('You are already subscribed to %s.') % self.newsletter
+            )
 
-    if not_subscribed:
-        messages.info(request,
-            _('You are not subscribed to %s.') % my_newsletter)
+        return super(SubscribeUserView, self).get(request, *args, **kwargs)
 
-    env = {
-        'newsletter': my_newsletter,
-        'action': 'unsubscribe'
-    }
 
-    return render_to_response(
-        "newsletter/subscription_unsubscribe_user.html",
-        env, context_instance=RequestContext(request))
+class UnsubscribeUserView(ActionUserView):
+    action = 'unsubscribe'
+    template_name = "newsletter/subscription_unsubscribe_user.html"
+
+    def get(self, request, *args, **kwargs):
+        not_subscribed = False
+
+        try:
+            instance = Subscription.objects.get(
+                newsletter=self.newsletter, user=request.user
+            )
+
+            if not instance.subscribed:
+                not_subscribed = True
+            elif self.confirm:
+                instance.subscribed = False
+                instance.save()
+
+                messages.success(
+                    request,
+                    _('You have been unsubscribed from %s.') % \
+                        self.newsletter
+                )
+
+                logger.debug(
+                    _('User %(rs)s unsubscribed from %(my_newsletter)s.'), {
+                        "rs": request.user,
+                        "my_newsletter": self.newsletter
+                })
+
+        except Subscription.DoesNotExist:
+            not_subscribed = True
+
+        if not_subscribed:
+            messages.info(request,
+                _('You are not subscribed to %s.') % self.newsletter)
+
+        return super(UnsubscribeUserView, self).get(request, *args, **kwargs)
 
 
 def subscribe_request(request, newsletter_slug, confirm=False):
     if request.user.is_authenticated():
-        return subscribe_user(request, newsletter_slug, confirm)
+        return SubscribeUserView.as_view()(
+            request, newsletter_slug=newsletter_slug, confirm=confirm
+        )
 
     my_newsletter = get_object_or_404(
         Newsletter.on_site, slug=newsletter_slug)
@@ -308,7 +327,9 @@ def subscribe_request(request, newsletter_slug, confirm=False):
 
 def unsubscribe_request(request, newsletter_slug, confirm=False):
     if request.user.is_authenticated():
-        return unsubscribe_user(request, newsletter_slug, confirm)
+        return UnsubscribeUserView.as_view()(
+            request, newsletter_slug=newsletter_slug, confirm=confirm
+        )
 
     my_newsletter = get_object_or_404(
         Newsletter.on_site, slug=newsletter_slug)
