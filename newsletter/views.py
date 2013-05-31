@@ -2,7 +2,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.conf import settings
 
 from django.template import RequestContext
@@ -122,6 +122,60 @@ class NewsletterListView(NewsletterViewBase, ListView):
             formset = SubscriptionFormSet(queryset=qs)
 
         return formset
+
+
+class NewsletterMixin(object):
+    """ Mixin providing the ability to retrieve a newsletter. """
+    newsletter_queryset = None
+
+    def get_newsletter_queryset(self):
+        """ Get the queryset to look an newsletter up against. """
+        if self.newsletter_queryset is None:
+            raise ImproperlyConfigured(
+                "%(cls)s is missing a newsletter_queryset. "
+                "Define %(cls)s.newsletter_queryset, "
+                "or override %(cls)s.get_newsletter_queryset()." % {
+                    'cls': self.__class__.__name__
+                })
+        return self.newsletter_queryset._clone()
+
+    def get_newsletter(self,
+            newsletter_slug=None, newsletter_queryset=None, **kwargs):
+        """
+        Return the newsletter for the current request.
+
+        By default this requires `self.newsletter_queryset`
+        and a `newsletter_slug` argument in the URLconf.
+        """
+
+        if newsletter_slug is None:
+            assert 'newsletter_slug' in self.kwargs
+            newsletter_slug = self.kwargs['newsletter_slug']
+
+        if newsletter_queryset is None:
+            newsletter_queryset = self.get_newsletter_queryset()
+
+        newsletter = get_object_or_404(
+            newsletter_queryset, slug=newsletter_slug,
+        )
+
+        return newsletter
+
+    def get_form_kwargs(self):
+        """ Add newsletter to form kwargs. """
+        kwargs = super(NewsletterMixin, self).get_form_kwargs()
+
+        kwargs['newsletter'] = self.newsletter
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        """ Add newsletter to context. """
+        context = super(NewsletterMixin, self).get_context_data(**kwargs)
+
+        context['newsletter'] = self.newsletter
+
+        return context
 
 
 @login_required
@@ -388,11 +442,12 @@ def update_subscription(request, newsletter_slug,
     )
 
 
-class SubmissionViewBase(object):
+class SubmissionViewBase(NewsletterMixin):
     """ Base class for submission archive views. """
     date_field = 'publish_date'
     allow_empty = True
     queryset = Submission.objects.filter(publish=True)
+    newsletter_queryset = NewsletterViewBase.queryset
     slug_field = 'message__slug'
 
     # Specify date element notation
@@ -402,22 +457,9 @@ class SubmissionViewBase(object):
 
     def get(self, request, *args, **kwargs):
         # Make sure newsletter is available for further processing
-        self.newsletter = self.get_newsletter(request, **kwargs)
+        self.newsletter = self.get_newsletter()
 
         return super(SubmissionViewBase, self).get(request, *args, **kwargs)
-
-    def get_newsletter(self, request, **kwargs):
-        """ Return the newsletter for the current request. """
-        assert 'newsletter_slug' in kwargs
-
-        newsletter_slug = self.kwargs['newsletter_slug']
-
-        # Directly use the queryset from the Newsletter view
-        newsletter = get_object_or_404(
-            NewsletterViewBase.queryset, slug=newsletter_slug,
-        )
-
-        return newsletter
 
     def get_queryset(self):
         """ Filter out submissions for current newsletter. """
@@ -426,14 +468,6 @@ class SubmissionViewBase(object):
         qs = qs.filter(newsletter=self.newsletter)
 
         return qs
-
-    def get_context_data(self, **kwargs):
-        """ Add newsletter to context. """
-        context = super(SubmissionViewBase, self).get_context_data(**kwargs)
-
-        context['newsletter'] = self.newsletter
-
-        return context
 
 
 class SubmissionArchiveIndexView(SubmissionViewBase, ArchiveIndexView):
