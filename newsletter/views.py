@@ -5,10 +5,9 @@ logger = logging.getLogger(__name__)
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.conf import settings
 
-from django.template import RequestContext
 from django.template.response import SimpleTemplateResponse
 
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404
 from django.http import Http404
 
 from django.views.generic import (
@@ -372,48 +371,58 @@ class UpdateRequestView(ActionRequestView):
     template_name = "newsletter/subscription_update.html"
 
 
-def update_subscription(request, newsletter_slug,
-        email, action, activation_code=None):
+class UpdateSubscriptionViev(NewsletterMixin, FormView):
+    newsletter_queryset = Newsletter.on_site.all()
+    form_class = UpdateForm
+    template_name = "newsletter/subscription_activate.html"
 
-    assert action in ['subscribe', 'update', 'unsubscribe']
+    def get_initial(self):
+        """ Returns the initial data to use for forms on this view. """
+        if self.activation_code:
+            return {'user_activation_code': self.activation_code}
+        else:
+            # TODO: Test coverage of this branch
+            return None
 
-    my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
-    my_subscription = get_object_or_404(
-        Subscription, newsletter=my_newsletter, email_field__exact=email
-    )
+    def get_form_kwargs(self):
+        """ Add instance to form kwargs. """
+        kwargs = super(UpdateSubscriptionViev, self).get_form_kwargs()
 
-    if activation_code:
-        my_initial = {'user_activation_code': activation_code}
-    else:
-        # TODO: Test coverage of this branch
-        my_initial = None
+        kwargs['instance'] = self.subscription
 
-    if request.POST:
-        form = UpdateForm(
-            request.POST, newsletter=my_newsletter, instance=my_subscription,
-            initial=my_initial
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        """ Add action to context. """
+        context = \
+            super(UpdateSubscriptionViev, self).get_context_data(**kwargs)
+
+        context['action'] = self.action
+
+        return context
+
+    def form_valid(self, form):
+        # Get our instance, but do not save yet
+        subscription = form.save(commit=False)
+
+        # If a new subscription or update, make sure it is subscribed
+        # Else, unsubscribe
+        if self.action == 'subscribe' or self.action == 'update':
+            subscription.subscribed = True
+        else:
+            subscription.unsubscribed = True
+
+        logger.debug(
+            _(u'Updated subscription %(subscription)s through the web.'),
+            {'subscription': subscription}
         )
-        if form.is_valid():
-            # Get our instance, but do not save yet
-            subscription = form.save(commit=False)
+        subscription.save()
 
-            # If a new subscription or update, make sure it is subscribed
-            # Else, unsubscribe
-            if action == 'subscribe' or action == 'update':
-                subscription.subscribed = True
-            else:
-                subscription.unsubscribed = True
+        return self.render_to_response(self.get_context_data(form=form))
 
-            logger.debug(
-                _(u'Updated subscription %(subscription)s through the web.'),
-                {'subscription': subscription}
-            )
-            subscription.save()
-    else:
-        form = UpdateForm(
-            newsletter=my_newsletter, instance=my_subscription,
-            initial=my_initial
-        )
+    def get(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
 
         # TODO: Figure out what the hell this code is doing here.
 
@@ -427,16 +436,24 @@ def update_subscription(request, newsletter_slug,
         #
         #     logger.debug(_(u'Activated subscription %(subscription)s through the web.') % {'subscription':subscription})
 
-    env = {
-        'newsletter': my_newsletter,
-        'form': form,
-        'action': action
-    }
+        return self.render_to_response(self.get_context_data(form=form))
 
-    return render_to_response(
-        "newsletter/subscription_activate.html", env,
-        context_instance=RequestContext(request)
-    )
+    def dispatch(self, *args, **kwargs):
+        assert 'action' in kwargs
+        assert 'email' in kwargs
+
+        self.action = kwargs['action']
+        assert self.action in ['subscribe', 'update', 'unsubscribe']
+
+        self.newsletter = self.get_newsletter(**kwargs)
+        self.subscription = get_object_or_404(
+            Subscription, newsletter=self.newsletter,
+            email_field__exact=kwargs['email']
+        )
+        # activation_code is optional kwarg which defaults to None
+        self.activation_code = kwargs.get('activation_code')
+
+        return super(UpdateSubscriptionViev, self).dispatch(*args, **kwargs)
 
 
 class SubmissionViewBase(NewsletterMixin):

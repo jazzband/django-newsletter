@@ -5,7 +5,8 @@ from surlex.dj import surl
 from .views import (
     NewsletterListView, NewsletterDetailView,
     SubmissionArchiveIndexView, SubmissionArchiveDetailView,
-    SubscribeRequestView, UnsubscribeRequestView, UpdateRequestView
+    SubscribeRequestView, UnsubscribeRequestView, UpdateRequestView,
+    UpdateSubscriptionViev
 )
 
 urlpatterns = patterns('newsletter.views',
@@ -33,11 +34,11 @@ urlpatterns = patterns('newsletter.views',
 
     # Action confirmation views
     surl('^<newsletter_slug:s>/subscription/<email=[-_a-zA-Z0-9@\.\+~]+>/'
-         '<action=subscribe|update|unsubscribe>/activate/<activation_code:s>/$',
-        'update_subscription', name='newsletter_update_activate'),
+        '<action=subscribe|update|unsubscribe>/activate/<activation_code:s>/$',
+        UpdateSubscriptionViev.as_view(), name='newsletter_update_activate'),
     surl('^<newsletter_slug:s>/subscription/<email=[-_a-zA-Z0-9@\.\+~]+>/'
-         '<action=subscribe|update|unsubscribe>/activate/$',
-        'update_subscription', name='newsletter_update'),
+        '<action=subscribe|update|unsubscribe>/activate/$',
+        UpdateSubscriptionViev.as_view(), name='newsletter_update'),
 
     # Archive views
     surl('^<newsletter_slug:s>/archive/<year:Y>/<month:m>/<day:d>/<slug:s>/$',
