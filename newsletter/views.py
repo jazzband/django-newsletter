@@ -2,7 +2,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from django.core.exceptions import ValidationError, ImproperlyConfigured
+from django.core.exceptions import ValidationError
 from django.conf import settings
 
 from django.template.response import SimpleTemplateResponse
@@ -127,26 +127,13 @@ class NewsletterListView(NewsletterViewBase, ListView):
 
 class NewsletterMixin(object):
     """ Mixin providing the ability to retrieve a newsletter. """
-    newsletter_queryset = None
-
-    def get_newsletter_queryset(self):
-        """ Get the queryset to look an newsletter up against. """
-        if self.newsletter_queryset is None:
-            raise ImproperlyConfigured(
-                "%(cls)s is missing a newsletter_queryset. "
-                "Define %(cls)s.newsletter_queryset, "
-                "or override %(cls)s.get_newsletter_queryset()." % {
-                    'cls': self.__class__.__name__
-                })
-        return self.newsletter_queryset._clone()
 
     def get_newsletter(self,
             newsletter_slug=None, newsletter_queryset=None, **kwargs):
         """
         Return the newsletter for the current request.
 
-        By default this requires `self.newsletter_queryset`
-        and a `newsletter_slug` argument in the URLconf.
+        By default this requires a `newsletter_slug` argument in the URLconf.
         """
 
         if newsletter_slug is None:
@@ -154,7 +141,7 @@ class NewsletterMixin(object):
             newsletter_slug = self.kwargs['newsletter_slug']
 
         if newsletter_queryset is None:
-            newsletter_queryset = self.get_newsletter_queryset()
+            newsletter_queryset = NewsletterListView().get_queryset()
 
         newsletter = get_object_or_404(
             newsletter_queryset, slug=newsletter_slug,
@@ -181,7 +168,6 @@ class NewsletterMixin(object):
 
 class ActionUserView(NewsletterMixin, TemplateView):
     """ Base class for subscribe and unsubscribe user views. """
-    newsletter_queryset = Newsletter.on_site.all()
     action = None
 
     def get_context_data(self, **kwargs):
@@ -283,7 +269,6 @@ class UnsubscribeUserView(ActionUserView):
 
 class ActionRequestView(NewsletterMixin, FormView):
     """ Base class for subscribe, unsubscribe and update request views. """
-    newsletter_queryset = Newsletter.on_site.all()
     action = None
 
     def get_context_data(self, **kwargs):
@@ -372,7 +357,6 @@ class UpdateRequestView(ActionRequestView):
 
 
 class UpdateSubscriptionViev(NewsletterMixin, FormView):
-    newsletter_queryset = Newsletter.on_site.all()
     form_class = UpdateForm
     template_name = "newsletter/subscription_activate.html"
 
@@ -461,7 +445,6 @@ class SubmissionViewBase(NewsletterMixin):
     date_field = 'publish_date'
     allow_empty = True
     queryset = Submission.objects.filter(publish=True)
-    newsletter_queryset = NewsletterViewBase.queryset
     slug_field = 'message__slug'
 
     # Specify date element notation
