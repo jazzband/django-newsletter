@@ -404,24 +404,6 @@ class UpdateSubscriptionViev(NewsletterMixin, FormView):
 
         return self.render_to_response(self.get_context_data(form=form))
 
-    def get(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-
-        # TODO: Figure out what the hell this code is doing here.
-
-        # If we are activating and activation code is valid and not already
-        # subscribed, activate straight away
-
-        # if action == 'subscribe' and form.is_valid() and not my_subscription.subscribed:
-        #     subscription = form.save(commit=False)
-        #     subscription.subscribed = True
-        #     subscription.save()
-        #
-        #     logger.debug(_(u'Activated subscription %(subscription)s through the web.') % {'subscription':subscription})
-
-        return self.render_to_response(self.get_context_data(form=form))
-
     def dispatch(self, *args, **kwargs):
         assert 'action' in kwargs
         assert 'email' in kwargs
