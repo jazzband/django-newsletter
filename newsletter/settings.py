@@ -6,7 +6,36 @@ from django.core.exceptions import ImproperlyConfigured
 class NewsletterSettings(object):
     """
     A settings object, that handles newsletter default settings.
+
+    With instance being instance of NewsletterSettings,
+    accessing instance.SETTING_NAME returns NEWSLETTER_SETTING_NAME,
+    if it's defined in project, or instance.DEFAULT_SETTING_NAME if not.
+
+    DEFAULT_SETTING_NAME can be a class variable or a property if needed.
+
+    SETTING_NAME can be overridden if above behavior is not adequate.
     """
+
+    def __getattr__(self, attr):
+        return getattr(
+            django_settings,
+            'NEWSLETTER_%s' % attr,
+            getattr(self, 'DEFAULT_%s' % attr)
+        )
+
+    DEFAULT_CONFIRM_EMAIL = True
+
+    @property
+    def DEFAULT_CONFIRM_EMAIL_SUBSCRIBE(self):
+        return self.CONFIRM_EMAIL
+
+    @property
+    def DEFAULT_CONFIRM_EMAIL_UNSUBSCRIBE(self):
+        return self.CONFIRM_EMAIL
+
+    @property
+    def DEFAULT_CONFIRM_EMAIL_UPDATE(self):
+        return self.CONFIRM_EMAIL
 
     @property
     def RICHTEXT_WIDGET(self):
