@@ -5,21 +5,22 @@ logger = logging.getLogger(__name__)
 from django.core.exceptions import ValidationError
 from django.conf import settings
 
-from django.template import RequestContext
 from django.template.response import SimpleTemplateResponse
 
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404
 from django.http import Http404
 
 from django.views.generic import (
     ListView, DetailView,
-    ArchiveIndexView, DateDetailView
+    ArchiveIndexView, DateDetailView,
+    TemplateView, FormView
 )
 
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.contrib.auth.decorators import login_required
 
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from django.forms.models import modelformset_factory
@@ -124,271 +125,304 @@ class NewsletterListView(NewsletterViewBase, ListView):
         return formset
 
 
-@login_required
-def subscribe_user(request, newsletter_slug, confirm=False):
-    my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug
-    )
+class NewsletterMixin(object):
+    """ Mixin providing the ability to retrieve a newsletter. """
 
-    already_subscribed = False
-    instance = Subscription.objects.get_or_create(
-        newsletter=my_newsletter, user=request.user
-    )[0]
+    def get_newsletter(self,
+            newsletter_slug=None, newsletter_queryset=None, **kwargs):
+        """
+        Return the newsletter for the current request.
 
-    if instance.subscribed:
-        already_subscribed = True
-    elif confirm:
-        instance.subscribed = True
-        instance.save()
+        By default this requires a `newsletter_slug` argument in the URLconf.
+        """
 
-        messages.success(
-            request, _('You have been subscribed to %s.') % my_newsletter)
+        if newsletter_slug is None:
+            assert 'newsletter_slug' in self.kwargs
+            newsletter_slug = self.kwargs['newsletter_slug']
 
-        logger.debug(
-            _('User %(rs)s subscribed to %(my_newsletter)s.'), {
-                "rs": request.user,
-                "my_newsletter": my_newsletter
-        })
+        if newsletter_queryset is None:
+            newsletter_queryset = Newsletter.on_site.all()
 
-    if already_subscribed:
-        messages.info(
-            request, _('You are already subscribed to %s.') % my_newsletter)
-
-    env = {
-        'newsletter': my_newsletter,
-        'action': 'subscribe'
-    }
-
-    return render_to_response(
-        "newsletter/subscription_subscribe_user.html",
-        env, context_instance=RequestContext(request))
-
-
-@login_required
-def unsubscribe_user(request, newsletter_slug, confirm=False):
-    my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug
-    )
-
-    not_subscribed = False
-
-    try:
-        instance = Subscription.objects.get(
-            newsletter=my_newsletter, user=request.user
+        newsletter = get_object_or_404(
+            newsletter_queryset, slug=newsletter_slug,
         )
 
-        if not instance.subscribed:
-            not_subscribed = True
-        elif confirm:
-            instance.subscribed = False
+        return newsletter
+
+    def get_form_kwargs(self):
+        """ Add newsletter to form kwargs. """
+        kwargs = super(NewsletterMixin, self).get_form_kwargs()
+
+        kwargs['newsletter'] = self.newsletter
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        """ Add newsletter to context. """
+        context = super(NewsletterMixin, self).get_context_data(**kwargs)
+
+        context['newsletter'] = self.newsletter
+
+        return context
+
+
+class ActionUserView(NewsletterMixin, TemplateView):
+    """ Base class for subscribe and unsubscribe user views. """
+    action = None
+
+    def get_context_data(self, **kwargs):
+        """ Add action to context. """
+        context = super(ActionUserView, self).get_context_data(**kwargs)
+
+        context['action'] = self.action
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        self.newsletter = self.get_newsletter(**kwargs)
+
+        # confirm is optional kwarg defaulting to False
+        self.confirm = kwargs.get('confirm', False)
+
+        return super(ActionUserView, self).dispatch(*args, **kwargs)
+
+
+class SubscribeUserView(ActionUserView):
+    action = 'subscribe'
+    template_name = "newsletter/subscription_subscribe_user.html"
+
+    def get(self, request, *args, **kwargs):
+        already_subscribed = False
+        instance = Subscription.objects.get_or_create(
+            newsletter=self.newsletter, user=request.user
+        )[0]
+
+        if instance.subscribed:
+            already_subscribed = True
+        elif self.confirm:
+            instance.subscribed = True
             instance.save()
 
             messages.success(
                 request,
-                _('You have been unsubscribed from %s.') % my_newsletter
+                _('You have been subscribed to %s.') % self.newsletter
             )
 
             logger.debug(
-                _('User %(rs)s unsubscribed from %(my_newsletter)s.'), {
+                _('User %(rs)s subscribed to %(my_newsletter)s.'), {
                     "rs": request.user,
-                    "my_newsletter": my_newsletter
+                    "my_newsletter": self.newsletter
             })
 
-    except Subscription.DoesNotExist:
-        not_subscribed = True
-
-    if not_subscribed:
-        messages.info(request,
-            _('You are not subscribed to %s.') % my_newsletter)
-
-    env = {
-        'newsletter': my_newsletter,
-        'action': 'unsubscribe'
-    }
-
-    return render_to_response(
-        "newsletter/subscription_unsubscribe_user.html",
-        env, context_instance=RequestContext(request))
-
-
-def subscribe_request(request, newsletter_slug, confirm=False):
-    if request.user.is_authenticated():
-        return subscribe_user(request, newsletter_slug, confirm)
-
-    my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug)
-
-    error = None
-    if request.POST:
-        form = SubscribeRequestForm(
-            request.POST,
-            newsletter=my_newsletter,
-            ip=request.META.get('REMOTE_ADDR')
-        )
-
-        if form.is_valid():
-            instance = form.save()
-
-            try:
-                instance.send_activation_email(action='subscribe')
-
-            except Exception, e:
-                logger.exception('Error %s while submitting email to %s.',
-                    e, instance.email)
-                error = True
-
-    else:
-        form = SubscribeRequestForm(newsletter=my_newsletter)
-
-    env = {
-        'newsletter': my_newsletter,
-        'form': form,
-        'error': error,
-        'action': 'subscribe'
-    }
-
-    return render_to_response(
-        "newsletter/subscription_subscribe.html",
-        env, context_instance=RequestContext(request))
-
-
-def unsubscribe_request(request, newsletter_slug, confirm=False):
-    if request.user.is_authenticated():
-        return unsubscribe_user(request, newsletter_slug, confirm)
-
-    my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug)
-
-    error = None
-    if request.POST:
-        form = UnsubscribeRequestForm(request.POST, newsletter=my_newsletter)
-
-        if form.is_valid():
-            instance = form.instance
-
-            try:
-                instance.send_activation_email(action='unsubscribe')
-
-            except Exception, e:
-                logger.exception(
-                    'Error %s while submitting email to %s.',
-                    e, instance.email)
-                error = True
-    else:
-        form = UnsubscribeRequestForm(newsletter=my_newsletter)
-
-    env = {
-        'newsletter': my_newsletter,
-        'form': form,
-        'error': error,
-        'action': 'unsubscribe'
-    }
-
-    return render_to_response(
-        "newsletter/subscription_unsubscribe.html",
-        env, context_instance=RequestContext(request))
-
-
-def update_request(request, newsletter_slug):
-    my_newsletter = get_object_or_404(
-        Newsletter.on_site, slug=newsletter_slug)
-
-    error = None
-    if request.POST:
-        form = UpdateRequestForm(request.POST, newsletter=my_newsletter)
-        if form.is_valid():
-            instance = form.instance
-            try:
-                instance.send_activation_email(action='update')
-
-            except Exception, e:
-                logger.exception(
-                    'Error %s while submitting email to %s.',
-                    e, instance.email)
-                error = True
-    else:
-        form = UpdateRequestForm(newsletter=my_newsletter)
-
-    env = {
-        'newsletter': my_newsletter,
-        'form': form,
-        'error': error,
-        'action': 'update'
-    }
-
-    return render_to_response(
-        "newsletter/subscription_update.html",
-        env, context_instance=RequestContext(request))
-
-
-def update_subscription(request, newsletter_slug,
-        email, action, activation_code=None):
-
-    assert action in ['subscribe', 'update', 'unsubscribe']
-
-    my_newsletter = get_object_or_404(Newsletter.on_site, slug=newsletter_slug)
-    my_subscription = get_object_or_404(
-        Subscription, newsletter=my_newsletter, email_field__exact=email
-    )
-
-    if activation_code:
-        my_initial = {'user_activation_code': activation_code}
-    else:
-        # TODO: Test coverage of this branch
-        my_initial = None
-
-    if request.POST:
-        form = UpdateForm(
-            request.POST, newsletter=my_newsletter, instance=my_subscription,
-            initial=my_initial
-        )
-        if form.is_valid():
-            # Get our instance, but do not save yet
-            subscription = form.save(commit=False)
-
-            # If a new subscription or update, make sure it is subscribed
-            # Else, unsubscribe
-            if action == 'subscribe' or action == 'update':
-                subscription.subscribed = True
-            else:
-                subscription.unsubscribed = True
-
-            logger.debug(
-                _(u'Updated subscription %(subscription)s through the web.'),
-                {'subscription': subscription}
+        if already_subscribed:
+            messages.info(
+                request,
+                _('You are already subscribed to %s.') % self.newsletter
             )
-            subscription.save()
-    else:
-        form = UpdateForm(
-            newsletter=my_newsletter, instance=my_subscription,
-            initial=my_initial
+
+        return super(SubscribeUserView, self).get(request, *args, **kwargs)
+
+
+class UnsubscribeUserView(ActionUserView):
+    action = 'unsubscribe'
+    template_name = "newsletter/subscription_unsubscribe_user.html"
+
+    def get(self, request, *args, **kwargs):
+        not_subscribed = False
+
+        try:
+            instance = Subscription.objects.get(
+                newsletter=self.newsletter, user=request.user
+            )
+
+            if not instance.subscribed:
+                not_subscribed = True
+            elif self.confirm:
+                instance.subscribed = False
+                instance.save()
+
+                messages.success(
+                    request,
+                    _('You have been unsubscribed from %s.') % \
+                        self.newsletter
+                )
+
+                logger.debug(
+                    _('User %(rs)s unsubscribed from %(my_newsletter)s.'), {
+                        "rs": request.user,
+                        "my_newsletter": self.newsletter
+                })
+
+        except Subscription.DoesNotExist:
+            not_subscribed = True
+
+        if not_subscribed:
+            messages.info(request,
+                _('You are not subscribed to %s.') % self.newsletter)
+
+        return super(UnsubscribeUserView, self).get(request, *args, **kwargs)
+
+
+class ActionRequestView(NewsletterMixin, FormView):
+    """ Base class for subscribe, unsubscribe and update request views. """
+    action = None
+
+    def get_context_data(self, **kwargs):
+        """ Add error and action to context. """
+        context = super(ActionRequestView, self).get_context_data(**kwargs)
+
+        context.update({
+            'error': self.error,
+            'action': self.action
+        })
+
+        return context
+
+    def get_subscription(self, form):
+        """ Return subscription for the current request. """
+        return form.instance
+
+    def form_valid(self, form):
+        subscription = self.get_subscription(form)
+
+        try:
+            subscription.send_activation_email(action=self.action)
+
+        except Exception, e:
+            logger.exception('Error %s while submitting email to %s.',
+                e, subscription.email)
+            self.error = True
+
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def dispatch(self, *args, **kwargs):
+        self.newsletter = self.get_newsletter(**kwargs)
+        self.error = None
+
+        return super(ActionRequestView, self).dispatch(*args, **kwargs)
+
+
+class SubscribeRequestView(ActionRequestView):
+    action = 'subscribe'
+    form_class = SubscribeRequestForm
+    template_name = "newsletter/subscription_subscribe.html"
+    confirm = False
+
+    def get_form_kwargs(self):
+        """ Add ip to form kwargs for submitted forms. """
+        kwargs = super(SubscribeRequestView, self).get_form_kwargs()
+
+        if self.request.method in ('POST', 'PUT'):
+            kwargs['ip'] = self.request.META.get('REMOTE_ADDR')
+
+        return kwargs
+
+    def get_subscription(self, form):
+        return form.save()
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            kwargs['confirm'] = self.confirm
+            return SubscribeUserView.as_view()(request, *args, **kwargs)
+
+        return super(SubscribeRequestView, self).dispatch(
+            request, *args, **kwargs
         )
 
-        # TODO: Figure out what the hell this code is doing here.
 
-        # If we are activating and activation code is valid and not already
-        # subscribed, activate straight away
+class UnsubscribeRequestView(ActionRequestView):
+    action = 'unsubscribe'
+    form_class = UnsubscribeRequestForm
+    template_name = "newsletter/subscription_unsubscribe.html"
+    confirm = False
 
-        # if action == 'subscribe' and form.is_valid() and not my_subscription.subscribed:
-        #     subscription = form.save(commit=False)
-        #     subscription.subscribed = True
-        #     subscription.save()
-        #
-        #     logger.debug(_(u'Activated subscription %(subscription)s through the web.') % {'subscription':subscription})
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            kwargs['confirm'] = self.confirm
+            return UnsubscribeUserView.as_view()(request, *args, **kwargs)
 
-    env = {
-        'newsletter': my_newsletter,
-        'form': form,
-        'action': action
-    }
-
-    return render_to_response(
-        "newsletter/subscription_activate.html", env,
-        context_instance=RequestContext(request)
-    )
+        return super(UnsubscribeRequestView, self).dispatch(
+            request, *args, **kwargs
+        )
 
 
-class SubmissionViewBase(object):
+class UpdateRequestView(ActionRequestView):
+    action = 'update'
+    form_class = UpdateRequestForm
+    template_name = "newsletter/subscription_update.html"
+
+
+class UpdateSubscriptionViev(NewsletterMixin, FormView):
+    form_class = UpdateForm
+    template_name = "newsletter/subscription_activate.html"
+
+    def get_initial(self):
+        """ Returns the initial data to use for forms on this view. """
+        if self.activation_code:
+            return {'user_activation_code': self.activation_code}
+        else:
+            # TODO: Test coverage of this branch
+            return None
+
+    def get_form_kwargs(self):
+        """ Add instance to form kwargs. """
+        kwargs = super(UpdateSubscriptionViev, self).get_form_kwargs()
+
+        kwargs['instance'] = self.subscription
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        """ Add action to context. """
+        context = \
+            super(UpdateSubscriptionViev, self).get_context_data(**kwargs)
+
+        context['action'] = self.action
+
+        return context
+
+    def form_valid(self, form):
+        # Get our instance, but do not save yet
+        subscription = form.save(commit=False)
+
+        # If a new subscription or update, make sure it is subscribed
+        # Else, unsubscribe
+        if self.action == 'subscribe' or self.action == 'update':
+            subscription.subscribed = True
+        else:
+            subscription.unsubscribed = True
+
+        logger.debug(
+            _(u'Updated subscription %(subscription)s through the web.'),
+            {'subscription': subscription}
+        )
+        subscription.save()
+
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def dispatch(self, *args, **kwargs):
+        assert 'action' in kwargs
+        assert 'email' in kwargs
+
+        self.action = kwargs['action']
+        assert self.action in ['subscribe', 'update', 'unsubscribe']
+
+        self.newsletter = self.get_newsletter(**kwargs)
+        self.subscription = get_object_or_404(
+            Subscription, newsletter=self.newsletter,
+            email_field__exact=kwargs['email']
+        )
+        # activation_code is optional kwarg which defaults to None
+        self.activation_code = kwargs.get('activation_code')
+
+        return super(UpdateSubscriptionViev, self).dispatch(*args, **kwargs)
+
+
+class SubmissionViewBase(NewsletterMixin):
     """ Base class for submission archive views. """
     date_field = 'publish_date'
     allow_empty = True
@@ -402,22 +436,11 @@ class SubmissionViewBase(object):
 
     def get(self, request, *args, **kwargs):
         # Make sure newsletter is available for further processing
-        self.newsletter = self.get_newsletter(request, **kwargs)
-
-        return super(SubmissionViewBase, self).get(request, *args, **kwargs)
-
-    def get_newsletter(self, request, **kwargs):
-        """ Return the newsletter for the current request. """
-        assert 'newsletter_slug' in kwargs
-
-        newsletter_slug = self.kwargs['newsletter_slug']
-
-        # Directly use the queryset from the Newsletter view
-        newsletter = get_object_or_404(
-            NewsletterViewBase.queryset, slug=newsletter_slug,
+        self.newsletter = self.get_newsletter(
+            newsletter_queryset=NewsletterListView().get_queryset()
         )
 
-        return newsletter
+        return super(SubmissionViewBase, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
         """ Filter out submissions for current newsletter. """
@@ -426,14 +449,6 @@ class SubmissionViewBase(object):
         qs = qs.filter(newsletter=self.newsletter)
 
         return qs
-
-    def get_context_data(self, **kwargs):
-        """ Add newsletter to context. """
-        context = super(SubmissionViewBase, self).get_context_data(**kwargs)
-
-        context['newsletter'] = self.newsletter
-
-        return context
 
 
 class SubmissionArchiveIndexView(SubmissionViewBase, ArchiveIndexView):
