@@ -141,7 +141,7 @@ class NewsletterMixin(object):
             newsletter_slug = self.kwargs['newsletter_slug']
 
         if newsletter_queryset is None:
-            newsletter_queryset = NewsletterListView().get_queryset()
+            newsletter_queryset = Newsletter.on_site.all()
 
         newsletter = get_object_or_404(
             newsletter_queryset, slug=newsletter_slug,
@@ -436,7 +436,9 @@ class SubmissionViewBase(NewsletterMixin):
 
     def get(self, request, *args, **kwargs):
         # Make sure newsletter is available for further processing
-        self.newsletter = self.get_newsletter()
+        self.newsletter = self.get_newsletter(
+            newsletter_queryset=NewsletterListView().get_queryset()
+        )
 
         return super(SubmissionViewBase, self).get(request, *args, **kwargs)
 
