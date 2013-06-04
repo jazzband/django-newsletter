@@ -533,6 +533,45 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         self.assertEmailContains(full_activate_url)
 
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=False)
+    def test_subscribe_request_post_no_email(self):
+        """
+        Post the subscription form
+        with confirmation email switched off in settings.
+        """
+
+        response = self.client.post(
+            self.subscribe_url, {
+                'name_field': 'Test Name',
+                'email_field': 'test@email.com'
+            }
+        )
+
+        self.assertContains(response, self.n.title, status_code=200)
+        self.assertNotContains(
+            response, 'input id="id_name_field" type="text" name="name"'
+        )
+        self.assertNotContains(
+            response, 'input id="id_email_field" type="text" name="email"'
+        )
+
+        self.assertInContext(response, 'newsletter', Newsletter, self.n)
+        self.assertInContext(response, 'form', SubscribeRequestForm)
+        self.assertFalse(response.context['error'])
+        # subscription action should be done
+        self.assertTrue(response.context['action_done'])
+
+        subscription = getattr(response.context['form'], 'instance', None)
+        self.assert_(subscription)
+        # email confirmation is switched off,
+        # so after subscribe request user should be subscribed
+        self.assertTrue(subscription.subscribed)
+        self.assertFalse(subscription.unsubscribed)
+
+        """ Check the subscription email. """
+        # no email should be send
+        self.assertEquals(len(mail.outbox), 0)
+
     # Only run this test when settings overrides are available
     @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
     def test_subscrube_request_post_error(self):
@@ -764,6 +803,48 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         self.assertEmailContains(full_activate_url)
 
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_UNSUBSCRIBE=False)
+    def test_unsubscribe_request_post_no_email(self):
+        """
+        Post the unsubscribe request form
+        with confirmation email switched off in settings.
+        """
+
+        subscription = Subscription(newsletter=self.n,
+                                    name='Test Name',
+                                    email='test@email.com',
+                                    subscribed=True)
+        subscription.save()
+
+        response = self.client.post(
+            self.unsubscribe_url, {'email_field': 'test@email.com'}
+        )
+
+        self.assertContains(response, self.n.title, status_code=200)
+        self.assertNotContains(
+            response, 'input id="id_email_field" type="text" name="email"'
+        )
+
+        self.assertInContext(response, 'newsletter', Newsletter, self.n)
+        self.assertInContext(response, 'form', UpdateRequestForm)
+        self.assertFalse(response.context['error'])
+        # unsubscription action should be done
+        self.assertTrue(response.context['action_done'])
+
+        changed_subscription = Subscription.objects.get(
+            newsletter=self.n,
+            name_field=subscription.name_field,
+            email_field=subscription.email_field
+        )
+        # email confirmation is switched off,
+        # so after unsubscribe request user should be unsubscribed
+        self.assertFalse(changed_subscription.subscribed)
+        self.assertTrue(changed_subscription.unsubscribed)
+
+        """ Check the subscription email. """
+        # no email should be send
+        self.assertEquals(len(mail.outbox), 0)
+
     @override_settings(NEWSLETTER_CONFIRM_EMAIL_UNSUBSCRIBE=True)
     def test_unsubscribe_request_post_error(self):
         """
@@ -873,6 +954,29 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         full_activate_url = 'http://%s%s' % (self.site.domain, activate_url)
 
         self.assertEmailContains(full_activate_url)
+
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_UPDATE=False)
+    def test_update_request_post_no_email(self):
+        """
+        Test the update request post view
+        with confirmation email switched off in settings.
+        """
+
+        subscription = Subscription(newsletter=self.n,
+                                    name='Test Name',
+                                    email='test@email.com',
+                                    subscribed=True)
+        subscription.save()
+
+        response = self.client.post(
+            self.update_url, {'email_field': 'test@email.com'}
+        )
+
+        self.assertRedirects(response, subscription.update_activate_url())
+
+        """ Check the subscription email. """
+        # no email should be send
+        self.assertEquals(len(mail.outbox), 0)
 
     @override_settings(NEWSLETTER_CONFIRM_EMAIL_UPDATE=True)
     def test_update_request_post_error(self):
