@@ -496,6 +496,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         self.assertEqual(response.context['newsletter'], self.n)
 
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
     def test_subscribe_request_post(self):
         """ Post the subscription form. """
 
@@ -532,6 +533,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assertEmailContains(full_activate_url)
 
     # Only run this test when settings overrides are available
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
     def test_subscrube_request_post_error(self):
         """
         Test whether a failing subscribe request email generated an error in
@@ -726,6 +728,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         dt = (subscription.subscribe_date - subscription.create_date).seconds
         self.assertBetween(dt, WAIT_TIME, WAIT_TIME + 1)
 
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_UNSUBSCRIBE=True)
     def test_unsubscribe_request_post(self):
         """ Post the unsubscribe request form. """
 
@@ -758,6 +761,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         self.assertEmailContains(full_activate_url)
 
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_UNSUBSCRIBE=True)
     def test_unsubscribe_request_post_error(self):
         """
         Test whether a failing unsubscribe request email generated an error in
@@ -832,6 +836,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         self.assertEqual(response.context['newsletter'], self.n)
 
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_UPDATE=True)
     def test_update_request_post(self):
         """ Test the update request post view. """
 
@@ -864,6 +869,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
         self.assertEmailContains(full_activate_url)
 
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_UPDATE=True)
     def test_update_request_post_error(self):
         """
         Test whether a failing update request email generated an error in
