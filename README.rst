@@ -74,6 +74,22 @@ Installation
 	    ...
 	)
 
+#)  Disable email confirmation for subscribe, unsubscribe and update actions
+    for subscriptions.
+
+    By default subscribe, unsubscribe and update requests made by a user who is
+    not logged in need to be confirmed by clicking on an activation link in an
+    email. If you want all requested actions to be performed without email
+    confirmation, add following line to settings.py::
+
+	NEWSLETTER_CONFIRM_EMAIL = False
+
+    For more granular control the ``NEWSLETTER_CONFIRM_EMAIL`` setting can be
+    overridden for each of subscribe, unsubscribe and update actions, by adding
+    ``NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE`` and/or
+    ``NEWSLETTER_CONFIRM_EMAIL_UNSUBSCRIBE`` and/or
+    ``NEWSLETTER_CONFIRM_EMAIL_UPDATE`` set to ``True`` or ``False``.
+
 #)  Install and configure your preferred rich text widget (optional).
 
     Known to work are `django-imperavi <http://pypi.python.org/pypi/django-imperavi>`_
