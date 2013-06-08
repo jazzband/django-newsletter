@@ -925,7 +925,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
                                     email='test@email.com')
         subscription.save()
 
-        activate_url = subscription.subscribe_activate_url()
+        activate_url = subscription.update_activate_url()
 
         response = self.client.get(activate_url)
         self.assertInContext(response, 'form', UpdateForm)
