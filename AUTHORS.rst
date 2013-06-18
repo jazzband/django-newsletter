@@ -1,6 +1,6 @@
 Authors and contributors
 ========================
-- Mathijs de Bruin <mathijs at mathijsfietst dot nl> (maintainer)
+- Mathijs de Bruin <mathijs at visualspace dot nl> (maintainer)
 - Jerome Leclanche <jerome dot leclanche at gmail dot com>
 - Jannis [jnns]
 - Alexander Schrijver [flupzor]
