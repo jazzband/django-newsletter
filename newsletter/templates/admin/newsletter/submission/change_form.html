@@ -21,6 +21,8 @@
 
 
 {% block after_related_objects %}{{ block.super }}<script type="text/javascript">
-addEvent(window, "load", function(e) { JsonSubscribers.init('id_message'{% if add %}, add=true{% endif %}); });
-addEvent(window, "load", function(e) { SubmitInterface.init('submitlink'); });
+django.jQuery(window).load(function() {
+    JsonSubscribers.init('id_message'{% if add %}, add=true{% endif %});
+    SubmitInterface.init('#submitlink');
+});
 </script>{% endblock %}
