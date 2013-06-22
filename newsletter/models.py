@@ -44,6 +44,11 @@ class Newsletter(models.Model):
         default=True, verbose_name=_('visible'), db_index=True
     )
 
+    send_html = models.BooleanField(
+        default=True, verbose_name=_('send html'),
+        help_text=_('Whether HTML version of e-mails should be sent')
+    )
+
     objects = models.Manager()
 
     # Automatically filter the current site
@@ -79,13 +84,12 @@ class Newsletter(models.Model):
             template_root + '%(newsletter)s/%(action)s.txt' % template_subst
         ])
 
-        try:
+        if self.send_html:
             html_template = select_template([
                 template_root + '%(action)s.html' % template_subst,
                 template_root + '%(newsletter)s/%(action)s.html' % template_subst
             ])
-
-        except TemplateDoesNotExist:
+        else:
             # HTML templates are not required
             html_template = None
 
