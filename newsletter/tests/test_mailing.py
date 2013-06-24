@@ -34,6 +34,23 @@ class MailingTestCase(MailTestCase):
         )
         self.s.save()
 
+    def send_email(self, action):
+        assert action in [
+            'subscribe', 'update', 'unsubscribe', 'message'
+        ], 'Unknown action %s' % action
+
+        if action == 'message':
+            # Create submission
+            sub = Submission.from_message(self.m)
+            sub.prepared = True
+            sub.publish_date = now() - timedelta(seconds=1)
+            sub.save()
+
+            # Send message email
+            Submission.submit_queue()
+        else:
+            self.s.send_activation_email(action)
+
 
 class ArticleTestCase(MailingTestCase):
     def make_article(self):
@@ -240,3 +257,117 @@ class SubscriptionTestCase(UserTestCase, MailingTestCase):
                 self.assertFalse(s.unsubscribed)
                 self.assert_(s.subscribed)
                 self.assertNotEqual(s.subscribe_date, old_subscribe_date)
+
+
+class HtmlEmailsTestCase(MailingTestCase):
+    """
+    TestCase for testing whether e-mails sent for newsletter
+    with send_html=True have HTML alternatives.
+    """
+
+    def setUp(self):
+        """
+        Set send_html to True on newsletter associated with this TestCase.
+        """
+
+        super(HtmlEmailsTestCase, self).setUp()
+
+        self.n.send_html = True
+        self.n.save()
+
+    def assertOneHtmlEmail(self):
+        """
+        Assert that there's exactly one email in outbox
+        and that it contains alternative with mimetype text/html.
+        """
+
+        # Make sure one mail is being sent out
+        self.assertEquals(len(mail.outbox), 1)
+
+        # Make sure mail contains HTML alternative
+        self.assertEmailAlternativesContainMimetype('text/html')
+
+    def test_subscription_email(self):
+        """ Assure subscription email has HTML alternative. """
+
+        self.send_email('subscribe')
+
+        self.assertOneHtmlEmail()
+
+    def test_unsubscription_email(self):
+        """ Assure unsubscription email has HTML alternative. """
+
+        self.send_email('unsubscribe')
+
+        self.assertOneHtmlEmail()
+
+    def test_update_email(self):
+        """ Assure update email has HTML alternative. """
+
+        self.send_email('update')
+
+        self.assertOneHtmlEmail()
+
+    def test_message_email(self):
+        """ Assure message email has HTML alternative. """
+
+        self.send_email('message')
+
+        self.assertOneHtmlEmail()
+
+
+class TextOnlyEmailsTestCase(MailingTestCase):
+    """
+    TestCase for testing whether e-mails sent for newsletter
+    with send_html=False are text only.
+    """
+
+    def setUp(self):
+        """
+        Set send_html to False on newsletter associated with this TestCase.
+        """
+
+        super(TextOnlyEmailsTestCase, self).setUp()
+
+        self.n.send_html = False
+        self.n.save()
+
+    def assertOneTextOnlyEmail(self):
+        """
+        Assert that there's exactly one email in outbox
+        and that it has no alternative content types.
+        """
+
+        # Make sure one mail is being sent out
+        self.assertEquals(len(mail.outbox), 1)
+
+        # Make sure mail is text only
+        self.assertEmailHasNoAlternatives()
+
+    def test_subscription_email(self):
+        """ Assure subscription email is text only. """
+
+        self.send_email('subscribe')
+
+        self.assertOneTextOnlyEmail()
+
+    def test_unsubscription_email(self):
+        """ Assure unsubscription email is text only. """
+
+        self.send_email('unsubscribe')
+
+        self.assertOneTextOnlyEmail()
+
+    def test_update_email(self):
+        """ Assure update email is text only. """
+
+        self.send_email('update')
+
+        self.assertOneTextOnlyEmail()
+
+    def test_message_email(self):
+        """ Assure message email is text only. """
+
+        self.send_email('message')
+
+        self.assertOneTextOnlyEmail()
