@@ -259,7 +259,52 @@ class SubscriptionTestCase(UserTestCase, MailingTestCase):
                 self.assertNotEqual(s.subscribe_date, old_subscribe_date)
 
 
-class HtmlEmailsTestCase(MailingTestCase):
+class AllEmailsTestsMixin(object):
+    """ Mixin for testing properties of sent e-mails for all message types. """
+
+    def assertSentEmailIsProper(self, action):
+        """
+        This method should be overridden in subclasses.
+        Assertions identical for all message types should be in this method.
+        """
+
+        raise NotImplementedError(
+            '%(class_name)s inherits from of AllEmailsTestsMixin '
+            'and should define assertSentEmailIsProper method.' % {
+                'class_name': self.__class__.__name__
+            }
+        )
+
+    def test_subscription_email(self):
+        """ Assure subscription email is proper. """
+
+        self.send_email('subscribe')
+
+        self.assertSentEmailIsProper('subscribe')
+
+    def test_unsubscription_email(self):
+        """ Assure unsubscription email is proper. """
+
+        self.send_email('unsubscribe')
+
+        self.assertSentEmailIsProper('unsubscribe')
+
+    def test_update_email(self):
+        """ Assure update email is proper. """
+
+        self.send_email('update')
+
+        self.assertSentEmailIsProper('update')
+
+    def test_message_email(self):
+        """ Assure message email is proper. """
+
+        self.send_email('message')
+
+        self.assertSentEmailIsProper('message')
+
+
+class HtmlEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
     """
     TestCase for testing whether e-mails sent for newsletter
     with send_html=True have HTML alternatives.
@@ -275,7 +320,7 @@ class HtmlEmailsTestCase(MailingTestCase):
         self.n.send_html = True
         self.n.save()
 
-    def assertOneHtmlEmail(self):
+    def assertSentEmailIsProper(self, action):
         """
         Assert that there's exactly one email in outbox
         and that it contains alternative with mimetype text/html.
@@ -287,36 +332,8 @@ class HtmlEmailsTestCase(MailingTestCase):
         # Make sure mail contains HTML alternative
         self.assertEmailAlternativesContainMimetype('text/html')
 
-    def test_subscription_email(self):
-        """ Assure subscription email has HTML alternative. """
 
-        self.send_email('subscribe')
-
-        self.assertOneHtmlEmail()
-
-    def test_unsubscription_email(self):
-        """ Assure unsubscription email has HTML alternative. """
-
-        self.send_email('unsubscribe')
-
-        self.assertOneHtmlEmail()
-
-    def test_update_email(self):
-        """ Assure update email has HTML alternative. """
-
-        self.send_email('update')
-
-        self.assertOneHtmlEmail()
-
-    def test_message_email(self):
-        """ Assure message email has HTML alternative. """
-
-        self.send_email('message')
-
-        self.assertOneHtmlEmail()
-
-
-class TextOnlyEmailsTestCase(MailingTestCase):
+class TextOnlyEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
     """
     TestCase for testing whether e-mails sent for newsletter
     with send_html=False are text only.
@@ -332,7 +349,7 @@ class TextOnlyEmailsTestCase(MailingTestCase):
         self.n.send_html = False
         self.n.save()
 
-    def assertOneTextOnlyEmail(self):
+    def assertSentEmailIsProper(self, action):
         """
         Assert that there's exactly one email in outbox
         and that it has no alternative content types.
@@ -343,31 +360,3 @@ class TextOnlyEmailsTestCase(MailingTestCase):
 
         # Make sure mail is text only
         self.assertEmailHasNoAlternatives()
-
-    def test_subscription_email(self):
-        """ Assure subscription email is text only. """
-
-        self.send_email('subscribe')
-
-        self.assertOneTextOnlyEmail()
-
-    def test_unsubscription_email(self):
-        """ Assure unsubscription email is text only. """
-
-        self.send_email('unsubscribe')
-
-        self.assertOneTextOnlyEmail()
-
-    def test_update_email(self):
-        """ Assure update email is text only. """
-
-        self.send_email('update')
-
-        self.assertOneTextOnlyEmail()
-
-    def test_message_email(self):
-        """ Assure message email is text only. """
-
-        self.send_email('message')
-
-        self.assertOneTextOnlyEmail()
