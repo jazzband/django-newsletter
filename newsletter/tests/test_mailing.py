@@ -15,11 +15,18 @@ class MailingTestCase(MailTestCase):
 
     fixtures = ['default_templates']
 
+    def get_newsletter_kwargs(self):
+        """ Returns the keyword arguments for instanciating the newsletter. """
+
+        return {
+            'title': 'Test newsletter',
+            'slug': 'test-newsletter',
+            'sender': 'Test Sender',
+            'email': 'test@testsender.com'
+        }
+
     def setUp(self):
-        self.n = Newsletter(title='Test newsletter',
-                            slug='test-newsletter',
-                            sender='Test Sender',
-                            email='test@testsender.com')
+        self.n = Newsletter(**self.get_newsletter_kwargs())
         self.n.save()
         self.n.site = get_default_sites()
 
@@ -310,15 +317,16 @@ class HtmlEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
     with send_html=True have HTML alternatives.
     """
 
-    def setUp(self):
+    def get_newsletter_kwargs(self):
         """
-        Set send_html to True on newsletter associated with this TestCase.
+        Update keyword arguments for instanciating the newsletter
+        with send_html = True.
         """
 
-        super(HtmlEmailsTestCase, self).setUp()
+        kwargs = super(HtmlEmailsTestCase, self).get_newsletter_kwargs()
+        kwargs.update(send_html=True)
 
-        self.n.send_html = True
-        self.n.save()
+        return kwargs
 
     def assertSentEmailIsProper(self, action):
         """
@@ -339,15 +347,16 @@ class TextOnlyEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
     with send_html=False are text only.
     """
 
-    def setUp(self):
+    def get_newsletter_kwargs(self):
         """
-        Set send_html to False on newsletter associated with this TestCase.
+        Update keyword arguments for instanciating the newsletter
+        with send_html = False.
         """
 
-        super(TextOnlyEmailsTestCase, self).setUp()
+        kwargs = super(TextOnlyEmailsTestCase, self).get_newsletter_kwargs()
+        kwargs.update(send_html=False)
 
-        self.n.send_html = False
-        self.n.save()
+        return kwargs
 
     def assertSentEmailIsProper(self, action):
         """
