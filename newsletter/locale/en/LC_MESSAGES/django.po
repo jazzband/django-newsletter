@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-18 15:39+0200\n"
+"POT-Creation-Date: 2013-06-25 13:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -30,12 +31,12 @@ msgstr ""
 msgid "Submissions"
 msgstr ""
 
-#: admin.py:90 models.py:479
+#: admin.py:90 models.py:483
 msgid "submission"
 msgstr ""
 
-#: admin.py:97 admin.py:231 admin.py:346 models.py:98 models.py:254
-#: models.py:430 models.py:602
+#: admin.py:97 admin.py:231 admin.py:346 models.py:102 models.py:258
+#: models.py:434 models.py:606
 msgid "newsletter"
 msgstr ""
 
@@ -75,7 +76,7 @@ msgstr ""
 msgid "Optional"
 msgstr ""
 
-#: admin.py:219 models.py:411 models.py:456 models.py:605
+#: admin.py:219 models.py:415 models.py:460 models.py:609
 msgid "message"
 msgstr ""
 
@@ -101,11 +102,11 @@ msgstr ""
 msgid "Unactivated"
 msgstr ""
 
-#: admin.py:378 models.py:267
+#: admin.py:378 models.py:271
 msgid "subscribe date"
 msgstr ""
 
-#: admin.py:385 models.py:275
+#: admin.py:385 models.py:279
 msgid "unsubscribe date"
 msgstr ""
 
@@ -148,7 +149,7 @@ msgstr ""
 msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
 msgstr ""
 
-#: admin_forms.py:111 admin_forms.py:123 admin_forms.py:156 models.py:162
+#: admin_forms.py:111 admin_forms.py:123 admin_forms.py:156 models.py:166
 msgid "name"
 msgstr ""
 
@@ -159,12 +160,12 @@ msgstr ""
 #: admin_forms.py:122
 #, python-format
 msgid ""
-"Name column not found. The name of this column should be either 'name' or '%"
-"s'."
+"Name column not found. The name of this column should be either 'name' or "
+"'%s'."
 msgstr ""
 
 #: admin_forms.py:133 admin_forms.py:145 admin_forms.py:157 models.py:37
-#: models.py:176
+#: models.py:180
 msgid "e-mail"
 msgstr ""
 
@@ -179,8 +180,8 @@ msgstr ""
 #, python-format
 msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
-"should be a field called 'name' or '%(name)s' and one called 'e-mail' or '%"
-"(e-mail)s'."
+"should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
+"'%(e-mail)s'."
 msgstr ""
 
 #: admin_forms.py:172
@@ -336,174 +337,182 @@ msgstr ""
 msgid "visible"
 msgstr ""
 
-#: models.py:99
+#: models.py:48
+msgid "send html"
+msgstr ""
+
+#: models.py:49
+msgid "Whether or not to send HTML versions of e-mails."
+msgstr ""
+
+#: models.py:103
 msgid "newsletters"
 msgstr ""
 
-#: models.py:157
+#: models.py:161
 msgid "user"
 msgstr ""
 
-#: models.py:162
+#: models.py:166
 msgid "optional"
 msgstr ""
 
-#: models.py:206
+#: models.py:210
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
 msgstr ""
 
-#: models.py:210
+#: models.py:214
 msgid "If user is set, email must be null and vice versa."
 msgstr ""
 
-#: models.py:252
+#: models.py:256
 msgid "IP address"
 msgstr ""
 
-#: models.py:259
+#: models.py:263
 msgid "activation code"
 msgstr ""
 
-#: models.py:264
+#: models.py:268
 msgid "subscribed"
 msgstr ""
 
-#: models.py:272
+#: models.py:276
 msgid "unsubscribed"
 msgstr ""
 
-#: models.py:280
+#: models.py:284
 #, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
 msgstr ""
 
-#: models.py:287
+#: models.py:291
 #, python-format
 msgid "%(email)s to %(newsletter)s"
 msgstr ""
 
-#: models.py:293
+#: models.py:297
 msgid "subscription"
 msgstr ""
 
-#: models.py:294
+#: models.py:298
 msgid "subscriptions"
 msgstr ""
 
-#: models.py:390
+#: models.py:394
 msgid ""
 "Sort order determines the order in which articles are concatenated in a post."
 msgstr ""
 
-#: models.py:392
+#: models.py:396
 msgid "sort order"
 msgstr ""
 
-#: models.py:395 models.py:426
+#: models.py:399 models.py:430
 msgid "title"
 msgstr ""
 
-#: models.py:396
+#: models.py:400
 msgid "text"
 msgstr ""
 
-#: models.py:399
+#: models.py:403
 msgid "link"
 msgstr ""
 
-#: models.py:405
+#: models.py:409
 msgid "image"
 msgstr ""
 
-#: models.py:416
+#: models.py:420
 msgid "article"
 msgstr ""
 
-#: models.py:417
+#: models.py:421
 msgid "articles"
 msgstr ""
 
-#: models.py:427
+#: models.py:431
 msgid "slug"
 msgstr ""
 
-#: models.py:435
+#: models.py:439
 msgid "created"
 msgstr ""
 
-#: models.py:438
+#: models.py:442
 msgid "modified"
 msgstr ""
 
-#: models.py:443
+#: models.py:447
 #, python-format
 msgid "%(title)s in %(newsletter)s"
 msgstr ""
 
-#: models.py:457
+#: models.py:461
 msgid "messages"
 msgstr ""
 
-#: models.py:480
+#: models.py:484
 msgid "submissions"
 msgstr ""
 
-#: models.py:483
+#: models.py:487
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
 msgstr ""
 
-#: models.py:492
+#: models.py:496
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
 msgstr ""
 
-#: models.py:537
+#: models.py:541
 #, python-format
 msgid "Submitting message to: %s."
 msgstr ""
 
-#: models.py:546
+#: models.py:550
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
 msgstr ""
 
-#: models.py:570
+#: models.py:574
 #, python-format
 msgid "Submission of message %s"
 msgstr ""
 
-#: models.py:611
+#: models.py:615
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
 msgstr ""
 
-#: models.py:613
+#: models.py:617
 msgid "recipients"
 msgstr ""
 
-#: models.py:618
+#: models.py:622
 msgid "publication date"
 msgstr ""
 
-#: models.py:622
+#: models.py:626
 msgid "publish"
 msgstr ""
 
-#: models.py:623
+#: models.py:627
 msgid "Publish in archive."
 msgstr ""
 
-#: models.py:627
+#: models.py:631
 msgid "prepared"
 msgstr ""
 
-#: models.py:631
+#: models.py:635
 msgid "sent"
 msgstr ""
 
-#: models.py:635
+#: models.py:639
 msgid "sending"
 msgstr ""
 

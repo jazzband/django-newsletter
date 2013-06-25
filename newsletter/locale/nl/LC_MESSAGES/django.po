@@ -3,139 +3,139 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# dokterbob <mathijs@mathijsfietst.nl>, 2011.
-#  <mathijs@mathijsfietst.nl>, 2013.
-#   <mathijs@mathijsfietst.nl>, 2012.
+# dokterbob <mathijs@mathijsfietst.nl>, 2011
+# dokterbob <mathijs@mathijsfietst.nl>, 2013
+# dokterbob <mathijs@mathijsfietst.nl>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: http://github.com/dokterbob/django-newsletter/issues\n"
-"POT-Creation-Date: 2013-03-08 14:14+0100\n"
-"PO-Revision-Date: 2013-04-15 13:08+0000\n"
+"POT-Creation-Date: 2013-06-18 15:39+0200\n"
+"PO-Revision-Date: 2013-06-18 13:46+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/django-newsletter/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: admin.py:54
+#: admin.py:56
 msgid "Messages"
 msgstr "Berichten"
 
-#: admin.py:62
+#: admin.py:64
 #: templates/admin/newsletter/subscription/confirmimportform.html:16
 #: templates/admin/newsletter/subscription/importform.html:16
 msgid "Subscriptions"
 msgstr "Abonnementen"
 
-#: admin.py:68
+#: admin.py:70
 msgid "Submissions"
 msgstr "Zendingen"
 
-#: admin.py:88 models.py:536
+#: admin.py:90 models.py:479
 msgid "submission"
 msgstr "zending"
 
-#: admin.py:95 admin.py:229 admin.py:352 models.py:157 models.py:313
-#: models.py:487 models.py:659
+#: admin.py:97 admin.py:231 admin.py:346 models.py:98 models.py:254
+#: models.py:430 models.py:602
 msgid "newsletter"
 msgstr "nieuwsbrief"
 
-#: admin.py:103
+#: admin.py:105
 msgid "publish date"
 msgstr "publicatiedatum"
 
-#: admin.py:129
+#: admin.py:131
 msgid "Sent."
 msgstr "Verzonden."
 
-#: admin.py:132
+#: admin.py:134
 msgid "Delayed submission."
 msgstr "Wordt later verzonden."
 
-#: admin.py:134
+#: admin.py:136
 msgid "Submitting."
 msgstr "Wordt nu verzonden."
 
-#: admin.py:136
+#: admin.py:138
 msgid "Not sent."
 msgstr "Niet verzonden."
 
-#: admin.py:137 admin.py:377
+#: admin.py:139 admin.py:371
 msgid "Status"
 msgstr "Status"
 
-#: admin.py:144
+#: admin.py:146
 msgid "Submission already sent."
 msgstr "Zending is al verzonden."
 
-#: admin.py:150
+#: admin.py:152
 msgid "Your submission is being sent."
 msgstr "Uw zending wordt verzonden."
 
-#: admin.py:190
+#: admin.py:192
 msgid "Optional"
 msgstr "Optioneel"
 
-#: admin.py:217 models.py:468 models.py:513 models.py:662
+#: admin.py:219 models.py:411 models.py:456 models.py:605
 msgid "message"
 msgstr "bericht"
 
-#: admin.py:221 templates/admin/newsletter/message/change_form.html:9
-#: templates/admin/newsletter/message/preview.html:11
+#: admin.py:223 templates/admin/newsletter/message/change_form.html:9
+#: templates/admin/newsletter/message/preview.html:14
 msgid "Preview"
 msgstr "Voorvertonen"
 
-#: admin.py:248 views.py:393
+#: admin.py:251 views.py:486
 msgid ""
 "No HTML template associated with the newsletter this message belongs to."
 msgstr "Er is geen HTML-template geässocieerd met de nieuwsbrief die bij dit bericht hoort."
 
-#: admin.py:372
+#: admin.py:366
 msgid "Subscribed"
 msgstr "Aangemeld"
 
-#: admin.py:374
+#: admin.py:368
 msgid "Unsubscribed"
 msgstr "Opzeggen"
 
-#: admin.py:376
+#: admin.py:370
 msgid "Unactivated"
 msgstr "Ongeactiveerd"
 
-#: admin.py:384 models.py:326
+#: admin.py:378 models.py:267
 msgid "subscribe date"
 msgstr "abonneerdatum"
 
-#: admin.py:391 models.py:334
+#: admin.py:385 models.py:275
 msgid "unsubscribe date"
 msgstr "opzegdatum"
 
-#: admin.py:397
+#: admin.py:391
 #, python-format
 msgid "%s user has been successfully subscribed."
 msgid_plural "%s users have been successfully subscribed."
 msgstr[0] "%s gebruiker is succesvol ingeschreven."
 msgstr[1] "%s gebruikers zijn succesvol ingeschreven."
 
-#: admin.py:400
+#: admin.py:394
 msgid "Subscribe selected users"
 msgstr "Schrijf geselecteerde gebruikers in"
 
-#: admin.py:405
+#: admin.py:399
 #, python-format
 msgid "%s user has been successfully unsubscribed."
 msgid_plural "%s users have been successfully unsubscribed."
 msgstr[0] "%s gebruiker is succesvol uitgeschreven."
 msgstr[1] "%s gebruikers zijn succesvol uitgeschreven."
 
-#: admin.py:408
+#: admin.py:402
 msgid "Unsubscribe selected users"
 msgstr "Geselecteerde gebruikers uitschrijven"
 
-#: admin.py:444
+#: admin.py:438
 #, python-format
 msgid "%s subscriptions have been successfully added."
 msgstr "%s aanmeldingen zijn succesvol toegevoegd."
@@ -152,8 +152,7 @@ msgstr "E-mail adres %(email)s te lang, maximale lengte is %(email_length)s kara
 msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
 msgstr "Naam %(name)s te lang, maximale lengte is %(name_length)s karakters."
 
-#: admin_forms.py:111 admin_forms.py:123 admin_forms.py:156 models.py:80
-#: models.py:221
+#: admin_forms.py:111 admin_forms.py:123 admin_forms.py:156 models.py:162
 msgid "name"
 msgstr "naam"
 
@@ -168,8 +167,8 @@ msgid ""
 "'%s'."
 msgstr "Naam kolom niet gevonden. De naam van deze kolom moet 'name' of '%s' zijn."
 
-#: admin_forms.py:133 admin_forms.py:145 admin_forms.py:157 models.py:110
-#: models.py:235
+#: admin_forms.py:133 admin_forms.py:145 admin_forms.py:157 models.py:37
+#: models.py:176
 msgid "e-mail"
 msgstr "e-mail"
 
@@ -234,11 +233,11 @@ msgstr "Er zijn geen adressen gevonden in dit bestand."
 #: templates/admin/newsletter/subscription/confirmimportform.html:12
 #: templates/admin/newsletter/subscription/importform.html:12
 #: templates/newsletter/common.html:7
-#: templates/newsletter/newsletter_detail.html:7
-#: templates/newsletter/newsletter_list.html:11
-#: templates/newsletter/newsletter_list.html:29
-#: templates/newsletter/subscription_activate.html:3
-#: templates/newsletter/subscription_activate.html:6
+#: templates/newsletter/newsletter_detail.html:11
+#: templates/newsletter/newsletter_list.html:15
+#: templates/newsletter/newsletter_list.html:33
+#: templates/newsletter/subscription_activate.html:5
+#: templates/newsletter/subscription_activate.html:8
 msgid "Newsletter"
 msgstr "Nieuwsbrief"
 
@@ -260,20 +259,15 @@ msgstr "U moet bevestigen om door te kunnen gaan."
 msgid "Confirm import"
 msgstr "Bevestig import"
 
-#: admin_forms.py:407
-#, python-format
-msgid "There was an error parsing your template: %s"
-msgstr "Er is een fout bij het inlezen van uw sjabloon: %s"
-
-#: admin_forms.py:429 admin_forms.py:437
+#: admin_forms.py:405 admin_forms.py:413
 msgid "If a user has been selected this field should remain empty."
 msgstr "Als er een gebruiker is geselecteerd dient dit veld leeg te blijven."
 
-#: admin_forms.py:447
+#: admin_forms.py:423
 msgid "Either a user must be selected or an email address must be specified."
 msgstr "Er moet óf een gebruiker of een e-mail adres worden ingevoerd."
 
-#: admin_forms.py:470
+#: admin_forms.py:446
 msgid ""
 "This message has already been published in some other submission. Messages "
 "can only be published once."
@@ -326,307 +320,233 @@ msgstr "De verificatiecode die door u is opgegeven komt niet overeen."
 msgid "Activation code"
 msgstr "Verificatiecode"
 
-#: models.py:30 templates/newsletter/newsletter_list.html:13
-#: templates/newsletter/subscription_subscribe.html:16
-#: templates/newsletter/subscription_subscribe_user.html:19
-#: templates/newsletter/subscription_update.html:16
-msgid "Subscribe"
-msgstr "Abonneer"
-
-#: models.py:31 templates/newsletter/subscription_unsubscribe.html:12
-#: templates/newsletter/subscription_unsubscribe_user.html:20
-msgid "Unsubscribe"
-msgstr "Opzeggen"
-
 #: models.py:32
-msgid "Update"
-msgstr "Aanpassen"
-
-#: models.py:33 templates/admin/newsletter/message/preview.html:9
-msgid "Message"
-msgstr "Bericht"
-
-#: models.py:57
-msgid "e-mail template"
-msgstr "e-mail sjabloon"
-
-#: models.py:58
-msgid "e-mail templates"
-msgstr "e-mail sjablonen"
-
-#: models.py:70 models.py:80
-msgid "Default"
-msgstr "Standaard"
-
-#: models.py:84
-msgid "action"
-msgstr "actie"
-
-#: models.py:87
-msgid "subject"
-msgstr "onderwerp"
-
-#: models.py:90 templates/admin/newsletter/message/preview.html:28
-msgid "Text"
-msgstr "Tekst"
-
-#: models.py:91
-msgid ""
-"Plain text e-mail message. Available objects: date, subscription, site, "
-"submission, newsletter, STATIC_URL, MEDIA_URL and message."
-msgstr "Bericht als platte tekst. Beschikbare objecten: date, subscription, site, submission, newsletter, STATIC_URL, MEDIA_URL en message."
-
-#: models.py:96 templates/admin/newsletter/message/preview.html:24
-msgid "HTML"
-msgstr "HTML"
-
-#: models.py:96
-msgid "HTML e-mail alternative."
-msgstr "HTML e-mail alternatief."
-
-#: models.py:105
 msgid "newsletter title"
 msgstr "Nieuwsbrief titel"
 
-#: models.py:110
+#: models.py:37
 msgid "Sender e-mail"
 msgstr "E-mail verzender"
 
-#: models.py:113
+#: models.py:40
 msgid "sender"
 msgstr "verzender"
 
-#: models.py:113
+#: models.py:40
 msgid "Sender name"
 msgstr "Naam verzender"
 
-#: models.py:117
+#: models.py:44
 msgid "visible"
 msgstr "zichtbaar"
 
-#: models.py:128
-msgid "subscribe template"
-msgstr "abonneer-sjabloon"
-
-#: models.py:135
-msgid "unsubscribe template"
-msgstr "opzeg-sjabloon"
-
-#: models.py:142
-msgid "update template"
-msgstr "aanpassings-sjabloon"
-
-#: models.py:149
-msgid "message template"
-msgstr "bericht sjabloon"
-
-#: models.py:158
+#: models.py:99
 msgid "newsletters"
 msgstr "nieuwsbrieven"
 
-#: models.py:216
+#: models.py:157
 msgid "user"
 msgstr "gebruiker"
 
-#: models.py:221
+#: models.py:162
 msgid "optional"
 msgstr "optioneel"
 
-#: models.py:265
+#: models.py:206
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
 msgstr "Er is geen e-mail adres noch een gebruikersnaam ingesteld. Dit is vragen om inconsistentie!"
 
-#: models.py:269
+#: models.py:210
 msgid "If user is set, email must be null and vice versa."
 msgstr "Als er een gebruiker is ingesteld moet e-mail null zijn en vice versa."
 
-#: models.py:311
+#: models.py:252
 msgid "IP address"
 msgstr "IP-adres"
 
-#: models.py:318
+#: models.py:259
 msgid "activation code"
 msgstr "activatiecode"
 
-#: models.py:323
+#: models.py:264
 msgid "subscribed"
 msgstr "aangemeld"
 
-#: models.py:331
+#: models.py:272
 msgid "unsubscribed"
 msgstr "opgezegd"
 
-#: models.py:339
+#: models.py:280
 #, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
 msgstr "%(name)s <%(email)s> op %(newsletter)s"
 
-#: models.py:346
+#: models.py:287
 #, python-format
 msgid "%(email)s to %(newsletter)s"
 msgstr "%(email)s aan %(newsletter)s"
 
-#: models.py:352
+#: models.py:293
 msgid "subscription"
 msgstr "abonnement"
 
-#: models.py:353
+#: models.py:294
 msgid "subscriptions"
 msgstr "abonnementen"
 
-#: models.py:447
+#: models.py:390
 msgid ""
 "Sort order determines the order in which articles are concatenated in a "
 "post."
 msgstr "Sorteer volgorde bepaald de volgorde waarin artikelen in een bericht achter elkaar gezet worden."
 
-#: models.py:449
+#: models.py:392
 msgid "sort order"
 msgstr "sorteer volgorde"
 
-#: models.py:452 models.py:483
+#: models.py:395 models.py:426
 msgid "title"
 msgstr "titel"
 
-#: models.py:453
+#: models.py:396
 msgid "text"
 msgstr "tekst"
 
-#: models.py:456
+#: models.py:399
 msgid "link"
 msgstr "koppeling"
 
-#: models.py:462
+#: models.py:405
 msgid "image"
 msgstr "afbeelding"
 
-#: models.py:473
+#: models.py:416
 msgid "article"
 msgstr "artikel"
 
-#: models.py:474
+#: models.py:417
 msgid "articles"
 msgstr "artikelen"
 
-#: models.py:484
+#: models.py:427
 msgid "slug"
 msgstr "slug"
 
-#: models.py:492
+#: models.py:435
 msgid "created"
 msgstr "aangemaakt"
 
-#: models.py:495
+#: models.py:438
 msgid "modified"
 msgstr "verandert"
 
-#: models.py:500
+#: models.py:443
 #, python-format
 msgid "%(title)s in %(newsletter)s"
 msgstr "%(title)s in %(newsletter)s"
 
-#: models.py:514
+#: models.py:457
 msgid "messages"
 msgstr "berichten"
 
-#: models.py:537
+#: models.py:480
 msgid "submissions"
 msgstr "zendingen"
 
-#: models.py:540
+#: models.py:483
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
 msgstr "%(newsletter)s op %(publish_date)s"
 
-#: models.py:549
+#: models.py:492
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
 msgstr "Versturen van %(submission)s aan %(count)d mensen"
 
-#: models.py:594
+#: models.py:537
 #, python-format
 msgid "Submitting message to: %s."
 msgstr "Versturen bericht aan: %s"
 
-#: models.py:603
+#: models.py:546
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
 msgstr "Bericht %(subscription)s is gefaald met fout: %(error)s"
 
-#: models.py:627
+#: models.py:570
 #, python-format
 msgid "Submission of message %s"
 msgstr "Verzending van bericht %s"
 
-#: models.py:668
+#: models.py:611
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
 msgstr "Als u er geen selecteerd, zal het systeem automatisch de abonnees voor u opzoeken."
 
-#: models.py:670
+#: models.py:613
 msgid "recipients"
 msgstr "geaddresseerden"
 
-#: models.py:675
+#: models.py:618
 msgid "publication date"
 msgstr "publicatiedatum"
 
-#: models.py:679
+#: models.py:622
 msgid "publish"
 msgstr "publiceer"
 
-#: models.py:680
+#: models.py:623
 msgid "Publish in archive."
 msgstr "Publiceer in archief."
 
-#: models.py:684
+#: models.py:627
 msgid "prepared"
 msgstr "voorbereid"
 
-#: models.py:688
+#: models.py:631
 msgid "sent"
 msgstr "verzonden"
 
-#: models.py:692
+#: models.py:635
 msgid "sending"
 msgstr "verzenden"
 
-#: views.py:58
+#: views.py:109
 msgid "Your changes have been saved."
 msgstr "Je veranderingen zijn opgeslagen."
 
-#: views.py:106
+#: views.py:212
 #, python-format
 msgid "You have been subscribed to %s."
 msgstr "Je bent geaboneerd op %s."
 
-#: views.py:109
+#: views.py:216
 #, python-format
 msgid "User %(rs)s subscribed to %(my_newsletter)s."
 msgstr "Gebruiker %(rs)s geaboneerd op %(my_newsletter)s."
 
-#: views.py:116
+#: views.py:224
 #, python-format
 msgid "You are already subscribed to %s."
 msgstr "Je bent al geaboneerd op %s."
 
-#: views.py:149
+#: views.py:250
 #, python-format
 msgid "You have been unsubscribed from %s."
 msgstr "Je bent uitgeschreven van %s."
 
-#: views.py:153
+#: views.py:255
 #, python-format
 msgid "User %(rs)s unsubscribed from %(my_newsletter)s."
 msgstr "Gebruiker %(rs)s uitgeschreven van %(my_newsletter)s."
 
-#: views.py:164
+#: views.py:265
 #, python-format
 msgid "You are not subscribed to %s."
 msgstr "Je bent niet ingeschreven op %s."
 
-#: views.py:319
+#: views.py:400
 #, python-format
 msgid "Updated subscription %(subscription)s through the web."
 msgstr "Inschrijving %(subscription)s aangepast via het web."
@@ -636,37 +556,49 @@ msgid "Submitting queued newsletter mailings"
 msgstr "Bezig met versturen van klaarstaande zendingen"
 
 #: templates/admin/newsletter/message/change_form.html:7
-#: templates/admin/newsletter/submission/change_form.html:13
+#: templates/admin/newsletter/submission/change_form.html:15
 msgid "History"
 msgstr "Geschiedenis"
 
 #: templates/admin/newsletter/message/change_form.html:8
-#: templates/admin/newsletter/submission/change_form.html:15
+#: templates/admin/newsletter/submission/change_form.html:16
 msgid "View on site"
 msgstr "Bekijk op site"
 
-#: templates/admin/newsletter/message/preview.html:3
-#: templates/admin/newsletter/message/preview.html:17
+#: templates/admin/newsletter/message/preview.html:6
+#: templates/admin/newsletter/message/preview.html:20
 msgid "Preview message"
 msgstr "Voorvertoning bericht"
 
-#: templates/admin/newsletter/message/preview.html:7
+#: templates/admin/newsletter/message/preview.html:10
 #: templates/admin/newsletter/subscription/confirmimportform.html:8
 #: templates/admin/newsletter/subscription/importform.html:8
 msgid "Home"
 msgstr "Home"
 
-#: templates/admin/newsletter/message/preview.html:20
+#: templates/admin/newsletter/message/preview.html:12
+msgid "Message"
+msgstr "Bericht"
+
+#: templates/admin/newsletter/message/preview.html:23
 #: templates/admin/newsletter/subscription/importform.html:28
 msgid "Change"
 msgstr "Verander"
 
-#: templates/admin/newsletter/message/preview.html:21
+#: templates/admin/newsletter/message/preview.html:24
 #: templates/admin/newsletter/subscription/importform.html:29
 msgid "Create submission"
 msgstr "Maak zending aan"
 
-#: templates/admin/newsletter/submission/change_form.html:16
+#: templates/admin/newsletter/message/preview.html:27
+msgid "HTML"
+msgstr "HTML"
+
+#: templates/admin/newsletter/message/preview.html:31
+msgid "Text"
+msgstr "Tekst"
+
+#: templates/admin/newsletter/submission/change_form.html:17
 msgid "Submit"
 msgstr "Verzend"
 
@@ -695,105 +627,113 @@ msgstr "Bevestig"
 msgid "Upload"
 msgstr "Upload"
 
-#: templates/newsletter/newsletter_detail.html:3
+#: templates/newsletter/newsletter_detail.html:6
 msgid "Newsletter detail"
 msgstr "Nieuwsbrief detail"
 
-#: templates/newsletter/newsletter_list.html:3
+#: templates/newsletter/newsletter_list.html:6
 msgid "Newsletter list"
 msgstr "Nieuwsbrieven lijst"
 
-#: templates/newsletter/newsletter_list.html:24
+#: templates/newsletter/newsletter_list.html:17
+#: templates/newsletter/subscription_subscribe.html:25
+#: templates/newsletter/subscription_subscribe_user.html:23
+msgid "Subscribe"
+msgstr "Abonneer"
+
+#: templates/newsletter/newsletter_list.html:28
 msgid "Update subscriptions"
 msgstr "Pas inschrijvingen aan"
 
-#: templates/newsletter/submission_archive.html:3
-#: templates/newsletter/submission_archive.html:7
+#: templates/newsletter/submission_archive.html:5
+#: templates/newsletter/submission_archive.html:10
 msgid "Newsletter archive"
 msgstr "Nieuwsbrief archief"
 
-#: templates/newsletter/subscription_activate.html:3
-#: templates/newsletter/subscription_activate.html:6
+#: templates/newsletter/subscription_activate.html:5
+#: templates/newsletter/subscription_activate.html:8
 msgid "activate"
 msgstr "activeer"
 
-#: templates/newsletter/subscription_activate.html:10
+#: templates/newsletter/subscription_activate.html:12
 msgid "Your subscription has successfully been activated."
 msgstr "Je inschrijving is succesvol geactiveerd."
 
-#: templates/newsletter/subscription_activate.html:13
+#: templates/newsletter/subscription_activate.html:15
 msgid "You have successfully been unsubscribed."
 msgstr "Je bent succesvol uitgeschreven."
 
-#: templates/newsletter/subscription_activate.html:16
+#: templates/newsletter/subscription_activate.html:18
 msgid "Your subscription has successfully been updated."
 msgstr "Je inschrijving is succesvol aangepast."
 
-#: templates/newsletter/subscription_activate.html:23
+#: templates/newsletter/subscription_activate.html:25
 msgid "Activate"
 msgstr "Activeer"
 
-#: templates/newsletter/subscription_subscribe.html:3
 #: templates/newsletter/subscription_subscribe.html:5
-#: templates/newsletter/subscription_subscribe_user.html:3
-#: templates/newsletter/subscription_subscribe_user.html:5
+#: templates/newsletter/subscription_subscribe.html:8
+#: templates/newsletter/subscription_subscribe_user.html:6
+#: templates/newsletter/subscription_subscribe_user.html:9
 msgid "Newsletter subscribe"
 msgstr "Aboneer op nieuwsbrief"
 
-#: templates/newsletter/subscription_subscribe.html:7
-#: templates/newsletter/subscription_update.html:7
+#: templates/newsletter/subscription_subscribe.html:11
+#: templates/newsletter/subscription_update.html:11
 msgid ""
 "Due to a technical error we were not able to submit your confirmation email."
 " This could be because your email address is invalid."
 msgstr "Wegens technische omstandigheden is het niet gelukt om een bevestigingsmail te versturen. Misschien heb je een ongeldig e-mail adres ingevuld."
 
-#: templates/newsletter/subscription_subscribe.html:8
-#: templates/newsletter/subscription_update.html:8
-msgid ""
-"If the error persists, please don't hesitate to contact us at the following "
-"email address:"
-msgstr "Als het probleem zich blijft voordoen, aarzel dan niet om ons een bericht te sturen op het volgende emailadres:"
-
-#: templates/newsletter/subscription_subscribe.html:11
+#: templates/newsletter/subscription_subscribe.html:20
 msgid ""
 "Your subscription was successfully recieved and an activation email has been"
 " sent to you. In that email you will find a link which you need to follow in"
 " order to activate your subscription."
 msgstr "Je inschrijving is succesvol ontvangen en een activiatie e-mail is verstuurd. In deze mail vind je een link die gevolgd moet worden om je inschrijving te activeren."
 
-#: templates/newsletter/subscription_subscribe_user.html:16
+#: templates/newsletter/subscription_subscribe_user.html:20
 msgid "Do you want to subscribe to this newsletter?"
 msgstr "Wil je je inschrijven op deze nieuwsbrief?"
 
-#: templates/newsletter/subscription_unsubscribe.html:3
 #: templates/newsletter/subscription_unsubscribe.html:5
-#: templates/newsletter/subscription_unsubscribe_user.html:3
-#: templates/newsletter/subscription_unsubscribe_user.html:5
+#: templates/newsletter/subscription_unsubscribe.html:8
+#: templates/newsletter/subscription_unsubscribe_user.html:6
+#: templates/newsletter/subscription_unsubscribe_user.html:9
 msgid "Newsletter unsubscribe"
 msgstr "Zeg nieuwsbrief op"
 
-#: templates/newsletter/subscription_unsubscribe.html:7
+#: templates/newsletter/subscription_unsubscribe.html:10
 msgid ""
 "Your unsubscription request has successfully been recieved. An email has "
 "been sent to you with a link you need to follow in order to confirm your "
 "unsubscription."
 msgstr "Je uitschrijfverzoek is succesvol ontvangen. Er is een e-mail naar je verstuurd met een link die je moet volgen om de uitschrijving te bevestigen."
 
-#: templates/newsletter/subscription_unsubscribe_user.html:17
+#: templates/newsletter/subscription_unsubscribe.html:15
+#: templates/newsletter/subscription_unsubscribe_user.html:24
+msgid "Unsubscribe"
+msgstr "Opzeggen"
+
+#: templates/newsletter/subscription_unsubscribe_user.html:21
 msgid "Do you want to unsubscribe from this newsletter?"
 msgstr "Wil je je uitschrijven van deze nieuwsbrief?"
 
-#: templates/newsletter/subscription_update.html:3
 #: templates/newsletter/subscription_update.html:5
+#: templates/newsletter/subscription_update.html:8
 msgid "Newsletter update"
 msgstr "Nieuwsbrief aanpassen"
 
-#: templates/newsletter/subscription_update.html:11
+#: templates/newsletter/subscription_update.html:21
 msgid ""
 "Your update request was successfully recieved and an activation email has "
 "been sent to you. In that email you will find a link which you need to "
 "follow in order to update your subscription."
 msgstr "Je update-verzoek is succesvol ontvangen en een activiatiemail is naar je verstuurd. In deze e-mail vind je een link die je moet aanklikken om je aanpassingen te bevestigen."
+
+#: templates/newsletter/subscription_update.html:26
+msgid "Update subscription"
+msgstr "Pas inschrijving aan"
 
 #: templates/widget/image.html:2
 msgid "Currently:"
