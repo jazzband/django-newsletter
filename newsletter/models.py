@@ -46,7 +46,7 @@ class Newsletter(models.Model):
 
     send_html = models.BooleanField(
         default=True, verbose_name=_('send html'),
-        help_text=_('Whether HTML version of e-mails should be sent')
+        help_text=_('Whether or not to send HTML versions of e-mails.')
     )
 
     objects = models.Manager()
