@@ -14,4 +14,5 @@ Translators
 - Farsi: Ali Javadi [rohamn] and Hooman Zabeti [hoomanz]
 - French: Santiago Malter-Terrada [smalter]
 - German: Jannis [jnns]
-
+- Russian: Eugene Akentyev [ak3n]
+- Dutch: Mathijs de Bruin [dokterbob]
