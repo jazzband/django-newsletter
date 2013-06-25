@@ -65,6 +65,20 @@ class MailTestCase(TestCase):
                 'Email subject does not contain "%s".' % value
             )
 
+    def assertEmailHasNoAlternatives(self, email=None):
+        for my_email in self.get_email_list(email):
+            self.assert_(
+                not getattr(my_email, 'alternatives', None),
+                'Email has alternative content types.'
+            )
+
+    def assertEmailAlternativesContainMimetype(self, mimetype, email=None):
+        for my_email in self.get_email_list(email):
+            self.assert_(
+                mimetype in (mime for content, mime in my_email.alternatives),
+                'Email does not contain "%s" alternative.' % mimetype
+            )
+
 
 class UserTestCase(TestCase):
     def setUp(self):
