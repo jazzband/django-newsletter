@@ -13,8 +13,6 @@ from .utils import MailTestCase, UserTestCase
 
 class MailingTestCase(MailTestCase):
 
-    fixtures = ['default_templates']
-
     def get_newsletter_kwargs(self):
         """ Returns the keyword arguments for instanciating the newsletter. """
 
