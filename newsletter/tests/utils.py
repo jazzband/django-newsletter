@@ -10,6 +10,8 @@ from django.test.client import Client
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 
+from django.template import loader, TemplateDoesNotExist
+
 from django_webtest import WebTest
 
 
@@ -79,6 +81,15 @@ class MailTestCase(TestCase):
                 'Email does not contain "%s" alternative.' % mimetype
             )
 
+    def assertEmailAlternativeBodyContains(self, value, email=None):
+        for my_email in self.get_email_list(email):
+            self.assert_(
+                all(
+                    value in content for content, mime in my_email.alternatives
+                ),
+                'Email does not contain "%s" in alternative body.' % value
+            )
+
 
 class UserTestCase(TestCase):
     def setUp(self):
@@ -118,3 +129,11 @@ class ComparingTestCase(TestCase):
     def assertWithin(self, value, min, max):
         self.assert_(value > min)
         self.assert_(value < max)
+
+
+def template_exists(template_name):
+    try:
+        loader.get_template(template_name)
+        return True
+    except TemplateDoesNotExist:
+        return False
