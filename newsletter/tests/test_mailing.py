@@ -1,25 +1,33 @@
+import itertools
+
 from datetime import timedelta
 
 from django.core import mail
 
+from django.utils import unittest
 from django.utils.timezone import now
 
 from ..models import (
     Newsletter, Subscription, Submission, Message, Article, get_default_sites
 )
 
-from .utils import MailTestCase, UserTestCase
+from .utils import MailTestCase, UserTestCase, template_exists
 
 
 class MailingTestCase(MailTestCase):
 
-    fixtures = ['default_templates']
+    def get_newsletter_kwargs(self):
+        """ Returns the keyword arguments for instanciating the newsletter. """
+
+        return {
+            'title': 'Test newsletter',
+            'slug': 'test-newsletter',
+            'sender': 'Test Sender',
+            'email': 'test@testsender.com'
+        }
 
     def setUp(self):
-        self.n = Newsletter(title='Test newsletter',
-                            slug='test-newsletter',
-                            sender='Test Sender',
-                            email='test@testsender.com')
+        self.n = Newsletter(**self.get_newsletter_kwargs())
         self.n.save()
         self.n.site = get_default_sites()
 
@@ -259,23 +267,69 @@ class SubscriptionTestCase(UserTestCase, MailingTestCase):
                 self.assertNotEqual(s.subscribe_date, old_subscribe_date)
 
 
-class HtmlEmailsTestCase(MailingTestCase):
+class AllEmailsTestsMixin(object):
+    """ Mixin for testing properties of sent e-mails for all message types. """
+
+    def assertSentEmailIsProper(self, action):
+        """
+        This method should be overridden in subclasses.
+        Assertions identical for all message types should be in this method.
+        """
+
+        raise NotImplementedError(
+            '%(class_name)s inherits from of AllEmailsTestsMixin '
+            'and should define assertSentEmailIsProper method.' % {
+                'class_name': self.__class__.__name__
+            }
+        )
+
+    def test_subscription_email(self):
+        """ Assure subscription email is proper. """
+
+        self.send_email('subscribe')
+
+        self.assertSentEmailIsProper('subscribe')
+
+    def test_unsubscription_email(self):
+        """ Assure unsubscription email is proper. """
+
+        self.send_email('unsubscribe')
+
+        self.assertSentEmailIsProper('unsubscribe')
+
+    def test_update_email(self):
+        """ Assure update email is proper. """
+
+        self.send_email('update')
+
+        self.assertSentEmailIsProper('update')
+
+    def test_message_email(self):
+        """ Assure message email is proper. """
+
+        self.send_email('message')
+
+        self.assertSentEmailIsProper('message')
+
+
+class HtmlEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
     """
     TestCase for testing whether e-mails sent for newsletter
     with send_html=True have HTML alternatives.
     """
 
-    def setUp(self):
+    def get_newsletter_kwargs(self):
         """
-        Set send_html to True on newsletter associated with this TestCase.
+        Update keyword arguments for instanciating the newsletter
+        with send_html = True.
         """
 
-        super(HtmlEmailsTestCase, self).setUp()
+        kwargs = super(HtmlEmailsTestCase, self).get_newsletter_kwargs()
+        kwargs.update(send_html=True)
 
-        self.n.send_html = True
-        self.n.save()
+        return kwargs
 
-    def assertOneHtmlEmail(self):
+    def assertSentEmailIsProper(self, action):
         """
         Assert that there's exactly one email in outbox
         and that it contains alternative with mimetype text/html.
@@ -287,52 +341,25 @@ class HtmlEmailsTestCase(MailingTestCase):
         # Make sure mail contains HTML alternative
         self.assertEmailAlternativesContainMimetype('text/html')
 
-    def test_subscription_email(self):
-        """ Assure subscription email has HTML alternative. """
 
-        self.send_email('subscribe')
-
-        self.assertOneHtmlEmail()
-
-    def test_unsubscription_email(self):
-        """ Assure unsubscription email has HTML alternative. """
-
-        self.send_email('unsubscribe')
-
-        self.assertOneHtmlEmail()
-
-    def test_update_email(self):
-        """ Assure update email has HTML alternative. """
-
-        self.send_email('update')
-
-        self.assertOneHtmlEmail()
-
-    def test_message_email(self):
-        """ Assure message email has HTML alternative. """
-
-        self.send_email('message')
-
-        self.assertOneHtmlEmail()
-
-
-class TextOnlyEmailsTestCase(MailingTestCase):
+class TextOnlyEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
     """
     TestCase for testing whether e-mails sent for newsletter
     with send_html=False are text only.
     """
 
-    def setUp(self):
+    def get_newsletter_kwargs(self):
         """
-        Set send_html to False on newsletter associated with this TestCase.
+        Update keyword arguments for instanciating the newsletter
+        with send_html = False.
         """
 
-        super(TextOnlyEmailsTestCase, self).setUp()
+        kwargs = super(TextOnlyEmailsTestCase, self).get_newsletter_kwargs()
+        kwargs.update(send_html=False)
 
-        self.n.send_html = False
-        self.n.save()
+        return kwargs
 
-    def assertOneTextOnlyEmail(self):
+    def assertSentEmailIsProper(self, action):
         """
         Assert that there's exactly one email in outbox
         and that it has no alternative content types.
@@ -344,30 +371,61 @@ class TextOnlyEmailsTestCase(MailingTestCase):
         # Make sure mail is text only
         self.assertEmailHasNoAlternatives()
 
-    def test_subscription_email(self):
-        """ Assure subscription email is text only. """
 
-        self.send_email('subscribe')
+template_overrides = (
+    'newsletter/message/test-newsletter-with-overrides/' + action + suff
+        for action, suff in itertools.product(
+            ('subscribe', 'update', 'unsubscribe', 'message'),
+            ('_subject.txt', '.txt', '.html'),
+        )
+)
 
-        self.assertOneTextOnlyEmail()
 
-    def test_unsubscription_email(self):
-        """ Assure unsubscription email is text only. """
+# When tests are run outside test project
+# test templates overrides will not exist,
+# so skip their testing.
+@unittest.skipUnless(
+    all(
+        template_exists(template_name) for template_name in template_overrides
+    ),
+    'Test templates overrides not found.'
+)
+class TemplateOverridesTestCase(MailingTestCase, AllEmailsTestsMixin):
+    """
+    TestCase for testing template overrides for specific newsletters.
+    """
 
-        self.send_email('unsubscribe')
+    def get_newsletter_kwargs(self):
+        """
+        Update keyword arguments for instanciating the newsletter
+        so that slug corresponds to one for which template overrides exists
+        and make sure e-mails will be sent with text and HTML versions.
+        """
 
-        self.assertOneTextOnlyEmail()
+        kwargs = super(TemplateOverridesTestCase, self).get_newsletter_kwargs()
+        kwargs.update(slug='test-newsletter-with-overrides',
+                      send_html=True)
 
-    def test_update_email(self):
-        """ Assure update email is text only. """
+        return kwargs
 
-        self.send_email('update')
+    def assertSentEmailIsProper(self, action):
+        """
+        Assert that there's exactly one email in outbox
+        and that it contains proper strings from template overrides
+        in subject and body.
+        """
 
-        self.assertOneTextOnlyEmail()
+        # Make sure one mail is being sent out
+        self.assertEquals(len(mail.outbox), 1)
 
-    def test_message_email(self):
-        """ Assure message email is text only. """
+        # Make sure mail subject contains string
+        # from template override for given action
+        self.assertEmailSubjectContains('override for %s_subject.txt' % action)
 
-        self.send_email('message')
+        # Make sure body of mail text version contains string
+        # from text template override for given action
+        self.assertEmailBodyContains('override for %s.txt' % action)
 
-        self.assertOneTextOnlyEmail()
+        # Make sure body of mail HTML version contains string
+        # from HTML template override for given action
+        self.assertEmailAlternativeBodyContains('override for %s.html' % action)
