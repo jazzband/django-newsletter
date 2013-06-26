@@ -1,14 +1,17 @@
+import itertools
+
 from datetime import timedelta
 
 from django.core import mail
 
+from django.utils import unittest
 from django.utils.timezone import now
 
 from ..models import (
     Newsletter, Subscription, Submission, Message, Article, get_default_sites
 )
 
-from .utils import MailTestCase, UserTestCase
+from .utils import MailTestCase, UserTestCase, template_exists
 
 
 class MailingTestCase(MailTestCase):
@@ -367,3 +370,62 @@ class TextOnlyEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
 
         # Make sure mail is text only
         self.assertEmailHasNoAlternatives()
+
+
+template_overrides = (
+    'newsletter/message/test-newsletter-with-overrides/' + action + suff
+        for action, suff in itertools.product(
+            ('subscribe', 'update', 'unsubscribe', 'message'),
+            ('_subject.txt', '.txt', '.html'),
+        )
+)
+
+
+# When tests are run outside test project
+# test templates overrides will not exist,
+# so skip their testing.
+@unittest.skipUnless(
+    all(
+        template_exists(template_name) for template_name in template_overrides
+    ),
+    'Test templates overrides not found.'
+)
+class TemplateOverridesTestCase(MailingTestCase, AllEmailsTestsMixin):
+    """
+    TestCase for testing template overrides for specific newsletters.
+    """
+
+    def get_newsletter_kwargs(self):
+        """
+        Update keyword arguments for instanciating the newsletter
+        so that slug corresponds to one for which template overrides exists
+        and make sure e-mails will be sent with text and HTML versions.
+        """
+
+        kwargs = super(TemplateOverridesTestCase, self).get_newsletter_kwargs()
+        kwargs.update(slug='test-newsletter-with-overrides',
+                      send_html=True)
+
+        return kwargs
+
+    def assertSentEmailIsProper(self, action):
+        """
+        Assert that there's exactly one email in outbox
+        and that it contains proper strings from template overrides
+        in subject and body.
+        """
+
+        # Make sure one mail is being sent out
+        self.assertEquals(len(mail.outbox), 1)
+
+        # Make sure mail subject contains string
+        # from template override for given action
+        self.assertEmailSubjectContains('override for %s_subject.txt' % action)
+
+        # Make sure body of mail text version contains string
+        # from text template override for given action
+        self.assertEmailBodyContains('override for %s.txt' % action)
+
+        # Make sure body of mail HTML version contains string
+        # from HTML template override for given action
+        self.assertEmailAlternativeBodyContains('override for %s.html' % action)
