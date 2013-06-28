@@ -36,14 +36,7 @@ class NewsletterViewBase(object):
     """ Base class for newsletter views. """
     queryset = Newsletter.on_site.filter(visible=True)
     allow_empty = False
-
-    def get_object(self, queryset=None):
-        # This is a workaround for Django 1.3 and should be replaced by
-        # the `slug_url_kwarg = 'newsletter_slug'` view attribute as soon
-        # as 1.3 support is dropped.
-        self.kwargs['slug'] = self.kwargs['newsletter_slug']
-
-        return super(NewsletterViewBase, self).get_object(queryset)
+    slug_url_kwarg = 'newsletter_slug'
 
 
 class NewsletterDetailView(NewsletterViewBase, DetailView):
