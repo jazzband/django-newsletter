@@ -5,6 +5,6 @@ chardet
 surlex
 sorl-thumbnail
 
-# Test requirements
-webtest
-django-webtest
+# Manually install these packages for running the tests:
+#webtest
+#django-webtest

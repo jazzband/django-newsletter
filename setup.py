@@ -23,6 +23,7 @@ import distribute_setup
 distribute_setup.use_setuptools('0.6.10')
 
 from setuptools import setup, find_packages
+from pip.req import parse_requirements
 
 try:
     README = open('README.rst').read() + '\n\n'
@@ -31,9 +32,13 @@ except:
     README = None
 
 try:
-    REQUIREMENTS = open('requirements.txt').read()
+    # Idea to use pip to parse requirements from Romain Hardouin:
+    # http://stackoverflow.com/a/16624700/219519
+    REQUIREMENTS = [str(ir.req) for ir in parse_requirements('requirements.txt')]
 except:
     REQUIREMENTS = None
+
+print REQUIREMENTS
 
 setup(
     name='django-newsletter',
