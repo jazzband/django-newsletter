@@ -3,6 +3,7 @@ include LICENSE
 include COPYRIGHT
 include distribute_setup.py
 include graph_models.*
+include requirements.txt
 recursive-include newsletter/fixtures *.json
 recursive-include newsletter/templates *.html
 recursive-include newsletter/static *
