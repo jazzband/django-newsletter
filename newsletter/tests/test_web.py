@@ -30,7 +30,7 @@ WAIT_TIME = 1
 class NewsletterListTestCase(WebTestCase):
     """ Base class for newsletter test cases. """
 
-    fixtures = ['default_templates', 'test_newsletters']
+    fixtures = ['test_newsletters']
 
     def setUp(self):
         self.newsletters = Newsletter.objects.all()
@@ -297,8 +297,6 @@ class UserNewsletterListTestCase(UserTestCase,
 
 
 class WebSubscribeTestCase(WebTestCase, MailTestCase):
-
-    fixtures = ['default_templates']
 
     def setUp(self):
         self.n = Newsletter(title='Test newsletter',
