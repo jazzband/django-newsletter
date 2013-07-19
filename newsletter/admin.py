@@ -33,7 +33,7 @@ from django.utils.timezone import now
 from .admin_forms import *
 from .admin_utils import *
 
-from .settings import RICHTEXT_WIDGET
+from .settings import newsletter_settings
 
 # Contsruct URL's for icons
 ICON_URLS = {
@@ -167,7 +167,10 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
 
 StackedInline = admin.StackedInline
-if RICHTEXT_WIDGET and RICHTEXT_WIDGET.__name__ == "ImperaviWidget":
+if (
+        newsletter_settings.RICHTEXT_WIDGET
+        and newsletter_settings.RICHTEXT_WIDGET.__name__ == "ImperaviWidget"
+):
     # Imperavi works a little differently
     # It's not just a field, it's also a media class and a method.
     # To avoid complications, we reuse ImperaviStackedInlineAdmin
@@ -195,9 +198,9 @@ class ArticleInline(AdminImageMixin, StackedInline):
         }),
     )
 
-    if RICHTEXT_WIDGET:
+    if newsletter_settings.RICHTEXT_WIDGET:
         formfield_overrides = {
-            models.TextField: {'widget': RICHTEXT_WIDGET},
+            models.TextField: {'widget': newsletter_settings.RICHTEXT_WIDGET},
         }
 
 
