@@ -31,6 +31,7 @@ from .forms import (
     UnsubscribeRequestForm, UpdateForm
 )
 from .settings import newsletter_settings
+from .utils import ACTIONS
 
 
 class NewsletterViewBase(object):
@@ -414,7 +415,7 @@ class UpdateSubscriptionViev(NewsletterMixin, FormView):
         assert 'email' in kwargs
 
         self.action = kwargs['action']
-        assert self.action in ['subscribe', 'update', 'unsubscribe']
+        assert self.action in ACTIONS, 'Unknown action: %s' % self.action
 
         self.newsletter = self.get_newsletter(**kwargs)
         self.subscription = get_object_or_404(

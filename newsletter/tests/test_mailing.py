@@ -10,6 +10,7 @@ from django.utils.timezone import now
 from ..models import (
     Newsletter, Subscription, Submission, Message, Article, get_default_sites
 )
+from ..utils import ACTIONS
 
 from .utils import MailTestCase, UserTestCase, template_exists
 
@@ -43,9 +44,7 @@ class MailingTestCase(MailTestCase):
         self.s.save()
 
     def send_email(self, action):
-        assert action in [
-            'subscribe', 'update', 'unsubscribe', 'message'
-        ], 'Unknown action %s' % action
+        assert action in ACTIONS + ('message', ), 'Unknown action: %s' % action
 
         if action == 'message':
             # Create submission
