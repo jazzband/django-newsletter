@@ -427,6 +427,14 @@ class UpdateRequestView(ActionRequestView):
         return redirect(self.subscription.update_activate_url())
 
 
+class ActionTemplateView(NewsletterMixin, ActionMixin, TemplateView):
+    """
+    View that renders a template for proper action,
+    with newsletter and action in context.
+    """
+    pass
+
+
 class UpdateSubscriptionViev(NewsletterMixin, ActionMixin, FormView):
     form_class = UpdateForm
     template_name = "newsletter/subscription_activate.html"

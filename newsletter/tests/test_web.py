@@ -309,31 +309,61 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         self.subscribe_url = \
             reverse('newsletter_subscribe_request',
                     kwargs={'newsletter_slug': self.n.slug})
-
         self.subscribe_confirm_url = \
             reverse('newsletter_subscribe_confirm',
                     kwargs={'newsletter_slug': self.n.slug})
+        self.subscribe_email_sent_url = \
+            reverse('newsletter_activation_email_sent',
+                    kwargs={'newsletter_slug': self.n.slug,
+                            'action': 'subscribe'})
+        self.subscribe_activated_url = \
+            reverse('newsletter_action_activated',
+                    kwargs={'newsletter_slug': self.n.slug,
+                            'action': 'subscribe'})
 
         self.update_url = \
             reverse('newsletter_update_request',
                     kwargs={'newsletter_slug': self.n.slug})
+        self.update_email_sent_url = \
+            reverse('newsletter_activation_email_sent',
+                    kwargs={'newsletter_slug': self.n.slug,
+                            'action': 'update'})
+        self.update_activated_url = \
+            reverse('newsletter_action_activated',
+                    kwargs={'newsletter_slug': self.n.slug,
+                            'action': 'update'})
 
         self.unsubscribe_url = \
             reverse('newsletter_unsubscribe_request',
                     kwargs={'newsletter_slug': self.n.slug})
-
         self.unsubscribe_confirm_url = \
             reverse('newsletter_unsubscribe_confirm',
                     kwargs={'newsletter_slug': self.n.slug})
+        self.unsubscribe_email_sent_url = \
+            reverse('newsletter_activation_email_sent',
+                    kwargs={'newsletter_slug': self.n.slug,
+                            'action': 'unsubscribe'})
+        self.unsubscribe_activated_url = \
+            reverse('newsletter_action_activated',
+                    kwargs={'newsletter_slug': self.n.slug,
+                            'action': 'unsubscribe'})
 
         super(WebSubscribeTestCase, self).setUp()
 
     def test_urls(self):
+        # TODO: is performing this test in each subclass
+        #     of WebSubscribeTestCase really needed?
         self.assert_(self.subscribe_url)
         self.assert_(self.update_url)
         self.assert_(self.unsubscribe_url)
         self.assert_(self.subscribe_confirm_url)
         self.assert_(self.unsubscribe_confirm_url)
+        self.assert_(self.subscribe_email_sent_url)
+        self.assert_(self.update_email_sent_url)
+        self.assert_(self.unsubscribe_email_sent_url)
+        self.assert_(self.subscribe_activated_url)
+        self.assert_(self.update_activated_url)
+        self.assert_(self.unsubscribe_activated_url)
 
 
 class WebUserSubscribeTestCase(WebSubscribeTestCase,
@@ -1164,3 +1194,61 @@ class ArchiveTestcase(NewsletterListTestCase):
 
         response = self.client.get(detail_url)
         self.assertEqual(response.status_code, 404)
+
+
+class ActionTemplateViewMixin(object):
+    """ Mixin for testing requests to urls for all three actions. """
+
+    def get_action_url(self, action):
+        """
+        This method should be overridden in subclasses.
+        Return url for given action.
+        """
+
+        raise NotImplementedError(
+            '%(class_name)s inherits from of ActionTemplateViewMixin '
+            'and should define get_url method.' % {
+                'class_name': self.__class__.__name__
+            }
+        )
+
+    def action_url_test(self, action):
+        """ Assertions common for all actions. """
+        response = self.client.get(self.get_action_url(action))
+
+        self.assertEquals(response.status_code, 200)
+        self.assertInContext(response, 'newsletter', Newsletter, self.n)
+        self.assertInContext(response, 'action', value=action)
+
+    def test_subscribe_url(self):
+        self.action_url_test('subscribe')
+
+    def test_unsubscribe_url(self):
+        self.action_url_test('unsubscribe')
+
+    def test_update_url(self):
+        self.action_url_test('update')
+
+
+class ActivationEmailSentUrlTestCase(
+        ActionTemplateViewMixin, WebSubscribeTestCase):
+    """
+    TestCase for testing requests to urls with activation email sent info.
+    """
+
+    def get_action_url(self, action):
+        """ Return url with email sent info for given action. """
+
+        return getattr(self, '%s_email_sent_url' % action)
+
+
+class ActionActivatedUrlTestCase(
+        ActionTemplateViewMixin, WebSubscribeTestCase):
+    """
+    TestCase for testing requests to urls with action activated info.
+    """
+
+    def get_action_url(self, action):
+        """ Return url with action activated info for given action. """
+
+        return getattr(self, '%s_activated_url' % action)
