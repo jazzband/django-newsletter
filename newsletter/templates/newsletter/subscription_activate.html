@@ -5,24 +5,11 @@
 {% block title %}{% trans "Newsletter" %} {{ newsletter.title }} {{ action }} {% trans "activate" %}{% endblock title %}
 
 {% block body %}
-<h1>{% trans "Newsletter" %} {{ newsletter.title }} {{ action }} {% trans "activate" %}</h1>
-<p>
-{% if form.is_valid %}
-    {% ifequal action "subscribe" %}
-        {% trans "Your subscription has successfully been activated." %}
-    {% endifequal %}
-    {% ifequal action "unsubscribe" %}
-        {% trans "You have successfully been unsubscribed." %}
-    {% endifequal %}
-    {% ifequal action "update" %}
-        {% trans "Your subscription has successfully been updated." %}
-    {% endifequal %}
-</p>
-{% else %}
-<form enctype="multipart/form-data" method="post" action=".">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <p><input id="id_submit" name="submit" value="{% trans "Activate" %}" type="submit" /></p>
-</form>
-{% endif %}
+    <h1>{% trans "Newsletter" %} {{ newsletter.title }} {{ action }} {% trans "activate" %}</h1>
+
+    <form enctype="multipart/form-data" method="post" action=".">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p><input id="id_submit" name="submit" value="{% trans "Activate" %}" type="submit" /></p>
+    </form>
 {% endblock body %}
