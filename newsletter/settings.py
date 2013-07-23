@@ -42,11 +42,17 @@ class Settings(object):
                 '%r object has no attribute %r' % (type(self).__name__, attr)
             )
 
-        return getattr(
-            django_settings,
-            '%s_%s' % (self.settings_prefix, attr),
-            getattr(self, 'DEFAULT_%s' % attr)
-        )
+        # Explicit `try: ... except AttributeError: ...`,
+        # instead of third argument of getattr is used intentionally
+        # to prevent premature execution of getattr(self, 'DEFAULT_%s' % attr).
+        try:
+            return getattr(
+                django_settings, '%s_%s' % (self.settings_prefix, attr)
+            )
+        except AttributeError:
+            # `django.conf.settings.<APP>_SETTING_NAME` not found
+            # return default value.
+            return getattr(self, 'DEFAULT_%s' % attr)
 
 
 class NewsletterSettings(Settings):
