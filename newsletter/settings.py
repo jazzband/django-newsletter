@@ -37,6 +37,11 @@ class Settings(object):
 
         assert attr.isupper(), 'Requested setting contains lower case characters.'
 
+        if attr.startswith('DEFAULT_'):
+            raise AttributeError(
+                '%r object has no attribute %r' % (type(self).__name__, attr)
+            )
+
         return getattr(
             django_settings,
             '%s_%s' % (self.settings_prefix, attr),
