@@ -205,6 +205,33 @@ class Subscription(models.Model):
         self.unsubscribed = True
         self.unsubscribe_date = now()
 
+    def update(self, action):
+        """
+        Update subscription according to requested action:
+        subscribe/unsubscribe/update/, then save the changes.
+        """
+
+        assert action in ('subscribe', 'update', 'unsubscribe')
+
+        # If a new subscription or update, make sure it is subscribed
+        # Else, unsubscribe
+        if action == 'subscribe' or action == 'update':
+            self.subscribed = True
+        else:
+            self.unsubscribed = True
+
+        logger.debug(
+            _(u'Updated subscription %(subscription)s to %(action)s.'),
+            {
+                'subscription': self,
+                'action': action
+            }
+        )
+
+        # This triggers the subscribe() and/or unsubscribe() methods, taking
+        # care of stuff like maintaining the (un)subscribe date.
+        self.save()
+
     def save(self, *args, **kwargs):
         assert self.user or self.email_field, \
             _('Neither an email nor a username is set. This asks for '

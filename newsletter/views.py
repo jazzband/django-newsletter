@@ -33,28 +33,6 @@ from .forms import (
 from .settings import newsletter_settings
 
 
-# TODO: maybe this should be Subscription model method
-def update_subscription(subscription, action):
-    """
-    Change subscription according to given action:
-    subscribe/unsubscribe/update/,
-    then save the changes.
-    """
-
-    # If a new subscription or update, make sure it is subscribed
-    # Else, unsubscribe
-    if action == 'subscribe' or action == 'update':
-        subscription.subscribed = True
-    else:
-        subscription.unsubscribed = True
-
-    logger.debug(
-        _(u'Updated subscription %(subscription)s through the web.'),
-        {'subscription': subscription}
-    )
-    subscription.save()
-
-
 class NewsletterViewBase(object):
     """ Base class for newsletter views. """
     queryset = Newsletter.on_site.filter(visible=True)
@@ -305,7 +283,7 @@ class ActionRequestView(NewsletterMixin, FormView):
 
     def no_email_confirm(self, form):
         """ Subscribe/unsubscribe user and mark action as done. """
-        update_subscription(self.subscription, self.action)
+        self.subscription.update(self.action)
 
         # action_done will be passed to template.
         self.action_done = True
@@ -427,7 +405,7 @@ class UpdateSubscriptionViev(NewsletterMixin, FormView):
         # Get our instance, but do not save yet
         subscription = form.save(commit=False)
 
-        update_subscription(subscription, self.action)
+        subscription.update(self.action)
 
         return self.render_to_response(self.get_context_data(form=form))
 
