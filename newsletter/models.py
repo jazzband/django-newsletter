@@ -239,6 +239,13 @@ class Subscription(models.Model):
         self.unsubscribe_date = now()
 
     def save(self, *args, **kwargs):
+        """
+        Perform some basic validation and state maintenance of Subscription.
+
+        TODO: Move this code to a more suitable place (i.e. `clean()`) and
+        cleanup the code. Refer to comment below and
+        https://docs.djangoproject.com/en/dev/ref/models/instances/#django.db.models.Model.clean
+        """
         assert self.user or self.email_field, \
             _('Neither an email nor a username is set. This asks for '
               'inconsistency!')
