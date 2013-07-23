@@ -191,20 +191,6 @@ class Subscription(models.Model):
             self.email_field = email
     email = property(get_email, set_email)
 
-    def subscribe(self):
-        logger.debug(u'Subscribing subscription %s.', self)
-
-        self.subscribe_date = now()
-        self.subscribed = True
-        self.unsubscribed = False
-
-    def unsubscribe(self):
-        logger.debug(u'Unsubscribing subscription %s.', self)
-
-        self.subscribed = False
-        self.unsubscribed = True
-        self.unsubscribe_date = now()
-
     def update(self, action):
         """
         Update subscription according to requested action:
@@ -232,6 +218,26 @@ class Subscription(models.Model):
         # care of stuff like maintaining the (un)subscribe date.
         self.save()
 
+    def _subscribe(self):
+        """
+        Internal helper method for managing subscription state during subscription.
+        """
+        logger.debug(u'Subscribing subscription %s.', self)
+
+        self.subscribe_date = now()
+        self.subscribed = True
+        self.unsubscribed = False
+
+    def _unsubscribe(self):
+        """
+        Internal helper method for managing subscription state during unsubscription.
+        """
+        logger.debug(u'Unsubscribing subscription %s.', self)
+
+        self.subscribed = False
+        self.unsubscribed = True
+        self.unsubscribe_date = now()
+
     def save(self, *args, **kwargs):
         assert self.user or self.email_field, \
             _('Neither an email nor a username is set. This asks for '
@@ -258,7 +264,7 @@ class Subscription(models.Model):
             # If we user to be unsubscribed but are not so anymore, subscribe.
             if ((self.subscribed and not old_subscribed) or
                (old_unsubscribed and not self.unsubscribed)):
-                self.subscribe()
+                self._subscribe()
 
                 assert not self.unsubscribed
                 assert self.subscribed
@@ -268,15 +274,15 @@ class Subscription(models.Model):
             # unsubscribe.
             elif ((self.unsubscribed and not old_unsubscribed) or
                   (old_subscribed and not self.subscribed)):
-                self.unsubscribe()
+                self._unsubscribe()
 
                 assert not self.subscribed
                 assert self.unsubscribed
         else:
             if self.subscribed:
-                self.subscribe()
+                self._subscribe()
             elif self.unsubscribed:
-                self.unsubscribe()
+                self._unsubscribe()
 
         super(Subscription, self).save(*args, **kwargs)
 
