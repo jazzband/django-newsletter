@@ -402,7 +402,7 @@ class UpdateSubscriptionViev(NewsletterMixin, FormView):
         return context
 
     def form_valid(self, form):
-        # Get our instance, but do not save yet
+        """ Get our instance, but do not save yet. """
         subscription = form.save(commit=False)
 
         subscription.update(self.action)
@@ -440,7 +440,7 @@ class SubmissionViewBase(NewsletterMixin):
     day_format = '%d'
 
     def get(self, request, *args, **kwargs):
-        # Make sure newsletter is available for further processing
+        """ Make sure newsletter is available for further processing. """
         self.newsletter = self.get_newsletter(
             newsletter_queryset=NewsletterListView().get_queryset()
         )
@@ -488,8 +488,9 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
 
         # No HTML -> no party!
         if not html_template:
-            raise Http404(ugettext('No HTML template associated with the '
-                                   'newsletter this message belongs to.'))
+            raise Http404(ugettext(
+                'No HTML template associated with the newsletter this message belongs to.'
+            ))
 
         return html_template
 
