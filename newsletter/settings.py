@@ -3,25 +3,50 @@ from django.utils.importlib import import_module
 from django.core.exceptions import ImproperlyConfigured
 
 
-class NewsletterSettings(object):
+class Settings(object):
     """
-    A settings object, that handles newsletter default settings.
+    A settings object that proxies newsletter settings and handles defaults,
+    inspired by `django-appconf` and the way it works in `django-rest-framework`.
 
-    With instance being instance of NewsletterSettings,
-    accessing instance.SETTING_NAME returns NEWSLETTER_SETTING_NAME,
-    if it's defined in project, or instance.DEFAULT_SETTING_NAME if not.
+    By default, a single instance of this class is created as `<app>_settings`,
+    from which `<APP>_SETTING_NAME` can be accessed as `SETTING_NAME`, i.e.::
 
-    DEFAULT_SETTING_NAME can be a class variable or a property if needed.
+        from newsletter.settings import newsletter_settings
 
-    SETTING_NAME can be overridden if above behavior is not adequate.
+        if newsletter_settings.SETTING_NAME:
+            # DO FUNKY DANCE
+
+    If a setting has not been explicitly defined in Django's settings, defaults
+    can be specified as `DEFAULT_SETTING_NAME` class variable or property.
     """
+
+    def __init__(self, prefix=None):
+        """
+        Set app specific prefix, either from __init__ argument or class variable.
+        """
+        if prefix:
+            self.settings_prefix = prefix
+        else:
+            assert hasattr(self, 'settings_prefix'), 'No settings prefix specified.'
 
     def __getattr__(self, attr):
+        """
+        Return Django setting `PREFIX_SETTING` if explicitly specified, otherwise
+        return `PREFIX_SETTING_DEFAULT` if specified.
+        """
+
+        assert attr.isupper(), 'Requested setting contains lower case characters.'
+
         return getattr(
             django_settings,
-            'NEWSLETTER_%s' % attr,
+            '%s_%s' % (self.settings_prefix, attr),
             getattr(self, 'DEFAULT_%s' % attr)
         )
+
+
+class NewsletterSettings(Settings):
+    """ Django-newsletter specific settings. """
+    settings_prefix = 'NEWSLETTER'
 
     DEFAULT_CONFIRM_EMAIL = True
 
