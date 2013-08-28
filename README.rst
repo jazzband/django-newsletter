@@ -66,7 +66,7 @@ Installation
 	    'django.contrib.sites',
 	    ...
 	    # Imperavi (or tinymce) rich text editor is optional
-	    'imperavi',
+	    # 'imperavi',
 	    'django_extensions',
 	    'sorl.thumbnail',
 	    ...
