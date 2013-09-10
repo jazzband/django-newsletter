@@ -309,31 +309,61 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         self.subscribe_url = \
             reverse('newsletter_subscribe_request',
                     kwargs={'newsletter_slug': self.n.slug})
-
         self.subscribe_confirm_url = \
             reverse('newsletter_subscribe_confirm',
                     kwargs={'newsletter_slug': self.n.slug})
+        self.subscribe_email_sent_url = \
+            reverse('newsletter_activation_email_sent',
+                    kwargs={'newsletter_slug': self.n.slug,
+                            'action': 'subscribe'})
+        self.subscribe_activated_url = \
+            reverse('newsletter_action_activated',
+                    kwargs={'newsletter_slug': self.n.slug,
+                            'action': 'subscribe'})
 
         self.update_url = \
             reverse('newsletter_update_request',
                     kwargs={'newsletter_slug': self.n.slug})
+        self.update_email_sent_url = \
+            reverse('newsletter_activation_email_sent',
+                    kwargs={'newsletter_slug': self.n.slug,
+                            'action': 'update'})
+        self.update_activated_url = \
+            reverse('newsletter_action_activated',
+                    kwargs={'newsletter_slug': self.n.slug,
+                            'action': 'update'})
 
         self.unsubscribe_url = \
             reverse('newsletter_unsubscribe_request',
                     kwargs={'newsletter_slug': self.n.slug})
-
         self.unsubscribe_confirm_url = \
             reverse('newsletter_unsubscribe_confirm',
                     kwargs={'newsletter_slug': self.n.slug})
+        self.unsubscribe_email_sent_url = \
+            reverse('newsletter_activation_email_sent',
+                    kwargs={'newsletter_slug': self.n.slug,
+                            'action': 'unsubscribe'})
+        self.unsubscribe_activated_url = \
+            reverse('newsletter_action_activated',
+                    kwargs={'newsletter_slug': self.n.slug,
+                            'action': 'unsubscribe'})
 
         super(WebSubscribeTestCase, self).setUp()
 
     def test_urls(self):
+        # TODO: is performing this test in each subclass
+        #     of WebSubscribeTestCase really needed?
         self.assert_(self.subscribe_url)
         self.assert_(self.update_url)
         self.assert_(self.unsubscribe_url)
         self.assert_(self.subscribe_confirm_url)
         self.assert_(self.unsubscribe_confirm_url)
+        self.assert_(self.subscribe_email_sent_url)
+        self.assert_(self.update_email_sent_url)
+        self.assert_(self.unsubscribe_email_sent_url)
+        self.assert_(self.subscribe_activated_url)
+        self.assert_(self.update_activated_url)
+        self.assert_(self.unsubscribe_activated_url)
 
 
 class WebUserSubscribeTestCase(WebSubscribeTestCase,
@@ -484,6 +514,18 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
 class AnonymousSubscribeTestCase(WebSubscribeTestCase,
                                  ComparingTestCase):
 
+    def get_only_subscription(self, **kwargs):
+        """
+        Assert there's exactly one subscription that match kwargs lookup.
+        Return this subscription.
+        """
+
+        subscription_qs = self.n.subscription_set.filter(**kwargs)
+
+        self.assertEquals(subscription_qs.count(), 1)
+
+        return subscription_qs[0]
+
     def test_subscribe_request_view(self):
         """ Test the subscription form. """
 
@@ -507,21 +549,13 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
             }
         )
 
-        self.assertContains(response, self.n.title, status_code=200)
-        self.assertNotContains(
-            response, 'input id="id_name_field" type="text" name="name"'
-        )
-        self.assertNotContains(
-            response, 'input id="id_email_field" type="text" name="email"'
+        # Assure we are redirected to "subscribe activation email sent" page.
+        self.assertRedirects(response, self.subscribe_email_sent_url)
+
+        subscription = self.get_only_subscription(
+            email_field__exact='test@email.com'
         )
 
-        self.assertInContext(response, 'newsletter', Newsletter, self.n)
-        self.assertInContext(response, 'form', SubscribeRequestForm)
-        self.assertFalse(response.context['error'])
-        self.assertFalse(response.context['action_done'])
-
-        subscription = getattr(response.context['form'], 'instance', None)
-        self.assert_(subscription)
         self.assertFalse(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
 
@@ -547,22 +581,13 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
             }
         )
 
-        self.assertContains(response, self.n.title, status_code=200)
-        self.assertNotContains(
-            response, 'input id="id_name_field" type="text" name="name"'
-        )
-        self.assertNotContains(
-            response, 'input id="id_email_field" type="text" name="email"'
+        # Assure we are redirected to "subscribe activated" page.
+        self.assertRedirects(response, self.subscribe_activated_url)
+
+        subscription = self.get_only_subscription(
+            email_field__exact='test@email.com'
         )
 
-        self.assertInContext(response, 'newsletter', Newsletter, self.n)
-        self.assertInContext(response, 'form', SubscribeRequestForm)
-        self.assertFalse(response.context['error'])
-        # subscription action should be done
-        self.assertTrue(response.context['action_done'])
-
-        subscription = getattr(response.context['form'], 'instance', None)
-        self.assert_(subscription)
         # email confirmation is switched off,
         # so after subscribe request user should be subscribed
         self.assertTrue(subscription.subscribed)
@@ -595,7 +620,6 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
                 )
 
         self.assertTrue(response.context['error'])
-        self.assertFalse(response.context['action_done'])
 
     def test_retry_subscribe(self):
         """
@@ -672,11 +696,14 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
             }
         )
 
-        self.assertEquals(response.status_code, 200)
+        # Assure we are redirected to "unsubscribe activated" page.
+        self.assertRedirects(response, self.unsubscribe_activated_url)
 
-        subscription = getattr(response.context['form'], 'instance', None)
+        subscription = self.get_only_subscription(
+            email_field__exact='test@email.com'
+        )
 
-        # self.assertFalse(subscription.subscribed)
+        self.assertFalse(subscription.subscribed)
         self.assert_(subscription.unsubscribed)
 
         # Resubscribe request
@@ -688,7 +715,8 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
             }
         )
 
-        self.assertEquals(response.status_code, 200)
+        # Assure we are redirected to "email sent page"
+        self.assertRedirects(response, self.subscribe_email_sent_url)
 
         # self.assertFalse(subscription.subscribed)
         self.assert_(subscription.unsubscribed)
@@ -702,9 +730,14 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
                 'user_activation_code': subscription.activation_code
             }
         )
-        self.assertInContext(response, 'form', UpdateForm)
 
-        subscription = getattr(response.context['form'], 'instance', None)
+        # Assure we are redirected to "subscribe activated" page.
+        self.assertRedirects(response, self.subscribe_activated_url)
+
+        subscription = self.get_only_subscription(
+            email_field__exact='test@email.com'
+        )
+
         self.assert_(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
 
@@ -761,10 +794,14 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
                 'user_activation_code': subscription.activation_code
             }
         )
-        self.assertInContext(response, 'form', UpdateForm)
 
-        subscription = getattr(response.context['form'], 'instance', None)
-        self.assert_(subscription)
+        # Assure we are redirected to "subscribe activated" page.
+        self.assertRedirects(response, self.subscribe_activated_url)
+
+        subscription = self.get_only_subscription(
+            email_field__exact='test@email.com'
+        )
+
         self.assert_(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
 
@@ -785,17 +822,8 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
             self.unsubscribe_url, {'email_field': 'test@email.com'}
         )
 
-        self.assertContains(response, self.n.title, status_code=200)
-        self.assertNotContains(
-            response, 'input id="id_email_field" type="text" name="email"'
-        )
-
-        self.assertInContext(response, 'newsletter', Newsletter, self.n)
-        self.assertInContext(response, 'form', UpdateRequestForm)
-        self.assertFalse(response.context['error'])
-        self.assertFalse(response.context['action_done'])
-
-        self.assertEqual(subscription, response.context['form'].instance)
+        # Assure we are redirected to "unsubscribe activation email sent" page.
+        self.assertRedirects(response, self.unsubscribe_email_sent_url)
 
         """ Check the subscription email. """
         self.assertEquals(len(mail.outbox), 1)
@@ -822,22 +850,13 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
             self.unsubscribe_url, {'email_field': 'test@email.com'}
         )
 
-        self.assertContains(response, self.n.title, status_code=200)
-        self.assertNotContains(
-            response, 'input id="id_email_field" type="text" name="email"'
+        # Assure we are redirected to "unsubscribe activated" page.
+        self.assertRedirects(response, self.unsubscribe_activated_url)
+
+        changed_subscription = self.get_only_subscription(
+            email_field__exact='test@email.com'
         )
 
-        self.assertInContext(response, 'newsletter', Newsletter, self.n)
-        self.assertInContext(response, 'form', UpdateRequestForm)
-        self.assertFalse(response.context['error'])
-        # unsubscription action should be done
-        self.assertTrue(response.context['action_done'])
-
-        changed_subscription = Subscription.objects.get(
-            newsletter=self.n,
-            name_field=subscription.name_field,
-            email_field=subscription.email_field
-        )
         # email confirmation is switched off,
         # so after unsubscribe request user should be unsubscribed
         self.assertFalse(changed_subscription.subscribed)
@@ -871,7 +890,6 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
                 )
 
         self.assertTrue(response.context['error'])
-        self.assertFalse(response.context['action_done'])
 
     def test_unsubscribe_request_view(self):
         """ Test the unsubscribe request form. """
@@ -904,10 +922,14 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
             'email_field': testemail2,
             'user_activation_code': subscription.activation_code
         })
-        self.assertInContext(response, 'form', UpdateForm)
 
-        subscription = getattr(response.context['form'], 'instance', None)
-        self.assert_(subscription)
+        # Assure we are redirected to "unsubscribe activated" page.
+        self.assertRedirects(response, self.unsubscribe_activated_url)
+
+        subscription = self.get_only_subscription(
+            email_field__exact=testemail2
+        )
+
         self.assert_(subscription.unsubscribed)
         self.assertEqual(subscription.name, testname2)
         self.assertEqual(subscription.email, testemail2)
@@ -939,17 +961,8 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
             self.update_url, {'email_field': 'test@email.com'}
         )
 
-        self.assertContains(response, self.n.title, status_code=200)
-        self.assertNotContains(
-            response, 'input id="id_email_field" type="text" name="email"'
-        )
-
-        self.assertInContext(response, 'newsletter', Newsletter, self.n)
-        self.assertInContext(response, 'form', UpdateRequestForm)
-        self.assertFalse(response.context['error'])
-        self.assertFalse(response.context['action_done'])
-
-        self.assertEqual(subscription, response.context['form'].instance)
+        # Assure we are redirected to "update activation email sent" page.
+        self.assertRedirects(response, self.update_email_sent_url)
 
         """ Check the subscription email. """
         self.assertEquals(len(mail.outbox), 1)
@@ -1006,7 +1019,6 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
                 )
 
         self.assertTrue(response.context['error'])
-        self.assertFalse(response.context['action_done'])
 
     def test_unsubscribe_update_unactivated(self):
         """ Test updating unsubscribed subscriptions view. """
@@ -1060,9 +1072,14 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
             'email_field': testemail2,
             'user_activation_code': subscription.activation_code
         })
-        self.assertInContext(response, 'form', UpdateForm)
 
-        subscription = getattr(response.context['form'], 'instance', None)
+        # Assure we are redirected to "update activated" page.
+        self.assertRedirects(response, self.update_activated_url)
+
+        subscription = self.get_only_subscription(
+            email_field__exact=testemail2
+        )
+
         self.assert_(subscription)
         self.assert_(subscription.subscribed)
         self.assertEqual(subscription.name, testname2)
@@ -1172,3 +1189,61 @@ class ArchiveTestcase(NewsletterListTestCase):
 
         response = self.client.get(detail_url)
         self.assertEqual(response.status_code, 404)
+
+
+class ActionTemplateViewMixin(object):
+    """ Mixin for testing requests to urls for all three actions. """
+
+    def get_action_url(self, action):
+        """
+        This method should be overridden in subclasses.
+        Return url for given action.
+        """
+
+        raise NotImplementedError(
+            '%(class_name)s inherits from of ActionTemplateViewMixin '
+            'and should define get_url method.' % {
+                'class_name': self.__class__.__name__
+            }
+        )
+
+    def action_url_test(self, action):
+        """ Assertions common for all actions. """
+        response = self.client.get(self.get_action_url(action))
+
+        self.assertEquals(response.status_code, 200)
+        self.assertInContext(response, 'newsletter', Newsletter, self.n)
+        self.assertInContext(response, 'action', value=action)
+
+    def test_subscribe_url(self):
+        self.action_url_test('subscribe')
+
+    def test_unsubscribe_url(self):
+        self.action_url_test('unsubscribe')
+
+    def test_update_url(self):
+        self.action_url_test('update')
+
+
+class ActivationEmailSentUrlTestCase(
+        ActionTemplateViewMixin, WebSubscribeTestCase):
+    """
+    TestCase for testing requests to urls with activation email sent info.
+    """
+
+    def get_action_url(self, action):
+        """ Return url with email sent info for given action. """
+
+        return getattr(self, '%s_email_sent_url' % action)
+
+
+class ActionActivatedUrlTestCase(
+        ActionTemplateViewMixin, WebSubscribeTestCase):
+    """
+    TestCase for testing requests to urls with action activated info.
+    """
+
+    def get_action_url(self, action):
+        """ Return url with action activated info for given action. """
+
+        return getattr(self, '%s_activated_url' % action)

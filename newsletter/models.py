@@ -22,7 +22,7 @@ from django.conf import settings
 
 from sorl.thumbnail import ImageField
 
-from .utils import make_activation_code, get_default_sites
+from .utils import make_activation_code, get_default_sites, ACTIONS
 
 
 class Newsletter(models.Model):
@@ -61,9 +61,7 @@ class Newsletter(models.Model):
         template.
         """
 
-        assert action in [
-            'subscribe', 'unsubscribe', 'update', 'message'
-        ], 'Unknown action %s' % action
+        assert action in ACTIONS + ('message', ), 'Unknown action: %s' % action
 
         # Common substitutions for filenames
         tpl_subst = {
@@ -347,9 +345,7 @@ class Subscription(models.Model):
         return u'%s' % (self.email)
 
     def send_activation_email(self, action):
-        assert action in [
-            'subscribe', 'unsubscribe', 'update'
-        ], 'Unknown action'
+        assert action in ACTIONS, 'Unknown action: %s' % action
 
         (subject_template, text_template, html_template) = \
             self.newsletter.get_templates(action)
