@@ -1,2 +1,12 @@
-from test_web import *
-from test_mailing import *
+from .test_web import (
+    AnonymousNewsletterListTestCase, UserNewsletterListTestCase,
+    WebSubscribeTestCase, WebUserSubscribeTestCase,
+    AnonymousSubscribeTestCase, ArchiveTestcase,
+    ActivationEmailSentUrlTestCase, ActionActivatedUrlTestCase
+)
+
+from .test_mailing import (
+    MailingTestCase, ArticleTestCase, CreateSubmissionTestCase,
+    SubmitSubmissionTestCase, SubscriptionTestCase, HtmlEmailsTestCase,
+    TextOnlyEmailsTestCase, TemplateOverridesTestCase
+)
