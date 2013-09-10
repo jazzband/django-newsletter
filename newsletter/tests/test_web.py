@@ -583,7 +583,9 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         we know pretty sure is bound to fail.
         """
 
-        with override_settings(EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'):
+        with override_settings(
+            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+        ):
             with override_settings(EMAIL_PORT=12345678):
                 response = self.client.post(
                     self.subscribe_url, {
@@ -860,7 +862,9 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
                                     subscribed=True)
         subscription.save()
 
-        with override_settings(EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'):
+        with override_settings(
+            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+        ):
             with override_settings(EMAIL_PORT=12345678):
                 response = self.client.post(
                     self.unsubscribe_url, {'email_field': 'test@email.com'}
@@ -993,7 +997,9 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
                                     subscribed=True)
         subscription.save()
 
-        with override_settings(EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'):
+        with override_settings(
+            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+        ):
             with override_settings(EMAIL_PORT=12345678):
                 response = self.client.post(
                     self.update_url, {'email_field': 'test@email.com'}
@@ -1012,7 +1018,9 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         subscription.save()
 
         for url in (self.update_url, self.unsubscribe_url):
-            response = self.client.post(url, {'email_field': 'test@email.com'})
+            response = self.client.post(
+                url, {'email_field': 'test@email.com'}
+            )
 
             self.assertContains(
                 response, "This subscription has not yet been activated."

@@ -46,8 +46,8 @@ class NewsletterDetailView(NewsletterViewBase, DetailView):
 
 class NewsletterListView(NewsletterViewBase, ListView):
     """
-    List available newsletters and generate a formset for (un)subscription for
-    authenticated users.
+    List available newsletters and generate a formset for (un)subscription
+    for authenticated users.
     """
 
     def post(self, request, **kwargs):
@@ -66,7 +66,9 @@ class NewsletterListView(NewsletterViewBase, ListView):
         return context
 
     def get_formset(self):
-        """ Return a formset with newsletters for logged in users, or None. """
+        """
+        Return a formset with newsletters for logged in users, or None.
+        """
 
         # Short-hand variable names
         newsletters = self.get_queryset()
@@ -99,16 +101,20 @@ class NewsletterListView(NewsletterViewBase, ListView):
                 # Everything's allright, let's save
                 formset.save()
 
-                messages.info(request,
-                    ugettext("Your changes have been saved."))
+                messages.info(
+                    request,
+                    ugettext("Your changes have been saved.")
+                )
 
             except ValidationError:
                 # Invalid form posted. As there is no way for a user to
                 # enter data - invalid forms should be ignored from the UI.
 
                 # However, we log them for debugging purposes.
-                logger.warning('Invalid form post received',
-                    exc_info=True, extra={'request': request})
+                logger.warning(
+                    'Invalid form post received',
+                    exc_info=True, extra={'request': request}
+                )
 
                 # Present a pristine form
                 formset = SubscriptionFormSet(queryset=qs)
@@ -122,8 +128,9 @@ class NewsletterListView(NewsletterViewBase, ListView):
 class NewsletterMixin(object):
     """ Mixin providing the ability to retrieve a newsletter. """
 
-    def get_newsletter(self,
-            newsletter_slug=None, newsletter_queryset=None, **kwargs):
+    def get_newsletter(
+        self, newsletter_slug=None, newsletter_queryset=None, **kwargs
+    ):
         """
         Return the newsletter for the current request.
 
@@ -207,10 +214,12 @@ class SubscribeUserView(ActionUserView):
             )
 
             logger.debug(
-                _('User %(rs)s subscribed to %(my_newsletter)s.'), {
+                _('User %(rs)s subscribed to %(my_newsletter)s.'),
+                {
                     "rs": request.user,
                     "my_newsletter": self.newsletter
-            })
+                }
+            )
 
         if already_subscribed:
             messages.info(
@@ -241,22 +250,25 @@ class UnsubscribeUserView(ActionUserView):
 
                 messages.success(
                     request,
-                    _('You have been unsubscribed from %s.') % \
-                        self.newsletter
+                    _('You have been unsubscribed from %s.') % self.newsletter
                 )
 
                 logger.debug(
-                    _('User %(rs)s unsubscribed from %(my_newsletter)s.'), {
+                    _('User %(rs)s unsubscribed from %(my_newsletter)s.'),
+                    {
                         "rs": request.user,
                         "my_newsletter": self.newsletter
-                })
+                    }
+                )
 
         except Subscription.DoesNotExist:
             not_subscribed = True
 
         if not_subscribed:
-            messages.info(request,
-                _('You are not subscribed to %s.') % self.newsletter)
+            messages.info(
+                request,
+                _('You are not subscribed to %s.') % self.newsletter
+            )
 
         return super(UnsubscribeUserView, self).get(request, *args, **kwargs)
 
@@ -304,8 +316,10 @@ class ActionRequestView(NewsletterMixin, FormView):
             self.subscription.send_activation_email(action=self.action)
 
         except Exception, e:
-            logger.exception('Error %s while submitting email to %s.',
-                e, self.subscription.email)
+            logger.exception(
+                'Error %s while submitting email to %s.',
+                e, self.subscription.email
+            )
             self.error = True
 
         return self.render_to_response(self.get_context_data(form=form))
@@ -489,7 +503,8 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
         # No HTML -> no party!
         if not html_template:
             raise Http404(ugettext(
-                'No HTML template associated with the newsletter this message belongs to.'
+                'No HTML template associated with the newsletter this '
+                'message belongs to.'
             ))
 
         return html_template

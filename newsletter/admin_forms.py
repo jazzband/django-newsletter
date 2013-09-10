@@ -46,11 +46,15 @@ def check_email(email, ignore_errors=False):
     if len(email) <= email_length or ignore_errors:
         return email[:email_length]
     else:
-        raise forms.ValidationError(_(
-            "E-mail address %(email)s too long, maximum length is "
-            "%(email_length)s characters.") % {
+        raise forms.ValidationError(
+            _(
+                "E-mail address %(email)s too long, maximum length is "
+                "%(email_length)s characters."
+            ) % {
                 "email": email,
-                "email_length": email_length})
+                "email_length": email_length
+            }
+        )
 
 
 def check_name(name, ignore_errors=False):
@@ -62,11 +66,15 @@ def check_name(name, ignore_errors=False):
     if len(name) <= name_length or ignore_errors:
         return name[:name_length]
     else:
-        raise forms.ValidationError(_(
-            "Name %(name)s too long, maximum length is "
-            "%(name_length)s characters.") % {
+        raise forms.ValidationError(
+            _(
+                "Name %(name)s too long, maximum length is "
+                "%(name_length)s characters."
+            ) % {
                 "name": name,
-                "name_length": name_length})
+                "name_length": name_length
+            }
+        )
 
 
 def parse_csv(myfile, newsletter, ignore_errors=False):
@@ -120,7 +128,8 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     if namecol is None:
         raise forms.ValidationError(_(
             "Name column not found. The name of this column should be "
-            "either 'name' or '%s'.") % ugettext("name"))
+            "either 'name' or '%s'.") % ugettext("name")
+        )
 
     logger.debug("Name column found: '%s'", firstrow[namecol])
 
@@ -142,19 +151,24 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
         raise forms.ValidationError(_(
             "E-mail column not found. The name of this column should be "
             "either 'email', 'e-mail' or '%(email)s'.") %
-            {'email': ugettext("e-mail")})
+            {'email': ugettext("e-mail")}
+        )
 
     logger.debug("E-mail column found: '%s'", firstrow[mailcol])
 
     #assert namecol != mailcol, \
     #    'Name and e-mail column should not be the same.'
     if namecol == mailcol:
-        raise forms.ValidationError(_(
-            "Could not properly determine the proper columns in the "
-            "CSV-file. There should be a field called 'name' or '%(name)s' "
-            "and one called 'e-mail' or '%(e-mail)s'.") % {
+        raise forms.ValidationError(
+            _(
+                "Could not properly determine the proper columns in the "
+                "CSV-file. There should be a field called 'name' or "
+                "'%(name)s' and one called 'e-mail' or '%(e-mail)s'."
+            ) % {
                 "name": _("name"),
-                "e-mail": _("e-mail")})
+                "e-mail": _("e-mail")
+            }
+        )
 
     logger.debug('Extracting data.')
 
@@ -170,7 +184,8 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
             else:
                 raise forms.ValidationError(_(
                     "Row with content '%(row)s' does not contain a name and "
-                    "email field.") % {'row': row})
+                    "email field.") % {'row': row}
+                )
 
         name = check_name(row[namecol], ignore_errors)
         email = check_email(row[mailcol], ignore_errors)
@@ -182,7 +197,8 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
         elif not ignore_errors:
                 raise forms.ValidationError(_(
                     "Entry '%s' does not contain a valid "
-                    "e-mail address.") % name)
+                    "e-mail address.") % name
+                )
         else:
             logger.warn(
                 "Entry '%s' at line %d does not contain a valid "
@@ -282,13 +298,15 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
                 elif not ignore_errors:
                         raise forms.ValidationError(_(
                             "Entry '%s' does not contain a valid "
-                            "e-mail address.") % name)
+                            "e-mail address.") % name
+                        )
 
                 if addr:
                     if email in self.addresses and not ignore_errors:
                         raise forms.ValidationError(_(
                             "The address file contains duplicate entries "
-                            "for '%s'.") % email)
+                            "for '%s'.") % email
+                        )
 
                     self.addresses.update({email: addr})
                 elif not ignore_errors:
@@ -421,7 +439,8 @@ class SubscriptionAdminForm(forms.ModelForm):
 
             raise forms.ValidationError(_(
                 'Either a user must be selected or an email address must '
-                'be specified.'))
+                'be specified.')
+            )
         return cleaned_data
 
 
@@ -444,6 +463,7 @@ class SubmissionAdminForm(forms.ModelForm):
             if qs.exists():
                 raise forms.ValidationError(_(
                     'This message has already been published in some '
-                    'other submission. Messages can only be published once.'))
+                    'other submission. Messages can only be published once.')
+                )
 
         return publish

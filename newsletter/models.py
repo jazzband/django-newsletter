@@ -66,28 +66,28 @@ class Newsletter(models.Model):
         ], 'Unknown action %s' % action
 
         # Common substitutions for filenames
-        template_subst = {
+        tpl_subst = {
             'action': action,
             'newsletter': self.slug
         }
 
         # Common root path for all the templates
-        template_root = 'newsletter/message/'
+        tpl_root = 'newsletter/message/'
 
         subject_template = select_template([
-            template_root + '%(newsletter)s/%(action)s_subject.txt' % template_subst,
-            template_root + '%(action)s_subject.txt' % template_subst,
+            tpl_root + '%(newsletter)s/%(action)s_subject.txt' % tpl_subst,
+            tpl_root + '%(action)s_subject.txt' % tpl_subst,
         ])
 
         text_template = select_template([
-            template_root + '%(newsletter)s/%(action)s.txt' % template_subst,
-            template_root + '%(action)s.txt' % template_subst,
+            tpl_root + '%(newsletter)s/%(action)s.txt' % tpl_subst,
+            tpl_root + '%(action)s.txt' % tpl_subst,
         ])
 
         if self.send_html:
             html_template = select_template([
-                template_root + '%(newsletter)s/%(action)s.html' % template_subst,
-                template_root + '%(action)s.html' % template_subst,
+                tpl_root + '%(newsletter)s/%(action)s.html' % tpl_subst,
+                tpl_root + '%(action)s.html' % tpl_subst,
             ])
         else:
             # HTML templates are not required
@@ -220,7 +220,8 @@ class Subscription(models.Model):
 
     def _subscribe(self):
         """
-        Internal helper method for managing subscription state during subscription.
+        Internal helper method for managing subscription state
+        during subscription.
         """
         logger.debug(u'Subscribing subscription %s.', self)
 
@@ -230,7 +231,8 @@ class Subscription(models.Model):
 
     def _unsubscribe(self):
         """
-        Internal helper method for managing subscription state during unsubscription.
+        Internal helper method for managing subscription state
+        during unsubscription.
         """
         logger.debug(u'Unsubscribing subscription %s.', self)
 
@@ -373,8 +375,9 @@ class Subscription(models.Model):
         if html_template:
             escaped_context = Context(variable_dict)
 
-            message.attach_alternative(html_template.render(escaped_context),
-                                      "text/html")
+            message.attach_alternative(
+                html_template.render(escaped_context), "text/html"
+            )
 
         message.send()
 

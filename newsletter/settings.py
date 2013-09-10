@@ -6,7 +6,8 @@ from django.core.exceptions import ImproperlyConfigured
 class Settings(object):
     """
     A settings object that proxies newsletter settings and handles defaults,
-    inspired by `django-appconf` and the way it works in `django-rest-framework`.
+    inspired by `django-appconf` and the way it works in
+    `django-rest-framework`.
 
     By default, a single instance of this class is created as `<app>_settings`,
     from which `<APP>_SETTING_NAME` can be accessed as `SETTING_NAME`, i.e.::
@@ -22,20 +23,23 @@ class Settings(object):
 
     def __init__(self, prefix=None):
         """
-        Set app specific prefix, either from __init__ argument or class variable.
+        Set app specific prefix, either from __init__ argument
+        or class variable.
         """
         if prefix:
             self.settings_prefix = prefix
         else:
-            assert hasattr(self, 'settings_prefix'), 'No settings prefix specified.'
+            assert hasattr(self, 'settings_prefix'), \
+                'No settings prefix specified.'
 
     def __getattr__(self, attr):
         """
-        Return Django setting `PREFIX_SETTING` if explicitly specified, otherwise
-        return `PREFIX_SETTING_DEFAULT` if specified.
+        Return Django setting `PREFIX_SETTING` if explicitly specified,
+        otherwise return `PREFIX_SETTING_DEFAULT` if specified.
         """
 
-        assert attr.isupper(), 'Requested setting contains lower case characters.'
+        assert attr.isupper(), \
+            'Requested setting contains lower case characters.'
 
         return getattr(
             django_settings,
@@ -65,8 +69,9 @@ class NewsletterSettings(Settings):
     @property
     def RICHTEXT_WIDGET(self):
         # Import and set the richtext field
-        NEWSLETTER_RICHTEXT_WIDGET = \
-            getattr(django_settings, "NEWSLETTER_RICHTEXT_WIDGET", "")
+        NEWSLETTER_RICHTEXT_WIDGET = getattr(
+            django_settings, "NEWSLETTER_RICHTEXT_WIDGET", ""
+        )
 
         if NEWSLETTER_RICHTEXT_WIDGET:
             try:

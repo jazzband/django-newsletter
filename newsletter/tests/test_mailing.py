@@ -374,10 +374,10 @@ class TextOnlyEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
 
 template_overrides = (
     'newsletter/message/test-newsletter-with-overrides/' + action + suff
-        for action, suff in itertools.product(
-            ('subscribe', 'update', 'unsubscribe', 'message'),
-            ('_subject.txt', '.txt', '.html'),
-        )
+    for action, suff in itertools.product(
+        ('subscribe', 'update', 'unsubscribe', 'message'),
+        ('_subject.txt', '.txt', '.html')
+    )
 )
 
 
@@ -420,7 +420,9 @@ class TemplateOverridesTestCase(MailingTestCase, AllEmailsTestsMixin):
 
         # Make sure mail subject contains string
         # from template override for given action
-        self.assertEmailSubjectContains('override for %s_subject.txt' % action)
+        self.assertEmailSubjectContains(
+            'override for %s_subject.txt' % action
+        )
 
         # Make sure body of mail text version contains string
         # from text template override for given action
@@ -428,4 +430,6 @@ class TemplateOverridesTestCase(MailingTestCase, AllEmailsTestsMixin):
 
         # Make sure body of mail HTML version contains string
         # from HTML template override for given action
-        self.assertEmailAlternativeBodyContains('override for %s.html' % action)
+        self.assertEmailAlternativeBodyContains(
+            'override for %s.html' % action
+        )

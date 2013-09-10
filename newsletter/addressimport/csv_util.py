@@ -1,4 +1,7 @@
-import csv, codecs, cStringIO
+import csv
+import codecs
+import cStringIO
+
 
 class UTF8Recoder:
     """
@@ -12,6 +15,7 @@ class UTF8Recoder:
 
     def next(self):
         return self.reader.next().encode("utf-8")
+
 
 class UnicodeReader:
     """
@@ -33,6 +37,7 @@ class UnicodeReader:
     @property
     def line_num(self):
         return self.reader.line_num
+
 
 class UnicodeWriter:
     """

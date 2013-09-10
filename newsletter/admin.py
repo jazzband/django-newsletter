@@ -158,9 +158,11 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         urls = super(SubmissionAdmin, self).get_urls()
 
         my_urls = patterns('',
-            url(r'^(.+)/submit/$',
+            url(
+                r'^(.+)/submit/$',
                 self._wrap(self.submit),
-                name=self._view_name('submit'))
+                name=self._view_name('submit')
+            )
         )
 
         return my_urls + urls
@@ -340,7 +342,6 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     date_hierarchy = 'subscribe_date'
     actions = ['make_subscribed', 'make_unsubscribed']
 
-
     """ List extensions """
     def admin_newsletter(self, obj):
         return '<a href="../newsletter/%s/">%s</a>' % (
@@ -390,18 +391,26 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     """ Actions """
     def make_subscribed(self, request, queryset):
         rows_updated = queryset.update(subscribed=True)
-        self.message_user(request, ungettext(
+        self.message_user(
+            request,
+            ungettext(
                 "%s user has been successfully subscribed.",
                 "%s users have been successfully subscribed.",
-                rows_updated) % rows_updated)
+                rows_updated
+            ) % rows_updated
+        )
     make_subscribed.short_description = _("Subscribe selected users")
 
     def make_unsubscribed(self, request, queryset):
         rows_updated = queryset.update(subscribed=False)
-        self.message_user(request, ungettext(
+        self.message_user(
+            request,
+            ungettext(
                 "%s user has been successfully unsubscribed.",
                 "%s users have been successfully unsubscribed.",
-                rows_updated) % rows_updated)
+                rows_updated
+            ) % rows_updated
+        )
     make_unsubscribed.short_description = _("Unsubscribe selected users")
 
     """ Views """

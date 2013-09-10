@@ -20,11 +20,15 @@ class ExtendibleModelAdminMixin(object):
                 obj = None
 
             if obj is None:
-                raise Http404(_(
-                    '%(name)s object with primary key '
-                    '%(key)r does not exist.') % {
+                raise Http404(
+                    _(
+                        '%(name)s object with primary key '
+                        '%(key)r does not exist.'
+                    ) % {
                         'name': force_unicode(opts.verbose_name),
-                        'key': unicode(object_id)})
+                        'key': unicode(object_id)
+                    }
+                )
 
             return obj
 
