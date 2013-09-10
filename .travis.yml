@@ -17,7 +17,11 @@ matrix:
 # command to install dependencies
 install:
   - pip install -q $DJANGO --use-mirrors
+  - pip install coveralls
   - pip install -r requirements.txt --use-mirrors
 
 # command to run tests
 script: python setup.py test
+
+# Submit coverate statistics to coveralls.io
+after_success: coveralls
