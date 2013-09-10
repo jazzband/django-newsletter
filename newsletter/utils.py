@@ -12,6 +12,9 @@ from django.contrib.sites.models import Site
 
 from datetime import datetime
 
+# Possible actions that user can perform
+ACTIONS = ('subscribe', 'unsubscribe', 'update')
+
 
 # Generic helper functions
 def make_activation_code():

@@ -2,7 +2,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ImproperlyConfigured
+from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from django.template.response import SimpleTemplateResponse
@@ -31,6 +32,7 @@ from .forms import (
     UnsubscribeRequestForm, UpdateForm
 )
 from .settings import newsletter_settings
+from .utils import ACTIONS
 
 
 class NewsletterViewBase(object):
@@ -119,29 +121,47 @@ class NewsletterListView(NewsletterViewBase, ListView):
         return formset
 
 
-class NewsletterMixin(object):
-    """ Mixin providing the ability to retrieve a newsletter. """
+class ProcessUrlDataMixin(object):
+    """
+    Mixin providing the ability to process args and kwargs from url
+    before dispatching request.
+    """
 
-    def get_newsletter(self,
-            newsletter_slug=None, newsletter_queryset=None, **kwargs):
+    def process_url_data(self, *args, **kwargs):
+        """ Subclasses should put url data processing in this method. """
+        pass
+
+    def dispatch(self, *args, **kwargs):
+        self.process_url_data(*args, **kwargs)
+
+        return super(ProcessUrlDataMixin, self).dispatch(*args, **kwargs)
+
+
+class NewsletterMixin(ProcessUrlDataMixin):
+    """
+    Mixin retrieving newsletter based on newsletter_slug from url
+    and adding it to context and form kwargs.
+    """
+
+    def process_url_data(self, *args, **kwargs):
         """
-        Return the newsletter for the current request.
-
-        By default this requires a `newsletter_slug` argument in the URLconf.
+        Get newsletter based on `newsletter_slug` from url
+        and add it to instance attributes.
         """
 
-        if newsletter_slug is None:
-            assert 'newsletter_slug' in self.kwargs
-            newsletter_slug = self.kwargs['newsletter_slug']
+        assert 'newsletter_slug' in kwargs
 
-        if newsletter_queryset is None:
-            newsletter_queryset = Newsletter.on_site.all()
+        super(NewsletterMixin, self).process_url_data(*args, **kwargs)
 
-        newsletter = get_object_or_404(
+        newsletter_queryset = kwargs.get(
+            'newsletter_queryset',
+            Newsletter.on_site.all()
+        )
+        newsletter_slug = kwargs['newsletter_slug']
+
+        self.newsletter = get_object_or_404(
             newsletter_queryset, slug=newsletter_slug,
         )
-
-        return newsletter
 
     def get_form_kwargs(self):
         """ Add newsletter to form kwargs. """
@@ -160,34 +180,101 @@ class NewsletterMixin(object):
         return context
 
 
-class ActionUserView(NewsletterMixin, TemplateView):
-    """ Base class for subscribe and unsubscribe user views. """
+class ActionMixin(ProcessUrlDataMixin):
+    """ Mixin retrieving action from url and adding it to context. """
+
     action = None
+
+    def process_url_data(self, *args, **kwargs):
+        """ Add action from url to instance attributes if not already set. """
+        super(ActionMixin, self).process_url_data(*args, **kwargs)
+
+        if self.action is None:
+            assert 'action' in kwargs
+            self.action = kwargs['action']
+
+        assert self.action in ACTIONS, 'Unknown action: %s' % self.action
 
     def get_context_data(self, **kwargs):
         """ Add action to context. """
-        context = super(ActionUserView, self).get_context_data(**kwargs)
+        context = super(ActionMixin, self).get_context_data(**kwargs)
 
         context['action'] = self.action
 
         return context
+
+    def get_template_names(self):
+        """ Return list of template names for proper action. """
+
+        if self.template_name is None:
+            raise ImproperlyConfigured(
+                '%(class_name)s should define template_name, '
+                'or implement get_template_names()' % {
+                    'class_name': self.__class__.__name__
+                }
+            )
+
+        else:
+            try:
+                return [self.template_name % {'action': self.action}]
+            except KeyError, e:
+                raise ImproperlyConfigured(
+                    '%(class_name)s inherits from ActionMixin and can contain '
+                    '%%(action)s in template_name to be replaced '
+                    'by action name %(wrong_key)s given instead.' % {
+                        'class_name': self.__class__.__name__,
+                        'wrong_key': e,
+                    }
+                )
+
+
+class ActionTemplateView(NewsletterMixin, ActionMixin, TemplateView):
+    """
+    View that renders a template for proper action,
+    with newsletter and action in context.
+    """
+    pass
+
+
+class ActionFormView(NewsletterMixin, ActionMixin, FormView):
+    """ FormView with newsletter and action support. """
+
+    def get_url_from_viewname(self, viewname):
+        """
+        Return url for given `viename`
+        and associated with this view newsletter and action.
+        """
+
+        return reverse(
+            viewname,
+            kwargs={
+                'newsletter_slug': self.newsletter.slug,
+                'action': self.action
+            }
+        )
+
+
+class ActionUserView(ActionTemplateView):
+    """ Base class for subscribe and unsubscribe user views. """
+    template_name = "newsletter/subscription_%(action)s_user.html"
+
+    def process_url_data(self, *args, **kwargs):
+        """ Add confirm to instance attributes. """
+        super(ActionUserView, self).process_url_data(*args, **kwargs)
+
+        # confirm is optional kwarg defaulting to False
+        self.confirm = kwargs.get('confirm', False)
 
     def post(self, request, *args, **kwargs):
         return self.get(request, *args, **kwargs)
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.newsletter = self.get_newsletter(**kwargs)
-
-        # confirm is optional kwarg defaulting to False
-        self.confirm = kwargs.get('confirm', False)
-
         return super(ActionUserView, self).dispatch(*args, **kwargs)
 
 
 class SubscribeUserView(ActionUserView):
     action = 'subscribe'
-    template_name = "newsletter/subscription_subscribe_user.html"
 
     def get(self, request, *args, **kwargs):
         already_subscribed = False
@@ -223,7 +310,6 @@ class SubscribeUserView(ActionUserView):
 
 class UnsubscribeUserView(ActionUserView):
     action = 'unsubscribe'
-    template_name = "newsletter/subscription_unsubscribe_user.html"
 
     def get(self, request, *args, **kwargs):
         not_subscribed = False
@@ -261,18 +347,22 @@ class UnsubscribeUserView(ActionUserView):
         return super(UnsubscribeUserView, self).get(request, *args, **kwargs)
 
 
-class ActionRequestView(NewsletterMixin, FormView):
+class ActionRequestView(ActionFormView):
     """ Base class for subscribe, unsubscribe and update request views. """
-    action = None
+    template_name = "newsletter/subscription_%(action)s.html"
+
+    def process_url_data(self, *args, **kwargs):
+        """ Add error to instance attributes. """
+        super(ActionRequestView, self).process_url_data(*args, **kwargs)
+
+        self.error = None
 
     def get_context_data(self, **kwargs):
-        """ Add error action and action_done to context. """
+        """ Add error to context. """
         context = super(ActionRequestView, self).get_context_data(**kwargs)
 
         context.update({
             'error': self.error,
-            'action': self.action,
-            'action_done': self.action_done,
         })
 
         return context
@@ -282,13 +372,17 @@ class ActionRequestView(NewsletterMixin, FormView):
         return form.instance
 
     def no_email_confirm(self, form):
-        """ Subscribe/unsubscribe user and mark action as done. """
+        """
+        Subscribe/unsubscribe user and redirect to action activated page.
+        """
         self.subscription.update(self.action)
 
-        # action_done will be passed to template.
-        self.action_done = True
+        return redirect(
+            self.get_url_from_viewname('newsletter_action_activated')
+        )
 
-        return self.render_to_response(self.get_context_data(form=form))
+    def get_success_url(self):
+        return self.get_url_from_viewname('newsletter_activation_email_sent')
 
     def form_valid(self, form):
         self.subscription = self.get_subscription(form)
@@ -308,20 +402,16 @@ class ActionRequestView(NewsletterMixin, FormView):
                 e, self.subscription.email)
             self.error = True
 
-        return self.render_to_response(self.get_context_data(form=form))
+            # Although form was valid there was error while sending email,
+            # so stay at the same url.
+            return super(ActionRequestView, self).form_invalid(form)
 
-    def dispatch(self, *args, **kwargs):
-        self.newsletter = self.get_newsletter(**kwargs)
-        self.error = None
-        self.action_done = False
-
-        return super(ActionRequestView, self).dispatch(*args, **kwargs)
+        return super(ActionRequestView, self).form_valid(form)
 
 
 class SubscribeRequestView(ActionRequestView):
     action = 'subscribe'
     form_class = SubscribeRequestForm
-    template_name = "newsletter/subscription_subscribe.html"
     confirm = False
 
     def get_form_kwargs(self):
@@ -349,7 +439,6 @@ class SubscribeRequestView(ActionRequestView):
 class UnsubscribeRequestView(ActionRequestView):
     action = 'unsubscribe'
     form_class = UnsubscribeRequestForm
-    template_name = "newsletter/subscription_unsubscribe.html"
     confirm = False
 
     def dispatch(self, request, *args, **kwargs):
@@ -365,16 +454,31 @@ class UnsubscribeRequestView(ActionRequestView):
 class UpdateRequestView(ActionRequestView):
     action = 'update'
     form_class = UpdateRequestForm
-    template_name = "newsletter/subscription_update.html"
 
     def no_email_confirm(self, form):
         """ Redirect to update subscription view. """
         return redirect(self.subscription.update_activate_url())
 
 
-class UpdateSubscriptionViev(NewsletterMixin, FormView):
+class UpdateSubscriptionViev(ActionFormView):
     form_class = UpdateForm
     template_name = "newsletter/subscription_activate.html"
+
+    def process_url_data(self, *args, **kwargs):
+        """
+        Add email, subscription and activation_code
+        to instance attributes.
+        """
+        assert 'email' in kwargs
+
+        super(UpdateSubscriptionViev, self).process_url_data(*args, **kwargs)
+
+        self.subscription = get_object_or_404(
+            Subscription, newsletter=self.newsletter,
+            email_field__exact=kwargs['email']
+        )
+        # activation_code is optional kwarg which defaults to None
+        self.activation_code = kwargs.get('activation_code')
 
     def get_initial(self):
         """ Returns the initial data to use for forms on this view. """
@@ -392,14 +496,8 @@ class UpdateSubscriptionViev(NewsletterMixin, FormView):
 
         return kwargs
 
-    def get_context_data(self, **kwargs):
-        """ Add action to context. """
-        context = \
-            super(UpdateSubscriptionViev, self).get_context_data(**kwargs)
-
-        context['action'] = self.action
-
-        return context
+    def get_success_url(self):
+        return self.get_url_from_viewname('newsletter_action_activated')
 
     def form_valid(self, form):
         """ Get our instance, but do not save yet. """
@@ -407,24 +505,7 @@ class UpdateSubscriptionViev(NewsletterMixin, FormView):
 
         subscription.update(self.action)
 
-        return self.render_to_response(self.get_context_data(form=form))
-
-    def dispatch(self, *args, **kwargs):
-        assert 'action' in kwargs
-        assert 'email' in kwargs
-
-        self.action = kwargs['action']
-        assert self.action in ['subscribe', 'update', 'unsubscribe']
-
-        self.newsletter = self.get_newsletter(**kwargs)
-        self.subscription = get_object_or_404(
-            Subscription, newsletter=self.newsletter,
-            email_field__exact=kwargs['email']
-        )
-        # activation_code is optional kwarg which defaults to None
-        self.activation_code = kwargs.get('activation_code')
-
-        return super(UpdateSubscriptionViev, self).dispatch(*args, **kwargs)
+        return super(UpdateSubscriptionViev, self).form_valid(form)
 
 
 class SubmissionViewBase(NewsletterMixin):
@@ -439,13 +520,12 @@ class SubmissionViewBase(NewsletterMixin):
     month_format = '%m'
     day_format = '%d'
 
-    def get(self, request, *args, **kwargs):
-        """ Make sure newsletter is available for further processing. """
-        self.newsletter = self.get_newsletter(
-            newsletter_queryset=NewsletterListView().get_queryset()
-        )
+    def process_url_data(self, *args, **kwargs):
+        """ Use only visible newsletters. """
 
-        return super(SubmissionViewBase, self).get(request, *args, **kwargs)
+        kwargs['newsletter_queryset'] = NewsletterListView().get_queryset()
+        return super(
+            SubmissionViewBase, self).process_url_data(*args, **kwargs)
 
     def get_queryset(self):
         """ Filter out submissions for current newsletter. """
