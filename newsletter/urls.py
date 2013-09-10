@@ -6,7 +6,7 @@ from .views import (
     NewsletterListView, NewsletterDetailView,
     SubmissionArchiveIndexView, SubmissionArchiveDetailView,
     SubscribeRequestView, UnsubscribeRequestView, UpdateRequestView,
-    UpdateSubscriptionViev
+    ActionTemplateView, UpdateSubscriptionViev,
 )
 
 urlpatterns = patterns('newsletter.views',
@@ -32,6 +32,14 @@ urlpatterns = patterns('newsletter.views',
         UnsubscribeRequestView.as_view(confirm=True),
         name='newsletter_unsubscribe_confirm'),
 
+    # Activation email sent view
+    surl('^<newsletter_slug:s>/<action=subscribe|update|unsubscribe>/'
+         'email-sent/$',
+        ActionTemplateView.as_view(
+            template_name='newsletter/subscription_%(action)s_email_sent.html'
+        ),
+        name='newsletter_activation_email_sent'),
+
     # Action confirmation views
     surl('^<newsletter_slug:s>/subscription/<email=[-_a-zA-Z0-9@\.\+~]+>/'
         '<action=subscribe|update|unsubscribe>/activate/<activation_code:s>/$',
@@ -39,6 +47,14 @@ urlpatterns = patterns('newsletter.views',
     surl('^<newsletter_slug:s>/subscription/<email=[-_a-zA-Z0-9@\.\+~]+>/'
         '<action=subscribe|update|unsubscribe>/activate/$',
         UpdateSubscriptionViev.as_view(), name='newsletter_update'),
+
+    # Action activation completed view
+    surl('^<newsletter_slug:s>/<action=subscribe|update|unsubscribe>/'
+        'activation-completed/$',
+        ActionTemplateView.as_view(
+            template_name='newsletter/subscription_%(action)s_activated.html'
+        ),
+        name='newsletter_action_activated'),
 
     # Archive views
     surl('^<newsletter_slug:s>/archive/<year:Y>/<month:m>/<day:d>/<slug:s>/$',
