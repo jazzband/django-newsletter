@@ -1,6 +1,17 @@
 Changes
 =======
 
+0.5
+---
+
+- Added proxy for app-specific settings.
+- Optional skipping of email confirmation in views (`CONFIRM_EMAIL_<ACTION>`).
+- Russian translation (contributed by ak3n).
+- Added explicit HTML toogle to Newsletter model.
+- Fix JavaScript submit link on "Add submission", ported to use jQuery.
+- Replacement of remaining function based views with class based equivalents.
+- Move message templates from database to files.
+
 0.4.1 (15-04-2013)
 ------------------
 
