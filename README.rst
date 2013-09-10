@@ -2,8 +2,17 @@
 django-newsletter
 =================
 
+.. image:: https://badge.fury.io/py/django-newsletter.png
+    :target: http://badge.fury.io/py/django-newsletter
+
 .. image:: https://secure.travis-ci.org/dokterbob/django-newsletter.png?branch=master
     :target: http://travis-ci.org/dokterbob/django-newsletter
+
+.. image:: https://coveralls.io/repos/dokterbob/django-newsletter/badge.png
+  :target: https://coveralls.io/r/dokterbob/django-newsletter
+
+.. image:: https://pypip.in/d/django-newsletter/badge.png
+        :target: https://crate.io/packages/django-newsletter?version=latest
 
 Newsletter application for the Django web framework.
 ----------------------------------------------------
