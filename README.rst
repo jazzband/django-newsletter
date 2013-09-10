@@ -28,8 +28,9 @@ progress.
 
 Translations
 ============
-Most if not all strings are available in Dutch, German, French Farsi and English.
-Contributions to translations are welcome through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_.
+Most if not all strings are available in Dutch, German, French, Farsi,
+Russian and English. Contributions to translations are welcome through
+`Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_.
 
 .. image:: https://www.transifex.com/projects/p/django-newsletter/resource/django/chart/image_png
     :target: http://www.transifex.net/projects/p/django-newsletter/
@@ -152,29 +153,6 @@ Installation
 	@weekly /path/to/my/project/manage.py runjobs weekly
 	@monthly /path/to/my/project/manage.py runjobs monthly
 
-Upgrading
-=========
-
-0.5: Message templates in files
--------------------------------
-As of 0.5 message templates are living in the filesystem like normal files
-instead of resorting in the EmailTemplate in the database. In most cases,
-South should take care of writing your existing templates to disk and deleting
-the database models.
-
-0.4: South migrations
-----------------------
-Since 5f79f40, the app makes use of `South <http://south.aeracode.org/>`_ for
-schema migrations. As of this version, using South with django-newsletter
-is the official recommendation and `installing it <http://south.readthedocs.org/en/latest/installation.html>`_ is easy.
-
-When upgrading from a pre-South version of newsletter to a current
-release (in a project for which South has been enabled), you might have to
-fake the initial migration as the DB tables already exist. This can be done
-by running the following command::
-
-	./manage.py migrate newsletter 0001 --fake
-
 Usage
 =====
 #) Start the development server: ``./manage.py runserver``
@@ -192,6 +170,29 @@ Fairly extensive tests are available for internal frameworks, web
 (+10k) has been confirmed to work in multiple production environments. Tests
 for pull req's and the master branch are automatically run through
 `Travis CI <http://travis-ci.org/dokterbob/django-newsletter>`_.
+
+Upgrading
+=========
+
+0.5: Message templates in files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+As of 0.5 message templates are living in the filesystem like normal files
+instead of resorting in the EmailTemplate in the database. In most cases,
+South should take care of writing your existing templates to disk and deleting
+the database models.
+
+0.4: South migrations
+^^^^^^^^^^^^^^^^^^^^^
+Since 5f79f40, the app makes use of `South <http://south.aeracode.org/>`_ for
+schema migrations. As of this version, using South with django-newsletter
+is the official recommendation and `installing it <http://south.readthedocs.org/en/latest/installation.html>`_ is easy.
+
+When upgrading from a pre-South version of newsletter to a current
+release (in a project for which South has been enabled), you might have to
+fake the initial migration as the DB tables already exist. This can be done
+by running the following command::
+
+    ./manage.py migrate newsletter 0001 --fake
 
 Feedback
 ========
