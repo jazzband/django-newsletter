@@ -4,15 +4,23 @@ DATABASES = {
     }
 }
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.auth',
     'django.contrib.sites',
     'django_extensions',
     'sorl.thumbnail',
-    'newsletter',
-)
+    'newsletter'
+]
+
+try:
+    # If available, South is required by setuptest
+    import south
+    INSTALLED_APPS.append('south')
+except ImportError:
+    # South not installed and hence is not required
+    pass
 
 ROOT_URLCONF = 'test_urls'
 
