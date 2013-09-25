@@ -18,7 +18,7 @@ class Settings(object):
             # DO FUNKY DANCE
 
     If a setting has not been explicitly defined in Django's settings, defaults
-    can be specified as `DEFAULT_SETTING_NAME` class variable or property.
+    can be specified as `_DEFAULT_SETTING_NAME` class variable or property.
     """
 
     def __init__(self, prefix=None):
@@ -41,29 +41,40 @@ class Settings(object):
         assert attr.isupper(), \
             'Requested setting contains lower case characters.'
 
-        return getattr(
-            django_settings,
-            '%s_%s' % (self.settings_prefix, attr),
-            getattr(self, 'DEFAULT_%s' % attr)
-        )
+        if attr.startswith('_DEFAULT_'):
+            raise AttributeError(
+                '%r object has no attribute %r' % (type(self).__name__, attr)
+            )
+
+        # Explicit `try: ... except AttributeError: ...`,
+        # instead of third argument of getattr is used intentionally
+        # to prevent premature execution of getattr(self, '_DEFAULT_%s' % attr).
+        try:
+            return getattr(
+                django_settings, '%s_%s' % (self.settings_prefix, attr)
+            )
+        except AttributeError:
+            # `django.conf.settings.<APP>_SETTING_NAME` not found
+            # return default value.
+            return getattr(self, '_DEFAULT_%s' % attr)
 
 
 class NewsletterSettings(Settings):
     """ Django-newsletter specific settings. """
     settings_prefix = 'NEWSLETTER'
 
-    DEFAULT_CONFIRM_EMAIL = True
+    _DEFAULT_CONFIRM_EMAIL = True
 
     @property
-    def DEFAULT_CONFIRM_EMAIL_SUBSCRIBE(self):
+    def _DEFAULT_CONFIRM_EMAIL_SUBSCRIBE(self):
         return self.CONFIRM_EMAIL
 
     @property
-    def DEFAULT_CONFIRM_EMAIL_UNSUBSCRIBE(self):
+    def _DEFAULT_CONFIRM_EMAIL_UNSUBSCRIBE(self):
         return self.CONFIRM_EMAIL
 
     @property
-    def DEFAULT_CONFIRM_EMAIL_UPDATE(self):
+    def _DEFAULT_CONFIRM_EMAIL_UPDATE(self):
         return self.CONFIRM_EMAIL
 
     @property
