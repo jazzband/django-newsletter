@@ -31,3 +31,20 @@ def make_activation_code():
 def get_default_sites():
     """ Get a list of id's for all sites; the default for newsletters. """
     return [site.id for site in Site.objects.all()]
+
+
+class Singleton(type):
+    """
+    Singleton metaclass.
+    Source:
+    http://stackoverflow.com/questions/6760685/creating-a-singleton-in-python
+    """
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(
+                *args, **kwargs
+            )
+
+        return cls._instances[cls]

@@ -2,35 +2,33 @@ from django.conf import settings as django_settings
 from django.utils.importlib import import_module
 from django.core.exceptions import ImproperlyConfigured
 
+from .utils import Singleton
+
 
 class Settings(object):
     """
-    A settings object that proxies newsletter settings and handles defaults,
-    inspired by `django-appconf` and the way it works in
-    `django-rest-framework`.
+    A settings object that proxies settings and handles defaults, inspired
+    by `django-appconf` and the way it works  in `django-rest-framework`.
 
     By default, a single instance of this class is created as `<app>_settings`,
     from which `<APP>_SETTING_NAME` can be accessed as `SETTING_NAME`, i.e.::
 
-        from newsletter.settings import newsletter_settings
+        from myapp.settings import myapp_settings
 
-        if newsletter_settings.SETTING_NAME:
+        if myapp_settings.SETTING_NAME:
             # DO FUNKY DANCE
 
     If a setting has not been explicitly defined in Django's settings, defaults
     can be specified as `DEFAULT_SETTING_NAME` class variable or property.
     """
 
-    def __init__(self, prefix=None):
+    __metaclass__ = Singleton
+
+    def __init__(self):
         """
-        Set app specific prefix, either from __init__ argument
-        or class variable.
+        Assert app-specific prefix.
         """
-        if prefix:
-            self.settings_prefix = prefix
-        else:
-            assert hasattr(self, 'settings_prefix'), \
-                'No settings prefix specified.'
+        assert hasattr(self, 'settings_prefix'), 'No prefix specified.'
 
     def __getattr__(self, attr):
         """
@@ -38,14 +36,27 @@ class Settings(object):
         otherwise return `PREFIX_SETTING_DEFAULT` if specified.
         """
 
-        assert attr.isupper(), \
-            'Requested setting contains lower case characters.'
+        if attr.isupper():
+            # Require settings to have uppercase characters
 
-        return getattr(
-            django_settings,
-            '%s_%s' % (self.settings_prefix, attr),
-            getattr(self, 'DEFAULT_%s' % attr)
-        )
+            try:
+                setting = getattr(
+                    django_settings,
+                    '%s_%s' % (self.settings_prefix, attr),
+                )
+            except AttributeError:
+                if not attr.startswith('DEFAULT_'):
+                    setting = getattr(self, 'DEFAULT_%s' % attr)
+                else:
+                    raise
+
+            return setting
+
+        else:
+            # Default behaviour
+            raise AttributeError(
+                'No setting or default available for \'%s\'' % attr
+            )
 
 
 class NewsletterSettings(Settings):
