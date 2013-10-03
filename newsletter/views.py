@@ -2,6 +2,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
+import datetime
+
 from socket import gaierror
 from smtplib import SMTPException
 
@@ -26,6 +29,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils import timezone
 
 from django.forms.models import modelformset_factory
 
@@ -550,6 +554,21 @@ class SubmissionViewBase(NewsletterMixin):
         qs = qs.filter(newsletter=self.newsletter)
 
         return qs
+
+    def _make_date_lookup_arg(self, value):
+        """
+        Convert a date into a datetime when the date field is a DateTimeField.
+
+        When time zone support is enabled, `date` is assumed to be in the
+        default time zone, so that displayed items are consistent with the URL.
+
+        Related discussion:
+        https://github.com/dokterbob/django-newsletter/issues/74
+        """
+        value = datetime.datetime.combine(value, datetime.time.min)
+        if settings.USE_TZ:
+            value = timezone.make_aware(value, timezone.get_default_timezone())
+        return value
 
 
 class SubmissionArchiveIndexView(SubmissionViewBase, ArchiveIndexView):

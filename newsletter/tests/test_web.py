@@ -2,23 +2,29 @@
 # Get the with statement from the future
 from __future__ import with_statement
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import time
+
+# Conditioally import pytz
+try:
+    import pytz
+except ImportError:
+    pytz = None
 
 from django import VERSION as DJANGO_VERSION
 
 from django.core import mail
 from django.core.urlresolvers import reverse
 
-from django.utils.timezone import now
+from django.utils import unittest, timezone
 
 from django.test.utils import override_settings
 
 from ..models import (
     Newsletter, Subscription, Submission, Message, get_default_sites
 )
-from ..forms import SubscribeRequestForm, UpdateForm, UpdateRequestForm
+from ..forms import UpdateForm
 
 from .utils import MailTestCase, UserTestCase, WebTestCase, ComparingTestCase
 
@@ -439,7 +445,7 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         subscription.save()
 
         self.assertLessThan(
-            subscription.subscribe_date, now() + timedelta(seconds=1)
+            subscription.subscribe_date, timezone.now() + timedelta(seconds=1)
         )
 
         response = self.client.get(self.unsubscribe_url)
@@ -488,7 +494,7 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         self.assert_(subscription.unsubscribed)
         self.assertLessThan(
             subscription.unsubscribe_date,
-            now() + timedelta(seconds=1)
+            timezone.now() + timedelta(seconds=1)
         )
 
     def test_unsubscribe_twice(self):
@@ -934,7 +940,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assertEqual(subscription.name, testname2)
         self.assertEqual(subscription.email, testemail2)
 
-        dt = (now() - subscription.unsubscribe_date).seconds
+        dt = (timezone.now() - subscription.unsubscribe_date).seconds
         self.assertLessThan(dt, 2)
 
     def test_update_request_view(self):
@@ -1189,6 +1195,36 @@ class ArchiveTestcase(NewsletterListTestCase):
 
         response = self.client.get(detail_url)
         self.assertEqual(response.status_code, 404)
+
+    @unittest.skipUnless(pytz, 'pytz could not be imported.')
+    @override_settings(
+        TIME_ZONE='Europe/Paris',
+        USE_TZ=True
+    )
+    def test_archive_timezone_regression(self):
+        """
+        Regression test for #74: Wrong submission archive urls when
+        timezones are enabled.
+
+        Ref:
+            * https://docs.djangoproject.com/en/1.5/topics/i18n/timezones/#troubleshooting
+            * https://github.com/dokterbob/django-newsletter/issues/74
+        """
+        problematic_date = datetime(2012, 3, 3, 1, 30)
+
+        paris_date = timezone.make_aware(
+            problematic_date, timezone.get_default_timezone()
+        )
+
+        # Setup submission in paris timezone
+        self.submission.publish_date = paris_date
+        self.submission.save()
+
+        # Test viewing the submission in another timezone
+        timezone.activate('America/New_York')
+
+        # Test viewing the submission
+        self.test_archive_detail()
 
 
 class ActionTemplateViewMixin(object):
