@@ -5,14 +5,14 @@ python:
   - "2.7"
 
 env:
-  - DJANGO=Django==1.4.6
-  - DJANGO=Django==1.5.2
-  - DJANGO=https://www.djangoproject.com/m/releases/1.6/Django-1.6b2.tar.gz
+  - DJANGO=Django==1.4.8
+  - DJANGO=Django==1.5.4
+  - DJANGO=https://www.djangoproject.com/m/releases/1.6/Django-1.6b4.tar.gz
 
 matrix:
   allow_failures:
     # Allow failures for unreleased Django version
-    - env: DJANGO=https://www.djangoproject.com/m/releases/1.6/Django-1.6b2.tar.gz
+    - env: DJANGO=https://www.djangoproject.com/m/releases/1.6/Django-1.6b4.tar.gz
 
 # command to install dependencies
 install:
