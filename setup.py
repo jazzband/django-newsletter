@@ -58,5 +58,7 @@ setup(
     tests_require=(
         'django-setuptest',
         'argparse',  # apparently needed by django-setuptest on python 2.6
+        'django-imperavi',
+        'django-tinymce',
     ),
 )

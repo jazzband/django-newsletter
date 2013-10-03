@@ -11,6 +11,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django_extensions',
     'sorl.thumbnail',
+    'imperavi',
+    'tinymce',
     'newsletter'
 ]
 

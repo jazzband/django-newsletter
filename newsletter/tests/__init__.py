@@ -10,3 +10,5 @@ from .test_mailing import (
     SubmitSubmissionTestCase, SubscriptionTestCase, HtmlEmailsTestCase,
     TextOnlyEmailsTestCase, TemplateOverridesTestCase
 )
+
+from .test_settings import SettingsTestCase
