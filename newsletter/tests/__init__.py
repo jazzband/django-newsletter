@@ -1,6 +1,7 @@
 from .test_web import (
     AnonymousNewsletterListTestCase, UserNewsletterListTestCase,
-    WebSubscribeTestCase, WebUserSubscribeTestCase,
+    SubscribeTestCase, UserSubscribeTestCase,
+    InvisibleAnonymousSubscribeTestCase, InvisibleUserSubscribeTestCase,
     AnonymousSubscribeTestCase, ArchiveTestcase,
     ActivationEmailSentUrlTestCase, ActionActivatedUrlTestCase
 )

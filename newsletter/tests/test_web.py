@@ -302,7 +302,7 @@ class UserNewsletterListTestCase(UserTestCase,
             Subscription.objects.filter(subscribed=True).exists())
 
 
-class WebSubscribeTestCase(WebTestCase, MailTestCase):
+class SubscribeTestCase(WebTestCase, MailTestCase):
 
     def setUp(self):
         self.n = Newsletter(title='Test newsletter',
@@ -354,7 +354,7 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
                     kwargs={'newsletter_slug': self.n.slug,
                             'action': 'unsubscribe'})
 
-        super(WebSubscribeTestCase, self).setUp()
+        super(SubscribeTestCase, self).setUp()
 
     def test_urls(self):
         # TODO: is performing this test in each subclass
@@ -372,9 +372,11 @@ class WebSubscribeTestCase(WebTestCase, MailTestCase):
         self.assert_(self.unsubscribe_activated_url)
 
 
-class WebUserSubscribeTestCase(WebSubscribeTestCase,
-                               UserTestCase,
-                               ComparingTestCase):
+class UserSubscribeTestCase(
+    SubscribeTestCase,
+    UserTestCase,
+    ComparingTestCase
+):
     """ Test case for user subscription and unsubscription."""
 
     def get_user_subscription(self):
@@ -517,8 +519,10 @@ class WebUserSubscribeTestCase(WebSubscribeTestCase,
         self.assertNotContains(response, 'id="id_submit"')
 
 
-class AnonymousSubscribeTestCase(WebSubscribeTestCase,
-                                 ComparingTestCase):
+class AnonymousSubscribeTestCase(
+    SubscribeTestCase,
+    ComparingTestCase
+):
 
     def get_only_subscription(self, **kwargs):
         """
@@ -1114,6 +1118,43 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
         self.assertInContext(response, 'form', UpdateForm)
 
 
+class InvisibleAnonymousSubscribeTestCase(AnonymousSubscribeTestCase):
+    """
+    Tests for subscribing, unsubscribing and updating of subscription to
+    a newsletter that is not publicly exposed on the site
+    (has visible=False).
+
+    Runs all anonymous and user test cases with invisible newsletter.
+    """
+
+    def setUp(self):
+        super_obj = super(InvisibleAnonymousSubscribeTestCase, self)
+        super_obj.setUp()
+
+        # Make newsletter invisible
+        self.n.visible = False
+        self.n.save()
+
+
+class InvisibleUserSubscribeTestCase(UserSubscribeTestCase):
+    """
+    Tests for subscribing, unsubscribing and updating of subscription to
+    a newsletter that is not publicly exposed on the site
+    (has visible=False).
+
+    Runs all anonymous and user test cases with invisible newsletter.
+    """
+
+    def setUp(self):
+        super_obj = super(InvisibleUserSubscribeTestCase, self)
+        super_obj.setUp()
+
+        # Make newsletter invisible
+        self.n.visible = False
+        self.n.save()
+
+
+
 class ArchiveTestcase(NewsletterListTestCase):
     def setUp(self):
         """ Make sure we have a few submissions to test with. """
@@ -1262,7 +1303,8 @@ class ActionTemplateViewMixin(object):
 
 
 class ActivationEmailSentUrlTestCase(
-        ActionTemplateViewMixin, WebSubscribeTestCase):
+        ActionTemplateViewMixin, SubscribeTestCase
+):
     """
     TestCase for testing requests to urls with activation email sent info.
     """
@@ -1274,7 +1316,8 @@ class ActivationEmailSentUrlTestCase(
 
 
 class ActionActivatedUrlTestCase(
-        ActionTemplateViewMixin, WebSubscribeTestCase):
+        ActionTemplateViewMixin, SubscribeTestCase
+):
     """
     TestCase for testing requests to urls with action activated info.
     """
