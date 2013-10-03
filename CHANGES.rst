@@ -1,8 +1,8 @@
 Changes
 =======
 
-0.5
----
+0.5 (03-10-2013)
+----------------
 
 - Added proxy for app-specific settings.
 - Optional skipping of email confirmation in views (`CONFIRM_EMAIL_<ACTION>`).
