@@ -361,9 +361,11 @@ class Subscription(models.Model):
 
         unescaped_context = Context(variable_dict, autoescape=False)
 
+        subject = subject_template.render(unescaped_context).strip()
+        text = text_template.render(unescaped_context)
+
         message = EmailMultiAlternatives(
-            subject_template.render(unescaped_context),
-            text_template.render(unescaped_context),
+            subject, text,
             from_email=self.newsletter.get_sender(),
             to=[self.email]
         )
@@ -560,9 +562,11 @@ class Submission(models.Model):
 
                 unescaped_context = Context(variable_dict, autoescape=False)
 
+                subject = subject_template.render(unescaped_context).strip()
+                text = text_template.render(unescaped_context)
+
                 message = EmailMultiAlternatives(
-                    subject_template.render(unescaped_context),
-                    text_template.render(unescaped_context),
+                    subject, text,
                     from_email=self.newsletter.get_sender(),
                     to=[subscription.get_recipient()]
                 )
