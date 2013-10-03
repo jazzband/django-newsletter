@@ -599,7 +599,7 @@ class AnonymousSubscribeTestCase(WebSubscribeTestCase,
 
     # Only run this test when settings overrides are available
     @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
-    def test_subscrube_request_post_error(self):
+    def test_subscribe_request_post_error(self):
         """
         Test whether a failing subscribe request email generated an error in
         the context.
