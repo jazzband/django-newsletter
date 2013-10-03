@@ -2,10 +2,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
 import datetime
+import socket
 
-from socket import gaierror
 from smtplib import SMTPException
 
 from django.core.exceptions import ValidationError, ImproperlyConfigured
@@ -415,7 +414,7 @@ class ActionRequestView(ActionFormView):
         try:
             self.subscription.send_activation_email(action=self.action)
 
-        except (SMTPException, gaierror), e:
+        except (SMTPException, socket.error), e:
             logger.exception(
                 'Error %s while submitting email to %s.',
                 e, self.subscription.email
