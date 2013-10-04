@@ -346,7 +346,7 @@ class ImportForm(forms.Form):
 
         content_type = myvalue.content_type
         allowed_types = ('text/plain', 'application/octet-stream',
-                         'text/vcard', 'text/x-vcard',
+                         'text/vcard', 'text/directory', 'text/x-vcard',
                          'application/vnd.ms-excel',
                          'text/comma-separated-values', 'text/csv',
                          'application/csv', 'application/excel',
