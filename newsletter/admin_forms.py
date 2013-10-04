@@ -235,7 +235,12 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
 def parse_vcard(myfile, newsletter, ignore_errors=False):
     import vobject
 
-    myvcards = vobject.readComponents(myfile)
+    try:
+        myvcards = vobject.readComponents(myfile)
+    except vobject.VObjectError, e:
+        raise forms.ValidationError(
+            _(u"Error reading vCard file: %s" % e)
+        )
 
     addresses = {}
 
