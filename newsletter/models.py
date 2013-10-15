@@ -16,13 +16,18 @@ from django.core.mail import EmailMultiAlternatives
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
 
-from django.contrib.auth import get_user_model
-
 from django.conf import settings
 
 from sorl.thumbnail import ImageField
 
 from .utils import make_activation_code, get_default_sites, ACTIONS
+
+try:
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+
+except ImportError:
+    from django.contrib.auth.models import User
 
 
 class Newsletter(models.Model):
@@ -156,7 +161,7 @@ class Newsletter(models.Model):
 
 class Subscription(models.Model):
     user = models.ForeignKey(
-        get_user_model(), blank=True, null=True, verbose_name=_('user')
+        User, blank=True, null=True, verbose_name=_('user')
     )
 
     name_field = models.CharField(

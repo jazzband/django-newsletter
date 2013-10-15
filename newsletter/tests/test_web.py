@@ -757,9 +757,15 @@ class AnonymousSubscribeTestCase(
         belonging to an existing user.
         """
 
-        from django.contrib.auth import get_user_model
-        password = get_user_model().objects.make_random_password()
-        user = get_user_model().objects.create_user(
+        try:
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+
+        except ImportError:
+            from django.contrib.auth.models import User
+
+        password = User.objects.make_random_password()
+        user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', password)
         user.save()
 

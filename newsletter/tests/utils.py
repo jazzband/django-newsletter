@@ -14,6 +14,13 @@ from django.template import loader, TemplateDoesNotExist
 
 from django_webtest import WebTest
 
+try:
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+
+except ImportError:
+    from django.contrib.auth.models import User
+
 
 class WebTestCase(WebTest):
     def setUp(self):
@@ -96,11 +103,11 @@ class UserTestCase(TestCase):
         super(UserTestCase, self).setUp()
 
         self.password = 'johnpassword'
-        self.user = get_user_model().objects.create_user(
+        self.user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', self.password)
 
         # Make sure the user has been created
-        self.assertIn(self.user, get_user_model().objects.all())
+        self.assertIn(self.user, User.objects.all())
 
         # Login the newly created user
         result = self.client.login(
