@@ -8,7 +8,7 @@ from django.test import TestCase
 from django.test.client import Client
 
 from django.contrib.sites.models import Site
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from django.template import loader, TemplateDoesNotExist
 
@@ -96,11 +96,11 @@ class UserTestCase(TestCase):
         super(UserTestCase, self).setUp()
 
         self.password = 'johnpassword'
-        self.user = User.objects.create_user(
+        self.user = get_user_model().objects.create_user(
             'john', 'lennon@thebeatles.com', self.password)
 
         # Make sure the user has been created
-        self.assertIn(self.user, User.objects.all())
+        self.assertIn(self.user, get_user_model().objects.all())
 
         # Login the newly created user
         result = self.client.login(

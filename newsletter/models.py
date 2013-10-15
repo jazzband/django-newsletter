@@ -16,7 +16,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from django.conf import settings
 
@@ -156,7 +156,7 @@ class Newsletter(models.Model):
 
 class Subscription(models.Model):
     user = models.ForeignKey(
-        User, blank=True, null=True, verbose_name=_('user')
+        get_user_model(), blank=True, null=True, verbose_name=_('user')
     )
 
     name_field = models.CharField(
