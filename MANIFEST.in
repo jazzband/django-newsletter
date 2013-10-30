@@ -3,8 +3,8 @@ include LICENSE
 include COPYRIGHT
 include distribute_setup.py
 include graph_models.*
-recursive-include newsletter/fixtures *.json
-recursive-include newsletter/templates *.html
+recursive-include newsletter/fixtures *
+recursive-include newsletter/templates *
 recursive-include newsletter/static *
 recursive-include newsletter/locale *
 recursive-include newsletter/addressimport/testdata *
