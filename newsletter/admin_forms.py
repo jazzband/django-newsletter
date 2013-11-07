@@ -4,14 +4,14 @@ logger = logging.getLogger(__name__)
 
 from django import forms
 
-from django.core.validators import email_re
+from django.core.exceptions import ValidationError
+
+from django.core.validators import validate_email
 
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 
 from django.conf import settings
-
-from django.template import Template
 
 from .models import Subscription, Newsletter, Submission
 
@@ -192,18 +192,20 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
 
         logger.debug("Going to add %s <%s>", name, email)
 
-        if email_re.search(email):
+        try:
+            validate_email(email)
             addr = make_subscription(newsletter, email, name)
-        elif not ignore_errors:
+        except ValidationError:
+            if ignore_errors:
+                logger.warn(
+                    "Entry '%s' at line %d does not contain a valid "
+                    "e-mail address.",
+                    name, myreader.line_num, extra=dict(data={'row': row}))
+            else:
                 raise forms.ValidationError(_(
                     "Entry '%s' does not contain a valid "
                     "e-mail address.") % name
                 )
-        else:
-            logger.warn(
-                "Entry '%s' at line %d does not contain a valid "
-                "e-mail address.",
-                name, myreader.line_num, extra=dict(data={'row': row}))
 
         if addr:
             if email in addresses:
@@ -261,9 +263,11 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
         else:
             continue
 
-        if email_re.search(email):
+        try:
+            validate_email(email)
             addr = make_subscription(newsletter, email, name)
-        elif not ignore_errors:
+        except ValidationError:
+            if not ignore_errors:
                 raise forms.ValidationError(
                     _("Entry '%s' does not contain a valid e-mail address.")
                     % name
@@ -298,9 +302,11 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
                 else:
                     name = None
 
-                if email_re.search(email):
+                try:
+                    validate_email(email)
                     addr = make_subscription(newsletter, email, name)
-                elif not ignore_errors:
+                except ValidationError:
+                    if not ignore_errors:
                         raise forms.ValidationError(_(
                             "Entry '%s' does not contain a valid "
                             "e-mail address.") % name

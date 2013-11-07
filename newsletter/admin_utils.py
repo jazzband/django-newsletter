@@ -1,6 +1,6 @@
 from django.http import Http404
 
-from django.utils.functional import update_wrapper
+from functools import update_wrapper
 from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.admin.util import unquote
