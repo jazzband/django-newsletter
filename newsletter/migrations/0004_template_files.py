@@ -24,7 +24,7 @@ class Migration(DataMigration):
         print 'Writing email template from DB to %s' % path
 
         f = open(path, 'w')
-        f.write(template)
+        f.write(template.encode('utf-8'))
         f.close()
 
     def forwards(self, orm):
