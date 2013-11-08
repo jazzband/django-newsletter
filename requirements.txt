@@ -1,8 +1,8 @@
 django-extensions
-Django>=1.4.8
+Django>=1.4.10
 vobject
 chardet
-surlex
+surlex>=0.2.0
 sorl-thumbnail
 
 # Test requirements
