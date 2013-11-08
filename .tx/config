@@ -1,5 +1,6 @@
 [main]
 host = https://www.transifex.com
+minimum-perc = 85
 
 [django-newsletter.djangojs]
 file_filter = newsletter/locale/<lang>/LC_MESSAGES/djangojs.po
