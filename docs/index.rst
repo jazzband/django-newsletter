@@ -5,18 +5,15 @@
 
 Welcome to django-newsletter's documentation!
 =============================================
-
-Contents:
+Django app for managing multiple mass-mailing lists with both
+plaintext as well as HTML templates with rich text widget
+integration, images and a smart queueing system all right from
+the admin interface.
 
 .. toctree::
    :maxdepth: 2
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+   installation
+   upgrading
+   usage
+   templates
