@@ -47,6 +47,7 @@ from django.core.management import call_command
 call_command('syncdb', interactive=False)
 
 autodoc_default_flags = ['members', 'show-inheritance']
+autodoc_member_order = 'bysource'
 
 # -- General configuration -----------------------------------------------------
 
@@ -207,7 +208,7 @@ htmlhelp_basename = 'django-newsletterdoc'
 
 latex_elements = {
 # The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
+'papersize': 'a4paper',
 
 # The font size ('10pt', '11pt' or '12pt').
 #'pointsize': '10pt',
