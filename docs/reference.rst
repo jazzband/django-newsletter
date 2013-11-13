@@ -9,7 +9,7 @@ source code.
 
 Models
 ------
-.. image:: graph_models.png
+.. image:: graph_models.*
 
 .. automodule:: newsletter.models
 
