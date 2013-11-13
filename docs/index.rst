@@ -14,6 +14,9 @@ the admin interface.
    :maxdepth: 2
 
    installation
-   upgrading
    usage
    templates
+   upgrading
+
+* `Changes <https://github.com/dokterbob/django-newsletter/blob/master/CHANGES.rst>`_ (GitHub)
+* `Contributors <https://github.com/dokterbob/django-newsletter/blob/master/AUTHORS.rst>`_ (GitHub)

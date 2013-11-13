@@ -2,14 +2,16 @@
 Installation
 ============
 
+#) Make sure all `requirements <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_ are properly setup.
+
 #)  Get it from the Cheese Shop::
 
-    pip install django-newsletter
+        pip install django-newsletter
 
     **Or** get the latest & greatest from Github and link it to your
     application tree::
 
-    pip install -e git://github.com/dokterbob/django-newsletter.git#egg=django-newsletter
+        pip install -e git://github.com/dokterbob/django-newsletter.git#egg=django-newsletter
 
     (In either case it is recommended that you use
     `VirtualEnv <http://pypi.python.org/pypi/virtualenv>`_ in order to
@@ -21,20 +23,20 @@ Installation
     and `django-extensions <https://github.com/django-extensions/django-extensions>`_
     (the latter is used for the submission jobs) are there as well::
 
-    INSTALLED_APPS = (
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.auth',
-        'django.contrib.sites',
-        ...
-        # Imperavi (or tinymce) rich text editor is optional
-        # 'imperavi',
-        'django_extensions',
-        'sorl.thumbnail',
-        ...
-        'newsletter',
-        ...
-    )
+        INSTALLED_APPS = (
+            'django.contrib.contenttypes',
+            'django.contrib.sessions',
+            'django.contrib.auth',
+            'django.contrib.sites',
+            ...
+            # Imperavi (or tinymce) rich text editor is optional
+            # 'imperavi',
+            'django_extensions',
+            'sorl.thumbnail',
+            ...
+            'newsletter',
+            ...
+        )
 
 #)  Disable email confirmation for subscribe, unsubscribe and update actions
     for subscriptions.
@@ -44,7 +46,7 @@ Installation
     email. If you want all requested actions to be performed without email
     confirmation, add following line to settings.py::
 
-    NEWSLETTER_CONFIRM_EMAIL = False
+        NEWSLETTER_CONFIRM_EMAIL = False
 
     For more granular control the ``NEWSLETTER_CONFIRM_EMAIL`` setting can be
     overridden for each of subscribe, unsubscribe and update actions, by adding
@@ -59,11 +61,11 @@ Installation
     Be sure to follow installation instructions for respective widgets. After
     installation, the widgets can be selected as follows::
 
-    # Using django-imperavi
-    NEWSLETTER_RICHTEXT_WIDGET = "imperavi.widget.ImperaviWidget"
+        # Using django-imperavi
+        NEWSLETTER_RICHTEXT_WIDGET = "imperavi.widget.ImperaviWidget"
 
-    # Using django-tinymce
-    NEWSLETTER_RICHTEXT_WIDGET = "tinymce.widgets.TinyMCE"
+        # Using django-tinymce
+        NEWSLETTER_RICHTEXT_WIDGET = "tinymce.widgets.TinyMCE"
 
     If not set, django-newsletter will fall back to Django's default TextField
     widget.
@@ -71,19 +73,23 @@ Installation
 #)  Import subscription, unsubscription and archive URL's somewhere in your
     `urls.py`::
 
-    urlpatterns = patterns('',
-        ...
-        (r'^newsletter/', include('newsletter.urls')),
-        ...
-    )
+        urlpatterns = patterns('',
+            ...
+            (r'^newsletter/', include('newsletter.urls')),
+            ...
+        )
 
 #)  Enable Django's `staticfiles <http://docs.djangoproject.com/en/dev/howto/static-files/>`_
     app so the admin icons, CSS and JavaScript will be available where
     we expect it.
 
-#)  Create required data structure::
+#)  Create required data structure with `South <http://south.readthedocs.org/en/latest/about.html>`_ (recommended)::
 
-    ./manage.py syncdb
+        ./manage.py migrate
+
+    Without South::
+
+        ./manage.py syncdb
 
 #)  Change the default contact email listed in
     ``templates/newsletter/subscription_subscribe.html`` and
@@ -96,14 +102,14 @@ Installation
 
 #)  (Optionally) Run the tests to see if it all works::
 
-    ./manage.py test
+        ./manage.py test
 
     If it does: that's a good sign. You'll probably have yourself a
     working configuration!
 
 #)  Add jobs for sending out mail queues to `crontab <http://linuxmanpages.com/man5/crontab.5.php>`_::
 
-    @hourly /path/to/my/project/manage.py runjobs hourly
-    @daily /path/to/my/project/manage.py runjobs daily
-    @weekly /path/to/my/project/manage.py runjobs weekly
-    @monthly /path/to/my/project/manage.py runjobs monthly
+        @hourly /path/to/my/project/manage.py runjobs hourly
+        @daily /path/to/my/project/manage.py runjobs daily
+        @weekly /path/to/my/project/manage.py runjobs weekly
+        @monthly /path/to/my/project/manage.py runjobs monthly
