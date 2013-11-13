@@ -9,7 +9,7 @@ source code.
 
 Models
 ------
-.. image:: https://github.com/dokterbob/django-newsletter/raw/master/graph_models.png
+.. image:: graph_models.png
 
 .. automodule:: newsletter.models
 
