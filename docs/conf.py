@@ -19,7 +19,34 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
+
+# Django bogus settings for autodoc
+from django.conf import settings
+
+settings.configure(
+    SECRET_KEY='bogus', SITE_ID=1,
+    INSTALLED_APPS=[
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.auth',
+        'django.contrib.sites',
+        'django_extensions',
+        'sorl.thumbnail',
+        'newsletter'
+    ],
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:'
+        }
+    }
+)
+
+from django.core.management import call_command
+call_command('syncdb', interactive=False)
+
+autodoc_default_flags = ['members', 'show-inheritance']
 
 # -- General configuration -----------------------------------------------------
 
@@ -28,7 +55,7 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.intersphinx']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -254,7 +281,9 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 intersphinx_mapping = {
-  'python': ('http://python.readthedocs.org/en/latest/', None),
   'django': ('http://django.readthedocs.org/en/latest/', None),
-  'sphinx': ('http://sphinx.readthedocs.org/en/latest/', None),
+
+  # This causes namespace collisions with references. :s
+  # 'python': ('http://python.readthedocs.org/en/latest/', None),
+  # 'sphinx': ('http://sphinx.readthedocs.org/en/latest/', None),
 }

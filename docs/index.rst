@@ -16,6 +16,7 @@ the admin interface.
    installation
    usage
    templates
+   reference
    upgrading
 
 * `Changes <https://github.com/dokterbob/django-newsletter/blob/master/CHANGES.rst>`_ (GitHub)
