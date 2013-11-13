@@ -416,25 +416,30 @@ class Subscription(models.Model):
         })
 
 
-def get_next_order():
-    """ Get the next available ordering as to assure uniqueness. """
-    sib_order__max = \
-        Article.objects.aggregate(models.Max('sortorder'))['sortorder__max']
-    if sib_order__max:
-        return sib_order__max + 10
-    else:
-        return 10
-
-
 class Article(models.Model):
     """
     An Article within a Message which will be send through a Submission.
     """
 
+    @classmethod
+    def get_next_order(cls):
+        """ Get the next available Article ordering as to assure uniqueness. """
+
+        next_order = cls.objects.aggregate(
+            models.Max('sortorder')
+        )['sortorder__max']
+
+        if next_order:
+            return next_order + 10
+        else:
+            return 10
+
+
     sortorder = models.PositiveIntegerField(
         help_text=_('Sort order determines the order in which articles are '
                     'concatenated in a post.'),
-        verbose_name=_('sort order'), db_index=True, default=get_next_order
+        verbose_name=_('sort order'), db_index=True,
+        default=lambda: Article.get_next_order()
     )
 
     title = models.CharField(max_length=200, verbose_name=_('title'))
