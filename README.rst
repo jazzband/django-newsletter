@@ -17,14 +17,18 @@ Newsletter application for the Django web framework.
 What is it?
 ===========
 Django app for managing multiple mass-mailing lists with both plaintext as
-well as HTML templates with rich text widget integration, images and a
-smart queueing system all right from the admin interface.
+well as HTML templates with rich text widget  integration, images and a smart
+queueing system all right from the admin interface.
 
 Status
 ======
-We are currently using this package in several large to medium scale
-production environments, but it should be considered a permanent work in
-progress.
+We are currently using this package in several large to medium scale production
+environments, but it should be considered a permanent work in progress.
+
+Documentation
+=============
+Extended documentation is available on
+`Read the Docs <http://django-newsletter.readthedocs.org/>`_.
 
 Translations
 ============
@@ -43,13 +47,14 @@ with Python 2.5 as well.
 
 Requirements
 ============
-Please refer to `requirements.txt <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_ for an updated list of required packages.
+Please refer to `requirements.txt <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_
+for an updated list of required packages.
 
-Unit tests
+Tests
 ==========
 Fairly extensive tests are available for internal frameworks, web
 (un)subscription and mail sending. Sending a newsletter to large groups of recipients
-(+10k) has been confirmed to work in multiple production environments. Tests
+(+15k) has been confirmed to work in multiple production environments. Tests
 for pull req's and the master branch are automatically run through
 `Travis CI <http://travis-ci.org/dokterbob/django-newsletter>`_.
 
@@ -65,15 +70,6 @@ official release.
 
 In general: thanks for the support, feedback, patches and code that's been flowing in
 over the years! Django has a truly great community. <3
-
-Donations
-=========
-Donations are welcome in Bitcoin or Paypal through
-`Properster <https://propster.me/tipjar/0D3UYAI13>`_. For Bitcoin, the link/QRCode below should suffice. If you donate, be sure to fill
-in the note. I love to hear what people are using it for!
-
-.. image:: http://qr.ma.eatgold.com/temp/bitcoin12omMNyLirypArtqwDtoKM2av1wsLMbVWs.png
-    :target: https://propster.me/tipjar/0D3UYAI13
 
 License
 =======
