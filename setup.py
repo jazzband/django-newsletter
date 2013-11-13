@@ -19,9 +19,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import distribute_setup
-distribute_setup.use_setuptools('0.6.10')
-
 from setuptools import setup, find_packages
 
 try:
@@ -41,6 +38,7 @@ setup(
     description='Django app for managing multiple mass-mailing lists with both plaintext as well as HTML templates (and TinyMCE editor for HTML messages), images and a smart queueing system all right from the admin interface.',
     long_description=README,
     install_requires=REQUIREMENTS,
+    license='AGPL',
     author='Mathijs de Bruin',
     author_email='mathijs@mathijsfietst.nl',
     url='http://github.com/dokterbob/django-newsletter/',
