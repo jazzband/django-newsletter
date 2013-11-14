@@ -8,17 +8,12 @@ from django.test import TestCase
 
 from django.contrib.sites.models import Site
 
-try:
-    from django.contrib.auth import get_user_model
-except ImportError:
-    # django < v1.5
-    from django.contrib.auth.models import User
-else:
-    User = get_user_model()
-
 from django.template import loader, TemplateDoesNotExist
 
 from django_webtest import WebTest
+
+from ..utils import get_user_model
+User = get_user_model()
 
 
 class WebTestCase(WebTest):
