@@ -1,3 +1,5 @@
+""" Generic helper functions """
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -16,7 +18,6 @@ from datetime import datetime
 ACTIONS = ('subscribe', 'unsubscribe', 'update')
 
 
-# Generic helper functions
 def make_activation_code():
     """ Generate a unique activation code. """
     random_string = str(random.random())
