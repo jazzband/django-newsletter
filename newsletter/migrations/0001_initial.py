@@ -3,13 +3,10 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
-try:
-    from django.contrib.auth import get_user_model
-except ImportError:
-    # django < v1.5
-    from django.contrib.auth.models import User
-else:
-    User = get_user_model()
+
+from ..utils import get_user_model
+User = get_user_model()
+
 
 class Migration(SchemaMigration):
 

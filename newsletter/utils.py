@@ -18,6 +18,19 @@ from datetime import datetime
 ACTIONS = ('subscribe', 'unsubscribe', 'update')
 
 
+def get_user_model():
+    """ get_user_model compatibility wrapper. Returns active User model. """
+    try:
+        from django.contrib.auth import get_user_model
+    except ImportError:
+        # Django < v1.5
+        from django.contrib.auth.models import User
+    else:
+        User = get_user_model()
+
+    return User
+
+
 def make_activation_code():
     """ Generate a unique activation code. """
     random_string = str(random.random())
