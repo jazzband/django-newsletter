@@ -3,23 +3,23 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# rohamn <rohamn@hotmail.com>, 2013
+# azanibellato <andrea.zanibellato@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-11-19 21:55+0100\n"
-"PO-Revision-Date: 2013-01-19 19:31+0000\n"
-"Last-Translator: rohamn <rohamn@hotmail.com>\n"
-"Language-Team: Persian (http://www.transifex.com/projects/p/django-newsletter/language/fa/)\n"
+"PO-Revision-Date: 2013-11-11 16:18+0000\n"
+"Last-Translator: azanibellato <andrea.zanibellato@gmail.com>\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/django-newsletter/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fa\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: static/newsletter/admin/js/submit_interface.js:12
 msgid ""
 "The submission has been changed. It has to be saved before you can submit. "
 "Click OK to proceed with saving, click cancel to continue editing."
-msgstr "پیام تغییر یافته است و باید پیش از ارسال ذخیره شود. تأیید کنید تا ذخیره‌سازی انجام شود یا کنسل کنید و به ویرایش ادامه دهید."
+msgstr "Il contenuto è stato cambiato. Deve essere salvato prima che tu possa inviarlo. Clicca OK per procedere con il salvataggio, clicca annulla per continuare con la modifica."

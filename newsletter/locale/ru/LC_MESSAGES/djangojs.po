@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
-"Report-Msgid-Bugs-To: http://github.com/dokterbob/django-newsletter/issues\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-11-19 21:55+0100\n"
 "PO-Revision-Date: 2013-06-23 13:23+0000\n"
 "Last-Translator: ak3n <ak3ntev@gmail.com>\n"
