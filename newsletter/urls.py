@@ -9,7 +9,9 @@ from .views import (
     ActionTemplateView, UpdateSubscriptionViev,
 )
 
-urlpatterns = patterns('newsletter.views',
+urlpatterns = patterns(
+    '',
+
     # Newsletter list and detail view
     surl('^$', NewsletterListView.as_view(), name='newsletter_list'),
     surl(
@@ -45,8 +47,9 @@ urlpatterns = patterns('newsletter.views',
     ),
 
     # Activation email sent view
-    surl('^<newsletter_slug:s>/<action=subscribe|update|unsubscribe>/'
-         'email-sent/$',
+    surl(
+        '^<newsletter_slug:s>/<action=subscribe|update|unsubscribe>/'
+        'email-sent/$',
         ActionTemplateView.as_view(
             template_name='newsletter/subscription_%(action)s_email_sent.html'
         ),
@@ -65,7 +68,8 @@ urlpatterns = patterns('newsletter.views',
     ),
 
     # Action activation completed view
-    surl('^<newsletter_slug:s>/<action=subscribe|update|unsubscribe>/'
+    surl(
+        '^<newsletter_slug:s>/<action=subscribe|update|unsubscribe>/'
         'activation-completed/$',
         ActionTemplateView.as_view(
             template_name='newsletter/subscription_%(action)s_activated.html'

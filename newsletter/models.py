@@ -423,7 +423,9 @@ class Article(models.Model):
 
     @classmethod
     def get_next_order(cls):
-        """ Get the next available Article ordering as to assure uniqueness. """
+        """
+        Get the next available Article ordering as to assure uniqueness.
+        """
 
         next_order = cls.objects.aggregate(
             models.Max('sortorder')
@@ -433,7 +435,6 @@ class Article(models.Model):
             return next_order + 10
         else:
             return 10
-
 
     sortorder = models.PositiveIntegerField(
         help_text=_('Sort order determines the order in which articles are '

@@ -1154,7 +1154,6 @@ class InvisibleUserSubscribeTestCase(UserSubscribeTestCase):
         self.n.save()
 
 
-
 class ArchiveTestcase(NewsletterListTestCase):
     def setUp(self):
         """ Make sure we have a few submissions to test with. """

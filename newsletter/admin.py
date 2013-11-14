@@ -157,8 +157,8 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def get_urls(self):
         urls = super(SubmissionAdmin, self).get_urls()
 
-        my_urls = patterns('',
-            url(
+        my_urls = patterns(
+            '', url(
                 r'^(.+)/submit/$',
                 self._wrap(self.submit),
                 name=self._view_name('submit')
@@ -301,7 +301,8 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def get_urls(self):
         urls = super(MessageAdmin, self).get_urls()
 
-        my_urls = patterns('',
+        my_urls = patterns(
+            '',
             url(r'^(.+)/preview/$',
                 self._wrap(self.preview),
                 name=self._view_name('preview')),
@@ -465,7 +466,8 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def get_urls(self):
         urls = super(SubscriptionAdmin, self).get_urls()
 
-        my_urls = patterns('',
+        my_urls = patterns(
+            '',
             url(r'^import/$',
                 self._wrap(self.subscribers_import),
                 name=self._view_name('import')),
