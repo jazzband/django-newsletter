@@ -5,7 +5,6 @@ logger = logging.getLogger(__name__)
 from django.core import mail
 
 from django.test import TestCase
-from django.test.client import Client
 
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
