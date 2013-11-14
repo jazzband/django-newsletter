@@ -5,6 +5,8 @@ Authors and contributors
 - Jannis [jnns]
 - Alexander Schrijver [flupzor]
 - Jakub Kuczmarski [jkuczm]
+- remarkablerocket
+- Sina Samavati [s1n4]
 
 Plus several others whom I forgot to mention. If I did, fire a pull request
 adding your name to this list.
@@ -16,3 +18,4 @@ Translators
 - German: Jannis [jnns]
 - Russian: Eugene Akentyev [ak3n]
 - Dutch: Mathijs de Bruin [dokterbob]
+- Italian: Andrea [azanibellato]

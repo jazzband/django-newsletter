@@ -1,6 +1,17 @@
 Changes
 =======
 
+0.5.1 (15-11-2013)
+------------------
+
+- Added Italian translation, thanks to azanibellato.
+- Support for pluggable/custom user models (#101).
+- Proper Sphinx documentation with autodoc on Read the Docs (#90).
+- Compatibility with Django 1.6 thanks to @jnss (#97).
+- Include default message templates in package (#95).
+- Fix database to template file migration for non-ASCII characters (#94).
+- Fix small issues with vCard imports (mainly mimetype-related).
+
 0.5 (03-10-2013)
 ----------------
 
