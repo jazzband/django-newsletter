@@ -1,10 +1,14 @@
+# Text files
 include README.rst
 include LICENSE
 include COPYRIGHT
-include distribute_setup.py
-include graph_models.*
+
+# Sphinx documentation
+recursive-include docs *
+prune docs/_build
+
+# Fixtures, templates, static files, strings and test data
 recursive-include newsletter/fixtures *
 recursive-include newsletter/templates *
 recursive-include newsletter/static *
 recursive-include newsletter/locale *
-recursive-include newsletter/addressimport/testdata *

@@ -4,7 +4,7 @@
 # django-newsletter: Django app for managing multiple mass-mailing lists with
 # both plaintext as well as HTML templates (and TinyMCE editor for HTML messages),
 # images and a smart queueing system all right from the admin interface.
-# Copyright (C) 2008-2012 Mathijs de Bruin
+# Copyright (C) 2008-2013 Mathijs de Bruin
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,7 @@ except:
 
 setup(
     name='django-newsletter',
-    version="0.5",
+    version="0.5.1",
     description='Django app for managing multiple mass-mailing lists with both plaintext as well as HTML templates (and TinyMCE editor for HTML messages), images and a smart queueing system all right from the admin interface.',
     long_description=README,
     install_requires=REQUIREMENTS,
@@ -44,14 +44,16 @@ setup(
     url='http://github.com/dokterbob/django-newsletter/',
     packages=find_packages(),
     include_package_data=True,
-    classifiers=['Development Status :: 4 - Beta',
-                 'Environment :: Web Environment',
-                 'Framework :: Django',
-                 'Intended Audience :: Developers',
-                 'License :: OSI Approved :: GNU Affero General Public License v3',
-                 'Operating System :: OS Independent',
-                 'Programming Language :: Python',
-                 'Topic :: Utilities'],
+    classifiers=(
+        'Development Status :: 6 - Mature',
+        'Environment :: Web Environment',
+        'Framework :: Django',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: GNU Affero General Public License v3',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Topic :: Utilities'
+    ),
     test_suite='setuptest.setuptest.SetupTestSuite',
     tests_require=(
         'django-setuptest',
