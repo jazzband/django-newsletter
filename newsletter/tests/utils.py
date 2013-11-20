@@ -7,11 +7,13 @@ from django.core import mail
 from django.test import TestCase
 
 from django.contrib.sites.models import Site
-from django.contrib.auth.models import User
 
 from django.template import loader, TemplateDoesNotExist
 
 from django_webtest import WebTest
+
+from ..utils import get_user_model
+User = get_user_model()
 
 
 class WebTestCase(WebTest):

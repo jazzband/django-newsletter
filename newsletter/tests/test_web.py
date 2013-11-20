@@ -24,7 +24,11 @@ from django.test.utils import override_settings
 from ..models import (
     Newsletter, Subscription, Submission, Message, get_default_sites
 )
+
 from ..forms import UpdateForm
+
+from ..utils import get_user_model
+User = get_user_model()
 
 from .utils import MailTestCase, UserTestCase, WebTestCase, ComparingTestCase
 
@@ -757,7 +761,6 @@ class AnonymousSubscribeTestCase(
         belonging to an existing user.
         """
 
-        from django.contrib.auth.models import User
         password = User.objects.make_random_password()
         user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', password)
