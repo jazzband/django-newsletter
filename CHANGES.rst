@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.5.1 (15-11-2013)
+0.5.1 (21-11-2013)
 ------------------
 
 - Added Italian translation, thanks to azanibellato.
