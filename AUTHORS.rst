@@ -19,3 +19,5 @@ Translators
 - Russian: Eugene Akentyev [ak3n]
 - Dutch: Mathijs de Bruin [dokterbob]
 - Italian: Andrea [azanibellato]
+- Islandic: ebergmundur
+- Arabic: Bashar Al-Abdulhadi [KuwaitNET]

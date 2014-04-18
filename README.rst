@@ -32,9 +32,11 @@ Extended documentation is available on
 
 Translations
 ============
-Most if not all strings are available in Dutch, German, French, Farsi,
-Russian and English. Contributions to translations are welcome through
-`Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_.
+All strings have been translated to Dutch, German, French, Farsi, Russian,
+English, Arabic, Icelandic and Italian with more languages on their way.
+
+Contributions to translations are welcome through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_. Strings will be included as
+soon as near-full coverage is reached.
 
 .. image:: https://www.transifex.com/projects/p/django-newsletter/resource/django/chart/image_png
     :target: http://www.transifex.net/projects/p/django-newsletter/
