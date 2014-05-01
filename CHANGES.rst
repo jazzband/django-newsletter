@@ -1,6 +1,12 @@
 Changes
 =======
 
+0.5.2 (1-5-2014)
+----------------
+
+- Additional locale support: Arabic, Czech, French and Islandic
+- Run tests on Django 1.7 beta and Python 3.3 (but allow failure)
+
 0.5.1 (21-11-2013)
 ------------------
 
