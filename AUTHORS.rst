@@ -21,3 +21,4 @@ Translators
 - Italian: Andrea [azanibellato]
 - Islandic: ebergmundur
 - Arabic: Bashar Al-Abdulhadi [KuwaitNET]
+- Czech: tomaasch

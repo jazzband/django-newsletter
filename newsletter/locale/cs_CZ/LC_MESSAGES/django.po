@@ -1,0 +1,776 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# tomaasch <tomas@labs.cz>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: django-newsletter\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-08 09:56+0100\n"
+"PO-Revision-Date: 2014-04-29 09:58+0000\n"
+"Last-Translator: tomaasch <tomas@labs.cz>\n"
+"Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/django-newsletter/language/cs_CZ/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs_CZ\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: admin.py:56
+msgid "Messages"
+msgstr "Zprávy"
+
+#: admin.py:64
+#: templates/admin/newsletter/subscription/confirmimportform.html:16
+#: templates/admin/newsletter/subscription/importform.html:16
+msgid "Subscriptions"
+msgstr "Přihlášení"
+
+#: admin.py:70
+msgid "Submissions"
+msgstr "Rozeslání zpráv"
+
+#: admin.py:90 models.py:524
+msgid "submission"
+msgstr "rozeslání zprávy"
+
+#: admin.py:97 admin.py:236 admin.py:350 models.py:100 models.py:298
+#: models.py:475 models.py:649
+msgid "newsletter"
+msgstr "newsletter"
+
+#: admin.py:105
+msgid "publish date"
+msgstr "datum zveřejnění"
+
+#: admin.py:131
+msgid "Sent."
+msgstr "Odesláno."
+
+#: admin.py:134
+msgid "Delayed submission."
+msgstr "Odložené rozeslání."
+
+#: admin.py:136
+msgid "Submitting."
+msgstr "Přihlášen."
+
+#: admin.py:138
+msgid "Not sent."
+msgstr "Nebylo zasláno."
+
+#: admin.py:139 admin.py:375
+msgid "Status"
+msgstr "Status"
+
+#: admin.py:146
+msgid "Submission already sent."
+msgstr "Rozeslání zprávy bylo provedeno již dříve."
+
+#: admin.py:152
+msgid "Your submission is being sent."
+msgstr "Vaše zpráva se právě rozesílá."
+
+#: admin.py:197
+msgid "Optional"
+msgstr "Volitelné"
+
+#: admin.py:224 models.py:456 models.py:501 models.py:652
+msgid "message"
+msgstr "zpráva"
+
+#: admin.py:228 templates/admin/newsletter/message/change_form.html:9
+#: templates/admin/newsletter/message/preview.html:14
+msgid "Preview"
+msgstr "Náhled"
+
+#: admin.py:256 views.py:606
+msgid ""
+"No HTML template associated with the newsletter this message belongs to."
+msgstr "Tato zpráva nemá k dispozici žádnou HTML šablonu přiřazenou k newsletteru."
+
+#: admin.py:370
+msgid "Subscribed"
+msgstr "Přihlášeno"
+
+#: admin.py:372
+msgid "Unsubscribed"
+msgstr "Odhlášen"
+
+#: admin.py:374
+msgid "Unactivated"
+msgstr "Deaktivován"
+
+#: admin.py:382 models.py:311
+msgid "subscribe date"
+msgstr "datum přihlášení"
+
+#: admin.py:389 models.py:319
+msgid "unsubscribe date"
+msgstr "datum odhlášení"
+
+#: admin.py:397
+#, python-format
+msgid "%s user has been successfully subscribed."
+msgid_plural "%s users have been successfully subscribed."
+msgstr[0] "%s uživatel byl právě úspěšně přihlášen k odběru novinek."
+msgstr[1] "%s uživatelé bylo právě úspěšně přihlášeni k odběru novinek."
+msgstr[2] "%s uživatelů bylo právě úspěšně přihlášeno k odběru novinek."
+
+#: admin.py:402
+msgid "Subscribe selected users"
+msgstr "Přihlásit vybrané uživatele."
+
+#: admin.py:409
+#, python-format
+msgid "%s user has been successfully unsubscribed."
+msgid_plural "%s users have been successfully unsubscribed."
+msgstr[0] "%s uživatel byl právě úspěšně odhlášen z odběru novinek."
+msgstr[1] "%s uživatelé byli právě úspěšně odhlášeni z odběru novinek."
+msgstr[2] "%s uživatelů bylo právě úspěšně odhlášeno z odběru novinek."
+
+#: admin.py:414
+msgid "Unsubscribe selected users"
+msgstr "Odhlásit vybrané uživatele."
+
+#: admin.py:450
+#, python-format
+msgid "%s subscriptions have been successfully added."
+msgstr "Úspěšně bylo přidáno %s odběratelů newsletteru."
+
+#: admin_forms.py:51
+#, python-format
+msgid ""
+"E-mail address %(email)s too long, maximum length is %(email_length)s "
+"characters."
+msgstr "E-mailová adresa %(email)s je příliš dlouhá, maximální povolená délka je %(email_length)s znaků."
+
+#: admin_forms.py:71
+#, python-format
+msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
+msgstr "Jméno %(name)s je příliš dlouhé, maximální povolená délka je %(name_length)s znaků."
+
+#: admin_forms.py:119 admin_forms.py:131 admin_forms.py:168 models.py:164
+msgid "name"
+msgstr "jméno"
+
+#: admin_forms.py:123
+msgid "display"
+msgstr "zobrazení"
+
+#: admin_forms.py:130
+#, python-format
+msgid ""
+"Name column not found. The name of this column should be either 'name' or "
+"'%s'."
+msgstr "Jméno sloupce nenalezeno. Jméno sloupce musí být buď 'name' nebo '%s'."
+
+#: admin_forms.py:142 admin_forms.py:154 admin_forms.py:169 models.py:37
+#: models.py:178
+msgid "e-mail"
+msgstr "e-mail"
+
+#: admin_forms.py:152
+#, python-format
+msgid ""
+"E-mail column not found. The name of this column should be either 'email', "
+"'e-mail' or '%(email)s'."
+msgstr "Sloupec s e-mailem nebyl nalezen. Název tohoto sloupce by měly být buďto 'e-mail' nebo '%(email)s'."
+
+#: admin_forms.py:164
+#, python-format
+msgid ""
+"Could not properly determine the proper columns in the CSV-file. There "
+"should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
+"'%(e-mail)s'."
+msgstr "Nelze správně určit správné jména sloupců v CSV souboru. Tam by mělo být pole s názvem 'name' nebo '%(name)s' a jeden s názvem 'e-mail' nebo '%(e-mail)s'."
+
+#: admin_forms.py:186
+#, python-format
+msgid "Row with content '%(row)s' does not contain a name and email field."
+msgstr "Řádek s obsahem '%(row)s' neobsahuje jméno a e-mailovou adresu."
+
+#: admin_forms.py:206 admin_forms.py:272 admin_forms.py:311
+#, python-format
+msgid "Entry '%s' does not contain a valid e-mail address."
+msgstr "Položka '%s' neobsahuje validní e-mailovou adresu."
+
+#: admin_forms.py:220 admin_forms.py:279 admin_forms.py:318
+#, python-format
+msgid "The address file contains duplicate entries for '%s'."
+msgstr "Soubor s adresami obsahuje duplicitní položku '%s'."
+
+#: admin_forms.py:232 admin_forms.py:286 admin_forms.py:325
+msgid "Some entries are already subscribed to."
+msgstr "Některé položky jsou již přihlášeny k odběru."
+
+#: admin_forms.py:244
+#, python-format
+msgid "Error reading vCard file: %s"
+msgstr "Chyba při čtení souboru formátu vCard: %s"
+
+#: admin_forms.py:262
+#, python-format
+msgid "Entry '%s' contains no email address."
+msgstr "Položka '%s' neobsahuje žádnou e-mailovou adresu."
+
+#: admin_forms.py:329
+msgid "Some entries have no e-mail address."
+msgstr "Některé položky nemají e-mailovou adresu."
+
+#: admin_forms.py:367
+#, python-format
+msgid "File type '%s' was not recognized."
+msgstr "Soubor typu '%s' nebyl rozpoznán."
+
+#: admin_forms.py:386
+#, python-format
+msgid "File extention '%s' was not recognized."
+msgstr "Přípona souboru '%s' nebyla rozpoznána."
+
+#: admin_forms.py:390
+msgid "No entries could found in this file."
+msgstr "V souboru nebyly nalezeny žádné položky."
+
+#: admin_forms.py:402
+#: templates/admin/newsletter/subscription/confirmimportform.html:12
+#: templates/admin/newsletter/subscription/importform.html:12
+#: templates/newsletter/common.html:7
+#: templates/newsletter/newsletter_detail.html:11
+#: templates/newsletter/newsletter_list.html:15
+#: templates/newsletter/newsletter_list.html:33
+#: templates/newsletter/subscription_activate.html:5
+#: templates/newsletter/subscription_activate.html:8
+#: templates/newsletter/subscription_subscribe_activated.html:5
+#: templates/newsletter/subscription_subscribe_activated.html:8
+#: templates/newsletter/subscription_unsubscribe_activated.html:5
+#: templates/newsletter/subscription_unsubscribe_activated.html:8
+#: templates/newsletter/subscription_update_activated.html:5
+#: templates/newsletter/subscription_update_activated.html:8
+msgid "Newsletter"
+msgstr "Newsletter"
+
+#: admin_forms.py:405
+msgid "Address file"
+msgstr "Soubor s adresami"
+
+#: admin_forms.py:407
+msgid "Ignore non-fatal errors"
+msgstr "Ignorovat drobné chyby"
+
+#: admin_forms.py:418
+msgid "You should confirm in order to continue."
+msgstr "Potvrďte prosím, pokud chcete pokračovat."
+
+#: admin_forms.py:421
+#: templates/admin/newsletter/subscription/confirmimportform.html:23
+#: templates/admin/newsletter/subscription/confirmimportform.html:28
+msgid "Confirm import"
+msgstr "Potvrdit import"
+
+#: admin_forms.py:434 admin_forms.py:442
+msgid "If a user has been selected this field should remain empty."
+msgstr "Toto pole musí zůstat prázdné, pokud byl vybrán uživatel."
+
+#: admin_forms.py:452
+msgid "Either a user must be selected or an email address must be specified."
+msgstr "Buď musí být vybrán uživatel nebo musí být uvedena e-mailová adresa."
+
+#: admin_forms.py:476
+msgid ""
+"This message has already been published in some other submission. Messages "
+"can only be published once."
+msgstr "Tato zpráva byla již zveřejněna v jiném zaslání newsletteru. Zprávy mohou být zveřejněny pouze jednou."
+
+#: admin_utils.py:25
+#, python-format
+msgid "%(name)s object with primary key %(key)r does not exist."
+msgstr "Objekt %(name)s s primárním klíčem %(key)r neexistuje."
+
+#: forms.py:49 forms.py:107
+msgid "An e-mail address is required."
+msgstr "E-mailová adresa je povinná."
+
+#: forms.py:56
+#, python-format
+msgid ""
+"The e-mail address '%(email)s' belongs to a user with an account on this "
+"site. Please log in as that user and try again."
+msgstr "E-mailová adresa '%(email)s' patří uživateli s účtem na tomto webu. Prosím, přihlaste se jako tento uživatel a zkuste to znovu."
+
+#: forms.py:73
+msgid "Your e-mail address has already been subscribed to."
+msgstr "Vaše e-mailová adresa byla přihlášena k odběru novinek již dříve."
+
+#: forms.py:98
+msgid "This subscription has not yet been activated."
+msgstr "Toto přihlášení k odběru ještě nebylo aktivováno."
+
+#: forms.py:114
+#, python-format
+msgid ""
+"This e-mail address belongs to the user '%(username)s'. Please log in as "
+"that user and try again."
+msgstr "Tato e-mailová adresa patří uživateli '%(username)s'. Prosím, přihlaste se jako tento uživatel a zkuste to znovu."
+
+#: forms.py:132
+msgid "This e-mail address has not been subscribed to."
+msgstr "Tato e-mailová adresa nebyla přihlášena k odběru novinek."
+
+#: forms.py:147
+msgid "This subscription has already been unsubscribed from."
+msgstr "Toto přihlášení k odběru bylo již zrušeno."
+
+#: forms.py:163
+msgid "The validation code supplied by you does not match."
+msgstr "Kontrolní kód, který jste zadal(a), není správný."
+
+#: forms.py:169
+msgid "Activation code"
+msgstr "Aktivační kód"
+
+#: models.py:32
+msgid "newsletter title"
+msgstr "titulek newsletteru"
+
+#: models.py:37
+msgid "Sender e-mail"
+msgstr "E-mail odesílatele"
+
+#: models.py:40
+msgid "sender"
+msgstr "odesílatel"
+
+#: models.py:40
+msgid "Sender name"
+msgstr "Jméno odesílatele"
+
+#: models.py:44
+msgid "visible"
+msgstr "viditelný"
+
+#: models.py:48
+msgid "send html"
+msgstr "odeslat HTML"
+
+#: models.py:49
+msgid "Whether or not to send HTML versions of e-mails."
+msgstr "Má-li se odeslat HTML verze e-mailu či nikoliv."
+
+#: models.py:101
+msgid "newsletters"
+msgstr "newslettery"
+
+#: models.py:159
+msgid "user"
+msgstr "uživatel"
+
+#: models.py:164
+msgid "optional"
+msgstr "volitelné"
+
+#: models.py:208
+#, python-format
+msgid "Updated subscription %(subscription)s to %(action)s."
+msgstr "Aktualizováno přihlášení %(subscription)s k %(action)s."
+
+#: models.py:250
+msgid "Neither an email nor a username is set. This asks for inconsistency!"
+msgstr "Není uvedena ani e-mailová adresa ani není vybrán uživatel."
+
+#: models.py:254
+msgid "If user is set, email must be null and vice versa."
+msgstr "Pokud je nastaven uživatel, položka e-mailu musí být nevyplněna, a naopak."
+
+#: models.py:296
+msgid "IP address"
+msgstr "IP adresa"
+
+#: models.py:303
+msgid "activation code"
+msgstr "aktivační kód"
+
+#: models.py:308
+msgid "subscribed"
+msgstr "přihlášen"
+
+#: models.py:316
+msgid "unsubscribed"
+msgstr "odhlášen"
+
+#: models.py:324
+#, python-format
+msgid "%(name)s <%(email)s> to %(newsletter)s"
+msgstr "%(name)s <%(email)s> k %(newsletter)s"
+
+#: models.py:331
+#, python-format
+msgid "%(email)s to %(newsletter)s"
+msgstr "%(email)s k %(newsletter)s"
+
+#: models.py:337
+msgid "subscription"
+msgstr "přihlášení"
+
+#: models.py:338
+msgid "subscriptions"
+msgstr "přihlášení"
+
+#: models.py:435
+msgid ""
+"Sort order determines the order in which articles are concatenated in a "
+"post."
+msgstr "Pořadím je míněno řazení článků ve zprávě newsletteru."
+
+#: models.py:437
+msgid "sort order"
+msgstr "pořadí"
+
+#: models.py:440 models.py:471
+msgid "title"
+msgstr "titulek"
+
+#: models.py:441
+msgid "text"
+msgstr "text"
+
+#: models.py:444
+msgid "link"
+msgstr "odkaz"
+
+#: models.py:450
+msgid "image"
+msgstr "obrázek"
+
+#: models.py:461
+msgid "article"
+msgstr "článek"
+
+#: models.py:462
+msgid "articles"
+msgstr "články"
+
+#: models.py:472
+msgid "slug"
+msgstr "slug (část adresy)"
+
+#: models.py:480
+msgid "created"
+msgstr "vytvořeno"
+
+#: models.py:483
+msgid "modified"
+msgstr "změněno"
+
+#: models.py:488
+#, python-format
+msgid "%(title)s in %(newsletter)s"
+msgstr "%(title)s v %(newsletter)s"
+
+#: models.py:502
+msgid "messages"
+msgstr "zprávy"
+
+#: models.py:525
+msgid "submissions"
+msgstr "rozeslání zpráv"
+
+#: models.py:528
+#, python-format
+msgid "%(newsletter)s on %(publish_date)s"
+msgstr "%(newsletter)s v %(publish_date)s"
+
+#: models.py:537
+#, python-format
+msgid "Submitting %(submission)s to %(count)d people"
+msgstr "Odesláno %(submission)s %(count)d lidem"
+
+#: models.py:584
+#, python-format
+msgid "Submitting message to: %s."
+msgstr "Odeslání zprávy k : %s."
+
+#: models.py:593
+#, python-format
+msgid "Message %(subscription)s failed with error: %(error)s"
+msgstr "Zpráva %(subscription)s skončila s chybou: %(error)s"
+
+#: models.py:617
+#, python-format
+msgid "Submission of message %s"
+msgstr "Rozeslání zprávy %s"
+
+#: models.py:658
+msgid ""
+"If you select none, the system will automatically find the subscribers for "
+"you."
+msgstr "Pokud nikoho nevyberete, systém najde odběratele automaticky."
+
+#: models.py:660
+msgid "recipients"
+msgstr "příjemci"
+
+#: models.py:665
+msgid "publication date"
+msgstr "datum zveřejnění"
+
+#: models.py:669
+msgid "publish"
+msgstr "zveřejnit"
+
+#: models.py:670
+msgid "Publish in archive."
+msgstr "Zveřejnit v archivu."
+
+#: models.py:674
+msgid "prepared"
+msgstr "připraveno"
+
+#: models.py:678
+msgid "sent"
+msgstr "odesláno"
+
+#: models.py:682
+msgid "sending"
+msgstr "zasíláno"
+
+#: views.py:114
+msgid "Your changes have been saved."
+msgstr "Vaše změny byly uloženy."
+
+#: views.py:305
+#, python-format
+msgid "You have been subscribed to %s."
+msgstr "Právě jste byli přihlášeni k \"%s\"."
+
+#: views.py:309
+#, python-format
+msgid "User %(rs)s subscribed to %(my_newsletter)s."
+msgstr "Uživatel %(rs)s byl přihlášen k odběru novinek %(my_newsletter)s."
+
+#: views.py:319
+#, python-format
+msgid "You are already subscribed to %s."
+msgstr "Již jste byli přihlášeni k newsletteru \"%s\" dříve."
+
+#: views.py:344
+#, python-format
+msgid "You have been unsubscribed from %s."
+msgstr "Právě jste byli odhlášeni z \"%s\"."
+
+#: views.py:348
+#, python-format
+msgid "User %(rs)s unsubscribed from %(my_newsletter)s."
+msgstr "Uživatel %(rs)s byl odhlášen z odběru novinek %(my_newsletter)s."
+
+#: views.py:361
+#, python-format
+msgid "You are not subscribed to %s."
+msgstr "Nejste přihlášeni k %s."
+
+#: jobs/hourly/submit.py:15
+msgid "Submitting queued newsletter mailings"
+msgstr "Rozeslání newsletteru bylo zařazeno do fronty."
+
+#: templates/admin/newsletter/message/change_form.html:7
+#: templates/admin/newsletter/submission/change_form.html:15
+msgid "History"
+msgstr "Historie"
+
+#: templates/admin/newsletter/message/change_form.html:8
+#: templates/admin/newsletter/submission/change_form.html:16
+msgid "View on site"
+msgstr "Ukázat na webu"
+
+#: templates/admin/newsletter/message/preview.html:6
+#: templates/admin/newsletter/message/preview.html:20
+msgid "Preview message"
+msgstr "Náhled zprávy"
+
+#: templates/admin/newsletter/message/preview.html:10
+#: templates/admin/newsletter/subscription/confirmimportform.html:8
+#: templates/admin/newsletter/subscription/importform.html:8
+msgid "Home"
+msgstr "Domů"
+
+#: templates/admin/newsletter/message/preview.html:12
+msgid "Message"
+msgstr "Zpráva"
+
+#: templates/admin/newsletter/message/preview.html:23
+#: templates/admin/newsletter/subscription/importform.html:28
+msgid "Change"
+msgstr "Změnit"
+
+#: templates/admin/newsletter/message/preview.html:24
+#: templates/admin/newsletter/subscription/importform.html:29
+msgid "Create submission"
+msgstr "Připravit rozeslání zprávy"
+
+#: templates/admin/newsletter/message/preview.html:27
+msgid "HTML"
+msgstr "HTML"
+
+#: templates/admin/newsletter/message/preview.html:31
+msgid "Text"
+msgstr "Text"
+
+#: templates/admin/newsletter/submission/change_form.html:17
+msgid "Submit"
+msgstr "Odeslat"
+
+#: templates/admin/newsletter/subscription/change_list.html:8
+msgid "import"
+msgstr "importovat"
+
+#: templates/admin/newsletter/subscription/change_list.html:12
+#, python-format
+msgid "Add %(name)s"
+msgstr "Přidat %(name)s"
+
+#: templates/admin/newsletter/subscription/confirmimportform.html:3
+#: templates/admin/newsletter/subscription/confirmimportform.html:20
+#: templates/admin/newsletter/subscription/importform.html:3
+#: templates/admin/newsletter/subscription/importform.html:19
+#: templates/admin/newsletter/subscription/importform.html:24
+msgid "Import addresses"
+msgstr "Importovat adresy"
+
+#: templates/admin/newsletter/subscription/confirmimportform.html:40
+msgid "Confirm"
+msgstr "Potvrdit"
+
+#: templates/admin/newsletter/subscription/importform.html:37
+msgid "Upload"
+msgstr "Nahrát"
+
+#: templates/newsletter/newsletter_detail.html:6
+msgid "Newsletter detail"
+msgstr "Nastavení"
+
+#: templates/newsletter/newsletter_list.html:6
+msgid "Newsletter list"
+msgstr "Všechny newslettery"
+
+#: templates/newsletter/newsletter_list.html:17
+#: templates/newsletter/subscription_subscribe.html:23
+#: templates/newsletter/subscription_subscribe_user.html:23
+msgid "Subscribe"
+msgstr "Přihlásit k odběru"
+
+#: templates/newsletter/newsletter_list.html:28
+msgid "Update subscriptions"
+msgstr "Uložit"
+
+#: templates/newsletter/submission_archive.html:5
+#: templates/newsletter/submission_archive.html:10
+msgid "Newsletter archive"
+msgstr "Archiv"
+
+#: templates/newsletter/subscription_activate.html:5
+#: templates/newsletter/subscription_activate.html:8
+#: templates/newsletter/subscription_subscribe_activated.html:5
+#: templates/newsletter/subscription_subscribe_activated.html:8
+#: templates/newsletter/subscription_unsubscribe_activated.html:5
+#: templates/newsletter/subscription_unsubscribe_activated.html:8
+#: templates/newsletter/subscription_update_activated.html:5
+#: templates/newsletter/subscription_update_activated.html:8
+msgid "activate"
+msgstr "aktivovat"
+
+#: templates/newsletter/subscription_activate.html:13
+msgid "Activate"
+msgstr "Aktivovat"
+
+#: templates/newsletter/subscription_subscribe.html:5
+#: templates/newsletter/subscription_subscribe.html:8
+#: templates/newsletter/subscription_subscribe_email_sent.html:5
+#: templates/newsletter/subscription_subscribe_email_sent.html:8
+#: templates/newsletter/subscription_subscribe_user.html:6
+#: templates/newsletter/subscription_subscribe_user.html:9
+msgid "Newsletter subscribe"
+msgstr "Přihlásit k odběru newsletteru"
+
+#: templates/newsletter/subscription_subscribe.html:11
+#: templates/newsletter/subscription_unsubscribe.html:11
+#: templates/newsletter/subscription_update.html:11
+msgid ""
+"Due to a technical error we were not able to submit your confirmation email."
+" This could be because your email address is invalid."
+msgstr "Vzhedem k technickým problémům jsme vám nemohli odeslat potvrzovací e-mail. Zřejmě to bylo způsobeno vaší neplatnou e-malovou adresou."
+
+#: templates/newsletter/subscription_subscribe_activated.html:10
+msgid "Your subscription has successfully been activated."
+msgstr "Vaše přihlášení k odběru novinek bylo právě úspěšně aktivováno."
+
+#: templates/newsletter/subscription_subscribe_email_sent.html:10
+msgid ""
+"Your subscription request was successfully received and an activation email "
+"has been sent to you. In that email you will find a link which you need to "
+"follow in order to activate your subscription."
+msgstr "Vaše žádost o přihlášení k odběru novinek byla úspěšně přijata a byl vám zaslán e-mail s odkazem, který musíte potvrdit odkliknutím, aby vaše přihlášení k odběru novinek bylo aktivováno."
+
+#: templates/newsletter/subscription_subscribe_user.html:20
+msgid "Do you want to subscribe to this newsletter?"
+msgstr "Chcete se opravdu přihlásit k odběru tohoto newsletteru?"
+
+#: templates/newsletter/subscription_unsubscribe.html:5
+#: templates/newsletter/subscription_unsubscribe.html:8
+#: templates/newsletter/subscription_unsubscribe_email_sent.html:5
+#: templates/newsletter/subscription_unsubscribe_email_sent.html:8
+#: templates/newsletter/subscription_unsubscribe_user.html:6
+#: templates/newsletter/subscription_unsubscribe_user.html:9
+msgid "Newsletter unsubscribe"
+msgstr "Odhlásit z odběru newsletteru"
+
+#: templates/newsletter/subscription_unsubscribe.html:23
+#: templates/newsletter/subscription_unsubscribe_user.html:24
+msgid "Unsubscribe"
+msgstr "Odhlásit z odběru"
+
+#: templates/newsletter/subscription_unsubscribe_activated.html:10
+msgid "You have successfully been unsubscribed."
+msgstr "Právě jste byli úspěšně odhlášeni z odběru novinek."
+
+#: templates/newsletter/subscription_unsubscribe_email_sent.html:10
+msgid ""
+"Your unsubscription request has successfully been received. An email has "
+"been sent to you with a link you need to follow in order to confirm your "
+"unsubscription."
+msgstr "Vaše žádost k odhlášení byla úspěšně přijata. Byl vám zaslán e-mail s odkazem, jehož odkliknutím potvrdíte vaše odhlášení."
+
+#: templates/newsletter/subscription_unsubscribe_user.html:21
+msgid "Do you want to unsubscribe from this newsletter?"
+msgstr "Chcete se opravdu odhlásit z odběru tohoto newsletteru?"
+
+#: templates/newsletter/subscription_update.html:5
+#: templates/newsletter/subscription_update.html:8
+#: templates/newsletter/subscription_update_email_sent.html:5
+#: templates/newsletter/subscription_update_email_sent.html:8
+msgid "Newsletter update"
+msgstr "Aktualizovat newsletter"
+
+#: templates/newsletter/subscription_update.html:23
+msgid "Update subscription"
+msgstr "Aktualizovat údaje přihlášení"
+
+#: templates/newsletter/subscription_update_activated.html:10
+msgid "Your subscription has successfully been updated."
+msgstr "Vaše přihlášení k odběru novinek byl právě úspěšně aktualizováno."
+
+#: templates/newsletter/subscription_update_email_sent.html:10
+msgid ""
+"Your update request was successfully received and an activation email has "
+"been sent to you. In that email you will find a link which you need to "
+"follow in order to update your subscription."
+msgstr "Vaše žádost o aktualizaci údajů byla úspěšně přijata a byl vám zaslán aktivační e-mail. V tomto e-mailu najdete odkaz, který potvrdíte odkliknutím, a pak budou vaše údaje aktualizovány."
+
+#: templates/widget/image.html:2
+msgid "Currently:"
+msgstr "Aktuálně:"
+
+#: templates/widget/image.html:4
+msgid "Change:"
+msgstr "Změna:"
