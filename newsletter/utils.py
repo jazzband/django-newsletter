@@ -26,9 +26,8 @@ def get_user_model():
         # Django < v1.5
         from django.contrib.auth.models import User
     else:
-        from django.conf import settings
-        User = settings.AUTH_USER_MODEL
-    
+        User = get_user_model()
+
     return User
 
 
