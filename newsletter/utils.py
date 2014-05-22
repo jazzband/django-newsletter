@@ -26,12 +26,8 @@ def get_user_model():
         # Django < v1.5
         from django.contrib.auth.models import User
     else:
-        from django import get_version
         from django.conf import settings
-        if get_version().startswith('1.7'):
-            User = settings.AUTH_USER_MODEL
-        else:
-            User = get_user_model()
+        User = settings.AUTH_USER_MODEL
     
     return User
 
