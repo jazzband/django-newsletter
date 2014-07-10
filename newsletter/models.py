@@ -296,7 +296,7 @@ class Subscription(models.Model):
 
     ip = models.IPAddressField(_("IP address"), blank=True, null=True)
 
-    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), related_name='subscriptions')
+    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
 
     create_date = models.DateTimeField(editable=False, default=now)
 
@@ -539,7 +539,7 @@ class Submission(models.Model):
 
     def submit(self):
         if self.subscriptions.all().count() == 0:
-            subscriptions = self.newsletter.subscriptions.filter(subscribed=True)
+            subscriptions = self.newsletter.subscription_set.filter(subscribed=True)
         else:
             subscriptions = self.subscriptions.filter(subscribed=True)
 
