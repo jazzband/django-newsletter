@@ -296,7 +296,7 @@ class Subscription(models.Model):
 
     ip = models.IPAddressField(_("IP address"), blank=True, null=True)
 
-    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
+    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'), related_name='subscriptions')
 
     create_date = models.DateTimeField(editable=False, default=now)
 
@@ -538,7 +538,10 @@ class Submission(models.Model):
         }
 
     def submit(self):
-        subscriptions = self.subscriptions.filter(subscribed=True)
+        if self.subscriptions.all().count() == 0:
+            subscriptions = self.newsletter.subscriptions.filter(subscribed=True)
+        else:
+            subscriptions = self.subscriptions.filter(subscribed=True)
 
         logger.info(
             ugettext(u"Submitting %(submission)s to %(count)d people"),
