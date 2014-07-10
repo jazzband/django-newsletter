@@ -1,6 +1,7 @@
 django-extensions
 Django>=1.4.10
 vobject
+Pillow
 chardet
 surlex>=0.2.0
 sorl-thumbnail
