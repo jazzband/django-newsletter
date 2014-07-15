@@ -170,7 +170,10 @@ class Blacklist(models.Model):
     def get_name(self):
         if self.user:
             return self.user.get_full_name()
-        return self.name_field
+        elif self.name_field:
+            return self.name_field
+        else:
+            return ""
 
     def set_name(self, name):
         if not self.user:
@@ -194,33 +197,8 @@ class Blacklist(models.Model):
 
     newsletter = models.ForeignKey('Newsletter', blank=True, null=True, verbose_name=_('newsletter'))
 
-    def update(self, action):
-        """
-        Update subscription according to requested action:
-        subscribe/unsubscribe/update/, then save the changes.
-        """
-
-        assert action in ('subscribe', 'update', 'unsubscribe')
-
-        # If a new subscription or update, make sure it is subscribed
-        # Else, unsubscribe
-        if action == 'subscribe' or action == 'update':
-            self.subscribed = True
-        else:
-            self.unsubscribed = True
-
-        logger.debug(
-            _(u'Updated subscription %(subscription)s to %(action)s.'),
-            {
-                'subscription': self,
-                'action': action
-            }
-        )
-
-        # This triggers the subscribe() and/or unsubscribe() methods, taking
-        # care of stuff like maintaining the (un)subscribe date.
-        self.save()
-
+    def __unicode__(self):
+        return _(u"%(email)s") % {'email': self.email}
 
 class Subscription(models.Model):
     user = models.ForeignKey(
