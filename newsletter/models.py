@@ -13,6 +13,8 @@ from django.utils.timezone import now
 
 from django.core.mail import EmailMultiAlternatives
 
+from django.db.models import Q
+
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
 
@@ -153,6 +155,71 @@ class Newsletter(models.Model):
         except:
             pass
         return None
+
+
+class Blacklist(models.Model):
+    user = models.ForeignKey(
+        User, blank=True, null=True, verbose_name=_('user')
+    )
+
+    name_field = models.CharField(
+        db_column='name', max_length=30, blank=True, null=True,
+        verbose_name=_('name'), help_text=_('optional')
+    )
+
+    def get_name(self):
+        if self.user:
+            return self.user.get_full_name()
+        return self.name_field
+
+    def set_name(self, name):
+        if not self.user:
+            self.name_field = name
+    name = property(get_name, set_name)
+
+    email_field = models.EmailField(
+        db_column='email', verbose_name=_('e-mail'), db_index=True,
+        blank=True, null=True
+    )
+
+    def get_email(self):
+        if self.user:
+            return self.user.email
+        return self.email_field
+
+    def set_email(self, email):
+        if not self.user:
+            self.email_field = email
+    email = property(get_email, set_email)
+
+    newsletter = models.ForeignKey('Newsletter', blank=True, null=True, verbose_name=_('newsletter'))
+
+    def update(self, action):
+        """
+        Update subscription according to requested action:
+        subscribe/unsubscribe/update/, then save the changes.
+        """
+
+        assert action in ('subscribe', 'update', 'unsubscribe')
+
+        # If a new subscription or update, make sure it is subscribed
+        # Else, unsubscribe
+        if action == 'subscribe' or action == 'update':
+            self.subscribed = True
+        else:
+            self.unsubscribed = True
+
+        logger.debug(
+            _(u'Updated subscription %(subscription)s to %(action)s.'),
+            {
+                'subscription': self,
+                'action': action
+            }
+        )
+
+        # This triggers the subscribe() and/or unsubscribe() methods, taking
+        # care of stuff like maintaining the (un)subscribe date.
+        self.save()
 
 
 class Subscription(models.Model):
@@ -538,7 +605,9 @@ class Submission(models.Model):
         }
 
     def submit(self):
-        subscriptions = self.subscriptions.filter(subscribed=True)
+        blacklist_global_email_field = Blacklist.objects.filter(Q(newsletter_id__isnull = True) | Q(newsletter_id = self.newsletter.id)).values('email_field').distinct()
+        blacklist_list = [blacklist['email_field'] for blacklist in blacklist_global_email_field]
+        subscriptions = self.subscriptions.filter(subscribed=True).exclude(email_field__in = blacklist_list)
 
         logger.info(
             ugettext(u"Submitting %(submission)s to %(count)d people"),

@@ -25,10 +25,13 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from sorl.thumbnail.admin import AdminImageMixin
 
 from .models import (
-    Newsletter, Subscription, Article, Message, Submission
+    Newsletter, Subscription, Article, Message, Submission, Blacklist
 )
 
 from django.utils.timezone import now
+
+from copy import deepcopy
+from random import randint
 
 from .admin_forms import *
 from .admin_utils import *
@@ -218,6 +221,8 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     inlines = [ArticleInline, ]
 
+    actions = ['duplicate_message']
+
     """ List extensions """
     def admin_title(self, obj):
         return '<a href="%d/">%s</a>' % (obj.id, obj.title)
@@ -243,6 +248,30 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             {'message': self._getobj(request, object_id)},
             RequestContext(request, {}),
         )
+
+    """ Actions """
+    def duplicate_message(modeladmin, request, queryset):
+        title_suffix = " (Copy)"
+        slug_suffix = "-" + str(randint(1000,99999))
+
+        original_message_id = None
+        new_message_id = None
+        for message in queryset:
+            new_message = deepcopy(message)
+            original_message_id = new_message.id
+            new_message.id = None
+            new_message.slug = new_message.slug + slug_suffix
+            new_message.title = new_message.title + title_suffix
+            new_message.save()
+            new_message_id = new_message.id
+        # Duplicate the articles as well
+        for article in Article.objects.filter(post_id = original_message_id):
+            new_article = deepcopy(article)
+            new_article.id = None
+            new_article.post_id = new_message_id
+            new_article.save()
+    duplicate_message.short_description = "Duplicate selected messages"
+
 
     @xframe_options_sameorigin
     def preview_html(self, request, object_id):
@@ -486,7 +515,101 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         return my_urls + urls
 
 
+class BlacklistAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
+    form = SubscriptionAdminForm
+    list_display = ('name', 'email', 'newsletter_name')
+    list_display_links = ('name', 'email')
+    list_filter = ()
+    search_fields = (
+        'name_field', 'email_field', 'user__first_name', 'user__last_name',
+        'user__email'
+    )
+    readonly_fields = ()
+    date_hierarchy = ''
+    actions = []
+
+    """ List extensions """
+    def newsletter_name(self, obj):
+        if obj.newsletter == None:
+            return "Global Blacklist"
+        else:
+            return obj.newsletter
+
+    """ Views """
+    def blacklist_import(self, request):
+        if request.POST:
+            form = ImportForm(request.POST, request.FILES)
+            if form.is_valid():
+                request.session['addresses'] = form.get_addresses()
+                return HttpResponseRedirect('confirm/')
+        else:
+            form = ImportForm()
+
+        return render_to_response(
+            "admin/newsletter/subscription/importform.html",
+            {'form': form},
+            RequestContext(request, {}),
+        )
+
+    def blacklist_import_confirm(self, request):
+        # If no addresses are in the session, start all over.
+        if not 'addresses' in request.session:
+            return HttpResponseRedirect('../')
+
+        addresses = request.session['addresses']
+        logger.debug('Confirming addresses: %s', addresses)
+        if request.POST:
+            form = ConfirmForm(request.POST)
+            if form.is_valid():
+                try:
+                    for address in addresses.values():
+                        address.save()
+                finally:
+                    del request.session['addresses']
+
+                messages.success(
+                    request,
+                    _('%s blacklist have been successfully added.') %
+                    len(addresses)
+                )
+
+                return HttpResponseRedirect('../../')
+        else:
+            form = ConfirmForm()
+
+        return render_to_response(
+            "admin/newsletter/subscription/confirmimportform.html",
+            {'form': form, 'subscribers': addresses},
+            RequestContext(request, {}),
+        )
+
+    """ URLs """
+    def get_urls(self):
+        urls = super(BlacklistAdmin, self).get_urls()
+
+        my_urls = patterns(
+            '',
+            url(r'^blacklist-import/$',
+                self._wrap(self.blacklist_import),
+                name=self._view_name('import')),
+            url(r'^blacklist-import/confirm/$',
+                self._wrap(self.blacklist_import_confirm),
+                name=self._view_name('import_confirm')),
+
+            # Translated JS strings - these should be app-wide but are
+            # only used in this part of the admin. For now, leave them here.
+            url(r'^jsi18n/$',
+                'django.views.i18n.javascript_catalog',
+                {'packages': ('newsletter',)},
+                name='newsletter_js18n')
+        )
+
+        return my_urls + urls
+
+
+
 admin.site.register(Newsletter, NewsletterAdmin)
 admin.site.register(Submission, SubmissionAdmin)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
+admin.site.register(Blacklist, BlacklistAdmin)
