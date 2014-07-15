@@ -190,109 +190,6 @@ def blacklist_parse_csv(myfile, newsletter, ignore_errors=False):
     return addresses
 
 
-def blacklist_parse_vcard(myfile, newsletter, ignore_errors=False):
-    import vobject
-
-    try:
-        myvcards = vobject.readComponents(myfile)
-    except vobject.VObjectError, e:
-        raise forms.ValidationError(
-            _(u"Error reading vCard file: %s" % e)
-        )
-
-    addresses = {}
-
-    for myvcard in myvcards:
-        if hasattr(myvcard, 'fn'):
-            name = check_name(myvcard.fn.value, ignore_errors)
-        else:
-            name = None
-
-        # Do we have an email address?
-        # If not: either continue to the next vcard or
-        # raise a validation error.
-        if hasattr(myvcard, 'email'):
-            email = check_email(myvcard.email.value, ignore_errors)
-        elif not ignore_errors:
-            raise forms.ValidationError(
-                _("Entry '%s' contains no email address.") % name)
-        else:
-            continue
-
-        try:
-            validate_email(email)
-            addr = check_if_email_is_already_blacklisted(newsletter, email)
-        except ValidationError:
-            if not ignore_errors:
-                raise forms.ValidationError(
-                    _("Entry '%s' does not contain a valid e-mail address.")
-                    % name
-                )
-
-        if addr:
-            if email in addresses and not ignore_errors:
-                raise forms.ValidationError(
-                    _("The address file contains duplicate entries for '%s'.")
-                    % email
-                )
-
-            addresses.update({email: addr})
-        elif not ignore_errors:
-            raise forms.ValidationError(
-                _("Some entries are already subscribed to."))
-
-    return addresses
-
-
-def blacklist_parse_ldif(myfile, newsletter, ignore_errors=False):
-    from addressimport import ldif
-
-    class AddressParser(ldif.LDIFParser):
-        addresses = {}
-
-        def handle(self, dn, entry):
-            if 'mail' in entry:
-                email = check_email(entry['mail'][0], ignore_errors)
-                if 'cn' in entry:
-                    name = check_name(entry['cn'][0], ignore_errors)
-                else:
-                    name = None
-
-                try:
-                    validate_email(email)
-                    addr = check_if_email_is_already_blacklisted(newsletter, email)
-                except ValidationError:
-                    if not ignore_errors:
-                        raise forms.ValidationError(_(
-                            "Entry '%s' does not contain a valid "
-                            "e-mail address.") % name
-                        )
-
-                if addr:
-                    if email in self.addresses and not ignore_errors:
-                        raise forms.ValidationError(_(
-                            "The address file contains duplicate entries "
-                            "for '%s'.") % email
-                        )
-
-                    self.addresses.update({email: addr})
-                elif not ignore_errors:
-                    raise forms.ValidationError(
-                        _("Some entries are already subscribed to."))
-
-            elif not ignore_errors:
-                raise forms.ValidationError(
-                    _("Some entries have no e-mail address."))
-    try:
-        myparser = AddressParser(myfile)
-        myparser.parse()
-    except ValueError, e:
-        if not ignore_errors:
-            raise forms.ValidationError(e)
-
-    return myparser.addresses
-
-
 class BlacklistImportForm(forms.Form):
 
     def clean(self):
@@ -322,15 +219,7 @@ class BlacklistImportForm(forms.Form):
         self.addresses = []
 
         ext = myvalue.name.rsplit('.', 1)[-1].lower()
-        if ext == 'vcf':
-            self.addresses = blacklist_parse_vcard(
-                myvalue.file, newsletter, ignore_errors)
-
-        elif ext == 'ldif':
-            self.addresses = blacklist_parse_ldif(
-                myvalue.file, newsletter, ignore_errors)
-
-        elif ext == 'csv':
+        if ext == 'csv':
             self.addresses = blacklist_parse_csv(
                 myvalue.file, newsletter, ignore_errors)
 
