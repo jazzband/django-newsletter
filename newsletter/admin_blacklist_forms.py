@@ -14,70 +14,26 @@ from django.utils.translation import ugettext
 from django.conf import settings
 
 from .models import Subscription, Newsletter, Submission, Blacklist
+from .admin_forms import check_name, check_email
 
 
-def make_subscription(newsletter, email, name=None):
-    qs = Subscription.objects.filter(
-        newsletter__id=newsletter.id,
-        subscribed=True,
-        email_field__exact=email)
+def check_if_email_is_already_blacklisted(newsletter, email):
+    # returns the email if the user isn't already blacklisted.
+    if newsletter:
+        qs = Blacklist.objects.filter(
+            newsletter_id=newsletter.id,
+            email_field__exact=email)
+    else:
+        qs = Blacklist.objects.filter(
+            email_field__exact=email)
 
     if qs.count():
         return None
 
-    addr = Subscription(subscribed=True)
-    addr.newsletter = newsletter
-
-    addr.email_field = email
-
-    if name:
-        addr.name_field = name
-
-    return addr
+    return email
 
 
-def check_email(email, ignore_errors=False):
-    if settings.DEBUG:
-        logger.debug("Checking e-mail address %s", email)
-
-    email_length = \
-        Subscription._meta.get_field_by_name('email_field')[0].max_length
-
-    if len(email) <= email_length or ignore_errors:
-        return email[:email_length]
-    else:
-        raise forms.ValidationError(
-            _(
-                "E-mail address %(email)s too long, maximum length is "
-                "%(email_length)s characters."
-            ) % {
-                "email": email,
-                "email_length": email_length
-            }
-        )
-
-
-def check_name(name, ignore_errors=False):
-    if settings.DEBUG:
-        logger.debug("Checking name: %s", name)
-
-    name_length = \
-        Subscription._meta.get_field_by_name('name_field')[0].max_length
-    if len(name) <= name_length or ignore_errors:
-        return name[:name_length]
-    else:
-        raise forms.ValidationError(
-            _(
-                "Name %(name)s too long, maximum length is "
-                "%(name_length)s characters."
-            ) % {
-                "name": name,
-                "name_length": name_length
-            }
-        )
-
-
-def parse_csv(myfile, newsletter, ignore_errors=False):
+def blacklist_parse_csv(myfile, newsletter, ignore_errors=False):
     from newsletter.addressimport.csv_util import UnicodeReader
     import codecs
     import csv
@@ -194,7 +150,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
 
         try:
             validate_email(email)
-            addr = make_subscription(newsletter, email, name)
+            addr = check_if_email_is_already_blacklisted(newsletter, email)
         except ValidationError:
             if ignore_errors:
                 logger.warn(
@@ -220,7 +176,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
                         "The address file contains duplicate entries "
                         "for '%s'.") % email)
 
-            addresses.update({email: addr})
+            addresses.update({addr: name})
         else:
             logger.warn(
                 "Entry '%s' at line %d is already subscribed to "
@@ -234,7 +190,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     return addresses
 
 
-def parse_vcard(myfile, newsletter, ignore_errors=False):
+def blacklist_parse_vcard(myfile, newsletter, ignore_errors=False):
     import vobject
 
     try:
@@ -265,7 +221,7 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
 
         try:
             validate_email(email)
-            addr = make_subscription(newsletter, email, name)
+            addr = check_if_email_is_already_blacklisted(newsletter, email)
         except ValidationError:
             if not ignore_errors:
                 raise forms.ValidationError(
@@ -288,7 +244,7 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
     return addresses
 
 
-def parse_ldif(myfile, newsletter, ignore_errors=False):
+def blacklist_parse_ldif(myfile, newsletter, ignore_errors=False):
     from addressimport import ldif
 
     class AddressParser(ldif.LDIFParser):
@@ -304,7 +260,7 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
 
                 try:
                     validate_email(email)
-                    addr = make_subscription(newsletter, email, name)
+                    addr = check_if_email_is_already_blacklisted(newsletter, email)
                 except ValidationError:
                     if not ignore_errors:
                         raise forms.ValidationError(_(
@@ -337,17 +293,13 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
     return myparser.addresses
 
 
-class ImportForm(forms.Form):
-    importing_blacklist = False
+class BlacklistImportForm(forms.Form):
 
     def clean(self):
         # If there are validation errors earlier on, don't bother.
         if not ('address_file' in self.cleaned_data and
-                'ignore_errors' in self.cleaned_data and
-                'newsletter' in self.cleaned_data):
+                'ignore_errors' in self.cleaned_data):
             return self.cleaned_data
-            # TESTME: Should an error be raised here or not?
-            #raise forms.ValidationError(_("No file has been specified."))
 
         ignore_errors = self.cleaned_data['ignore_errors']
         newsletter = self.cleaned_data['newsletter']
@@ -371,15 +323,15 @@ class ImportForm(forms.Form):
 
         ext = myvalue.name.rsplit('.', 1)[-1].lower()
         if ext == 'vcf':
-            self.addresses = parse_vcard(
+            self.addresses = blacklist_parse_vcard(
                 myvalue.file, newsletter, ignore_errors)
 
         elif ext == 'ldif':
-            self.addresses = parse_ldif(
+            self.addresses = blacklist_parse_ldif(
                 myvalue.file, newsletter, ignore_errors)
 
         elif ext == 'csv':
-            self.addresses = parse_csv(
+            self.addresses = blacklist_parse_csv(
                 myvalue.file, newsletter, ignore_errors)
 
         else:
@@ -399,34 +351,28 @@ class ImportForm(forms.Form):
         else:
             return {}
 
+    def get_newsletter(self):
+        if self.cleaned_data['newsletter']:
+            return self.cleaned_data['newsletter'].id
+        else:
+            return None
+
     newsletter = forms.ModelChoiceField(
         label=_("Newsletter"),
         queryset=Newsletter.objects.all(),
-        initial=Newsletter.get_default_id(),)
+        initial=Newsletter.get_default_id(),
+        required=False)
     address_file = forms.FileField(label=_("Address file"))
     ignore_errors = forms.BooleanField(
         label=_("Ignore non-fatal errors"),
         initial=False, required=False)
 
 
-class ConfirmForm(forms.Form):
 
-    def clean(self):
-        value = self.cleaned_data['confirm']
-
-        if not value:
-            raise forms.ValidationError(
-                _("You should confirm in order to continue."))
-
-    confirm = forms.BooleanField(
-        label=_("Confirm import"),
-        initial=True, widget=forms.HiddenInput)
-
-
-class SubscriptionAdminForm(forms.ModelForm):
+class BlacklistAdminForm(forms.ModelForm):
 
     class Meta:
-        model = Subscription
+        model = Blacklist
 
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
@@ -445,7 +391,7 @@ class SubscriptionAdminForm(forms.ModelForm):
         return data
 
     def clean(self):
-        cleaned_data = super(SubscriptionAdminForm, self).clean()
+        cleaned_data = super(BlacklistAdminForm, self).clean()
         if not (cleaned_data.get('user', None) or
                 cleaned_data.get('email_field', None)):
 
@@ -455,27 +401,3 @@ class SubscriptionAdminForm(forms.ModelForm):
             )
         return cleaned_data
 
-
-class SubmissionAdminForm(forms.ModelForm):
-
-    class Meta:
-        model = Submission
-
-    def clean_publish(self):
-        """
-        Make sure only one submission can be published for each message.
-        """
-        publish = self.cleaned_data['publish']
-
-        if publish:
-            message = self.cleaned_data['message']
-            qs = Submission.objects.filter(publish=True, message=message)
-            if self.instance:
-                qs = qs.exclude(pk=self.instance.pk)
-            if qs.exists():
-                raise forms.ValidationError(_(
-                    'This message has already been published in some '
-                    'other submission. Messages can only be published once.')
-                )
-
-        return publish

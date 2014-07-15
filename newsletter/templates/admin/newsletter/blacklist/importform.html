@@ -1,0 +1,43 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block title %}{% trans "Import addresses" %}{{ block.super }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="../../../">
+    {% trans "Home" %}
+  </a>
+   &rsaquo;
+   <a href="../../">
+     {% trans "Newsletter" %}
+  </a>
+  &rsaquo;
+  <a href="../">
+     {% trans "Blacklist" %}
+  </a>
+  &rsaquo;
+  {% trans "Import addresses" %}
+</div>
+{% endblock %}
+
+{% block content %}
+<h1>{% trans "Import addresses" %}</h1>
+<div id="content-main">
+  <!--
+  <ul class="object-tools">
+    <li><a href="../">{% trans "Change" %}</a></li>
+    <li><a href="../submit/">{% trans "Create submission" %}</a></li>
+  </ul>
+  -->
+    <form enctype="multipart/form-data" method="post">
+    <table>
+    {{ form.as_table }}
+    </table>
+    {% csrf_token %}
+    <input type="submit" name="submit" value="{% trans 'Upload' %}"/>
+    </form>
+</div>
+<br/>
+<br/>
+
+{% endblock %}

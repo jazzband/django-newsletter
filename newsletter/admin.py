@@ -34,6 +34,7 @@ from copy import deepcopy
 from random import randint
 
 from .admin_forms import *
+from .admin_blacklist_forms import *
 from .admin_utils import *
 
 from .settings import newsletter_settings
@@ -516,7 +517,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
 
 class BlacklistAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
-    form = SubscriptionAdminForm
+    form = BlacklistAdminForm
     list_display = ('name', 'email', 'newsletter_name')
     list_display_links = ('name', 'email')
     list_filter = ()
@@ -538,15 +539,20 @@ class BlacklistAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     """ Views """
     def blacklist_import(self, request):
         if request.POST:
-            form = ImportForm(request.POST, request.FILES)
+            form = BlacklistImportForm(request.POST, request.FILES)
+            form.importing_blacklist = True
             if form.is_valid():
                 request.session['addresses'] = form.get_addresses()
+                if form.get_newsletter():
+                    request.session['newsletter'] = form.get_newsletter()
+                else:
+                    request.session['newsletter'] = 0
                 return HttpResponseRedirect('confirm/')
         else:
             form = ImportForm()
 
         return render_to_response(
-            "admin/newsletter/subscription/importform.html",
+            "admin/newsletter/blacklist/importform.html",
             {'form': form},
             RequestContext(request, {}),
         )
@@ -557,15 +563,23 @@ class BlacklistAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             return HttpResponseRedirect('../')
 
         addresses = request.session['addresses']
+        newsletter = request.session['newsletter']
         logger.debug('Confirming addresses: %s', addresses)
         if request.POST:
             form = ConfirmForm(request.POST)
             if form.is_valid():
                 try:
-                    for address in addresses.values():
-                        address.save()
+                    for email_address in addresses.keys():
+                        new_blacklist = Blacklist(email_field = email_address, name=addresses[email_address])
+                        # 0 means no newsletter is selected,
+                        # which means this user is going into the
+                        # Global Blacklist
+                        if newsletter != 0:
+                            new_blacklist.newsletter_id = newsletter
+                        new_blacklist.save()
                 finally:
                     del request.session['addresses']
+                    del request.session['newsletter']
 
                 messages.success(
                     request,
@@ -577,9 +591,16 @@ class BlacklistAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         else:
             form = ConfirmForm()
 
+        newsletter_name = _("the Global Blacklist")
+        if newsletter != 0:
+            try:
+                newsletter_name = Newsletter.objects.get(pk=newsletter).title
+            except Newsletter.DoesNotExist:
+                pass
+
         return render_to_response(
-            "admin/newsletter/subscription/confirmimportform.html",
-            {'form': form, 'subscribers': addresses},
+            "admin/newsletter/blacklist/confirmimportform.html",
+            {'form': form, 'blacklist_people': addresses, 'newsletter_name': newsletter_name},
             RequestContext(request, {}),
         )
 
@@ -589,10 +610,10 @@ class BlacklistAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
         my_urls = patterns(
             '',
-            url(r'^blacklist-import/$',
+            url(r'^import/$',
                 self._wrap(self.blacklist_import),
                 name=self._view_name('import')),
-            url(r'^blacklist-import/confirm/$',
+            url(r'^import/confirm/$',
                 self._wrap(self.blacklist_import_confirm),
                 name=self._view_name('import_confirm')),
 
