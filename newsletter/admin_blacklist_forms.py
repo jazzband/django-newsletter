@@ -11,9 +11,7 @@ from django.core.validators import validate_email
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 
-from django.conf import settings
-
-from .models import Subscription, Newsletter, Submission, Blacklist
+from .models import Newsletter, Blacklist
 from .admin_forms import check_name, check_email
 
 
