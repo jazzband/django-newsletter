@@ -99,7 +99,7 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     def admin_publish_date(self, obj):
         if obj.publish_date:
-            return date_format(obj.publish_date)
+            return date_format(obj.publish_date, 'DATETIME_FORMAT')
         else:
             return ''
     admin_publish_date.short_description = _("publish date")
