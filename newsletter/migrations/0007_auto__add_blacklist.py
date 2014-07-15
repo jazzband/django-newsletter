@@ -113,7 +113,7 @@ class Migration(SchemaMigration):
         },
         u'newsletter.subscription': {
             'Meta': {'unique_together': "(('user', 'email_field', 'newsletter'),)", 'object_name': 'Subscription'},
-            'activation_code': ('django.db.models.fields.CharField', [], {'default': "'a6d336fa63c97699b41872266237a500363c202b'", 'max_length': '40'}),
+            'activation_code': ('django.db.models.fields.CharField', [], {'default': "'1fa74676cfda1958d3eb4b54324c9df94bb1e5a0'", 'max_length': '40'}),
             'create_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email_field': ('django.db.models.fields.EmailField', [], {'db_index': 'True', 'max_length': '75', 'null': 'True', 'db_column': "'email'", 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
