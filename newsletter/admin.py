@@ -253,7 +253,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     """ Actions """
     def duplicate_message(modeladmin, request, queryset):
         title_suffix = " (Copy)"
-        slug_suffix = "-" + str(randint(1000,99999))
+        slug_suffix = "-" + str(randint(1000, 99999))
 
         original_message_id = None
         new_message_id = None
@@ -266,13 +266,12 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             new_message.save()
             new_message_id = new_message.id
         # Duplicate the articles as well
-        for article in Article.objects.filter(post_id = original_message_id):
+        for article in Article.objects.filter(post_id=original_message_id):
             new_article = deepcopy(article)
             new_article.id = None
             new_article.post_id = new_message_id
             new_article.save()
     duplicate_message.short_description = "Duplicate selected messages"
-
 
     @xframe_options_sameorigin
     def preview_html(self, request, object_id):
@@ -462,7 +461,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     def subscribers_import_confirm(self, request):
         # If no addresses are in the session, start all over.
-        if not 'addresses' in request.session:
+        if 'addresses' not in request.session:
             return HttpResponseRedirect('../')
 
         addresses = request.session['addresses']
@@ -531,7 +530,7 @@ class BlacklistAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     """ List extensions """
     def newsletter_name(self, obj):
-        if obj.newsletter == None:
+        if obj.newsletter is None:
             return "Global Blacklist"
         else:
             return obj.newsletter
@@ -559,7 +558,7 @@ class BlacklistAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     def blacklist_import_confirm(self, request):
         # If no addresses are in the session, start all over.
-        if not 'addresses' in request.session:
+        if 'addresses' not in request.session:
             return HttpResponseRedirect('../')
 
         addresses = request.session['addresses']
@@ -570,7 +569,9 @@ class BlacklistAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             if form.is_valid():
                 try:
                     for email_address in addresses.keys():
-                        new_blacklist = Blacklist(email_field = email_address, name=addresses[email_address])
+                        new_blacklist = Blacklist(
+                            email_field=email_address,
+                            name=addresses[email_address])
                         # 0 means no newsletter is selected,
                         # which means this user is going into the
                         # Global Blacklist
@@ -600,7 +601,11 @@ class BlacklistAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
         return render_to_response(
             "admin/newsletter/blacklist/confirmimportform.html",
-            {'form': form, 'blacklist_people': addresses, 'newsletter_name': newsletter_name},
+            {
+                'form': form,
+                'blacklist_people': addresses,
+                'newsletter_name': newsletter_name
+            },
             RequestContext(request, {}),
         )
 
@@ -626,7 +631,6 @@ class BlacklistAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         )
 
         return my_urls + urls
-
 
 
 admin.site.register(Newsletter, NewsletterAdmin)

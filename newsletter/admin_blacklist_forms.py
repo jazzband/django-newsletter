@@ -110,8 +110,6 @@ def blacklist_parse_csv(myfile, newsletter, ignore_errors=False):
 
     logger.debug("E-mail column found: '%s'", firstrow[mailcol])
 
-    #assert namecol != mailcol, \
-    #    'Name and e-mail column should not be the same.'
     if namecol == mailcol:
         raise forms.ValidationError(
             _(
@@ -255,7 +253,6 @@ class BlacklistImportForm(forms.Form):
         initial=False, required=False)
 
 
-
 class BlacklistAdminForm(forms.ModelForm):
 
     class Meta:
@@ -287,4 +284,3 @@ class BlacklistAdminForm(forms.ModelForm):
                 'be specified.')
             )
         return cleaned_data
-

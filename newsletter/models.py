@@ -195,10 +195,16 @@ class Blacklist(models.Model):
             self.email_field = email
     email = property(get_email, set_email)
 
-    newsletter = models.ForeignKey('Newsletter', blank=True, null=True, verbose_name=_('newsletter'))
+    newsletter = models.ForeignKey(
+        'Newsletter',
+        blank=True,
+        null=True,
+        verbose_name=_('newsletter')
+        )
 
     def __unicode__(self):
         return _(u"%(email)s") % {'email': self.email}
+
 
 class Subscription(models.Model):
     user = models.ForeignKey(

@@ -156,8 +156,6 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
 
     logger.debug("E-mail column found: '%s'", firstrow[mailcol])
 
-    #assert namecol != mailcol, \
-    #    'Name and e-mail column should not be the same.'
     if namecol == mailcol:
         raise forms.ValidationError(
             _(
@@ -346,8 +344,6 @@ class ImportForm(forms.Form):
                 'ignore_errors' in self.cleaned_data and
                 'newsletter' in self.cleaned_data):
             return self.cleaned_data
-            # TESTME: Should an error be raised here or not?
-            #raise forms.ValidationError(_("No file has been specified."))
 
         ignore_errors = self.cleaned_data['ignore_errors']
         newsletter = self.cleaned_data['newsletter']
