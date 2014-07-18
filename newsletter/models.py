@@ -28,7 +28,7 @@ User = get_user_model()
 
 class Newsletter(models.Model):
     site = models.ManyToManyField(Site, default=get_default_sites)
-
+    delay_between_each_email = models.IntegerField(default=0)
     title = models.CharField(
         max_length=200, verbose_name=_('newsletter title')
     )
@@ -593,7 +593,7 @@ class Submission(models.Model):
                     )
 
                     message.send()
-
+                    time.sleep(self.newsletter.delay_between_each_email)
                 except Exception, e:
                     # TODO: Test coverage for this branch.
                     logger.error(
