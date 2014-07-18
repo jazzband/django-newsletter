@@ -1,6 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
-
+import time
 from django.db import models
 from django.db.models import permalink
 
@@ -593,7 +593,8 @@ class Submission(models.Model):
                     )
 
                     message.send()
-                    time.sleep(self.newsletter.delay_between_each_email)
+                    time.sleep(self.newsletter.delay_between_each_email)		    
+                    #print(time.ctime())
                 except Exception, e:
                     # TODO: Test coverage for this branch.
                     logger.error(
