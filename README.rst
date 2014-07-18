@@ -14,8 +14,8 @@ django-newsletter
 Newsletter application for the Django web framework.
 ----------------------------------------------------
 
-What is it??
-============
+What is it?
+===========
 Django app for managing multiple mass-mailing lists with both plaintext as
 well as HTML templates with rich text widget  integration, images and a smart
 queueing system all right from the admin interface.
