@@ -23,11 +23,11 @@
         {% endif %}
     {% endfor %}
     
-<!--    <ul>
+<!--    <ul> -->
         {% if submission.publish %}
-        <li><a href="http://{{ site.domain }}{{ submission.get_absolute_url }}">Read message online</a></li>
+<!--        <li><a href="http://{{ site.domain }}{{ submission.get_absolute_url }}">Read message online</a></li> -->
         {% endif %}
-        <li><a href="http://{{ site.domain }}{% url "newsletter_unsubscribe_request" newsletter.slug %}">Unsubscribe</a></li>
-    </ul> -->
+<!--       <li><a href="http://{{ site.domain }}{% url "newsletter_unsubscribe_request" newsletter.slug %}">Unsubscribe</a></li> -->
+<!--    </ul> -->
 </body>
 </html>
