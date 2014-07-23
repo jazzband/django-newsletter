@@ -594,7 +594,9 @@ class Submission(models.Model):
 
                     message.send()
                     time.sleep(self.newsletter.delay_between_each_email)		    
-                    #print(time.ctime())
+                    print(time.ctime())
+                    print(subscription.get_recipient())
+
                 except Exception, e:
                     # TODO: Test coverage for this branch.
                     logger.error(
