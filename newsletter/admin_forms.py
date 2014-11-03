@@ -426,6 +426,7 @@ class SubscriptionAdminForm(forms.ModelForm):
 
     class Meta:
         model = Subscription
+        fields = '__all__'
 
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
@@ -459,6 +460,7 @@ class SubmissionAdminForm(forms.ModelForm):
 
     class Meta:
         model = Submission
+        fields = '__all__'
 
     def clean_publish(self):
         """
