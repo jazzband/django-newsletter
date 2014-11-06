@@ -282,7 +282,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             'MEDIA_URL': settings.MEDIA_URL
         }, autoescape=False)
 
-        return HttpResponse(text_template.render(c), mimetype='text/plain')
+        return HttpResponse(text_template.render(c), content_type='text/plain')
 
     def submit(self, request, object_id):
         submission = Submission.from_message(self._getobj(request, object_id))
@@ -295,7 +295,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         json = serializers.serialize(
             "json", message.newsletter.get_subscriptions(), fields=()
         )
-        return HttpResponse(json, mimetype='application/json')
+        return HttpResponse(json, content_type='application/json')
 
     """ URLs """
     def get_urls(self):

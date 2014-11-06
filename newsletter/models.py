@@ -13,6 +13,7 @@ from django.utils.timezone import now
 
 from django.core.mail import EmailMultiAlternatives
 
+from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
 
@@ -21,9 +22,10 @@ from django.conf import settings
 from sorl.thumbnail import ImageField
 
 from .utils import (
-    make_activation_code, get_default_sites, ACTIONS, get_user_model
+    make_activation_code, get_default_sites, ACTIONS
 )
-User = get_user_model()
+
+AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', User)
 
 
 class Newsletter(models.Model):
@@ -157,7 +159,7 @@ class Newsletter(models.Model):
 
 class Subscription(models.Model):
     user = models.ForeignKey(
-        User, blank=True, null=True, verbose_name=_('user')
+        AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('user')
     )
 
     name_field = models.CharField(
