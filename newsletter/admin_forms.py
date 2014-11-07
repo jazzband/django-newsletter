@@ -403,7 +403,7 @@ class ImportForm(forms.Form):
     newsletter = forms.ModelChoiceField(
         label=_("Newsletter"),
         queryset=Newsletter.objects.all(),
-        initial=Newsletter.get_default_id())
+        initial=Newsletter.get_default)
     address_file = forms.FileField(label=_("Address file"))
     ignore_errors = forms.BooleanField(
         label=_("Ignore non-fatal errors"),

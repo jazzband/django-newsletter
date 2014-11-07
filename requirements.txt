@@ -1,5 +1,5 @@
 django-extensions
-Django>=1.4.10
+Django>=1.4.16
 vobject
 chardet
 surlex>=0.2.0

@@ -147,14 +147,11 @@ class Newsletter(models.Model):
         return Subscription.objects.filter(newsletter=self, subscribed=True)
 
     @classmethod
-    def get_default_id(cls):
+    def get_default(cls):
         try:
-            objs = cls.objects.all()
-            if objs.count() == 1:
-                return objs[0].id
-        except:
-            pass
-        return None
+            return cls.objects.all()[0]
+        except IndexError:
+            return None
 
 
 class Subscription(models.Model):
@@ -443,7 +440,6 @@ class Article(models.Model):
         help_text=_('Sort order determines the order in which articles are '
                     'concatenated in a post.'),
         verbose_name=_('sort order'), db_index=True,
-        default=lambda: Article.get_next_order()
     )
 
     title = models.CharField(max_length=200, verbose_name=_('title'))
@@ -474,6 +470,13 @@ class Article(models.Model):
         return self.title
 
 
+    def save(self):
+        if self.pk is None:
+            # if saving a new object get the next available Article ordering as to assure uniqueness.
+            self.sortorder = Article.get_next_order()
+        super(Article, self).save()
+
+
 class Message(models.Model):
     """ Message as sent through a Submission. """
 
@@ -481,8 +484,7 @@ class Message(models.Model):
     slug = models.SlugField(verbose_name=_('slug'))
 
     newsletter = models.ForeignKey(
-        'Newsletter', verbose_name=_('newsletter'),
-        default=Newsletter.get_default_id
+        'Newsletter', verbose_name=_('newsletter')
     )
 
     date_create = models.DateTimeField(
@@ -511,16 +513,17 @@ class Message(models.Model):
         verbose_name_plural = _('messages')
         unique_together = ('slug', 'newsletter')
 
-    @classmethod
-    def get_default_id(cls):
-        try:
-            objs = cls.objects.all().order_by('-date_create')
-            if not objs.count() == 0:
-                return objs[0].id
-        except:
-            pass
+    def save(self):
+        if self.pk is None:
+            self.newsletter = Newsletter.get_default()
+        super(Message, self).save()
 
-        return None
+    @classmethod
+    def get_default(cls):
+        try:
+            return cls.objects.order_by('-date_create').all()[0]
+        except IndexError:
+            return None
 
 
 class Submission(models.Model):
@@ -637,6 +640,9 @@ class Submission(models.Model):
 
         self.newsletter = self.message.newsletter
 
+        if self.pk is None:
+            self.message = Message.get_default()
+
         return super(Submission, self).save()
 
     @permalink
@@ -658,8 +664,7 @@ class Submission(models.Model):
         'Newsletter', verbose_name=_('newsletter'), editable=False
     )
     message = models.ForeignKey(
-        'Message', verbose_name=_('message'), editable=True,
-        default=Message.get_default_id, null=False
+        'Message', verbose_name=_('message'), editable=True, null=False
     )
 
     subscriptions = models.ManyToManyField(

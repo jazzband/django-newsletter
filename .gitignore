@@ -15,3 +15,5 @@ coverage*
 env
 django_setuptest*
 docs/_*
+.idea/
+venv/

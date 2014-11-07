@@ -8,6 +8,7 @@ Authors and contributors
 - remarkablerocket
 - Sina Samavati [s1n4]
 - David Sanders [dsanders11]
+- Patrick Craston [pcraston]
 
 Plus several others whom I forgot to mention. If I did, fire a pull request
 adding your name to this list.
