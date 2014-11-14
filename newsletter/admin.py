@@ -342,6 +342,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     )
     date_hierarchy = 'subscribe_date'
     actions = ['make_subscribed', 'make_unsubscribed']
+    exclude = ['unsubscribed']
 
     """ List extensions """
     def admin_newsletter(self, obj):

@@ -4,6 +4,8 @@ logger = logging.getLogger(__name__)
 
 from django import forms
 
+from django.contrib.admin import widgets, options
+
 from django.core.exceptions import ValidationError
 
 from django.core.validators import validate_email
@@ -427,6 +429,22 @@ class SubscriptionAdminForm(forms.ModelForm):
     class Meta:
         model = Subscription
         fields = '__all__'
+        widgets = {
+            'subscribed': widgets.AdminRadioSelect(
+                choices=[
+                    (True, ugettext('Subscribed')),
+                    (False, ugettext('Unsubscribed'))
+                ],
+                attrs={
+                    'class': options.get_ul_class(options.HORIZONTAL)
+                }
+            )
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(SubscriptionAdminForm, self).__init__(*args, **kwargs)
+
+        self.fields['subscribed'].label = ugettext('Status')
 
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
