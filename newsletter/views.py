@@ -479,7 +479,7 @@ class UpdateRequestView(ActionRequestView):
         return redirect(self.subscription.update_activate_url())
 
 
-class UpdateSubscriptionViev(ActionFormView):
+class UpdateSubscriptionView(ActionFormView):
     form_class = UpdateForm
     template_name = "newsletter/subscription_activate.html"
 
@@ -490,7 +490,7 @@ class UpdateSubscriptionViev(ActionFormView):
         """
         assert 'email' in kwargs
 
-        super(UpdateSubscriptionViev, self).process_url_data(*args, **kwargs)
+        super(UpdateSubscriptionView, self).process_url_data(*args, **kwargs)
 
         self.subscription = get_object_or_404(
             Subscription, newsletter=self.newsletter,
@@ -509,7 +509,7 @@ class UpdateSubscriptionViev(ActionFormView):
 
     def get_form_kwargs(self):
         """ Add instance to form kwargs. """
-        kwargs = super(UpdateSubscriptionViev, self).get_form_kwargs()
+        kwargs = super(UpdateSubscriptionView, self).get_form_kwargs()
 
         kwargs['instance'] = self.subscription
 
@@ -524,7 +524,7 @@ class UpdateSubscriptionViev(ActionFormView):
 
         subscription.update(self.action)
 
-        return super(UpdateSubscriptionViev, self).form_valid(form)
+        return super(UpdateSubscriptionView, self).form_valid(form)
 
 
 class SubmissionViewBase(NewsletterMixin):

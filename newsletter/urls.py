@@ -6,7 +6,7 @@ from .views import (
     NewsletterListView, NewsletterDetailView,
     SubmissionArchiveIndexView, SubmissionArchiveDetailView,
     SubscribeRequestView, UnsubscribeRequestView, UpdateRequestView,
-    ActionTemplateView, UpdateSubscriptionViev,
+    ActionTemplateView, UpdateSubscriptionView,
 )
 
 urlpatterns = patterns(
@@ -59,12 +59,12 @@ urlpatterns = patterns(
     surl(
         '^<newsletter_slug:s>/subscription/<email=[-_a-zA-Z0-9@\.\+~]+>/'
         '<action=subscribe|update|unsubscribe>/activate/<activation_code:s>/$',
-        UpdateSubscriptionViev.as_view(), name='newsletter_update_activate'
+        UpdateSubscriptionView.as_view(), name='newsletter_update_activate'
     ),
     surl(
         '^<newsletter_slug:s>/subscription/<email=[-_a-zA-Z0-9@\.\+~]+>/'
         '<action=subscribe|update|unsubscribe>/activate/$',
-        UpdateSubscriptionViev.as_view(), name='newsletter_update'
+        UpdateSubscriptionView.as_view(), name='newsletter_update'
     ),
 
     # Action activation completed view
