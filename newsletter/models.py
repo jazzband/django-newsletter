@@ -670,7 +670,7 @@ class Submission(models.Model):
 
     publish_date = models.DateTimeField(
         verbose_name=_('publication date'), blank=True, null=True,
-        default=now(), db_index=True
+        default=now, db_index=True
     )
     publish = models.BooleanField(
         default=True, verbose_name=_('publish'),
