@@ -21,9 +21,9 @@ from django.conf import settings
 from sorl.thumbnail import ImageField
 
 from .utils import (
-    make_activation_code, get_default_sites, ACTIONS, get_user_model
+    make_activation_code, get_default_sites, ACTIONS
 )
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 
 
 class Newsletter(models.Model):
