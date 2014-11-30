@@ -1162,7 +1162,10 @@ class ArchiveTestcase(NewsletterListTestCase):
         """ Make sure we have a few submissions to test with. """
 
         # Pick some newsletter
-        self.newsletter = Newsletter.objects.all()[0]
+        try:
+            self.newsletter = Newsletter.objects.all()[0]
+        except IndexError:
+            self.newsletter = None
 
         # Make sure there's a HTML template for this newsletter,
         # otherwise the archive will not function.
@@ -1176,7 +1179,6 @@ class ArchiveTestcase(NewsletterListTestCase):
         message = Message(
             title='Test message',
             slug='test-message',
-            newsletter=self.newsletter
         )
 
         message.save()

@@ -38,6 +38,6 @@ class ExtendibleModelAdminMixin(object):
         return update_wrapper(wrapper, view)
 
     def _view_name(self, name):
-        info = self.model._meta.app_label, self.model._meta.module_name, name
+        info = self.model._meta.app_label, self.model._meta.model_name, name
 
         return '%s_%s_%s' % info

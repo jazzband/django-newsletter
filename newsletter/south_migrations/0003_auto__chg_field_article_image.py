@@ -1,126 +1,28 @@
 # -*- coding: utf-8 -*-
-import os
-
-from django.conf import settings
-from south.v2 import DataMigration
-
-import newsletter
+import datetime
+from south.db import db
+from south.v2 import SchemaMigration
+from django.db import models
 
 
 from ..utils import get_user_model
 User = get_user_model()
 
 user_orm_label = '%s.%s' % (User._meta.app_label, User._meta.object_name)
-user_model_label = '%s.%s' % (User._meta.app_label, User._meta.module_name)
+user_model_label = '%s.%s' % (User._meta.app_label, User._meta.model_name)
 user_ptr_name = '%s_ptr' % User._meta.object_name.lower()
 
-class Migration(DataMigration):
-    def get_template_path(self):
-        """ Return the template path. """
-        if not settings.TEMPLATE_DIRS:
-            raise Exception(
-                'TEMPLATE_DIRS not set, could not migrate templates from '
-                'databse to file!'
-            )
-
-        return os.path.join(
-            settings.TEMPLATE_DIRS[0], 'newsletter', 'message'
-        )
-
-    def write_template(self, path, template):
-        print 'Writing email template from DB to %s' % path
-
-        f = open(path, 'w')
-        f.write(template.encode('utf-8'))
-        f.close()
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        """ Grab templates from database and write to template files. """
 
-        for newsletter in orm.Newsletter.objects.all():
-            template_path = os.path.join(
-                self.get_template_path(), newsletter.slug
-            )
-
-            # Optionally, create template dir
-            try:
-                os.makedirs(template_path)
-            except OSError:
-                pass
-
-            # Subscribe template HTML, text, subject
-            self.write_template(
-                os.path.join(template_path, 'subscribe.html'),
-                newsletter.subscribe_template.html
-            )
-
-            self.write_template(
-                os.path.join(template_path, 'subscribe.txt'),
-                newsletter.subscribe_template.text
-            )
-
-            self.write_template(
-                os.path.join(template_path, 'subscribe_subject.txt'),
-                newsletter.subscribe_template.subject
-            )
-
-            # Unsubscribe template HTML, text, subject
-            self.write_template(
-                os.path.join(template_path, 'unsubscribe.html'),
-                newsletter.unsubscribe_template.html
-            )
-
-            self.write_template(
-                os.path.join(template_path, 'unsubscribe.txt'),
-                newsletter.unsubscribe_template.text
-            )
-
-            self.write_template(
-                os.path.join(template_path, 'unsubscribe_subject.txt'),
-                newsletter.unsubscribe_template.subject
-            )
-
-            # Update template HTML, text, subject
-            self.write_template(
-                os.path.join(template_path, 'update.html'),
-                newsletter.update_template.html
-            )
-
-            self.write_template(
-                os.path.join(template_path, 'update.txt'),
-                newsletter.update_template.text
-            )
-
-            self.write_template(
-                os.path.join(template_path, 'update_subject.txt'),
-                newsletter.update_template.subject
-            )
-
-            # Message template HTML, text, subject
-            self.write_template(
-                os.path.join(template_path, 'message.html'),
-                newsletter.message_template.html
-            )
-
-            self.write_template(
-                os.path.join(template_path, 'message.txt'),
-                newsletter.message_template.text
-            )
-
-            self.write_template(
-                os.path.join(template_path, 'message_subject.txt'),
-                newsletter.message_template.subject
-            )
+        # Changing field 'Article.image'
+        db.alter_column('newsletter_article', 'image', self.gf('sorl.thumbnail.fields.ImageField')(max_length=100, null=True))
 
     def backwards(self, orm):
-        """
-        Way too lazy to write backwards migration for this one. It would have
-        to load templates from the files and put them in the database.
 
-        Also, a full backwards mapping is impossible as in the old setup a
-        single template can be used for multiple newsletters.
-        """
-        raise RuntimeError("Cannot reverse this migration.")
+        # Changing field 'Article.image'
+        db.alter_column('newsletter_article', 'image', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True))
 
     models = {
         'auth.group': {
@@ -164,7 +66,7 @@ class Migration(DataMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'post': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'articles'", 'to': "orm['newsletter.Message']"}),
-            'sortorder': ('django.db.models.fields.PositiveIntegerField', [], {'default': '20', 'db_index': 'True'}),
+            'sortorder': ('django.db.models.fields.PositiveIntegerField', [], {'default': '10', 'db_index': 'True'}),
             'text': ('django.db.models.fields.TextField', [], {}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
@@ -204,18 +106,18 @@ class Migration(DataMigration):
         'newsletter.submission': {
             'Meta': {'object_name': 'Submission'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'message': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'to': "orm['newsletter.Message']"}),
+            'message': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['newsletter.Message']"}),
             'newsletter': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['newsletter.Newsletter']"}),
             'prepared': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
             'publish': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'db_index': 'True'}),
-            'publish_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 5, 16, 0, 0)', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
+            'publish_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 11, 19, 0, 0)', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'sending': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
             'sent': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
             'subscriptions': ('django.db.models.fields.related.ManyToManyField', [], {'db_index': 'True', 'to': "orm['newsletter.Subscription']", 'symmetrical': 'False', 'blank': 'True'})
         },
         'newsletter.subscription': {
             'Meta': {'unique_together': "(('user', 'email_field', 'newsletter'),)", 'object_name': 'Subscription'},
-            'activation_code': ('django.db.models.fields.CharField', [], {'default': "'474708311b8ecc15d4e780f03193d222683d17f1'", 'max_length': '40'}),
+            'activation_code': ('django.db.models.fields.CharField', [], {'default': "'f84e621ed907775c2bb0d630e227ebf63711f053'", 'max_length': '40'}),
             'create_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email_field': ('django.db.models.fields.EmailField', [], {'db_index': 'True', 'max_length': '75', 'null': 'True', 'db_column': "'email'", 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -237,4 +139,3 @@ class Migration(DataMigration):
     }
 
     complete_apps = ['newsletter']
-    symmetrical = True

@@ -9,20 +9,58 @@ from ..utils import get_user_model
 User = get_user_model()
 
 user_orm_label = '%s.%s' % (User._meta.app_label, User._meta.object_name)
-user_model_label = '%s.%s' % (User._meta.app_label, User._meta.module_name)
+user_model_label = '%s.%s' % (User._meta.app_label, User._meta.model_name)
 user_ptr_name = '%s_ptr' % User._meta.object_name.lower()
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Removing unique constraint on 'EmailTemplate', fields ['title', 'action']
+        db.delete_unique('newsletter_emailtemplate', ['title', 'action'])
 
-        # Changing field 'Article.image'
-        db.alter_column('newsletter_article', 'image', self.gf('sorl.thumbnail.fields.ImageField')(max_length=100, null=True))
+        # Deleting model 'EmailTemplate'
+        db.delete_table('newsletter_emailtemplate')
+
+        # Deleting field 'Newsletter.update_template'
+        db.delete_column('newsletter_newsletter', 'update_template_id')
+
+        # Deleting field 'Newsletter.unsubscribe_template'
+        db.delete_column('newsletter_newsletter', 'unsubscribe_template_id')
+
+        # Deleting field 'Newsletter.message_template'
+        db.delete_column('newsletter_newsletter', 'message_template_id')
+
+        # Deleting field 'Newsletter.subscribe_template'
+        db.delete_column('newsletter_newsletter', 'subscribe_template_id')
+
 
     def backwards(self, orm):
+        # Adding model 'EmailTemplate'
+        db.create_table('newsletter_emailtemplate', (
+            ('title', self.gf('django.db.models.fields.CharField')(default=u'Default', max_length=200)),
+            ('text', self.gf('django.db.models.fields.TextField')()),
+            ('html', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('action', self.gf('django.db.models.fields.CharField')(max_length=16, db_index=True)),
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('subject', self.gf('django.db.models.fields.CharField')(max_length=255)),
+        ))
+        db.send_create_signal('newsletter', ['EmailTemplate'])
 
-        # Changing field 'Article.image'
-        db.alter_column('newsletter_article', 'image', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True))
+        # Adding unique constraint on 'EmailTemplate', fields ['title', 'action']
+        db.create_unique('newsletter_emailtemplate', ['title', 'action'])
+
+
+        # User chose to not deal with backwards NULL issues for 'Newsletter.update_template'
+        raise RuntimeError("Cannot reverse this migration. 'Newsletter.update_template' and its values cannot be restored.")
+
+        # User chose to not deal with backwards NULL issues for 'Newsletter.unsubscribe_template'
+        raise RuntimeError("Cannot reverse this migration. 'Newsletter.unsubscribe_template' and its values cannot be restored.")
+
+        # User chose to not deal with backwards NULL issues for 'Newsletter.message_template'
+        raise RuntimeError("Cannot reverse this migration. 'Newsletter.message_template' and its values cannot be restored.")
+
+        # User chose to not deal with backwards NULL issues for 'Newsletter.subscribe_template'
+        raise RuntimeError("Cannot reverse this migration. 'Newsletter.subscribe_template' and its values cannot be restored.")
 
     models = {
         'auth.group': {
@@ -66,19 +104,10 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'post': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'articles'", 'to': "orm['newsletter.Message']"}),
-            'sortorder': ('django.db.models.fields.PositiveIntegerField', [], {'default': '10', 'db_index': 'True'}),
+            'sortorder': ('django.db.models.fields.PositiveIntegerField', [], {'default': '20', 'db_index': 'True'}),
             'text': ('django.db.models.fields.TextField', [], {}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
-        },
-        'newsletter.emailtemplate': {
-            'Meta': {'ordering': "('title',)", 'unique_together': "(('title', 'action'),)", 'object_name': 'EmailTemplate'},
-            'action': ('django.db.models.fields.CharField', [], {'max_length': '16', 'db_index': 'True'}),
-            'html': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'subject': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'text': ('django.db.models.fields.TextField', [], {}),
-            'title': ('django.db.models.fields.CharField', [], {'default': "u'Default'", 'max_length': '200'})
         },
         'newsletter.message': {
             'Meta': {'unique_together': "(('slug', 'newsletter'),)", 'object_name': 'Message'},
@@ -93,31 +122,27 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Newsletter'},
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'message_template': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'message_template'", 'to': "orm['newsletter.EmailTemplate']"}),
             'sender': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'site': ('django.db.models.fields.related.ManyToManyField', [], {'default': '[1]', 'to': "orm['sites.Site']", 'symmetrical': 'False'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'}),
-            'subscribe_template': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'subcribe_template'", 'to': "orm['newsletter.EmailTemplate']"}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'unsubscribe_template': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'unsubcribe_template'", 'to': "orm['newsletter.EmailTemplate']"}),
-            'update_template': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'update_template'", 'to': "orm['newsletter.EmailTemplate']"}),
             'visible': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'db_index': 'True'})
         },
         'newsletter.submission': {
             'Meta': {'object_name': 'Submission'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'message': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['newsletter.Message']"}),
+            'message': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'to': "orm['newsletter.Message']"}),
             'newsletter': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['newsletter.Newsletter']"}),
             'prepared': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
             'publish': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'db_index': 'True'}),
-            'publish_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 11, 19, 0, 0)', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
+            'publish_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 5, 16, 0, 0)', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
             'sending': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
             'sent': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
             'subscriptions': ('django.db.models.fields.related.ManyToManyField', [], {'db_index': 'True', 'to': "orm['newsletter.Subscription']", 'symmetrical': 'False', 'blank': 'True'})
         },
         'newsletter.subscription': {
             'Meta': {'unique_together': "(('user', 'email_field', 'newsletter'),)", 'object_name': 'Subscription'},
-            'activation_code': ('django.db.models.fields.CharField', [], {'default': "'f84e621ed907775c2bb0d630e227ebf63711f053'", 'max_length': '40'}),
+            'activation_code': ('django.db.models.fields.CharField', [], {'default': "'cfac7ee20279d5842214a4e8371475175ed8f00b'", 'max_length': '40'}),
             'create_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email_field': ('django.db.models.fields.EmailField', [], {'db_index': 'True', 'max_length': '75', 'null': 'True', 'db_column': "'email'", 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),

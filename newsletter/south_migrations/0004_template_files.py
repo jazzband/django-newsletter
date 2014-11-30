@@ -1,66 +1,126 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+import os
+
+from django.conf import settings
+from south.v2 import DataMigration
+
+import newsletter
 
 
 from ..utils import get_user_model
 User = get_user_model()
 
 user_orm_label = '%s.%s' % (User._meta.app_label, User._meta.object_name)
-user_model_label = '%s.%s' % (User._meta.app_label, User._meta.module_name)
+user_model_label = '%s.%s' % (User._meta.app_label, User._meta.model_name)
 user_ptr_name = '%s_ptr' % User._meta.object_name.lower()
 
-class Migration(SchemaMigration):
+class Migration(DataMigration):
+    def get_template_path(self):
+        """ Return the template path. """
+        if not settings.TEMPLATE_DIRS:
+            raise Exception(
+                'TEMPLATE_DIRS not set, could not migrate templates from '
+                'databse to file!'
+            )
+
+        return os.path.join(
+            settings.TEMPLATE_DIRS[0], 'newsletter', 'message'
+        )
+
+    def write_template(self, path, template):
+        print 'Writing email template from DB to %s' % path
+
+        f = open(path, 'w')
+        f.write(template.encode('utf-8'))
+        f.close()
 
     def forwards(self, orm):
-        # Removing unique constraint on 'EmailTemplate', fields ['title', 'action']
-        db.delete_unique('newsletter_emailtemplate', ['title', 'action'])
+        """ Grab templates from database and write to template files. """
 
-        # Deleting model 'EmailTemplate'
-        db.delete_table('newsletter_emailtemplate')
+        for newsletter in orm.Newsletter.objects.all():
+            template_path = os.path.join(
+                self.get_template_path(), newsletter.slug
+            )
 
-        # Deleting field 'Newsletter.update_template'
-        db.delete_column('newsletter_newsletter', 'update_template_id')
+            # Optionally, create template dir
+            try:
+                os.makedirs(template_path)
+            except OSError:
+                pass
 
-        # Deleting field 'Newsletter.unsubscribe_template'
-        db.delete_column('newsletter_newsletter', 'unsubscribe_template_id')
+            # Subscribe template HTML, text, subject
+            self.write_template(
+                os.path.join(template_path, 'subscribe.html'),
+                newsletter.subscribe_template.html
+            )
 
-        # Deleting field 'Newsletter.message_template'
-        db.delete_column('newsletter_newsletter', 'message_template_id')
+            self.write_template(
+                os.path.join(template_path, 'subscribe.txt'),
+                newsletter.subscribe_template.text
+            )
 
-        # Deleting field 'Newsletter.subscribe_template'
-        db.delete_column('newsletter_newsletter', 'subscribe_template_id')
+            self.write_template(
+                os.path.join(template_path, 'subscribe_subject.txt'),
+                newsletter.subscribe_template.subject
+            )
 
+            # Unsubscribe template HTML, text, subject
+            self.write_template(
+                os.path.join(template_path, 'unsubscribe.html'),
+                newsletter.unsubscribe_template.html
+            )
+
+            self.write_template(
+                os.path.join(template_path, 'unsubscribe.txt'),
+                newsletter.unsubscribe_template.text
+            )
+
+            self.write_template(
+                os.path.join(template_path, 'unsubscribe_subject.txt'),
+                newsletter.unsubscribe_template.subject
+            )
+
+            # Update template HTML, text, subject
+            self.write_template(
+                os.path.join(template_path, 'update.html'),
+                newsletter.update_template.html
+            )
+
+            self.write_template(
+                os.path.join(template_path, 'update.txt'),
+                newsletter.update_template.text
+            )
+
+            self.write_template(
+                os.path.join(template_path, 'update_subject.txt'),
+                newsletter.update_template.subject
+            )
+
+            # Message template HTML, text, subject
+            self.write_template(
+                os.path.join(template_path, 'message.html'),
+                newsletter.message_template.html
+            )
+
+            self.write_template(
+                os.path.join(template_path, 'message.txt'),
+                newsletter.message_template.text
+            )
+
+            self.write_template(
+                os.path.join(template_path, 'message_subject.txt'),
+                newsletter.message_template.subject
+            )
 
     def backwards(self, orm):
-        # Adding model 'EmailTemplate'
-        db.create_table('newsletter_emailtemplate', (
-            ('title', self.gf('django.db.models.fields.CharField')(default=u'Default', max_length=200)),
-            ('text', self.gf('django.db.models.fields.TextField')()),
-            ('html', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('action', self.gf('django.db.models.fields.CharField')(max_length=16, db_index=True)),
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('subject', self.gf('django.db.models.fields.CharField')(max_length=255)),
-        ))
-        db.send_create_signal('newsletter', ['EmailTemplate'])
+        """
+        Way too lazy to write backwards migration for this one. It would have
+        to load templates from the files and put them in the database.
 
-        # Adding unique constraint on 'EmailTemplate', fields ['title', 'action']
-        db.create_unique('newsletter_emailtemplate', ['title', 'action'])
-
-
-        # User chose to not deal with backwards NULL issues for 'Newsletter.update_template'
-        raise RuntimeError("Cannot reverse this migration. 'Newsletter.update_template' and its values cannot be restored.")
-
-        # User chose to not deal with backwards NULL issues for 'Newsletter.unsubscribe_template'
-        raise RuntimeError("Cannot reverse this migration. 'Newsletter.unsubscribe_template' and its values cannot be restored.")
-
-        # User chose to not deal with backwards NULL issues for 'Newsletter.message_template'
-        raise RuntimeError("Cannot reverse this migration. 'Newsletter.message_template' and its values cannot be restored.")
-
-        # User chose to not deal with backwards NULL issues for 'Newsletter.subscribe_template'
-        raise RuntimeError("Cannot reverse this migration. 'Newsletter.subscribe_template' and its values cannot be restored.")
+        Also, a full backwards mapping is impossible as in the old setup a
+        single template can be used for multiple newsletters.
+        """
+        raise RuntimeError("Cannot reverse this migration.")
 
     models = {
         'auth.group': {
@@ -109,6 +169,15 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         },
+        'newsletter.emailtemplate': {
+            'Meta': {'ordering': "('title',)", 'unique_together': "(('title', 'action'),)", 'object_name': 'EmailTemplate'},
+            'action': ('django.db.models.fields.CharField', [], {'max_length': '16', 'db_index': 'True'}),
+            'html': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'subject': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'text': ('django.db.models.fields.TextField', [], {}),
+            'title': ('django.db.models.fields.CharField', [], {'default': "u'Default'", 'max_length': '200'})
+        },
         'newsletter.message': {
             'Meta': {'unique_together': "(('slug', 'newsletter'),)", 'object_name': 'Message'},
             'date_create': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -122,10 +191,14 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Newsletter'},
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'message_template': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'message_template'", 'to': "orm['newsletter.EmailTemplate']"}),
             'sender': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'site': ('django.db.models.fields.related.ManyToManyField', [], {'default': '[1]', 'to': "orm['sites.Site']", 'symmetrical': 'False'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'}),
+            'subscribe_template': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'subcribe_template'", 'to': "orm['newsletter.EmailTemplate']"}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'unsubscribe_template': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'unsubcribe_template'", 'to': "orm['newsletter.EmailTemplate']"}),
+            'update_template': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'update_template'", 'to': "orm['newsletter.EmailTemplate']"}),
             'visible': ('django.db.models.fields.BooleanField', [], {'default': 'True', 'db_index': 'True'})
         },
         'newsletter.submission': {
@@ -142,7 +215,7 @@ class Migration(SchemaMigration):
         },
         'newsletter.subscription': {
             'Meta': {'unique_together': "(('user', 'email_field', 'newsletter'),)", 'object_name': 'Subscription'},
-            'activation_code': ('django.db.models.fields.CharField', [], {'default': "'cfac7ee20279d5842214a4e8371475175ed8f00b'", 'max_length': '40'}),
+            'activation_code': ('django.db.models.fields.CharField', [], {'default': "'474708311b8ecc15d4e780f03193d222683d17f1'", 'max_length': '40'}),
             'create_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email_field': ('django.db.models.fields.EmailField', [], {'db_index': 'True', 'max_length': '75', 'null': 'True', 'db_column': "'email'", 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -164,3 +237,4 @@ class Migration(SchemaMigration):
     }
 
     complete_apps = ['newsletter']
+    symmetrical = True
