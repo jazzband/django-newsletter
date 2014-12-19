@@ -10,6 +10,7 @@ from django.contrib import admin, messages
 from django.contrib.sites.models import Site
 
 from django.core import serializers
+from django.core.exceptions import PermissionDenied
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
@@ -417,6 +418,8 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     """ Views """
     def subscribers_import(self, request):
+        if not request.user.has_perm('newsletter.add_subscription'):
+            raise PermissionDenied()
         if request.POST:
             form = ImportForm(request.POST, request.FILES)
             if form.is_valid():
