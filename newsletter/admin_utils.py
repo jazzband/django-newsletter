@@ -12,7 +12,7 @@ class ExtendibleModelAdminMixin(object):
             opts = self.model._meta
 
             try:
-                obj = self.queryset(request).get(pk=unquote(object_id))
+                obj = self.get_queryset(request).get(pk=unquote(object_id))
             except self.model.DoesNotExist:
                 # Don't raise Http404 just yet, because we haven't checked
                 # permissions yet. We don't want an unauthenticated user to
