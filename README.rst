@@ -43,9 +43,9 @@ soon as near-full coverage is reached.
 
 Compatibility
 =============
-Currently, django-newsletter is being tested to run on Python 2.6, 2.7 and the
+Currently, django-newsletter is being tested to run on Python 2.7 and the
 latest Django 1.4, 1.7 releases with 1.8 being under way.
-Apart from tests it *might* be compatible with Python 2.5 as well.
+Apart from tests it *might* be compatible with Python 2.5 and 2.6 as well.
 
 Requirements
 ============
