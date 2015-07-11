@@ -6,10 +6,9 @@ python:
   - "3.3"
 
 env:
-  - DJANGO=Django==1.4.16
-  - DJANGO=Django==1.5.11
-  - DJANGO=Django==1.6.8
-  - DJANGO=Django==1.7.1
+  - DJANGO=Django==1.4.21
+  - DJANGO=Django==1.7.9
+  - DJANGO=Django==1.8.3
 
 matrix:
   allow_failures:
@@ -17,12 +16,12 @@ matrix:
     - python: "3.3"
   exclude:
     # Django 1.4 and 1.5 do not fully support Python 3.3
-    - env: DJANGO=Django==1.4.12
+    - env: DJANGO=Django==1.4.21
       python: "3.3"
-    - env: DJANGO=Django==1.5.7
-      python: "3.3"
-    # 1.7 doesn't support Python 2.6 anymore
-    - env: DJANGO=Django==1.7.1
+    # 1.7 and 1.8 don't support Python 2.6 anymore
+    - env: DJANGO=Django==1.7.9
+      python: "2.6"
+    - env: DJANGO=Django==1.8.3
       python: "2.6"
 
 # command to install dependencies
