@@ -41,3 +41,10 @@ USE_TZ = True
 
 # Required for django-webtest to work
 STATIC_URL = '/static/'
+
+# Random secret key
+import random
+key_chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
+SECRET_KEY = ''.join([
+    random.SystemRandom().choice(key_chars) for i in range(50)
+])
