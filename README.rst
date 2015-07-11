@@ -11,6 +11,10 @@ django-newsletter
 .. image:: https://pypip.in/d/django-newsletter/badge.png
         :target: https://crate.io/packages/django-newsletter?version=latest
 
+.. image:: https://landscape.io/github/ssokolow/gtk-recent-scrubber/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/ssokolow/gtk-recent-scrubber/master
+   :alt: Code Health
+
 Newsletter application for the Django web framework.
 ----------------------------------------------------
 
