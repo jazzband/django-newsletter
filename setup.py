@@ -59,10 +59,8 @@ setup(
         'Programming Language :: Python',
         'Topic :: Utilities'
     ),
-    test_suite='setuptest.setuptest.SetupTestSuite',
+    test_suite='runtests.runtests',
     tests_require=(
-        'django-setuptest',
-        'argparse',  # apparently needed by django-setuptest on python 2.6
         'django-imperavi',
         'django-tinymce',
         'pytz',
