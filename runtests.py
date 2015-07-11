@@ -4,9 +4,15 @@
 import sys
 import os
 
+import django
+
 
 def runtests():
     os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+
+    # Django >= 1.7
+    if hasattr(django, 'setup'):
+        django.setup()
 
     try:
         # Django <= 1.8

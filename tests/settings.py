@@ -1,3 +1,6 @@
+import os
+test_dir = os.path.dirname(__file__)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3'
@@ -34,7 +37,7 @@ ROOT_URLCONF = 'tests.urls'
 
 SITE_ID = 1
 
-TEMPLATE_DIRS = ('templates', )
+TEMPLATE_DIRS = (os.path.join(test_dir, 'templates'), )
 
 # Enable time-zone support for Django 1.4 (ignored in older versions)
 USE_TZ = True
