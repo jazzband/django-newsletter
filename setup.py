@@ -63,7 +63,6 @@ setup(
     tests_require=(
         'django-imperavi',
         'django-tinymce',
-        'pytz',
-        'Pillow',
+        'pytz'
     ),
 )
