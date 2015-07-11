@@ -30,11 +30,11 @@ except ImportError:
     # South not installed and hence is not required
     pass
 
-ROOT_URLCONF = 'test_urls'
+ROOT_URLCONF = 'tests.urls'
 
 SITE_ID = 1
 
-TEMPLATE_DIRS = ('test_templates', )
+TEMPLATE_DIRS = ('templates', )
 
 # Enable time-zone support for Django 1.4 (ignored in older versions)
 USE_TZ = True
