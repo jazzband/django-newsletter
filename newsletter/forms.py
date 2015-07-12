@@ -1,7 +1,10 @@
 from django.utils.translation import ugettext_lazy as _
 
 from django import forms
-from django.forms.util import ValidationError
+try:
+    from django.forms.utils import ValidationError
+except ImportError:  # Django < 1.7
+    from django.forms.util import ValidationError
 
 from .utils import get_user_model
 User = get_user_model()

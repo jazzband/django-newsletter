@@ -2,6 +2,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 from django.db import models
+
+# in Django 1.8 and later use GenericIPAddressField otherwise use IPAddressField
+from django import VERSION as DJANGO_VERSION
+if DJANGO_VERSION >= (1,8):
+    from django.db.models import GenericIPAddressField as IP_ADDRESS_FIELD
+else:
+    from django.db.models import IPAddressField as IP_ADDRESS_FIELD
+
 from django.db.models import permalink
 
 from django.template import Context, TemplateDoesNotExist
@@ -293,7 +301,8 @@ class Subscription(models.Model):
 
         super(Subscription, self).save(*args, **kwargs)
 
-    ip = models.IPAddressField(_("IP address"), blank=True, null=True)
+    # use GenericIPAddressField if available, otherwise use IPAddressField
+    ip = IP_ADDRESS_FIELD(_("IP address"), blank=True, null=True)
 
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
 
