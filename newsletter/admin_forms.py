@@ -385,7 +385,7 @@ class ImportForm(forms.Form):
 
         else:
             raise forms.ValidationError(
-                _("File extention '%s' was not recognized.") % ext)
+                _("File extension '%s' was not recognized.") % ext)
 
         if len(self.addresses) == 0:
             raise forms.ValidationError(
