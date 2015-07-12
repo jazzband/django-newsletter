@@ -22,6 +22,10 @@ matrix:
 install:
   - pip install $DJANGO
   - pip install -r requirements.txt
+  - pip install coveralls
 
 # command to run tests
-script: python setup.py test
+script: coverage run --source=newsletter setup.py test
+
+after_success:
+  coveralls
