@@ -1,2 +1,2 @@
 ignore-paths:
-    newsletter/south_migrations
+    - newsletter/south_migrations
