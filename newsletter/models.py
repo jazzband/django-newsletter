@@ -705,3 +705,21 @@ class Submission(models.Model):
         default=False, verbose_name=_('sending'),
         db_index=True, editable=False
     )
+
+class Attachment(models.Model):
+    """
+    Attachment for a Article .
+    """
+    class Meta:
+        verbose_name = _('attachment')
+        verbose_name_plural = _('attachments')
+        
+    file = FileField(
+        upload_to='newsletter/attachments/%Y/%m/%d', blank=True, null=True,
+        verbose_name=_('attachment')
+    )
+
+    # Attachment is associated with
+    article = models.ForeignKey(
+        'Article', verbose_name=_('article'), related_name='attachments'
+    )
