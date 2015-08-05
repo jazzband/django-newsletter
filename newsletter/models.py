@@ -486,6 +486,24 @@ class Article(models.Model):
         super(Article, self).save()
 
 
+class Attachment(models.Model):
+    """
+    Attachment for a Article .
+    """
+    class Meta:
+        verbose_name = _('attachment')
+        verbose_name_plural = _('attachments')
+        
+    file = FileField(
+        upload_to='newsletter/attachments/%Y/%m/%d', blank=True, null=True,
+        verbose_name=_('attachment')
+    )
+
+    # Attachment is associated with
+    article = models.ForeignKey(
+        'Article', verbose_name=_('article'), related_name='attachments'
+    )
+
 class Message(models.Model):
     """ Message as sent through a Submission. """
 
@@ -591,7 +609,10 @@ class Submission(models.Model):
                     from_email=self.newsletter.get_sender(),
                     to=[subscription.get_recipient()]
                 )
-
+                
+                #attachments = self.objects.filter(article__attachments)
+                #message.attach('design.png', img_data, 'image/png')
+                
                 if html_template:
                     escaped_context = Context(variable_dict)
 
@@ -704,22 +725,4 @@ class Submission(models.Model):
     sending = models.BooleanField(
         default=False, verbose_name=_('sending'),
         db_index=True, editable=False
-    )
-
-class Attachment(models.Model):
-    """
-    Attachment for a Article .
-    """
-    class Meta:
-        verbose_name = _('attachment')
-        verbose_name_plural = _('attachments')
-        
-    file = FileField(
-        upload_to='newsletter/attachments/%Y/%m/%d', blank=True, null=True,
-        verbose_name=_('attachment')
-    )
-
-    # Attachment is associated with
-    article = models.ForeignKey(
-        'Article', verbose_name=_('article'), related_name='attachments'
     )
