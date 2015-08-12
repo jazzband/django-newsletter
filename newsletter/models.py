@@ -494,20 +494,21 @@ class Attachment(models.Model):
         verbose_name = _('attachment')
         verbose_name_plural = _('attachments')
         
-    file = FileField(
+    file = models.FileField(
         upload_to='newsletter/attachments/%Y/%m/%d', blank=True, null=True,
         verbose_name=_('attachment')
     )
 
     # Attachment is associated with
     post = models.ForeignKey(
-        'Message', verbose_name=_('message'), related_name='articles'
+        'Message', verbose_name=_('message'), related_name='attachments'
     )
-    '''
+'''
     article = models.ForeignKey(
         'Article', verbose_name=_('article'), related_name='attachments'
     )
-    '''
+'''
+
 class Message(models.Model):
     """ Message as sent through a Submission. """
 
@@ -614,7 +615,10 @@ class Submission(models.Model):
                     to=[subscription.get_recipient()]
                 )
                 
-                #attachments = self.objects.filter(article__attachments)
+                attachments = Attachment.objects.filter(post_id=self.message.id) 
+                for attachment in attachments:
+                    message.attach(attachment.file.name, attachment.file)
+ 
                 #message.attach('design.png', img_data, 'image/png')
                 
                 if html_template:

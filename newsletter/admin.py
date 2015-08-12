@@ -26,7 +26,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from sorl.thumbnail.admin import AdminImageMixin
 
 from .models import (
-    Newsletter, Subscription, Article, Message, Submission
+    Newsletter, Subscription, Attachment, Article, Message, Submission
 )
 
 from django.utils.timezone import now
@@ -188,7 +188,11 @@ if (
         )
 
 
-class ArticleInline(AdminImageMixin, StackedInline):
+class AttachmentInline(admin.TabularInline):
+    model = Attachment
+    
+
+class ArticleInline( AdminImageMixin, StackedInline):
     model = Article
     extra = 2
     fieldsets = (
@@ -200,7 +204,7 @@ class ArticleInline(AdminImageMixin, StackedInline):
             'classes': ('collapse',)
         }),
     )
-
+        
     if newsletter_settings.RICHTEXT_WIDGET:
         formfield_overrides = {
             models.TextField: {'widget': newsletter_settings.RICHTEXT_WIDGET},
@@ -217,7 +221,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     date_hierarchy = 'date_create'
     prepopulated_fields = {'slug': ('title',)}
 
-    inlines = [ArticleInline, ]
+    inlines = [ArticleInline, AttachmentInline, ]
 
     """ List extensions """
     def admin_title(self, obj):
