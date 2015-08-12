@@ -616,8 +616,9 @@ class Submission(models.Model):
                 )
                 
                 attachments = Attachment.objects.filter(post_id=self.message.id) 
+                #import pdb; pdb.set_trace()
                 for attachment in attachments:
-                    message.attach(attachment.file.name, attachment.file)
+                    message.attach_file(attachment.file.path)
  
                 #message.attach('design.png', img_data, 'image/png')
                 
@@ -634,7 +635,7 @@ class Submission(models.Model):
                         ugettext(u'Submitting message to: %s.'),
                         subscription
                     )
-
+                    #import pdb; pdb.set_trace()
                     message.send()
 
                 except Exception, e:
