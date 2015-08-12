@@ -500,10 +500,14 @@ class Attachment(models.Model):
     )
 
     # Attachment is associated with
+    post = models.ForeignKey(
+        'Message', verbose_name=_('message'), related_name='articles'
+    )
+    '''
     article = models.ForeignKey(
         'Article', verbose_name=_('article'), related_name='attachments'
     )
-
+    '''
 class Message(models.Model):
     """ Message as sent through a Submission. """
 
