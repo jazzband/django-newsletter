@@ -488,7 +488,7 @@ class Article(models.Model):
 
 class Attachment(models.Model):
     """
-    Attachment for a Article .
+    Attachment for a Message .
     """
     class Meta:
         verbose_name = _('attachment')
@@ -503,11 +503,7 @@ class Attachment(models.Model):
     post = models.ForeignKey(
         'Message', verbose_name=_('message'), related_name='attachments'
     )
-'''
-    article = models.ForeignKey(
-        'Article', verbose_name=_('article'), related_name='attachments'
-    )
-'''
+
 
 class Message(models.Model):
     """ Message as sent through a Submission. """
@@ -616,11 +612,9 @@ class Submission(models.Model):
                 )
                 
                 attachments = Attachment.objects.filter(post_id=self.message.id) 
-                #import pdb; pdb.set_trace()
+                
                 for attachment in attachments:
                     message.attach_file(attachment.file.path)
- 
-                #message.attach('design.png', img_data, 'image/png')
                 
                 if html_template:
                     escaped_context = Context(variable_dict)
@@ -635,7 +629,7 @@ class Submission(models.Model):
                         ugettext(u'Submitting message to: %s.'),
                         subscription
                     )
-                    #import pdb; pdb.set_trace()
+                        
                     message.send()
 
                 except Exception, e:
