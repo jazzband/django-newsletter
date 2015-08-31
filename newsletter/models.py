@@ -495,7 +495,7 @@ class Attachment(models.Model):
         verbose_name_plural = _('attachments')
         
     file = models.FileField(
-        upload_to='newsletter/attachments/%Y/%m/%d', blank=True, null=True,
+        upload_to='newsletter/attachments/%Y/%m/%d', blank=False, null=False,
         verbose_name=_('attachment')
     )
 
