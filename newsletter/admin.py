@@ -245,7 +245,8 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def preview(self, request, object_id):
         return render_to_response(
             "admin/newsletter/message/preview.html",
-            {'message': self._getobj(request, object_id)},
+            {'message': self._getobj(request, object_id),
+             'attachments' : Attachment.objects.filter(post_id=object_id)},
             RequestContext(request, {}),
         )
 
