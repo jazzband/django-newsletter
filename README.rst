@@ -1,3 +1,6 @@
+.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=ready&title=Ready 
+ :target: https://waffle.io/dokterbob/django-newsletter
+ :alt: 'Stories in Ready'
 =================
 django-newsletter
 =================
