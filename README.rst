@@ -66,10 +66,6 @@ for pull req's and the master branch are automatically run through
 
 Contributing
 =============
-.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=backlog&title=Backlog 
-   :target: https://waffle.io/dokterbob/django-newsletter
-   :alt: 'Stories in Backlog'
-
 .. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=ready&title=Ready 
    :target: https://waffle.io/dokterbob/django-newsletter
    :alt: 'Stories in Ready'
