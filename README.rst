@@ -14,6 +14,10 @@ django-newsletter
 .. image:: https://landscape.io/github/dokterbob/django-newsletter/master/landscape.svg?style=flat
    :target: https://landscape.io/github/dokterbob/django-newsletter/master
    :alt: Code Health
+   
+.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=ready&title=Ready 
+   :target: https://waffle.io/dokterbob/django-newsletter
+   :alt: 'Stories in Ready'
 
 Newsletter application for the Django web framework.
 ----------------------------------------------------
