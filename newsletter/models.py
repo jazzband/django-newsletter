@@ -1,31 +1,16 @@
 import logging
-logger = logging.getLogger(__name__)
 
+from django.conf import settings
+from django.contrib.sites.models import Site
+from django.contrib.sites.managers import CurrentSiteManager
+from django.core.mail import EmailMultiAlternatives
 from django.db import models
-
-# in Django 1.8 and later use GenericIPAddressField otherwise use IPAddressField
-from django import VERSION as DJANGO_VERSION
-if DJANGO_VERSION >= (1,8):
-    from django.db.models import GenericIPAddressField as IP_ADDRESS_FIELD
-else:
-    from django.db.models import IPAddressField as IP_ADDRESS_FIELD
-
 from django.db.models import permalink
-
-from django.template import Context, TemplateDoesNotExist
+from django.template import Context
 from django.template.loader import select_template
-
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.utils.timezone import now
-
-from django.core.mail import EmailMultiAlternatives
-
-from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
-from django.contrib.sites.managers import CurrentSiteManager
-
-from django.conf import settings
 
 from sorl.thumbnail import ImageField
 
@@ -33,7 +18,17 @@ from .utils import (
     make_activation_code, get_default_sites, ACTIONS
 )
 
-AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', User)
+# in Django 1.8 and later use GenericIPAddressField otherwise use IPAddressField
+from django import VERSION as DJANGO_VERSION
+if DJANGO_VERSION >= (1, 8):
+    from django.db.models import GenericIPAddressField as IP_ADDRESS_FIELD
+else:
+    from django.db.models import IPAddressField as IP_ADDRESS_FIELD
+
+logger = logging.getLogger(__name__)
+
+
+AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
 class Newsletter(models.Model):
@@ -477,7 +472,6 @@ class Article(models.Model):
 
     def __unicode__(self):
         return self.title
-
 
     def save(self):
         if self.pk is None:
