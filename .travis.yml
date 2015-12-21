@@ -11,6 +11,10 @@ env:
   - DJANGO="Django<1.9"  # Django 1.8.x
   - DJANGO="Django<1.10" # Django 1.9.x
 
+cache:
+  directories:
+    - $HOME/.cache/pip
+
 matrix:
   allow_failures:
     # Allow failures for Python 3
