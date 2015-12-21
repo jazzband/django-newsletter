@@ -32,6 +32,12 @@ try:
 except:
     REQUIREMENTS = None
 
+try:
+    TEST_REQUIREMENTS = open('requirements_test.txt').read()
+except:
+    TEST_REQUIREMENTS = None
+
+
 setup(
     name='django-newsletter',
     version="0.6-dev",
@@ -60,10 +66,5 @@ setup(
         'Topic :: Utilities'
     ),
     test_suite='runtests.runtests',
-    tests_require=(
-        'django-imperavi',
-        'django-tinymce',
-        'pytz',
-        'Pillow',
-    ),
+    tests_require=TEST_REQUIREMENTS
 )
