@@ -14,10 +14,6 @@ django-newsletter
 .. image:: https://landscape.io/github/dokterbob/django-newsletter/master/landscape.svg?style=flat
    :target: https://landscape.io/github/dokterbob/django-newsletter/master
    :alt: Code Health
-   
-.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=ready&title=Ready 
-   :target: https://waffle.io/dokterbob/django-newsletter
-   :alt: 'Stories in Ready'
 
 Newsletter application for the Django web framework.
 ----------------------------------------------------
@@ -67,6 +63,26 @@ Fairly extensive tests are available for internal frameworks, web
 (+15k) has been confirmed to work in multiple production environments. Tests
 for pull req's and the master branch are automatically run through
 `Travis CI <http://travis-ci.org/dokterbob/django-newsletter>`_.
+
+Contributing
+=============
+.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=backlog&title=Backlog 
+   :target: https://waffle.io/dokterbob/django-newsletter
+   :alt: 'Stories in Backlog'
+
+.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=ready&title=Ready 
+   :target: https://waffle.io/dokterbob/django-newsletter
+   :alt: 'Stories in Ready'
+   
+.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=in%20progress&title=Progress 
+   :target: https://waffle.io/dokterbob/django-newsletter
+   :alt: 'Stories in Progress'
+
+.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=under%20review&title=Review 
+   :target: https://waffle.io/dokterbob/django-newsletter
+   :alt: 'Stories Under Review'
+
+Should you wish to contribute, great! Please have a look at the [waffle.io board](https://waffle.io/dokterbob/django-newsletter). Issues in the 'Ready' column are ready for implementation, just drag the issue to 'In Progress' and then to 'Review'. Issues in the backlog require some further discussion concering the scope and methods of implementation, please feel free to mingle in discussions. Lastly, should you see an issue with the 'Review' status, feel free to help out other contributors with your feedback.
 
 Feedback
 ========
