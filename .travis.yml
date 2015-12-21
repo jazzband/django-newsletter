@@ -3,25 +3,26 @@ language: python
 sudo: false
 
 python:
-  - "2.7"
-  - "3.3"
+  - 2.7
+  - 3.4
+  - 3.5
 
 env:
-  - DJANGO=Django==1.4.21
-  - DJANGO=Django==1.7.9
-  - DJANGO=Django==1.8.3
+  - DJANGO="Django<1.9"  # Django 1.8.x
+  - DJANGO="Django<1.10" # Django 1.9.x
 
 matrix:
   allow_failures:
-    # Allow failures for Python 3.3
-    - python: "3.3"
-  exclude:
-    # Django 1.4 and 1.5 do not fully support Python 3.3
-    - env: DJANGO=Django==1.4.21
-      python: "3.3"
+    # Allow failures for Python 3
+    - python: 3.4
+    - python: 3.5
+    # 1.9 not yet suported (for now)
+    - env: DJANGO="Django<1.10"
 
 # command to install dependencies
 install:
+  # Latest PIP uses wheel by default
+  - pip install --upgrade pip
   - pip install $DJANGO
   - pip install -r requirements.txt
   - pip install coveralls
