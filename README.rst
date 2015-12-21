@@ -78,7 +78,7 @@ Contributing
    :target: https://waffle.io/dokterbob/django-newsletter
    :alt: 'Stories Under Review'
 
-Should you wish to contribute, great! Please have a look at the [waffle.io board](https://waffle.io/dokterbob/django-newsletter). Issues in the 'Ready' column are ready for implementation, just drag the issue to 'In Progress' and then to 'Review'. Issues in the backlog require some further discussion concering the scope and methods of implementation, please feel free to mingle in discussions. Lastly, should you see an issue with the 'Review' status, feel free to help out other contributors with your feedback.
+Should you wish to contribute, great! Please have a look at the `waffle.io board <https://waffle.io/dokterbob/django-newsletter>`_. Issues in the 'Ready' column are ready for implementation, just drag the issue to 'In Progress' and then to 'Review'. Issues in the backlog require some further discussion concering the scope and methods of implementation, please feel free to mingle in discussions. Lastly, should you see an issue with the 'Review' status, feel free to help out other contributors with your feedback.
 
 Feedback
 ========
