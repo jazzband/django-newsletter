@@ -1,4 +1,4 @@
-from django.utils import unittest
+import unittest
 
 from django.conf import settings
 
