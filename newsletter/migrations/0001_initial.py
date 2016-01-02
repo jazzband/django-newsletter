@@ -7,7 +7,6 @@ import newsletter.utils
 import django.utils.timezone
 from django.conf import settings
 
-
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -24,7 +23,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=200, verbose_name='title')),
                 ('text', models.TextField(verbose_name='text')),
                 ('url', models.URLField(null=True, verbose_name='link', blank=True)),
-                ('image', sorl.thumbnail.fields.ImageField(upload_to=b'newsletter/images/%Y/%m/%d', null=True, verbose_name='image', blank=True)),
+                ('image', sorl.thumbnail.fields.ImageField(upload_to='newsletter/images/%Y/%m/%d', null=True, verbose_name='image', blank=True)),
             ],
             options={
                 'ordering': ('sortorder',),
@@ -88,8 +87,8 @@ class Migration(migrations.Migration):
             name='Subscription',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name_field', models.CharField(db_column=b'name', max_length=30, blank=True, help_text='optional', null=True, verbose_name='name')),
-                ('email_field', models.EmailField(db_column=b'email', max_length=75, blank=True, null=True, verbose_name='e-mail', db_index=True)),
+                ('name_field', models.CharField(db_column='name', max_length=30, blank=True, help_text='optional', null=True, verbose_name='name')),
+                ('email_field', models.EmailField(db_column='email', max_length=75, blank=True, null=True, verbose_name='e-mail', db_index=True)),
                 ('ip', models.IPAddressField(null=True, verbose_name='IP address', blank=True)),
                 ('create_date', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('activation_code', models.CharField(default=newsletter.utils.make_activation_code, max_length=40, verbose_name='activation code')),

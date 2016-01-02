@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import logging
 
 from django.conf import settings
@@ -602,7 +603,7 @@ class Submission(models.Model):
 
                     message.send()
 
-                except Exception, e:
+                except Exception as e:
                     # TODO: Test coverage for this branch.
                     logger.error(
                         ugettext(u'Message %(subscription)s failed '
