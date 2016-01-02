@@ -8,7 +8,10 @@ try:
 except ImportError:  # Django < 1.7
     from django.contrib.admin.util import unquote
 
-from django.utils.encoding import force_unicode
+try:
+    from django.utils.encoding import force_unicode
+except ImportError:  # python < 3
+    from django.utils.encoding import force_text as force_unicode
 
 
 class ExtendibleModelAdminMixin(object):
