@@ -513,10 +513,10 @@ class Message(models.Model):
         verbose_name_plural = _('messages')
         unique_together = ('slug', 'newsletter')
 
-    def save(self):
+    def save(self, **kwargs):
         if self.pk is None:
             self.newsletter = Newsletter.get_default()
-        super(Message, self).save()
+        super(Message, self).save(**kwargs)
 
     @classmethod
     def get_default(cls):

@@ -1,12 +1,13 @@
 import os
 
-from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from newsletter import admin  # Triggers model admin registration
-from newsletter.models import Newsletter
 from newsletter.admin_utils import make_subscription
+from newsletter.models import Message, Newsletter, Submission, Subscription
 
 test_files_dir = os.path.join(os.path.dirname(__file__), 'files')
 
@@ -54,6 +55,73 @@ class AdminTestCase(TestCase):
         return self.client.post(
             import_confirm_url, {'confirm': True}, follow=True
         )
+
+    def test_newsletter_admin(self):
+        """
+        Testing newsletter admin change list display.
+        """
+        changelist_url = reverse('admin:newsletter_newsletter_changelist')
+        response = self.client.get(changelist_url)
+        self.assertContains(
+            response,
+            '<a href="../message/?newsletter__id__exact=%s">Messages</a>' % self.newsletter.pk
+        )
+        self.assertContains(
+            response,
+            '<a href="../subscription/?newsletter__id__exact=%s">Subscriptions</a>' % self.newsletter.pk
+        )
+
+    def test_subscription_admin(self):
+        """
+        Testing subscription admin change list display and actions.
+        """
+        Subscription.objects.bulk_create([
+            Subscription(
+                newsletter=self.newsletter, name_field='Sara',
+                email_field='sara@example.org', subscribed=True,
+            ),
+            Subscription(
+                newsletter=self.newsletter, name_field='Bob',
+                email_field='bob@example.org', unsubscribed=True,
+            ),
+            Subscription(
+                newsletter=self.newsletter, name_field='Khaled',
+                email_field='khaled@example.org', subscribed=False,
+                unsubscribed=False,
+            ),
+        ])
+        changelist_url = reverse('admin:newsletter_subscription_changelist')
+        response = self.client.get(changelist_url)
+        self.assertContains(
+            response,
+            '<img src="/static/admin/img/icon-no.gif" width="10" height="10" alt="Unsubscribed"/>',
+            html=True
+        )
+        self.assertContains(
+            response,
+            '<img src="/static/admin/img/icon-yes.gif" width="10" height="10" alt="Subscribed"/>',
+            html=True
+        )
+        self.assertContains(
+            response,
+            '<img src="/static/newsletter/admin/img/waiting.gif" width="10" height="10" alt="Unactivated"/>',
+            html=True
+        )
+
+        # Test actions
+        response = self.client.post(changelist_url, data={
+            'index': 0,
+            'action': ['make_subscribed'],
+            '_selected_action': [str(Subscription.objects.get(name_field='Khaled').pk)],
+        })
+        self.assertTrue(Subscription.objects.get(name_field='Khaled').subscribed)
+
+        response = self.client.post(changelist_url, data={
+            'index': 0,
+            'action': ['make_unsubscribed'],
+            '_selected_action': [str(Subscription.objects.get(name_field='Sara').pk)],
+        })
+        self.assertFalse(Subscription.objects.get(name_field='Sara').subscribed)
 
     def test_admin_import_get_form(self):
         """ Test Import form. """
@@ -125,3 +193,106 @@ class AdminTestCase(TestCase):
             "Some entries are already subscribed to."
         )
         self.assertEqual(self.newsletter.subscription_set.count(), 2)
+
+    def test_admin_import_subscribers_permission(self):
+        """
+        To be able to import subscriptions, user must have the
+        'add_subscription' permission.
+        """
+        self.admin_user.is_superuser = False
+        self.admin_user.save()
+        import_url = reverse('admin:newsletter_subscription_import')
+        response = self.client.get(import_url)
+        self.assertEqual(response.status_code, 403)
+
+        self.admin_user.user_permissions.add(
+            Permission.objects.get(codename='add_subscription')
+        )
+        response = self.client.get(import_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_admin_import_subscribers_no_addresses(self):
+        """
+        Cannot confirm subscribers import if 'addresses' misses in session.
+        """
+        import_url = reverse('admin:newsletter_subscription_import')
+        import_confirm_url = reverse(
+            'admin:newsletter_subscription_import_confirm'
+        )
+        response = self.client.post(
+            import_confirm_url, {'confirm': True}
+        )
+        self.assertRedirects(response, import_url)
+
+    def test_message_admin(self):
+        """
+        Testing message admin change list display and message previews.
+        """
+        msg = Message.objects.create(
+            newsletter=self.newsletter, title='Test message', slug='test-message'
+        )
+        changelist_url = reverse('admin:newsletter_message_changelist')
+        response = self.client.get(changelist_url)
+        self.assertContains(
+            response,
+            '<a href="%d/preview/">Preview</a>' % msg.pk,
+            html=True
+        )
+
+        # Previews
+        preview_url = reverse('admin:newsletter_message_preview', args=[msg.pk])
+        preview_text_url = reverse('admin:newsletter_message_preview_text', args=[msg.pk])
+        preview_html_url = reverse('admin:newsletter_message_preview_html', args=[msg.pk])
+        response = self.client.get(preview_url)
+        self.assertContains(
+            response,
+            '<iframe src ="%s" width="960px" height="720px"></iframe>' % preview_html_url,
+            html=True
+        )
+        self.assertContains(
+            response,
+            '<iframe src ="%s" width="960px" height="720px"></iframe>' % preview_text_url,
+            html=True
+        )
+
+        response = self.client.get(preview_text_url)
+        self.assertEqual(
+            response.content,
+            b'''++++++++++++++++++++
+
+Test Newsletter: Test message
+
+++++++++++++++++++++
+
+
+
+++++++++++++++++++++
+
+Unsubscribe: http://example.com/newsletter/test-newsletter/unsubscribe/
+''')
+
+        response = self.client.get(preview_html_url)
+        self.assertContains(response, '<h1>Test Newsletter</h1>')
+        self.assertContains(response, '<h2>Test message</h2>')
+        self.assertContains(response, self.newsletter.unsubscribe_url())
+
+        # HTML preview returns 404 if send_html is False
+        self.newsletter.send_html = False
+        self.newsletter.save()
+        response = self.client.get(preview_html_url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_submission_admin(self):
+        """
+        Testing submission admin change list display.
+        """
+        msg = Message.objects.create(
+            newsletter=self.newsletter, title='Test message', slug='test-message'
+        )
+        sub = Submission.from_message(msg)
+        changelist_url = reverse('admin:newsletter_submission_changelist')
+        response = self.client.get(changelist_url)
+        self.assertContains(
+            response,
+            '<td class="field-admin_status_text">Not sent.</td>'
+        )
