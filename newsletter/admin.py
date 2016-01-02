@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 from django.db import models
 
 from django.conf import settings
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from django.contrib import admin, messages
 from django.contrib.sites.models import Site
@@ -22,6 +22,7 @@ from django.utils.translation import ugettext, ungettext, ugettext_lazy as _
 from django.utils.formats import date_format
 
 from django.views.decorators.clickjacking import xframe_options_sameorigin
+from django.views.i18n import javascript_catalog
 
 from sorl.thumbnail.admin import AdminImageMixin
 
@@ -158,13 +159,13 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def get_urls(self):
         urls = super(SubmissionAdmin, self).get_urls()
 
-        my_urls = patterns(
-            '', url(
+        my_urls = [
+            url(
                 r'^(.+)/submit/$',
                 self._wrap(self.submit),
                 name=self._view_name('submit')
             )
-        )
+        ]
 
         return my_urls + urls
 
@@ -302,8 +303,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def get_urls(self):
         urls = super(MessageAdmin, self).get_urls()
 
-        my_urls = patterns(
-            '',
+        my_urls = [
             url(r'^(.+)/preview/$',
                 self._wrap(self.preview),
                 name=self._view_name('preview')),
@@ -319,7 +319,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             url(r'^(.+)/subscribers/json/$',
                 self._wrap(self.subscribers_json),
                 name=self._view_name('subscribers_json')),
-        )
+        ]
 
         return my_urls + urls
 
@@ -470,8 +470,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def get_urls(self):
         urls = super(SubscriptionAdmin, self).get_urls()
 
-        my_urls = patterns(
-            '',
+        my_urls = [
             url(r'^import/$',
                 self._wrap(self.subscribers_import),
                 name=self._view_name('import')),
@@ -482,10 +481,10 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             # Translated JS strings - these should be app-wide but are
             # only used in this part of the admin. For now, leave them here.
             url(r'^jsi18n/$',
-                'django.views.i18n.javascript_catalog',
+                javascript_catalog,
                 {'packages': ('newsletter',)},
                 name='newsletter_js18n')
-        )
+        ]
 
         return my_urls + urls
 

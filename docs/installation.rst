@@ -73,11 +73,11 @@ Installation
 #)  Import subscription, unsubscription and archive URL's somewhere in your
     `urls.py`::
 
-        urlpatterns = patterns('',
+        urlpatterns = [
             ...
-            (r'^newsletter/', include('newsletter.urls')),
+            url(r'^newsletter/', include('newsletter.urls')),
             ...
-        )
+        ]
 
 #)  Enable Django's `staticfiles <http://docs.djangoproject.com/en/dev/howto/static-files/>`_
     app so the admin icons, CSS and JavaScript will be available where
