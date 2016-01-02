@@ -13,6 +13,8 @@ except ImportError:
 from django.contrib.sites.models import Site
 
 from datetime import datetime
+from django.utils import timezone
+
 
 # Possible actions that user can perform
 ACTIONS = ('subscribe', 'unsubscribe', 'update')
@@ -34,13 +36,19 @@ def get_user_model():
 def make_activation_code():
     """ Generate a unique activation code. """
     random_string = str(random.random())
-    random_digest = sha1(random_string).hexdigest()[:5]
-    time_string = str(datetime.now().microsecond)
+    try:
+        random_digest = sha1(random_string).hexdigest()[:5]
+        time_string = str(datetime.now().microsecond)
+        combined_string = random_digest + time_string
 
-    combined_string = random_digest + time_string
+        return sha1(combined_string).hexdigest()
+    except TypeError:
+        import os, base64
+        random_digest = base64.b64encode(os.urandom(16))[:5].decode('utf-8')
+        time_string = str(datetime.now().microsecond)
+        combined_string = random_digest + time_string
 
-    return sha1(combined_string).hexdigest()
-
+        return sha1(combined_string.encode('utf-8')).hexdigest()
 
 def get_default_sites():
     """ Get a list of id's for all sites; the default for newsletters. """
