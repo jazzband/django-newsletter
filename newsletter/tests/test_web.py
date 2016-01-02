@@ -21,7 +21,7 @@ from django.core.urlresolvers import reverse
 
 from django.utils import timezone
 
-from django.test.utils import override_settings
+from django.test.utils import override_settings, patch_logger
 
 from ..models import (
     Newsletter, Subscription, Submission, Message, get_default_sites
@@ -272,11 +272,11 @@ class UserNewsletterListTestCase(UserTestCase,
         # Make sure no subscriptions exist on beforehand
         Subscription.objects.all().delete()
 
-        # TODO: Use a Mock to assert a warning has been logged
-        # Ref: http://www.michaelpollmeier.com/python-mock-how-to-assert-a-substring-of-logger-output/
-
         # A post without any form elements should fail, horribly
-        self.client.post(self.list_url)
+        with patch_logger('newsletter.views', 'warning') as messages:
+            self.client.post(self.list_url)
+        self.assertEqual(len(messages), 1)
+        self.assertIn("Invalid form post received", messages[0])
 
         # A post with correct management data with weird values
         # should cause the formset not to validate.
@@ -301,7 +301,10 @@ class UserNewsletterListTestCase(UserTestCase,
             count += 1
 
         # Post the form
-        self.client.post(self.list_url, params)
+        with patch_logger('newsletter.views', 'warning') as messages:
+            self.client.post(self.list_url, params)
+        self.assertEqual(len(messages), 1)
+        self.assertIn("Invalid form post received", messages[0])
 
         # Assert no subscriptions have been created
         self.assertFalse(
@@ -625,15 +628,18 @@ class AnonymousSubscribeTestCase(
         """
 
         with override_settings(
-            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend',
+            EMAIL_PORT=12345678,
         ):
-            with override_settings(EMAIL_PORT=12345678):
+            with patch_logger('newsletter.views', 'error') as messages:
                 response = self.client.post(
                     self.subscribe_url, {
                         'name_field': 'Test Name',
                         'email_field': 'test@ifjoidjsufhdsidhsuufihs.dfs'
                     }
                 )
+            self.assertEqual(len(messages), 1)
+            self.assertIn("Connection refused", messages[0])
 
         self.assertTrue(response.context['error'])
 
@@ -897,12 +903,15 @@ class AnonymousSubscribeTestCase(
         subscription.save()
 
         with override_settings(
-            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend',
+            EMAIL_PORT=12345678,
         ):
-            with override_settings(EMAIL_PORT=12345678):
+            with patch_logger('newsletter.views', 'error') as messages:
                 response = self.client.post(
                     self.unsubscribe_url, {'email_field': 'test@email.com'}
                 )
+            self.assertEqual(len(messages), 1)
+            self.assertIn("Connection refused", messages[0])
 
         self.assertTrue(response.context['error'])
 
@@ -1026,12 +1035,15 @@ class AnonymousSubscribeTestCase(
         subscription.save()
 
         with override_settings(
-            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend',
+            EMAIL_PORT=12345678,
         ):
-            with override_settings(EMAIL_PORT=12345678):
+            with patch_logger('newsletter.views', 'error') as messages:
                 response = self.client.post(
                     self.update_url, {'email_field': 'test@email.com'}
                 )
+            self.assertEqual(len(messages), 1)
+            self.assertIn("Connection refused", messages[0])
 
         self.assertTrue(response.context['error'])
 

@@ -51,3 +51,20 @@ key_chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
 SECRET_KEY = ''.join([
     random.SystemRandom().choice(key_chars) for i in range(50)
 ])
+
+# Logs all newsletter app messages to the console
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'newsletter': {
+            'handlers': ['console'],
+            'propagate': True,
+        },
+    },
+}
