@@ -1,5 +1,3 @@
-from django.conf.urls import patterns
-
 from surlex.dj import surl
 
 from .views import (
@@ -9,9 +7,7 @@ from .views import (
     ActionTemplateView, UpdateSubscriptionView,
 )
 
-urlpatterns = patterns(
-    '',
-
+urlpatterns = [
     # Newsletter list and detail view
     surl('^$', NewsletterListView.as_view(), name='newsletter_list'),
     surl(
@@ -85,4 +81,4 @@ urlpatterns = patterns(
         '^<newsletter_slug:s>/archive/$',
         SubmissionArchiveIndexView.as_view(), name='newsletter_archive'
     ),
-)
+]

@@ -1,6 +1,6 @@
-from django.conf.urls import patterns, include
+from django.conf.urls import include, url
 
 
-urlpatterns = patterns('',
-    (r'^newsletter/', include('newsletter.urls')),
-)
+urlpatterns = [
+    url(r'^newsletter/', include('newsletter.urls')),
+]
