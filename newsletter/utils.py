@@ -1,18 +1,16 @@
 """ Generic helper functions """
-
 import logging
-logger = logging.getLogger(__name__)
-
 import random
+from datetime import datetime
+from django import VERSION
+from django.contrib.sites.models import Site
+
+logger = logging.getLogger(__name__)
 
 try:
     from hashlib import sha1
 except ImportError:
     from django.utils.hashcompat import sha_constructor as sha1
-
-from django.contrib.sites.models import Site
-
-from datetime import datetime
 
 # Possible actions that user can perform
 ACTIONS = ('subscribe', 'unsubscribe', 'update')
@@ -20,6 +18,12 @@ ACTIONS = ('subscribe', 'unsubscribe', 'update')
 
 def get_user_model():
     """ get_user_model compatibility wrapper. Returns active User model. """
+
+    # Django 1.7 and above
+    if VERSION[0] == 1 and VERSION[1] > 6:
+        from django.conf import settings
+        return settings.AUTH_USER_MODEL
+
     try:
         from django.contrib.auth import get_user_model
     except ImportError:
