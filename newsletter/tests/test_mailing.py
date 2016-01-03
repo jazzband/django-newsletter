@@ -6,6 +6,7 @@ from datetime import timedelta
 
 from django.core import mail
 
+from django.utils.six.moves import range
 from django.utils.timezone import now
 
 from ..models import (
@@ -80,7 +81,7 @@ class ArticleTestCase(MailingTestCase):
         total = 3
 
         last = 0
-        for current in xrange(total):
+        for current in range(total):
             a = self.make_article()
             if last:
                 self.assert_(a.sortorder > last)
@@ -243,7 +244,7 @@ class SubscriptionTestCase(UserTestCase, MailingTestCase):
             self.assertFalse(s.unsubscribe_date)
 
             # Repeat this to ensure consequencentness
-            for x in xrange(2):
+            for x in range(2):
                 s.subscribed = True
                 s.save()
 

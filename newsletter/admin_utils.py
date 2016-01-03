@@ -8,7 +8,7 @@ try:
 except ImportError:  # Django < 1.7
     from django.contrib.admin.util import unquote
 
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 
 
 class ExtendibleModelAdminMixin(object):
@@ -29,8 +29,8 @@ class ExtendibleModelAdminMixin(object):
                         '%(name)s object with primary key '
                         '%(key)r does not exist.'
                     ) % {
-                        'name': force_unicode(opts.verbose_name),
-                        'key': unicode(object_id)
+                        'name': force_text(opts.verbose_name),
+                        'key': force_text(object_id)
                     }
                 )
 

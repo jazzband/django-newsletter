@@ -8,6 +8,7 @@ from django.db import models
 from django.db.models import permalink
 from django.template import Context
 from django.template.loader import select_template
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.utils.timezone import now
@@ -31,6 +32,7 @@ logger = logging.getLogger(__name__)
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
+@python_2_unicode_compatible
 class Newsletter(models.Model):
     site = models.ManyToManyField(Site, default=get_default_sites)
 
@@ -99,7 +101,7 @@ class Newsletter(models.Model):
 
         return (subject_template, text_template, html_template)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
@@ -157,6 +159,7 @@ class Newsletter(models.Model):
             return None
 
 
+@python_2_unicode_compatible
 class Subscription(models.Model):
     user = models.ForeignKey(
         AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('user')
@@ -323,7 +326,7 @@ class Subscription(models.Model):
         verbose_name=_("unsubscribe date"), null=True, blank=True
     )
 
-    def __unicode__(self):
+    def __str__(self):
         if self.name:
             return _(u"%(name)s <%(email)s> to %(newsletter)s") % {
                 'name': self.name,
@@ -420,6 +423,7 @@ class Subscription(models.Model):
         })
 
 
+@python_2_unicode_compatible
 class Article(models.Model):
     """
     An Article within a Message which will be send through a Submission.
@@ -470,7 +474,7 @@ class Article(models.Model):
         verbose_name = _('article')
         verbose_name_plural = _('articles')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def save(self):
@@ -480,6 +484,7 @@ class Article(models.Model):
         super(Article, self).save()
 
 
+@python_2_unicode_compatible
 class Message(models.Model):
     """ Message as sent through a Submission. """
 
@@ -497,7 +502,7 @@ class Message(models.Model):
         verbose_name=_('modified'), auto_now=True, editable=False
     )
 
-    def __unicode__(self):
+    def __str__(self):
         try:
             return _(u"%(title)s in %(newsletter)s") % {
                 'title': self.title,
@@ -529,6 +534,7 @@ class Message(models.Model):
             return None
 
 
+@python_2_unicode_compatible
 class Submission(models.Model):
     """
     Submission represents a particular Message as it is being submitted
@@ -539,7 +545,7 @@ class Submission(models.Model):
         verbose_name = _('submission')
         verbose_name_plural = _('submissions')
 
-    def __unicode__(self):
+    def __str__(self):
         return _(u"%(newsletter)s on %(publish_date)s") % {
             'newsletter': self.message,
             'publish_date': self.publish_date
@@ -602,7 +608,7 @@ class Submission(models.Model):
 
                     message.send()
 
-                except Exception, e:
+                except Exception as e:
                     # TODO: Test coverage for this branch.
                     logger.error(
                         ugettext(u'Message %(subscription)s failed '

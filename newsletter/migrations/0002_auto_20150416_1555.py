@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='subscription',
             name='email_field',
-            field=models.EmailField(db_column=b'email', max_length=254, blank=True, null=True, verbose_name='e-mail', db_index=True),
+            field=models.EmailField(db_column='email', max_length=254, blank=True, null=True, verbose_name='e-mail', db_index=True),
         ),
     ]
 
@@ -31,8 +31,8 @@ class Migration(migrations.Migration):
             migrations.AlterModelManagers(
                 name='newsletter',
                 managers=[
-                    (b'objects', django.db.models.manager.Manager()),
-                    (b'on_site', django.contrib.sites.managers.CurrentSiteManager()),
+                    ('objects', django.db.models.manager.Manager()),
+                    ('on_site', django.contrib.sites.managers.CurrentSiteManager()),
                 ],
             ),
             migrations.AlterField(
