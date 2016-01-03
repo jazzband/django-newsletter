@@ -25,14 +25,6 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
 ]
 
-try:
-    # If available, South is required by setuptest
-    import south
-    INSTALLED_APPS.append('south')
-except ImportError:
-    # South not installed and hence is not required
-    pass
-
 ROOT_URLCONF = 'tests.urls'
 
 SITE_ID = 1
