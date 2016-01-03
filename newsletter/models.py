@@ -19,15 +19,7 @@ from .utils import (
     make_activation_code, get_default_sites, ACTIONS
 )
 
-# in Django 1.8 and later use GenericIPAddressField otherwise use IPAddressField
-from django import VERSION as DJANGO_VERSION
-if DJANGO_VERSION >= (1, 8):
-    from django.db.models import GenericIPAddressField as IP_ADDRESS_FIELD
-else:
-    from django.db.models import IPAddressField as IP_ADDRESS_FIELD
-
 logger = logging.getLogger(__name__)
-
 
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
@@ -299,8 +291,7 @@ class Subscription(models.Model):
 
         super(Subscription, self).save(*args, **kwargs)
 
-    # use GenericIPAddressField if available, otherwise use IPAddressField
-    ip = IP_ADDRESS_FIELD(_("IP address"), blank=True, null=True)
+    ip = models.GenericIPAddressField(_("IP address"), blank=True, null=True)
 
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
 

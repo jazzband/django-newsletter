@@ -8,13 +8,13 @@ import time
 
 import unittest
 
-# Conditioally import pytz
+# Conditionally import pytz
 try:
     import pytz
 except ImportError:
     pytz = None
 
-from django import VERSION as DJANGO_VERSION
+from django.contrib.auth import get_user_model
 
 from django.core import mail
 from django.core.urlresolvers import reverse
@@ -29,9 +29,6 @@ from ..models import (
 )
 
 from ..forms import UpdateForm
-
-from ..utils import get_user_model
-User = get_user_model()
 
 from .utils import MailTestCase, UserTestCase, WebTestCase, ComparingTestCase
 
@@ -191,33 +188,17 @@ class UserNewsletterListTestCase(UserTestCase,
             total_forms, len(self.newsletters.filter(visible=True))
         )
 
-        if DJANGO_VERSION[:2] == (1, 4):
-            # Django 1.4
-            self.assertContains(
-                response,
-                '<input type="hidden" name="form-TOTAL_FORMS" value="%d" '
-                'id="id_form-TOTAL_FORMS" />' % total_forms
-            )
+        self.assertContains(
+            response,
+            '<input id="id_form-TOTAL_FORMS" name="form-TOTAL_FORMS" '
+            'type="hidden" value="%d" />' % total_forms
+        )
 
-            self.assertContains(
-                response,
-                '<input type="hidden" name="form-INITIAL_FORMS" value="%d" '
-                'id="id_form-INITIAL_FORMS" />' % total_forms
-            )
-
-        else:
-            # Django 1.5
-            self.assertContains(
-                response,
-                '<input id="id_form-TOTAL_FORMS" name="form-TOTAL_FORMS" '
-                'type="hidden" value="%d" />' % total_forms
-            )
-
-            self.assertContains(
-                response,
-                '<input id="id_form-INITIAL_FORMS" name="form-INITIAL_FORMS" '
-                'type="hidden" value="%d" />' % total_forms
-            )
+        self.assertContains(
+            response,
+            '<input id="id_form-INITIAL_FORMS" name="form-INITIAL_FORMS" '
+            'type="hidden" value="%d" />' % total_forms
+        )
 
         for form in formset.forms:
             self.assert_(
@@ -769,6 +750,7 @@ class AnonymousSubscribeTestCase(
         belonging to an existing user.
         """
 
+        User = get_user_model()
         password = User.objects.make_random_password()
         user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', password)

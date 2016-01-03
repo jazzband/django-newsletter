@@ -39,7 +39,7 @@ SITE_ID = 1
 
 TEMPLATE_DIRS = (os.path.join(test_dir, 'templates'), )
 
-# Enable time-zone support for Django 1.4 (ignored in older versions)
+# Enable time-zone support
 USE_TZ = True
 
 # Required for django-webtest to work
