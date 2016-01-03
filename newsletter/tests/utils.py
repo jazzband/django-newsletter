@@ -1,8 +1,10 @@
 import logging
-
 logger = logging.getLogger(__name__)
 
+import smtplib
+
 from django.core import mail
+from django.core.mail.backends.base import BaseEmailBackend
 
 from django.test import TestCase
 
@@ -138,3 +140,10 @@ def template_exists(template_name):
         return True
     except TemplateDoesNotExist:
         return False
+
+
+class FailingEmailBackend(BaseEmailBackend):
+    """ Email backend that just fails, for testing purposes. """
+
+    def send_messages(self, email_messages):
+        raise smtplib.SMTPException('Connection refused')

@@ -628,8 +628,7 @@ class AnonymousSubscribeTestCase(
         """
 
         with override_settings(
-            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend',
-            EMAIL_PORT=12345678,
+            EMAIL_BACKEND='newsletter.tests.utils.FailingEmailBackend'
         ):
             with patch_logger('newsletter.views', 'error') as messages:
                 response = self.client.post(
@@ -903,8 +902,7 @@ class AnonymousSubscribeTestCase(
         subscription.save()
 
         with override_settings(
-            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend',
-            EMAIL_PORT=12345678,
+            EMAIL_BACKEND='newsletter.tests.utils.FailingEmailBackend'
         ):
             with patch_logger('newsletter.views', 'error') as messages:
                 response = self.client.post(
@@ -1035,9 +1033,10 @@ class AnonymousSubscribeTestCase(
         subscription.save()
 
         with override_settings(
-            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend',
-            EMAIL_PORT=12345678,
+            EMAIL_BACKEND='newsletter.tests.utils.FailingEmailBackend'
         ):
+
+
             with patch_logger('newsletter.views', 'error') as messages:
                 response = self.client.post(
                     self.update_url, {'email_field': 'test@email.com'}
