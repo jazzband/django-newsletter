@@ -33,7 +33,7 @@ from .models import (
 from django.utils.timezone import now
 
 from .admin_forms import *
-from .admin_utils import *
+from .admin_utils import ExtendibleModelAdminMixin, make_subscription
 
 from .settings import newsletter_settings
 

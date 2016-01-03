@@ -4,6 +4,7 @@ from django.contrib.admin.utils import unquote
 from django.http import Http404
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
+from .models import Subscription
 
 
 class ExtendibleModelAdminMixin(object):
@@ -40,3 +41,15 @@ class ExtendibleModelAdminMixin(object):
         info = self.model._meta.app_label, self.model._meta.model_name, name
 
         return '%s_%s_%s' % info
+
+
+def make_subscription(newsletter, email, name=None):
+    addr = Subscription(subscribed=True)
+
+    addr.newsletter = newsletter
+    addr.email_field = email
+
+    if name:
+        addr.name_field = name
+
+    return addr
