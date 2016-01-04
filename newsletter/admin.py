@@ -424,7 +424,8 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             form = ImportForm(request.POST, request.FILES)
             if form.is_valid():
                 request.session['addresses'] = form.get_addresses()
-                request.session['newsletter_pk'] = form.cleaned_data['newsletter'].pk
+                request.session['newsletter_pk'] = \
+                    form.cleaned_data['newsletter'].pk
                 return HttpResponseRedirect('confirm/')
         else:
             form = ImportForm()
@@ -437,19 +438,25 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     def subscribers_import_confirm(self, request):
         # If no addresses are in the session, start all over.
-        if not 'addresses' in request.session:
+        if 'addresses' not in request.session:
             return HttpResponseRedirect('../')
 
         addresses = request.session['addresses']
-        newsletter = Newsletter.objects.get(pk=request.session['newsletter_pk'])
+        newsletter = Newsletter.objects.get(
+            pk=request.session['newsletter_pk']
+        )
+
         logger.debug('Confirming addresses: %s', addresses)
+
         if request.POST:
             form = ConfirmForm(request.POST)
             if form.is_valid():
                 try:
                     for address in addresses:
-                        addr = make_subscription(newsletter, address['email'], address['name'])
-                        addr.save()
+                        address_inst = make_subscription(
+                            newsletter, address['email'], address['name']
+                        )
+                        address_inst.save()
                 finally:
                     del request.session['addresses']
                     del request.session['newsletter_pk']
