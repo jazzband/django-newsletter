@@ -241,7 +241,7 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
 
     try:
         myvcards = vobject.readComponents(myfile)
-    except vobject.VObjectError, e:
+    except vobject.VObjectError as e:
         raise forms.ValidationError(
             _(u"Error reading vCard file: %s" % e)
         )
@@ -332,7 +332,7 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
     try:
         myparser = AddressParser(myfile)
         myparser.parse()
-    except ValueError, e:
+    except ValueError as e:
         if not ignore_errors:
             raise forms.ValidationError(e)
 
