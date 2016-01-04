@@ -1,0 +1,17 @@
+dn: uid=jsmith,ou=People,dc=example,dc=org
+uid: jsmith
+cn: John Smith
+sn: Smith
+objectClass: top
+objectClass: person
+objectClass: inetOrgPerson
+mail: john@example.org
+
+dn: uid=jmartin,ou=People,dc=example,dc=org
+uid: jmartin
+cn: Jill Martin
+sn: Martin
+objectClass: top
+objectClass: person
+objectClass: inetOrgPerson
+mail: jill@example.org 
