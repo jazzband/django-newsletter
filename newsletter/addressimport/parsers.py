@@ -94,8 +94,11 @@ def check_email(email, ignore_errors=False):
     email_length = \
         Subscription._meta.get_field_by_name('email_field')[0].max_length
 
+    # Get rid of leading/trailing spaces
+    email = email.strip()
+
     if len(email) <= email_length or ignore_errors:
-        return email[:email_length].strip()
+        return email[:email_length]
     else:
         raise forms.ValidationError(
             _(
@@ -119,6 +122,9 @@ def check_name(name, ignore_errors=False):
 
     name_length = \
         Subscription._meta.get_field_by_name('name_field')[0].max_length
+
+    # Get rid of leading/trailing spaces
+    name = name.strip()
 
     if len(name) <= name_length or ignore_errors:
         return name[:name_length]
