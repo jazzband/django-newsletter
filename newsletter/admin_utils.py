@@ -1,14 +1,9 @@
-from django.http import Http404
-
 from functools import update_wrapper
-from django.utils.translation import ugettext_lazy as _
 
-try:
-    from django.contrib.admin.utils import unquote
-except ImportError:  # Django < 1.7
-    from django.contrib.admin.util import unquote
-
+from django.contrib.admin.utils import unquote
+from django.http import Http404
 from django.utils.encoding import force_text
+from django.utils.translation import ugettext as _
 
 
 class ExtendibleModelAdminMixin(object):

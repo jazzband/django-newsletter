@@ -3,19 +3,18 @@ logger = logging.getLogger(__name__)
 
 import smtplib
 
+from django.contrib.auth import get_user_model
+from django.contrib.sites.models import Site
+
 from django.core import mail
 from django.core.mail.backends.base import BaseEmailBackend
 
 from django.test import TestCase
 
-from django.contrib.sites.models import Site
 
 from django.template import loader, TemplateDoesNotExist
 
 from django_webtest import WebTest
-
-from ..utils import get_user_model
-User = get_user_model()
 
 
 class WebTestCase(WebTest):
@@ -98,6 +97,7 @@ class UserTestCase(TestCase):
     def setUp(self):
         super(UserTestCase, self).setUp()
 
+        User = get_user_model()
         self.password = 'johnpassword'
         self.user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', self.password)
