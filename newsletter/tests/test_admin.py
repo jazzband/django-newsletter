@@ -1,11 +1,11 @@
 import os
 
 from django.core.urlresolvers import reverse
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from newsletter import admin  # Triggers model admin registration
 from newsletter.models import Newsletter
-from newsletter.utils import get_user_model
 
 test_files_dir = os.path.join(os.path.dirname(__file__), 'files')
 
