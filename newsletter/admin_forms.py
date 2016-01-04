@@ -18,21 +18,81 @@ from django.conf import settings
 from .models import Subscription, Newsletter, Submission
 
 
-def make_subscription(newsletter, email, name=None):
+class AddressList(object):
+    """ List with unique addresses. """
+
+    def __init__(self, newsletter, ignore_errors=False):
+        self.newsletter = newsletter
+        self.ignore_errors = ignore_errors
+        self.addresses = {}
+
+    def add(self, email, name=None, location='unknown location'):
+        """ Add name to list. """
+
+        logger.debug("Going to add %s <%s>", name, email)
+
+        name = check_name(name, self.ignore_errors)
+        email = check_email(email, self.ignore_errors)
+
+        try:
+            validate_email(email)
+        except ValidationError:
+            logger.warn(
+                "Entry '%s' does not contain a valid e-mail address at %s."
+                % (email, location)
+            )
+
+            if not self.ignore_errors:
+                raise forms.ValidationError(_(
+                    "Entry '%s' does not contain a valid "
+                    "e-mail address.") % name
+                )
+
+        if email in self.addresses:
+            logger.warn(
+                "Entry '%s' contains a duplicate entry at %s."
+                % (email, location)
+            )
+
+            if not self.ignore_errors:
+                raise forms.ValidationError(_(
+                    "The address file contains duplicate entries "
+                    "for '%s'.") % email)
+
+        try:
+            subscription_exists(self.newsletter, email, name)
+        except ValidationError:
+            logger.warn(
+                "Entry '%s' is already subscribed to at %s."
+                % (email, location)
+            )
+            # "Entry '%s' at line %d is already subscribed to "
+            # "with email '%s'",
+            # name, myreader.line_num, email, extra=dict(data={'row': row}))
+
+            if not self.ignore_errors:
+                raise forms.ValidationError(
+                    _("Some entries are already subscribed to."))
+
+        self.addresses[email] = name
+
+
+def subscription_exists(newsletter, email, name=None):
     """
-    Return (unsaved) Subscription for newsletter based on email and name.
+    Return wheter or not a subscription exists.
     """
     qs = Subscription.objects.filter(
         newsletter__id=newsletter.id,
         subscribed=True,
         email_field__exact=email)
 
-    if qs.count():
-        return None
+    return not qs.exists()
 
+
+def make_subscription(newsletter, email, name=None):
     addr = Subscription(subscribed=True)
-    addr.newsletter = newsletter
 
+    addr.newsletter = newsletter
     addr.email_field = email
 
     if name:
@@ -79,6 +139,7 @@ def check_name(name, ignore_errors=False):
 
     name_length = \
         Subscription._meta.get_field_by_name('name_field')[0].max_length
+
     if len(name) <= name_length or ignore_errors:
         return name[:name_length]
     else:
@@ -194,8 +255,8 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
 
     logger.debug('Extracting data.')
 
-    addresses = []
-    emails = set()
+    address_list = AddressList(newsletter, ignore_errors)
+
     for row in myreader:
         if not max(namecol, mailcol) < len(row):
             logger.warn("Column count does not match for row number %d",
@@ -210,52 +271,11 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
                     "email field.") % {'row': row}
                 )
 
-        name = check_name(row[namecol], ignore_errors)
-        email = check_email(row[mailcol], ignore_errors)
+        address_list.add(
+            row[mailcol], row[namecol], location="line %d" % myreader.line_num
+        )
 
-        logger.debug("Going to add %s <%s>", name, email)
-
-        try:
-            validate_email(email)
-            addr = make_subscription(newsletter, email, name)
-        except ValidationError:
-            if ignore_errors:
-                logger.warn(
-                    "Entry '%s' at line %d does not contain a valid "
-                    "e-mail address.",
-                    name, myreader.line_num, extra=dict(data={'row': row}))
-            else:
-                raise forms.ValidationError(_(
-                    "Entry '%s' does not contain a valid "
-                    "e-mail address.") % name
-                )
-
-        if addr:
-            if email in emails:
-                logger.warn(
-                    "Entry '%s' at line %d contains a "
-                    "duplicate entry for '%s'",
-                    name, myreader.line_num, email,
-                    extra=dict(data={'row': row}))
-
-                if not ignore_errors:
-                    raise forms.ValidationError(_(
-                        "The address file contains duplicate entries "
-                        "for '%s'.") % email)
-
-            emails.add(email)
-            addresses.append({'email': email, 'name': name})
-        else:
-            logger.warn(
-                "Entry '%s' at line %d is already subscribed to "
-                "with email '%s'",
-                name, myreader.line_num, email, extra=dict(data={'row': row}))
-
-            if not ignore_errors:
-                raise forms.ValidationError(
-                    _("Some entries are already subscribed to."))
-
-    return addresses
+    return address_list.addresses
 
 
 def parse_vcard(myfile, newsletter, ignore_errors=False):
@@ -273,12 +293,11 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
             _(u"Error reading vCard file: %s" % e)
         )
 
-    addresses = []
-    emails = set()
+    address_list = AddressList(newsletter, ignore_errors)
 
     for myvcard in myvcards:
         if hasattr(myvcard, 'fn'):
-            name = check_name(myvcard.fn.value, ignore_errors)
+            name = myvcard.fn.value
         else:
             name = None
 
@@ -286,37 +305,16 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
         # If not: either continue to the next vcard or
         # raise a validation error.
         if hasattr(myvcard, 'email'):
-            email = check_email(myvcard.email.value, ignore_errors)
+            email = myvcard.email.value
         elif not ignore_errors:
             raise forms.ValidationError(
                 _("Entry '%s' contains no email address.") % name)
         else:
             continue
 
-        try:
-            validate_email(email)
-            addr = make_subscription(newsletter, email, name)
-        except ValidationError:
-            if not ignore_errors:
-                raise forms.ValidationError(
-                    _("Entry '%s' does not contain a valid e-mail address.")
-                    % name
-                )
+        address_list.add(email, name)
 
-        if addr:
-            if email in emails and not ignore_errors:
-                raise forms.ValidationError(
-                    _("The address file contains duplicate entries for '%s'.")
-                    % email
-                )
-
-            emails.add(email)
-            addresses.append({'email': email, 'name': name})
-        elif not ignore_errors:
-            raise forms.ValidationError(
-                _("Some entries are already subscribed to."))
-
-    return addresses
+    return address_list.addresses
 
 
 def parse_ldif(myfile, newsletter, ignore_errors=False):
@@ -328,40 +326,19 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
 
     from addressimport import ldif
 
-    class AddressParser(ldif.LDIFParser):
-        addresses = []
-        emails = set()
+    address_list = AddressList(newsletter, ignore_errors)
 
+    class AddressParser(ldif.LDIFParser):
         def handle(self, dn, entry):
             if 'mail' in entry:
-                email = check_email(entry['mail'][0], ignore_errors)
+                email = entry['mail'][0]
+
                 if 'cn' in entry:
-                    name = check_name(entry['cn'][0], ignore_errors)
+                    name = entry['cn'][0]
                 else:
                     name = None
 
-                try:
-                    validate_email(email)
-                    addr = make_subscription(newsletter, email, name)
-                except ValidationError:
-                    if not ignore_errors:
-                        raise forms.ValidationError(_(
-                            "Entry '%s' does not contain a valid "
-                            "e-mail address.") % name
-                        )
-
-                if addr:
-                    if email in self.emails and not ignore_errors:
-                        raise forms.ValidationError(_(
-                            "The address file contains duplicate entries "
-                            "for '%s'.") % email
-                        )
-
-                    self.emails.add(email)
-                    self.addresses.append({'email': email, 'name': name})
-                elif not ignore_errors:
-                    raise forms.ValidationError(
-                        _("Some entries are already subscribed to."))
+                address_list.add(email, name)
 
             elif not ignore_errors:
                 raise forms.ValidationError(
@@ -373,7 +350,7 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
         if not ignore_errors:
             raise forms.ValidationError(e)
 
-    return myparser.addresses
+    return address_list.addresses
 
 
 class ImportForm(forms.Form):

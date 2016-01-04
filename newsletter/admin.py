@@ -452,9 +452,9 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             form = ConfirmForm(request.POST)
             if form.is_valid():
                 try:
-                    for address in addresses:
+                    for email, name in addresses.iteritems():
                         address_inst = make_subscription(
-                            newsletter, address['email'], address['name']
+                            newsletter, email, name
                         )
                         address_inst.save()
                 finally:
