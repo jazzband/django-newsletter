@@ -5,7 +5,7 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import ugettext as _
 
 from newsletter.models import Subscription
 
@@ -185,11 +185,11 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     colnum = 0
     namecol = None
     for column in firstrow:
-        if "name" in column.lower() or ugettext("name") in column.lower():
+        if "name" in column.lower() or _("name") in column.lower():
             namecol = colnum
 
             if "display" in column.lower() or \
-                    ugettext("display") in column.lower():
+                    _("display") in column.lower():
                 break
 
         colnum += 1
@@ -197,7 +197,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     if namecol is None:
         raise forms.ValidationError(_(
             "Name column not found. The name of this column should be "
-            "either 'name' or '%s'.") % ugettext("name")
+            "either 'name' or '%s'.") % _("name")
         )
 
     logger.debug("Name column found: '%s'", firstrow[namecol])
@@ -208,7 +208,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
     for column in firstrow:
         if 'email' in column.lower() or \
                 'e-mail' in column.lower() or \
-                ugettext("e-mail") in column.lower():
+                _("e-mail") in column.lower():
 
             mailcol = colnum
 
@@ -220,7 +220,7 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
         raise forms.ValidationError(_(
             "E-mail column not found. The name of this column should be "
             "either 'email', 'e-mail' or '%(email)s'.") %
-            {'email': ugettext("e-mail")}
+            {'email': _("e-mail")}
         )
 
     logger.debug("E-mail column found: '%s'", firstrow[mailcol])

@@ -5,7 +5,7 @@ from django import forms
 
 from django.contrib.admin import widgets, options
 
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import ugettext as _
 
 from .models import Subscription, Newsletter, Submission
 from .addressimport.parsers import parse_csv, parse_vcard, parse_ldif
@@ -102,8 +102,8 @@ class SubscriptionAdminForm(forms.ModelForm):
         widgets = {
             'subscribed': widgets.AdminRadioSelect(
                 choices=[
-                    (True, ugettext('Subscribed')),
-                    (False, ugettext('Unsubscribed'))
+                    (True, _('Subscribed')),
+                    (False, _('Unsubscribed'))
                 ],
                 attrs={
                     'class': options.get_ul_class(options.HORIZONTAL)
@@ -114,7 +114,7 @@ class SubscriptionAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SubscriptionAdminForm, self).__init__(*args, **kwargs)
 
-        self.fields['subscribed'].label = ugettext('Status')
+        self.fields['subscribed'].label = _('Status')
 
     def clean_email_field(self):
         data = self.cleaned_data['email_field']

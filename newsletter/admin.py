@@ -18,7 +18,7 @@ from django.template import RequestContext, Context
 
 from django.shortcuts import render_to_response
 
-from django.utils.translation import ugettext, ungettext, ugettext_lazy as _
+from django.utils.translation import ugettext as _, ungettext
 from django.utils.formats import date_format
 
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -55,7 +55,7 @@ class NewsletterAdmin(admin.ModelAdmin):
     """ List extensions """
     def admin_messages(self, obj):
         return '<a href="../message/?newsletter__id__exact=%s">%s</a>' % (
-            obj.id, ugettext('Messages')
+            obj.id, _('Messages')
         )
     admin_messages.allow_tags = True
     admin_messages.short_description = ''
@@ -63,13 +63,13 @@ class NewsletterAdmin(admin.ModelAdmin):
     def admin_subscriptions(self, obj):
         return \
             '<a href="../subscription/?newsletter__id__exact=%s">%s</a>' % \
-            (obj.id, ugettext('Subscriptions'))
+            (obj.id, _('Subscriptions'))
     admin_subscriptions.allow_tags = True
     admin_subscriptions.short_description = ''
 
     def admin_submissions(self, obj):
         return '<a href="../submission/?newsletter__id__exact=%s">%s</a>' % (
-            obj.id, ugettext('Submissions')
+            obj.id, _('Submissions')
         )
     admin_submissions.allow_tags = True
     admin_submissions.short_description = ''
@@ -89,14 +89,14 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     """ List extensions """
     def admin_message(self, obj):
         return '<a href="%d/">%s</a>' % (obj.id, obj.message.title)
-    admin_message.short_description = ugettext('submission')
+    admin_message.short_description = _('submission')
     admin_message.allow_tags = True
 
     def admin_newsletter(self, obj):
         return '<a href="../newsletter/%s/">%s</a>' % (
             obj.newsletter.id, obj.newsletter
         )
-    admin_newsletter.short_description = ugettext('newsletter')
+    admin_newsletter.short_description = _('newsletter')
     admin_newsletter.allow_tags = True
 
     def admin_publish_date(self, obj):
@@ -130,28 +130,28 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def admin_status_text(self, obj):
         if obj.prepared:
             if obj.sent:
-                return ugettext("Sent.")
+                return _("Sent.")
             else:
                 if obj.publish_date > now():
-                    return ugettext("Delayed submission.")
+                    return _("Delayed submission.")
                 else:
-                    return ugettext("Submitting.")
+                    return _("Submitting.")
         else:
-            return ugettext("Not sent.")
-    admin_status_text.short_description = ugettext('Status')
+            return _("Not sent.")
+    admin_status_text.short_description = _('Status')
 
     """ Views """
     def submit(self, request, object_id):
         submission = self._getobj(request, object_id)
 
         if submission.sent or submission.prepared:
-            messages.info(request, ugettext("Submission already sent."))
+            messages.info(request, _("Submission already sent."))
             return HttpResponseRedirect('../')
 
         submission.prepared = True
         submission.save()
 
-        messages.info(request, ugettext("Your submission is being sent."))
+        messages.info(request, _("Your submission is being sent."))
 
         return HttpResponseRedirect('../../')
 
@@ -223,11 +223,11 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     """ List extensions """
     def admin_title(self, obj):
         return '<a href="%d/">%s</a>' % (obj.id, obj.title)
-    admin_title.short_description = ugettext('message')
+    admin_title.short_description = _('message')
     admin_title.allow_tags = True
 
     def admin_preview(self, obj):
-        return '<a href="%d/preview/">%s</a>' % (obj.id, ugettext('Preview'))
+        return '<a href="%d/preview/">%s</a>' % (obj.id, _('Preview'))
     admin_preview.short_description = ''
     admin_preview.allow_tags = True
 
@@ -235,7 +235,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         return '<a href="../newsletter/%s/">%s</a>' % (
             obj.newsletter.id, obj.newsletter
         )
-    admin_newsletter.short_description = ugettext('newsletter')
+    admin_newsletter.short_description = _('newsletter')
     admin_newsletter.allow_tags = True
 
     """ Views """
@@ -350,7 +350,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         return '<a href="../newsletter/%s/">%s</a>' % (
             obj.newsletter.id, obj.newsletter
         )
-    admin_newsletter.short_description = ugettext('newsletter')
+    admin_newsletter.short_description = _('newsletter')
     admin_newsletter.allow_tags = True
 
     def admin_status(self, obj):
@@ -370,12 +370,12 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     def admin_status_text(self, obj):
         if obj.subscribed:
-            return ugettext("Subscribed")
+            return _("Subscribed")
         elif obj.unsubscribed:
-            return ugettext("Unsubscribed")
+            return _("Unsubscribed")
         else:
-            return ugettext("Unactivated")
-    admin_status_text.short_description = ugettext('Status')
+            return _("Unactivated")
+    admin_status_text.short_description = _('Status')
 
     def admin_subscribe_date(self, obj):
         if obj.subscribe_date:
