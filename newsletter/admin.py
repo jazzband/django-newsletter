@@ -11,6 +11,7 @@ from django.contrib.sites.models import Site
 
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
@@ -146,14 +147,18 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
         if submission.sent or submission.prepared:
             messages.info(request, _("Submission already sent."))
-            return HttpResponseRedirect('../')
+            change_url = reverse(
+                'admin:newsletter_submission_change', args=[object_id]
+            )
+            return HttpResponseRedirect(change_url)
 
         submission.prepared = True
         submission.save()
 
         messages.info(request, _("Your submission is being sent."))
 
-        return HttpResponseRedirect('../../')
+        changelist_url = reverse('admin:newsletter_submission_changelist')
+        return HttpResponseRedirect(changelist_url)
 
     """ URLs """
     def get_urls(self):
@@ -289,7 +294,10 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def submit(self, request, object_id):
         submission = Submission.from_message(self._getobj(request, object_id))
 
-        return HttpResponseRedirect('../../../submission/%s/' % submission.id)
+        change_url = reverse(
+            'admin:newsletter_submission_change', args=[submission.id])
+
+        return HttpResponseRedirect(change_url)
 
     def subscribers_json(self, request, object_id):
         message = self._getobj(request, object_id)
@@ -426,7 +434,11 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                 request.session['addresses'] = form.get_addresses()
                 request.session['newsletter_pk'] = \
                     form.cleaned_data['newsletter'].pk
-                return HttpResponseRedirect('confirm/')
+
+                confirm_url = reverse(
+                    'admin:newsletter_subscription_import_confirm'
+                )
+                return HttpResponseRedirect(confirm_url)
         else:
             form = ImportForm()
 
@@ -438,8 +450,10 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     def subscribers_import_confirm(self, request):
         # If no addresses are in the session, start all over.
+
         if 'addresses' not in request.session:
-            return HttpResponseRedirect('../')
+            import_url = reverse('admin:newsletter_subscription_import')
+            return HttpResponseRedirect(import_url)
 
         addresses = request.session['addresses']
         newsletter = Newsletter.objects.get(
@@ -467,7 +481,10 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                     len(addresses)
                 )
 
-                return HttpResponseRedirect('../../')
+                changelist_url = reverse(
+                    'admin:newsletter_subscription_changelist'
+                )
+                return HttpResponseRedirect(changelist_url)
         else:
             form = ConfirmForm()
 
