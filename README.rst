@@ -47,9 +47,7 @@ soon as near-full coverage is reached.
 
 Compatibility
 =============
-Currently, django-newsletter is officially supported for Django 1.8 and Python 2.7.
-
-Tests are run on the CI for 1.9 and Python 3.4 and 3.5 and pull requests extending support for these versions are greatly appreciated.
+Currently, django-newsletter is officially supported for Django 1.8 and 1.9 and Python 2.7, 3.4 and 3.5.
 
 Requirements
 ============
@@ -66,15 +64,15 @@ for pull req's and the master branch are automatically run through
 
 Contributing
 =============
-.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=ready&title=Ready 
+.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=ready&title=Ready
    :target: https://waffle.io/dokterbob/django-newsletter
    :alt: 'Stories in Ready'
-   
-.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=in%20progress&title=Progress 
+
+.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=in%20progress&title=Progress
    :target: https://waffle.io/dokterbob/django-newsletter
    :alt: 'Stories in Progress'
 
-.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=under%20review&title=Review 
+.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=under%20review&title=Review
    :target: https://waffle.io/dokterbob/django-newsletter
    :alt: 'Stories Under Review'
 
