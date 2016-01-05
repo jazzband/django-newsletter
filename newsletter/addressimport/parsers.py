@@ -311,12 +311,14 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
     Returns a dictionary mapping email addresses into Subscription objects.
     """
 
-    from . import ldif
+    from ldif3 import LDIFParser
 
     address_list = AddressList(newsletter, ignore_errors)
 
-    class AddressParser(ldif.LDIFParser):
-        def handle(self, dn, entry):
+    try:
+        parser = LDIFParser(myfile)
+
+        for dn, entry in parser.parse():
             if 'mail' in entry:
                 email = entry['mail'][0]
 
@@ -330,9 +332,7 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
             elif not ignore_errors:
                 raise forms.ValidationError(
                     _("Some entries have no e-mail address."))
-    try:
-        myparser = AddressParser(myfile)
-        myparser.parse()
+
     except ValueError as e:
         if not ignore_errors:
             raise forms.ValidationError(e)
