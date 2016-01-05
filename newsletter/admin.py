@@ -1,6 +1,8 @@
 import logging
 logger = logging.getLogger(__name__)
 
+import six
+
 from django.db import models
 
 from django.conf import settings
@@ -468,7 +470,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             form = ConfirmForm(request.POST)
             if form.is_valid():
                 try:
-                    for email, name in addresses.iteritems():
+                    for email, name in six.iteritems(addresses):
                         address_inst = make_subscription(
                             newsletter, email, name
                         )
