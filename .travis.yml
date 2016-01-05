@@ -15,12 +15,6 @@ cache:
   directories:
     - $HOME/.cache/pip
 
-matrix:
-  allow_failures:
-    # Allow failures for Python 3
-    - python: 3.4
-    - python: 3.5
-
 # command to install dependencies
 install:
   # Latest PIP uses wheel by default
