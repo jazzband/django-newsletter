@@ -8,8 +8,8 @@ django-newsletter
 .. image:: https://img.shields.io/travis/dokterbob/django-newsletter/master.svg
     :target: http://travis-ci.org/dokterbob/django-newsletter
 
-.. image:: https://img.shields.io/coveralls/dokterbob/django-newsletter/master.svg
-    :target: https://coveralls.io/github/dokterbob/django-newsletter
+.. image:: https://coveralls.io/repos/dokterbob/django-newsletter/badge.svg?branch=master&service=github
+    :target: https://coveralls.io/github/dokterbob/django-newsletter?branch=master
 
 .. image:: https://landscape.io/github/dokterbob/django-newsletter/master/landscape.svg?style=flat
    :target: https://landscape.io/github/dokterbob/django-newsletter/master
