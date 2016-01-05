@@ -270,11 +270,11 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
 
     Returns a dictionary mapping email addresses into Subscription objects.
     """
-    import vobject
+    import card_me
 
     try:
-        myvcards = vobject.readComponents(myfile)
-    except vobject.VObjectError as e:
+        myvcards = card_me.readComponents(myfile)
+    except card_me.VObjectError as e:
         raise forms.ValidationError(
             _(u"Error reading vCard file: %s" % e)
         )
@@ -285,6 +285,8 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
         if hasattr(myvcard, 'fn'):
             name = myvcard.fn.value
         else:
+
+
             name = None
 
         # Do we have an email address?
