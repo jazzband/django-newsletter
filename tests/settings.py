@@ -20,6 +20,11 @@ INSTALLED_APPS = [
     'newsletter'
 ]
 
+# Imperavi is not compatible with Django 1.9+
+import django
+if django.VERSION > (1, 8):
+    INSTALLED_APPS.remove('imperavi')
+
 MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
