@@ -20,8 +20,6 @@ matrix:
     # Allow failures for Python 3
     - python: 3.4
     - python: 3.5
-    # 1.9 not yet suported (for now)
-    - env: DJANGO="Django<1.10"
 
 # command to install dependencies
 install:
