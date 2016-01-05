@@ -9,110 +9,191 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-12 15:28+0200\n"
+"POT-Creation-Date: 2016-01-05 17:58+0100\n"
 "PO-Revision-Date: 2015-07-12 13:29+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
-"Language-Team: Russian (http://www.transifex.com/p/django-newsletter/language/ru/)\n"
+"Language-Team: Russian (http://www.transifex.com/dokterbob/django-newsletter/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin.py:57
+#: addressimport/parsers.py:40
+#, python-format
+msgid "Entry '%s' does not contain a valid e-mail address."
+msgstr "Запись '%s' не содержит правильный адрес электронной почты."
+
+#: addressimport/parsers.py:55
+#, python-format
+msgid "The address file contains duplicate entries for '%s'."
+msgstr "Файл с адресами содержит копии '%s'."
+
+#: addressimport/parsers.py:69
+msgid "Some entries are already subscribed to."
+msgstr "Некоторые записи уже подписаны."
+
+#: addressimport/parsers.py:108
+#, python-format
+msgid ""
+"E-mail address %(email)s too long, maximum length is %(email_length)s "
+"characters."
+msgstr "Адрес электронной почты %(email)s слишком длинный, максимальная длина: %(email_length)s символов."
+
+#: addressimport/parsers.py:135
+#, python-format
+msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
+msgstr "Имя %(name)s слишком длинное, максимальная длина: %(name_length)s символов."
+
+#: addressimport/parsers.py:196 addressimport/parsers.py:208
+#: addressimport/parsers.py:243 models.py:162
+msgid "name"
+msgstr "имя"
+
+#: addressimport/parsers.py:200
+msgid "display"
+msgstr "отображение"
+
+#: addressimport/parsers.py:207
+#, python-format
+msgid ""
+"Name column not found. The name of this column should be either 'name' or "
+"'%s'."
+msgstr "Столбец с именем не найден. Имя этого столбца должно быть 'name' или '%s'."
+
+#: addressimport/parsers.py:219 addressimport/parsers.py:231
+#: addressimport/parsers.py:244 models.py:37 models.py:176
+msgid "e-mail"
+msgstr "электронная почта"
+
+#: addressimport/parsers.py:229
+#, python-format
+msgid ""
+"E-mail column not found. The name of this column should be either 'email', "
+"'e-mail' or '%(email)s'."
+msgstr "Колонка с электронной почтой не найдена. Имя этой колонки должно быть 'email', 'e-mail' или '%(email)s'."
+
+#: addressimport/parsers.py:239
+#, python-format
+msgid ""
+"Could not properly determine the proper columns in the CSV-file. There "
+"should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
+"'%(e-mail)s'."
+msgstr "Невозможно верно определить колонки в CSV-файле. Необходимы поля с именами 'name' или '%(name)s' и 'e-mail' или '%(e-mail)s'."
+
+#: addressimport/parsers.py:262
+#, python-format
+msgid "Row with content '%(row)s' does not contain a name and email field."
+msgstr "Строка, содержащая '%(row)s', не содержит поля имени и электронной почты."
+
+#: addressimport/parsers.py:288
+#, python-format
+msgid "Error reading vCard file: %s"
+msgstr "Ошибка при чтении vCard  файла: %s"
+
+#: addressimport/parsers.py:307
+#, python-format
+msgid "Entry '%s' contains no email address."
+msgstr "В записи '%s' нет адреса электронной почты."
+
+#: addressimport/parsers.py:343
+msgid "Some entries have no e-mail address."
+msgstr "Некоторые записи не содержат адрес электронной почты."
+
+#: admin.py:63
 msgid "Messages"
 msgstr "Сообщения"
 
-#: admin.py:65
+#: admin.py:71
 #: templates/admin/newsletter/subscription/confirmimportform.html:16
 #: templates/admin/newsletter/subscription/importform.html:16
 msgid "Subscriptions"
 msgstr "Подписчики"
 
-#: admin.py:71
+#: admin.py:77
 msgid "Submissions"
 msgstr "Отправки"
 
-#: admin.py:91 models.py:536
+#: admin.py:97 models.py:537
 msgid "submission"
 msgstr "отправка"
 
-#: admin.py:98 admin.py:237 admin.py:353 models.py:103 models.py:298
-#: models.py:487 models.py:664
+#: admin.py:104 admin.py:247 admin.py:365 models.py:100 models.py:296
+#: models.py:487 models.py:665
 msgid "newsletter"
 msgstr "рассылка"
 
-#: admin.py:106
+#: admin.py:112
 msgid "publish date"
 msgstr "дата публикации"
 
-#: admin.py:132
+#: admin.py:138
 msgid "Sent."
 msgstr "Отправлено."
 
-#: admin.py:135
+#: admin.py:141
 msgid "Delayed submission."
 msgstr "Отправка с задержкой."
 
-#: admin.py:137
+#: admin.py:143
 msgid "Submitting."
 msgstr "Отправляется."
 
-#: admin.py:139
+#: admin.py:145
 msgid "Not sent."
 msgstr "Не отправлено."
 
-#: admin.py:140 admin.py:378 admin_forms.py:447
+#: admin.py:146 admin.py:390 admin_forms.py:113
 msgid "Status"
 msgstr "Статус"
 
-#: admin.py:147
+#: admin.py:153
 msgid "Submission already sent."
 msgstr "Посылка уже отправлена."
 
-#: admin.py:153
+#: admin.py:162
 msgid "Your submission is being sent."
 msgstr "Ваша посылка отправляется."
 
-#: admin.py:198
+#: admin.py:208
 msgid "Optional"
 msgstr "Необязательно"
 
-#: admin.py:225 models.py:461 models.py:512 models.py:667
+#: admin.py:235 models.py:460 models.py:512 models.py:668
 msgid "message"
 msgstr "сообщение"
 
-#: admin.py:229 templates/admin/newsletter/message/change_form.html:9
-#: templates/admin/newsletter/message/preview.html:14
+#: admin.py:239 templates/admin/newsletter/message/change_form.html.py:9
+#: templates/admin/newsletter/message/preview.html:13
 msgid "Preview"
 msgstr "Предпросмотр"
 
-#: admin.py:257 views.py:606
+#: admin.py:267 views.py:606
 msgid ""
 "No HTML template associated with the newsletter this message belongs to."
 msgstr "Для рассылки, к которой принадлежит это сообщение, не было найдено HTML шаблона."
 
-#: admin.py:373 admin_forms.py:435
+#: admin.py:385 admin_forms.py:101
 msgid "Subscribed"
 msgstr "Подписался"
 
-#: admin.py:375 admin_forms.py:436
+#: admin.py:387 admin_forms.py:102
 msgid "Unsubscribed"
 msgstr "Отписанный"
 
-#: admin.py:377
+#: admin.py:389
 msgid "Unactivated"
 msgstr "Неактивированный"
 
-#: admin.py:385 models.py:311
+#: admin.py:397 models.py:309
 msgid "subscribe date"
 msgstr "дата подписки"
 
-#: admin.py:392 models.py:319
+#: admin.py:404 models.py:317
 msgid "unsubscribe date"
 msgstr "дата отписки"
 
-#: admin.py:400
+#: admin.py:412
 #, python-format
 msgid "%s user has been successfully subscribed."
 msgid_plural "%s users have been successfully subscribed."
@@ -121,11 +202,11 @@ msgstr[1] "%s пользователи были успешно подписан�
 msgstr[2] "%s пользователей были успешно подписаны."
 msgstr[3] "%s пользователей были успешно подписаны."
 
-#: admin.py:405
+#: admin.py:417
 msgid "Subscribe selected users"
 msgstr "Подписать выбранных пользователей"
 
-#: admin.py:412
+#: admin.py:424
 #, python-format
 msgid "%s user has been successfully unsubscribed."
 msgid_plural "%s users have been successfully unsubscribed."
@@ -134,116 +215,36 @@ msgstr[1] "%s пользователи были успешно отписаны.
 msgstr[2] "%s пользователей были успешно отписаны."
 msgstr[3] "%s пользователей были успешно отписаны."
 
-#: admin.py:417
+#: admin.py:429
 msgid "Unsubscribe selected users"
 msgstr "Отписать выбранных пользователей"
 
-#: admin.py:455
+#: admin.py:484
 #, python-format
 msgid "%s subscriptions have been successfully added."
 msgstr "%s подписчики успешно добавлены."
 
-#: admin_forms.py:53
-#, python-format
-msgid ""
-"E-mail address %(email)s too long, maximum length is %(email_length)s "
-"characters."
-msgstr "Адрес электронной почты %(email)s слишком длинный, максимальная длина: %(email_length)s символов."
-
-#: admin_forms.py:73
-#, python-format
-msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
-msgstr "Имя %(name)s слишком длинное, максимальная длина: %(name_length)s символов."
-
-#: admin_forms.py:121 admin_forms.py:133 admin_forms.py:170 models.py:164
-msgid "name"
-msgstr "имя"
-
-#: admin_forms.py:125
-msgid "display"
-msgstr "отображение"
-
-#: admin_forms.py:132
-#, python-format
-msgid ""
-"Name column not found. The name of this column should be either 'name' or "
-"'%s'."
-msgstr "Столбец с именем не найден. Имя этого столбца должно быть 'name' или '%s'."
-
-#: admin_forms.py:144 admin_forms.py:156 admin_forms.py:171 models.py:40
-#: models.py:178
-msgid "e-mail"
-msgstr "электронная почта"
-
-#: admin_forms.py:154
-#, python-format
-msgid ""
-"E-mail column not found. The name of this column should be either 'email', "
-"'e-mail' or '%(email)s'."
-msgstr "Колонка с электронной почтой не найдена. Имя этой колонки должно быть 'email', 'e-mail' или '%(email)s'."
-
-#: admin_forms.py:166
-#, python-format
-msgid ""
-"Could not properly determine the proper columns in the CSV-file. There "
-"should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
-"'%(e-mail)s'."
-msgstr "Невозможно верно определить колонки в CSV-файле. Необходимы поля с именами 'name' или '%(name)s' и 'e-mail' или '%(e-mail)s'."
-
-#: admin_forms.py:188
-#, python-format
-msgid "Row with content '%(row)s' does not contain a name and email field."
-msgstr "Строка, содержащая '%(row)s', не содержит поля имени и электронной почты."
-
-#: admin_forms.py:208 admin_forms.py:274 admin_forms.py:313
-#, python-format
-msgid "Entry '%s' does not contain a valid e-mail address."
-msgstr "Запись '%s' не содержит правильный адрес электронной почты."
-
-#: admin_forms.py:222 admin_forms.py:281 admin_forms.py:320
-#, python-format
-msgid "The address file contains duplicate entries for '%s'."
-msgstr "Файл с адресами содержит копии '%s'."
-
-#: admin_forms.py:234 admin_forms.py:288 admin_forms.py:327
-msgid "Some entries are already subscribed to."
-msgstr "Некоторые записи уже подписаны."
-
-#: admin_forms.py:246
-#, python-format
-msgid "Error reading vCard file: %s"
-msgstr "Ошибка при чтении vCard  файла: %s"
-
-#: admin_forms.py:264
-#, python-format
-msgid "Entry '%s' contains no email address."
-msgstr "В записи '%s' нет адреса электронной почты."
-
-#: admin_forms.py:331
-msgid "Some entries have no e-mail address."
-msgstr "Некоторые записи не содержат адрес электронной почты."
-
-#: admin_forms.py:369
+#: admin_forms.py:41
 #, python-format
 msgid "File type '%s' was not recognized."
 msgstr "Тип файла '%s' не был опознан."
 
-#: admin_forms.py:388
+#: admin_forms.py:58
 #, python-format
 msgid "File extension '%s' was not recognized."
 msgstr ""
 
-#: admin_forms.py:392
+#: admin_forms.py:62
 msgid "No entries could found in this file."
 msgstr "Данный файл не содержит записей."
 
-#: admin_forms.py:404
+#: admin_forms.py:70
 #: templates/admin/newsletter/subscription/confirmimportform.html:12
 #: templates/admin/newsletter/subscription/importform.html:12
 #: templates/newsletter/common.html:7
-#: templates/newsletter/newsletter_detail.html:11
-#: templates/newsletter/newsletter_list.html:15
-#: templates/newsletter/newsletter_list.html:33
+#: templates/newsletter/newsletter_detail.html:10
+#: templates/newsletter/newsletter_list.html:14
+#: templates/newsletter/newsletter_list.html:32
 #: templates/newsletter/subscription_activate.html:5
 #: templates/newsletter/subscription_activate.html:8
 #: templates/newsletter/subscription_subscribe_activated.html:5
@@ -255,33 +256,33 @@ msgstr "Данный файл не содержит записей."
 msgid "Newsletter"
 msgstr "Рассылка"
 
-#: admin_forms.py:407
+#: admin_forms.py:73
 msgid "Address file"
 msgstr "Файл с адресами"
 
-#: admin_forms.py:409
+#: admin_forms.py:75
 msgid "Ignore non-fatal errors"
 msgstr "Игнорировать неустранимые ошибки"
 
-#: admin_forms.py:420
+#: admin_forms.py:86
 msgid "You should confirm in order to continue."
 msgstr "Вы должны подтвердить, чтобы продолжить."
 
-#: admin_forms.py:423
+#: admin_forms.py:89
 #: templates/admin/newsletter/subscription/confirmimportform.html:23
 #: templates/admin/newsletter/subscription/confirmimportform.html:28
 msgid "Confirm import"
 msgstr "Подтвердить импортирование"
 
-#: admin_forms.py:453 admin_forms.py:461
+#: admin_forms.py:119 admin_forms.py:127
 msgid "If a user has been selected this field should remain empty."
 msgstr "Поле должно быть пустым, если пользователь был выбран."
 
-#: admin_forms.py:471
+#: admin_forms.py:137
 msgid "Either a user must be selected or an email address must be specified."
 msgstr "Какой-нибудь пользователь должен быть выбран или указан адрес электронной почты."
 
-#: admin_forms.py:496
+#: admin_forms.py:162
 msgid ""
 "This message has already been published in some other submission. Messages "
 "can only be published once."
@@ -292,45 +293,45 @@ msgstr "Это сообщение уже было опубликовано в д
 msgid "%(name)s object with primary key %(key)r does not exist."
 msgstr "%(name)s объект с первичным ключем %(key)r не существует"
 
-#: forms.py:50 forms.py:108
+#: forms.py:47 forms.py:106
 msgid "An e-mail address is required."
 msgstr "Необходим адрес электронной почты."
 
-#: forms.py:57
+#: forms.py:55
 #, python-format
 msgid ""
 "The e-mail address '%(email)s' belongs to a user with an account on this "
 "site. Please log in as that user and try again."
 msgstr "Адрес электронной почты '%(email)s' принадлежит пользователю этого сайта. Пожалуйста зайдите и попробуйте снова."
 
-#: forms.py:74
+#: forms.py:72
 msgid "Your e-mail address has already been subscribed to."
 msgstr "Ваш адрес электронной почты уже подписан."
 
-#: forms.py:99
+#: forms.py:97
 msgid "This subscription has not yet been activated."
 msgstr "Эта подписка еще не активирована."
 
-#: forms.py:115
+#: forms.py:114
 #, python-format
 msgid ""
 "This e-mail address belongs to the user '%(username)s'. Please log in as "
 "that user and try again."
 msgstr "Этот адрес электронной почты принадлежит пользователю '%(username)s'. Пожалуйста войдите и попробуйте еще раз."
 
-#: forms.py:133
+#: forms.py:132
 msgid "This e-mail address has not been subscribed to."
 msgstr "Этот адрес электронной почты не подписан."
 
-#: forms.py:148
+#: forms.py:147
 msgid "This subscription has already been unsubscribed from."
 msgstr "Это подписка уже отменена."
 
-#: forms.py:164
+#: forms.py:163
 msgid "The validation code supplied by you does not match."
 msgstr "Предоставляемый вами код подтверждения не совпадает."
 
-#: forms.py:170
+#: forms.py:169
 msgid "Activation code"
 msgstr "Код активации"
 
@@ -338,124 +339,124 @@ msgstr "Код активации"
 msgid "Submitting queued newsletter mailings"
 msgstr "Посылка добавлена в очередь рассылок"
 
-#: models.py:35
+#: models.py:32
 msgid "newsletter title"
 msgstr "заголовок рассылки"
 
-#: models.py:40
+#: models.py:37
 msgid "Sender e-mail"
 msgstr "Электронная почта отправителя"
 
-#: models.py:43
+#: models.py:40
 msgid "sender"
 msgstr "отправитель"
 
-#: models.py:43
+#: models.py:40
 msgid "Sender name"
 msgstr "Имя отправителя"
 
-#: models.py:47
+#: models.py:44
 msgid "visible"
 msgstr "отображается"
 
-#: models.py:51
+#: models.py:48
 msgid "send html"
 msgstr "отправить html"
 
-#: models.py:52
+#: models.py:49
 msgid "Whether or not to send HTML versions of e-mails."
 msgstr "Будете или нет отправлять HTML версию электронных писем."
 
-#: models.py:104
+#: models.py:101
 msgid "newsletters"
 msgstr "рассылки"
 
-#: models.py:159
+#: models.py:157
 msgid "user"
 msgstr "пользователь"
 
-#: models.py:164
+#: models.py:162
 msgid "optional"
 msgstr "необязательно"
 
-#: models.py:208
+#: models.py:206
 #, python-format
 msgid "Updated subscription %(subscription)s to %(action)s."
 msgstr "Обновлена подписка %(subscription)s  на %(action)s."
 
-#: models.py:250
+#: models.py:248
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
 msgstr "Ни один электронный ящик или пользователь не установлены. Здесь несоответствие!"
 
-#: models.py:254
+#: models.py:252
 msgid "If user is set, email must be null and vice versa."
 msgstr "Если пользователь указан, то электронная почта не нужна и наоборот."
 
-#: models.py:296
+#: models.py:294
 msgid "IP address"
 msgstr "IP адрес"
 
-#: models.py:303
+#: models.py:301
 msgid "activation code"
 msgstr "код активации"
 
-#: models.py:308
+#: models.py:306
 msgid "subscribed"
 msgstr "подписался"
 
-#: models.py:316
+#: models.py:314
 msgid "unsubscribed"
 msgstr "отписался"
 
-#: models.py:324
+#: models.py:322
 #, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
 msgstr "%(name)s <%(email)s> в %(newsletter)s"
 
-#: models.py:331
+#: models.py:329
 #, python-format
 msgid "%(email)s to %(newsletter)s"
 msgstr "%(email)s в %(newsletter)s"
 
-#: models.py:337
+#: models.py:335
 msgid "subscription"
 msgstr "подписка"
 
-#: models.py:338
+#: models.py:336
 msgid "subscriptions"
 msgstr "подписки"
 
-#: models.py:440
+#: models.py:439
 msgid ""
 "Sort order determines the order in which articles are concatenated in a "
 "post."
 msgstr "Порядок сортировки определяет порядок, в котором статьи будут собраны в пост."
 
-#: models.py:442
+#: models.py:441
 msgid "sort order"
 msgstr "порядок сортировки"
 
-#: models.py:445 models.py:483
+#: models.py:444 models.py:483
 msgid "title"
 msgstr "заголовок"
 
-#: models.py:446
+#: models.py:445
 msgid "text"
 msgstr "текст"
 
-#: models.py:449
+#: models.py:448
 msgid "link"
 msgstr "ссылка"
 
-#: models.py:455
+#: models.py:454
 msgid "image"
 msgstr "изображение"
 
-#: models.py:466
+#: models.py:465
 msgid "article"
 msgstr "статья"
 
-#: models.py:467
+#: models.py:466
 msgid "articles"
 msgstr "статьи"
 
@@ -480,115 +481,115 @@ msgstr "%(title)s в %(newsletter)s"
 msgid "messages"
 msgstr "сообщения"
 
-#: models.py:537
+#: models.py:538
 msgid "submissions"
 msgstr "отправки"
 
-#: models.py:540
+#: models.py:541
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
 msgstr "%(newsletter)s на %(publish_date)s"
 
-#: models.py:549
+#: models.py:550
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
 msgstr "Отправка %(submission)s для %(count)d людей"
 
-#: models.py:596
+#: models.py:597
 #, python-format
 msgid "Submitting message to: %s."
 msgstr "Отправка сообщения для: %s"
 
-#: models.py:605
+#: models.py:606
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
 msgstr "Отправить сообщение в %(subscription)s не удалось, ошибка: %(error)s"
 
-#: models.py:629
+#: models.py:630
 #, python-format
 msgid "Submission of message %s"
 msgstr "Отправка сообщения %s"
 
-#: models.py:672
+#: models.py:673
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
 msgstr "Если вы ничего не выберете, тогда система автоматически найдет подписчиков для вас."
 
-#: models.py:674
+#: models.py:675
 msgid "recipients"
 msgstr "получатели"
 
-#: models.py:679
+#: models.py:680
 msgid "publication date"
 msgstr "дата публикации"
 
-#: models.py:683
+#: models.py:684
 msgid "publish"
 msgstr "опубликованная"
 
-#: models.py:684
+#: models.py:685
 msgid "Publish in archive."
 msgstr "Опубликованные в архиве."
 
-#: models.py:688
+#: models.py:689
 msgid "prepared"
 msgstr "подготовленные"
 
-#: models.py:692
+#: models.py:693
 msgid "sent"
 msgstr "отправлено"
 
-#: models.py:696
+#: models.py:697
 msgid "sending"
 msgstr "отправляется"
 
 #: templates/admin/newsletter/message/change_form.html:7
 #: templates/admin/newsletter/newsletter/change_form.html:7
-#: templates/admin/newsletter/submission/change_form.html:15
+#: templates/admin/newsletter/submission/change_form.html:14
 msgid "History"
 msgstr "История"
 
 #: templates/admin/newsletter/message/change_form.html:8
 #: templates/admin/newsletter/newsletter/change_form.html:8
-#: templates/admin/newsletter/submission/change_form.html:16
+#: templates/admin/newsletter/submission/change_form.html:15
 msgid "View on site"
 msgstr "Смотреть на сайте"
 
-#: templates/admin/newsletter/message/preview.html:6
-#: templates/admin/newsletter/message/preview.html:20
+#: templates/admin/newsletter/message/preview.html:5
+#: templates/admin/newsletter/message/preview.html:19
 msgid "Preview message"
 msgstr "Предпросмотр сообщения"
 
-#: templates/admin/newsletter/message/preview.html:10
+#: templates/admin/newsletter/message/preview.html:9
 #: templates/admin/newsletter/subscription/confirmimportform.html:8
 #: templates/admin/newsletter/subscription/importform.html:8
 msgid "Home"
 msgstr "Главная"
 
-#: templates/admin/newsletter/message/preview.html:12
+#: templates/admin/newsletter/message/preview.html:11
 msgid "Message"
 msgstr "Сообщение"
 
-#: templates/admin/newsletter/message/preview.html:23
+#: templates/admin/newsletter/message/preview.html:22
 #: templates/admin/newsletter/subscription/importform.html:28
 msgid "Change"
 msgstr "Изменить"
 
-#: templates/admin/newsletter/message/preview.html:24
+#: templates/admin/newsletter/message/preview.html:23
 #: templates/admin/newsletter/subscription/importform.html:29
 msgid "Create submission"
 msgstr "Создать отправку"
 
-#: templates/admin/newsletter/message/preview.html:27
+#: templates/admin/newsletter/message/preview.html:26
 msgid "HTML"
 msgstr "HTML"
 
-#: templates/admin/newsletter/message/preview.html:31
+#: templates/admin/newsletter/message/preview.html:30
 msgid "Text"
 msgstr "Текст"
 
-#: templates/admin/newsletter/submission/change_form.html:17
+#: templates/admin/newsletter/submission/change_form.html:16
 msgid "Submit"
 msgstr "Отправить"
 
@@ -617,21 +618,21 @@ msgstr "Подтвердить"
 msgid "Upload"
 msgstr "Загрузить"
 
-#: templates/newsletter/newsletter_detail.html:6
+#: templates/newsletter/newsletter_detail.html:5
 msgid "Newsletter detail"
 msgstr "Подробности рассылок"
 
-#: templates/newsletter/newsletter_list.html:6
+#: templates/newsletter/newsletter_list.html:5
 msgid "Newsletter list"
 msgstr "Список рассылок"
 
-#: templates/newsletter/newsletter_list.html:17
+#: templates/newsletter/newsletter_list.html:16
 #: templates/newsletter/subscription_subscribe.html:23
-#: templates/newsletter/subscription_subscribe_user.html:23
+#: templates/newsletter/subscription_subscribe_user.html:22
 msgid "Subscribe"
 msgstr "Подписаться"
 
-#: templates/newsletter/newsletter_list.html:28
+#: templates/newsletter/newsletter_list.html:27
 msgid "Update subscriptions"
 msgstr "Обновить подписки"
 
@@ -659,8 +660,8 @@ msgstr "Активировать"
 #: templates/newsletter/subscription_subscribe.html:8
 #: templates/newsletter/subscription_subscribe_email_sent.html:5
 #: templates/newsletter/subscription_subscribe_email_sent.html:8
-#: templates/newsletter/subscription_subscribe_user.html:6
-#: templates/newsletter/subscription_subscribe_user.html:9
+#: templates/newsletter/subscription_subscribe_user.html:5
+#: templates/newsletter/subscription_subscribe_user.html:8
 msgid "Newsletter subscribe"
 msgstr "Подписаться на рассылку"
 
@@ -683,7 +684,7 @@ msgid ""
 "follow in order to activate your subscription."
 msgstr "Ваш запрос на подписку был успешно получен, и email  для активации был отправлен Вам. В нем вы должны найти ссылку и перейти по ней, чтобы подтвердить свое решение активировать ​​подписку."
 
-#: templates/newsletter/subscription_subscribe_user.html:20
+#: templates/newsletter/subscription_subscribe_user.html:19
 msgid "Do you want to subscribe to this newsletter?"
 msgstr "Вы хотите подписаться на эту рассылку?"
 
@@ -691,13 +692,13 @@ msgstr "Вы хотите подписаться на эту рассылку?"
 #: templates/newsletter/subscription_unsubscribe.html:8
 #: templates/newsletter/subscription_unsubscribe_email_sent.html:5
 #: templates/newsletter/subscription_unsubscribe_email_sent.html:8
-#: templates/newsletter/subscription_unsubscribe_user.html:6
-#: templates/newsletter/subscription_unsubscribe_user.html:9
+#: templates/newsletter/subscription_unsubscribe_user.html:5
+#: templates/newsletter/subscription_unsubscribe_user.html:8
 msgid "Newsletter unsubscribe"
 msgstr "Отписаться от рассылки"
 
 #: templates/newsletter/subscription_unsubscribe.html:23
-#: templates/newsletter/subscription_unsubscribe_user.html:24
+#: templates/newsletter/subscription_unsubscribe_user.html:23
 msgid "Unsubscribe"
 msgstr "Отписаться"
 
@@ -712,7 +713,7 @@ msgid ""
 "unsubscription."
 msgstr "Ваш запрос на отписку был успешно получен.Сообщение со ссылкой было отправлено Вам, вы должны перейти по ней, чтобы подтвердить свою ​​отписку."
 
-#: templates/newsletter/subscription_unsubscribe_user.html:21
+#: templates/newsletter/subscription_unsubscribe_user.html:20
 msgid "Do you want to unsubscribe from this newsletter?"
 msgstr "Вы хотите отменить подписку на эту рассылку?"
 
