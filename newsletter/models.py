@@ -470,7 +470,8 @@ class Article(models.Model):
 
     def save(self):
         if self.pk is None:
-            # if saving a new object get the next available Article ordering as to assure uniqueness.
+            # If saving a new object get the next available Article ordering
+            # as to assure uniqueness.
             self.sortorder = Article.get_next_order()
         super(Article, self).save()
 
