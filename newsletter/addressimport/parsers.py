@@ -93,8 +93,7 @@ def check_email(email, ignore_errors=False):
 
     logger.debug("Checking e-mail address %s", email)
 
-    email_field = Subscription._meta.get_field_by_name('email_field')[0]
-    email_length = email_field.max_length
+    email_length = Subscription._meta.get_field('email_field').max_length
 
     # Get rid of leading/trailing spaces
     email = email.strip()
@@ -121,8 +120,7 @@ def check_name(name, ignore_errors=False):
     """
     logger.debug("Checking name: %s", name)
 
-    name_field = Subscription._meta.get_field_by_name('name_field')[0]
-    name_length = name_field.max_length
+    name_length = Subscription._meta.get_field('name_field').max_length
 
     # Get rid of leading/trailing spaces
     name = name.strip()
