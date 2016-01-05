@@ -64,11 +64,7 @@ class ImportForm(forms.Form):
         return self.cleaned_data
 
     def get_addresses(self):
-        if hasattr(self, 'addresses'):
-            logger.debug('Getting addresses: %s', self.addresses)
-            return self.addresses
-        else:
-            return []
+        return getattr(self, 'addresses', {})
 
     newsletter = forms.ModelChoiceField(
         label=_("Newsletter"),
