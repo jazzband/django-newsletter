@@ -62,9 +62,6 @@ class AddressList(object):
                 "Entry '%s' is already subscribed to at %s."
                 % (email, location)
             )
-            # "Entry '%s' at line %d is already subscribed to "
-            # "with email '%s'",
-            # name, myreader.line_num, email, extra=dict(data={'row': row}))
 
             if not self.ignore_errors:
                 raise forms.ValidationError(
@@ -232,8 +229,6 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
 
     logger.debug("E-mail column found: '%s'", firstrow[mailcol])
 
-    #assert namecol != mailcol, \
-    #    'Name and e-mail column should not be the same.'
     if namecol == mailcol:
         raise forms.ValidationError(
             _(
@@ -295,8 +290,7 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
             name = None
 
         # Do we have an email address?
-        # If not: either continue to the next vcard or
-        # raise a validation error.
+        # If not: either continue to the next vcard or raise validation error.
         if hasattr(myvcard, 'email'):
             email = myvcard.email.value
         elif not ignore_errors:
