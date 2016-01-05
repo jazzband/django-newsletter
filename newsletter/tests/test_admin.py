@@ -6,6 +6,7 @@ from django.test import TestCase
 
 from newsletter import admin  # Triggers model admin registration
 from newsletter.models import Newsletter
+from newsletter.admin_utils import make_subscription
 
 test_files_dir = os.path.join(os.path.dirname(__file__), 'files')
 
@@ -24,35 +25,37 @@ class AdminTestCase(TestCase):
             slug='test-newsletter', visible=True, email='test@test.com',
         )
 
+    def admin_import_file(self, source_file, ignore_errors=''):
+        """ Upload an address file for import to admin. """
+
+        import_url = reverse('admin:newsletter_subscription_import')
+
+        with open(os.path.join(test_files_dir, source_file), 'rb') as fh:
+            return self.client.post(import_url, {
+                'newsletter': self.newsletter.pk,
+                'address_file': fh,
+                'ignore_errors': ignore_errors,
+            }, follow=True)
+
     def admin_import_subscribers(self, source_file, ignore_errors=''):
         """
         Import process of a CSV/LDIF/VCARD file containing subscription
         addresses from the admin site.
         """
-        import_url = reverse('admin:newsletter_subscription_import')
 
-        with open(source_file, 'rb') as fh:
-            response = self.client.post(import_url, {
-                'newsletter': self.newsletter.pk,
-                'address_file': fh,
-                'ignore_errors': ignore_errors,
-            }, follow=True)
+        response = self.admin_import_file(source_file, ignore_errors)
 
         self.assertContains(response, "<h1>Confirm import</h1>")
 
         import_confirm_url = reverse(
             'admin:newsletter_subscription_import_confirm'
         )
-        response = self.client.post(
+
+        return self.client.post(
             import_confirm_url, {'confirm': True}, follow=True
         )
-        self.assertContains(
-            response,
-            "2 subscriptions have been successfully added."
-        )
-        self.assertEqual(self.newsletter.subscription_set.count(), 2)
 
-    def test_admin_import_form(self):
+    def test_admin_import_get_form(self):
         """ Test Import form. """
 
         import_url = reverse('admin:newsletter_subscription_import')
@@ -60,19 +63,65 @@ class AdminTestCase(TestCase):
         self.assertContains(response, "<h1>Import addresses</h1>")
 
     def test_admin_import_subscribers_csv(self):
-        source_file = os.path.join(test_files_dir, 'addresses.csv')
-        self.admin_import_subscribers(source_file)
+        response = self.admin_import_subscribers('addresses.csv')
+
+        self.assertContains(
+            response,
+            "2 subscriptions have been successfully added."
+        )
+        self.assertEqual(self.newsletter.subscription_set.count(), 2)
 
     def test_admin_import_subscribers_ldif(self):
-        source_file = os.path.join(test_files_dir, 'addresses.ldif')
-        self.admin_import_subscribers(source_file)
+        response = self.admin_import_subscribers('addresses.ldif')
+
+        self.assertContains(
+            response,
+            "2 subscriptions have been successfully added."
+        )
+        self.assertEqual(self.newsletter.subscription_set.count(), 2)
 
     def test_admin_import_subscribers_vcf(self):
-        source_file = os.path.join(test_files_dir, 'addresses.vcf')
-        self.admin_import_subscribers(source_file)
+        response = self.admin_import_subscribers('addresses.vcf')
+
+        self.assertContains(
+            response,
+            "2 subscriptions have been successfully added."
+        )
+        self.assertEqual(self.newsletter.subscription_set.count(), 2)
 
     def test_admin_import_subscribers_duplicates(self):
         """ Test importing a file with duplicate addresses. """
-        source_file = os.path.join(test_files_dir, 'addresses_duplicates.csv')
 
-        self.admin_import_subscribers(source_file, ignore_errors='true')
+        response = self.admin_import_subscribers(
+            'addresses_duplicates.csv', ignore_errors='true'
+        )
+
+        self.assertContains(
+            response,
+            "2 subscriptions have been successfully added."
+        )
+        self.assertEqual(self.newsletter.subscription_set.count(), 2)
+
+    def test_admin_import_subscribers_existing(self):
+        """ Test importing already existing subscriptions. """
+
+        subscription = make_subscription(self.newsletter, 'john@example.org')
+        subscription.save()
+
+        response = self.admin_import_subscribers(
+            'addresses.csv', ignore_errors='true'
+        )
+
+        self.assertContains(
+            response,
+            "1 subscriptions have been successfully added."
+        )
+        self.assertEqual(self.newsletter.subscription_set.count(), 2)
+
+        response = self.admin_import_file('addresses.csv')
+
+        self.assertContains(
+            response,
+            "Some entries are already subscribed to."
+        )
+        self.assertEqual(self.newsletter.subscription_set.count(), 2)

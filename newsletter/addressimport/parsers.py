@@ -40,6 +40,9 @@ class AddressList(object):
                     "e-mail address.") % name
                 )
 
+            # Skip this entry
+            return
+
         if email in self.addresses:
             logger.warn(
                 "Entry '%s' contains a duplicate entry at %s."
@@ -51,9 +54,10 @@ class AddressList(object):
                     "The address file contains duplicate entries "
                     "for '%s'.") % email)
 
-        try:
-            subscription_exists(self.newsletter, email, name)
-        except ValidationError:
+            # Skip this entry
+            return
+
+        if subscription_exists(self.newsletter, email, name):
             logger.warn(
                 "Entry '%s' is already subscribed to at %s."
                 % (email, location)
@@ -65,6 +69,9 @@ class AddressList(object):
             if not self.ignore_errors:
                 raise forms.ValidationError(
                     _("Some entries are already subscribed to."))
+
+            # Skip this entry
+            return
 
         self.addresses[email] = name
 
@@ -78,7 +85,7 @@ def subscription_exists(newsletter, email, name=None):
         subscribed=True,
         email_field__exact=email)
 
-    return not qs.exists()
+    return qs.exists()
 
 
 def check_email(email, ignore_errors=False):
