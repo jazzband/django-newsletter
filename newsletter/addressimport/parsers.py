@@ -1,6 +1,8 @@
 import logging
 logger = logging.getLogger(__name__)
 
+import io
+
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -139,16 +141,8 @@ def check_name(name, ignore_errors=False):
         )
 
 
-def parse_csv(myfile, newsletter, ignore_errors=False):
-    """
-    Parse addresses from CSV file-object into newsletter.
-
-    Returns a dictionary mapping email addresses into Subscription objects.
-    """
-
-    from .csv_util import UnicodeReader
-    import codecs
-    import csv
+def get_encoding(myfile):
+    """ Returns encoding of file, rewinding the file after detection. """
 
     # Detect encoding
     from chardet.universaldetector import UniversalDetector
@@ -161,24 +155,39 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
             break
 
     detector.close()
-    charset = detector.result['encoding']
+    encoding = detector.result['encoding']
 
     # Reset the file index
     myfile.seek(0)
 
+    return encoding
+
+
+def parse_csv(myfile, newsletter, ignore_errors=False):
+    """
+    Parse addresses from CSV file-object into newsletter.
+
+    Returns a dictionary mapping email addresses into Subscription objects.
+    """
+
+    import unicodecsv
+
+    encoding = get_encoding(myfile)
+
     # Attempt to detect the dialect
-    encodedfile = codecs.EncodedFile(myfile, charset)
-    dialect = csv.Sniffer().sniff(encodedfile.read(1024))
+    # Ref: https://bugs.python.org/issue5332
+    encodedfile = io.TextIOWrapper(myfile, encoding=encoding, newline='')
+    dialect = unicodecsv.Sniffer().sniff(encodedfile.read(1024))
 
     # Reset the file index
     myfile.seek(0)
 
     logger.info('Detected encoding %s and dialect %s for CSV file',
-                charset, dialect)
+                encoding, dialect)
 
-    myreader = UnicodeReader(myfile, dialect=dialect, encoding=charset)
+    myreader = unicodecsv.reader(myfile, dialect=dialect, encoding=encoding)
 
-    firstrow = myreader.next()
+    firstrow = next(myreader)
 
     # Find name column
     colnum = 0
@@ -269,8 +278,11 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
     """
     import card_me
 
+    encoding = get_encoding(myfile)
+    encodedfile = io.TextIOWrapper(myfile, encoding=encoding)
+
     try:
-        myvcards = card_me.readComponents(myfile)
+        myvcards = card_me.readComponents(encodedfile)
     except card_me.VObjectError as e:
         raise forms.ValidationError(
             _(u"Error reading vCard file: %s" % e)
