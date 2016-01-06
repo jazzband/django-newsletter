@@ -17,9 +17,9 @@ from django.core.urlresolvers import reverse
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
-from django.template import RequestContext, Context
+from django.template import Context
 
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 
 from django.utils.translation import ugettext as _, ungettext
 from django.utils.formats import date_format
@@ -249,10 +249,10 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     """ Views """
     def preview(self, request, object_id):
-        return render_to_response(
+        return render(
+            request,
             "admin/newsletter/message/preview.html",
             {'message': self._getobj(request, object_id)},
-            RequestContext(request, {}),
         )
 
     @xframe_options_sameorigin
@@ -446,10 +446,10 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         else:
             form = ImportForm()
 
-        return render_to_response(
+        return render(
+            request,
             "admin/newsletter/subscription/importform.html",
             {'form': form},
-            RequestContext(request, {}),
         )
 
     def subscribers_import_confirm(self, request):
@@ -492,10 +492,10 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         else:
             form = ConfirmForm()
 
-        return render_to_response(
+        return render(
+            request,
             "admin/newsletter/subscription/confirmimportform.html",
             {'form': form, 'subscribers': addresses},
-            RequestContext(request, {}),
         )
 
     """ URLs """
