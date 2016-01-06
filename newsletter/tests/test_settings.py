@@ -39,7 +39,7 @@ class SettingsTestCase(TestCase):
         """
 
         from tinymce.widgets import TinyMCE
-        self.assertEquals(newsletter_settings.RICHTEXT_WIDGET, TinyMCE)
+        self.assertEqual(newsletter_settings.RICHTEXT_WIDGET, TinyMCE)
 
     @unittest.skipUnless(
         # Only run tests when TinyMCE is available
@@ -59,7 +59,7 @@ class SettingsTestCase(TestCase):
         """
 
         from imperavi.admin import ImperaviWidget
-        self.assertEquals(newsletter_settings.RICHTEXT_WIDGET, ImperaviWidget)
+        self.assertEqual(newsletter_settings.RICHTEXT_WIDGET, ImperaviWidget)
 
     @unittest.skipIf(
         hasattr(settings, 'NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE') or

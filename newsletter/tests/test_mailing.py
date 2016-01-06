@@ -210,7 +210,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.assertFalse(submission.sending)
 
         # Make sure mail is being sent out
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         # Make sure a submission contains the title and unsubscribe URL
         self.assertEmailContains(submission.message.title)
@@ -337,7 +337,7 @@ class HtmlEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
         """
 
         # Make sure one mail is being sent out
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         # Make sure mail contains HTML alternative
         self.assertEmailAlternativesContainMimetype('text/html')
@@ -367,7 +367,7 @@ class TextOnlyEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
         """
 
         # Make sure one mail is being sent out
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         # Make sure mail is text only
         self.assertEmailHasNoAlternatives()
@@ -417,7 +417,7 @@ class TemplateOverridesTestCase(MailingTestCase, AllEmailsTestsMixin):
         """
 
         # Make sure one mail is being sent out
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         # Make sure mail subject contains string
         # from template override for given action
