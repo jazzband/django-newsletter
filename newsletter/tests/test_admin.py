@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.test.utils import patch_logger
 
 from newsletter import admin  # Triggers model admin registration
 from newsletter.admin_utils import make_subscription
@@ -160,14 +161,16 @@ class AdminTestCase(TestCase):
     def test_admin_import_subscribers_duplicates(self):
         """ Test importing a file with duplicate addresses. """
 
-        response = self.admin_import_subscribers(
-            'addresses_duplicates.csv', ignore_errors='true'
-        )
+        with patch_logger('newsletter.addressimport.parsers', 'warning') as messages:
+            response = self.admin_import_subscribers(
+                'addresses_duplicates.csv', ignore_errors='true'
+            )
 
         self.assertContains(
             response,
             "2 subscriptions have been successfully added."
         )
+        self.assertEqual(len(messages), 2)
         self.assertEqual(self.newsletter.subscription_set.count(), 2)
 
     def test_admin_import_subscribers_existing(self):
@@ -176,22 +179,26 @@ class AdminTestCase(TestCase):
         subscription = make_subscription(self.newsletter, 'john@example.org')
         subscription.save()
 
-        response = self.admin_import_subscribers(
-            'addresses.csv', ignore_errors='true'
-        )
+        with patch_logger('newsletter.addressimport.parsers', 'warning') as messages:
+            response = self.admin_import_subscribers(
+                'addresses.csv', ignore_errors='true'
+            )
 
         self.assertContains(
             response,
             "1 subscriptions have been successfully added."
         )
+        self.assertEqual(len(messages), 1)
         self.assertEqual(self.newsletter.subscription_set.count(), 2)
 
-        response = self.admin_import_file('addresses.csv')
+        with patch_logger('newsletter.addressimport.parsers', 'warning') as messages:
+            response = self.admin_import_file('addresses.csv')
 
         self.assertContains(
             response,
             "Some entries are already subscribed to."
         )
+        self.assertEqual(len(messages), 1)
         self.assertEqual(self.newsletter.subscription_set.count(), 2)
 
     def test_admin_import_subscribers_permission(self):

@@ -30,7 +30,7 @@ class AddressList(object):
         try:
             validate_email(email)
         except ValidationError:
-            logger.warn(
+            logger.warning(
                 "Entry '%s' does not contain a valid e-mail address at %s."
                 % (email, location)
             )
@@ -45,7 +45,7 @@ class AddressList(object):
             return
 
         if email in self.addresses:
-            logger.warn(
+            logger.warning(
                 "Entry '%s' contains a duplicate entry at %s."
                 % (email, location)
             )
@@ -59,7 +59,7 @@ class AddressList(object):
             return
 
         if subscription_exists(self.newsletter, email, name):
-            logger.warn(
+            logger.warning(
                 "Entry '%s' is already subscribed to at %s."
                 % (email, location)
             )
@@ -251,8 +251,10 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
 
     for row in myreader:
         if not max(namecol, mailcol) < len(row):
-            logger.warn("Column count does not match for row number %d",
-                        myreader.line_num, extra=dict(data={'row': row}))
+            logger.warning(
+                "Column count does not match for row number %d",
+                myreader.line_num, extra=dict(data={'row': row})
+            )
 
             if ignore_errors:
                 # Skip this record
