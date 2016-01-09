@@ -100,13 +100,6 @@ Installation
     where ``<message_type>`` can be one from `subscribe`, `unsubscribe`, `message`
     or `update`.
 
-#)  (Optionally) Run the tests to see if it all works::
-
-        ./manage.py test
-
-    If it does: that's a good sign. You'll probably have yourself a
-    working configuration!
-
 #)  Add jobs for sending out mail queues to `crontab <http://linuxmanpages.com/man5/crontab.5.php>`_::
 
         @hourly /path/to/my/project/manage.py runjobs hourly
