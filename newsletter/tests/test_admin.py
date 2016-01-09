@@ -186,7 +186,7 @@ class AdminTestCase(TestCase):
 
         self.assertContains(
             response,
-            "1 subscriptions have been successfully added."
+            "1 subscription has been successfully added."
         )
         self.assertEqual(len(messages), 1)
         self.assertEqual(self.newsletter.subscription_set.count(), 2)
