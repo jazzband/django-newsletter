@@ -83,13 +83,9 @@ Installation
     app so the admin icons, CSS and JavaScript will be available where
     we expect it.
 
-#)  Create required data structure with `South <http://south.readthedocs.org/en/latest/about.html>`_ (recommended)::
+#)  Create the required data structure::
 
         ./manage.py migrate
-
-    Without South::
-
-        ./manage.py syncdb
 
 #)  Change the default contact email listed in
     ``templates/newsletter/subscription_subscribe.html`` and
