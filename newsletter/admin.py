@@ -409,8 +409,8 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         self.message_user(
             request,
             ungettext(
-                "%s user has been successfully subscribed.",
-                "%s users have been successfully subscribed.",
+                "%d user has been successfully subscribed.",
+                "%d users have been successfully subscribed.",
                 rows_updated
             ) % rows_updated
         )
@@ -421,8 +421,8 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         self.message_user(
             request,
             ungettext(
-                "%s user has been successfully unsubscribed.",
-                "%s users have been successfully unsubscribed.",
+                "%d user has been successfully unsubscribed.",
+                "%d users have been successfully unsubscribed.",
                 rows_updated
             ) % rows_updated
         )
@@ -481,8 +481,11 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
                 messages.success(
                     request,
-                    _('%s subscriptions have been successfully added.') %
-                    len(addresses)
+                    ungettext(
+                        "%d subscription has been successfully added.",
+                        "%d subscriptions have been successfully added.",
+                        len(addresses)
+                    ) % len(addresses)
                 )
 
                 changelist_url = reverse(
