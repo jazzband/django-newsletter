@@ -303,3 +303,16 @@ Unsubscribe: http://example.com/newsletter/test-newsletter/unsubscribe/
             response,
             '<td class="field-admin_status_text">Not sent.</td>'
         )
+
+        # Test that a message cannot be published twice
+        add_url = reverse('admin:newsletter_submission_add')
+        response = self.client.post(add_url, data={
+            'message': msg.pk,
+            'publish_date_0': '2016-01-09',
+            'publish_date_1': '07:24',
+            'publish': 'on',
+        })
+        self.assertContains(
+            response,
+            "This message has already been published in some other submission."
+        )

@@ -152,7 +152,7 @@ class SubmissionAdminForm(forms.ModelForm):
         """
         publish = self.cleaned_data['publish']
 
-        if publish:
+        if publish and not self.errors:
             message = self.cleaned_data['message']
             qs = Submission.objects.filter(publish=True, message=message)
             if self.instance:
