@@ -44,10 +44,10 @@ from .settings import newsletter_settings
 
 # Contsruct URL's for icons
 ICON_URLS = {
-    'yes': '%sadmin/img/icon-yes.gif' % settings.STATIC_URL,
+    'yes': '%snewsletter/admin/img/icon-yes.gif' % settings.STATIC_URL,
     'wait': '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL,
     'submit': '%snewsletter/admin/img/submitting.gif' % settings.STATIC_URL,
-    'no': '%sadmin/img/icon-no.gif' % settings.STATIC_URL
+    'no': '%snewsletter/admin/img/icon-no.gif' % settings.STATIC_URL
 }
 
 
