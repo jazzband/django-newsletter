@@ -215,6 +215,10 @@ class SubmitSubmissionTestCase(MailingTestCase):
         # Make sure a submission contains the title and unsubscribe URL
         self.assertEmailContains(submission.message.title)
         self.assertEmailContains(submission.newsletter.unsubscribe_url())
+        self.assertEmailHasHeader(
+            'List-Unsubscribe',
+            'http://example.com/newsletter/test-newsletter/unsubscribe/'
+        )
 
 
 class SubscriptionTestCase(UserTestCase, MailingTestCase):

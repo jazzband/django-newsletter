@@ -92,6 +92,15 @@ class MailTestCase(TestCase):
                 'Email does not contain "%s" in alternative body.' % value
             )
 
+    def assertEmailHasHeader(self, header, content=None, email=None):
+        for my_email in self.get_email_list(email):
+            self.assertTrue(
+                header in my_email.extra_headers,
+                'Email does not have the "%s" header.' % header
+            )
+            if content is not None:
+                self.assertEqual(my_email.extra_headers[header], content)
+
 
 class UserTestCase(TestCase):
     def setUp(self):
