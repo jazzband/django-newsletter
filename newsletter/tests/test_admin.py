@@ -324,3 +324,25 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
             response,
             "This message has already been published in some other submission."
         )
+
+    def test_add_wrongmessage_regression(self):
+        """ Regression test for #170. """
+
+        # Create a second message
+        Message.objects.create(
+            newsletter=self.newsletter, title='2nd message', slug='test-message-2'
+        )
+
+        response = self.client.post(self.add_url, data={
+            'message': self.message.pk,
+            'publish_date_0': '2016-01-09',
+            'publish_date_1': '07:24',
+            'publish': 'on',
+        }, follow=True)
+
+        self.assertContains(response, "added")
+
+        self.assertEqual(Submission.objects.count(), 1)
+        submission = Submission.objects.all()[0]
+
+        self.assertEquals(submission.message, self.message)
