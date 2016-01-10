@@ -651,9 +651,6 @@ class Submission(models.Model):
 
         self.newsletter = self.message.newsletter
 
-        if self.pk is None:
-            self.message = Message.get_default()
-
         return super(Submission, self).save()
 
     @permalink
