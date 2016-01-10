@@ -13,6 +13,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.admin',
     'django.contrib.sites',
+    'django.contrib.staticfiles',
     'django_extensions',
     'sorl.thumbnail',
     'imperavi',

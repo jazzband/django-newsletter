@@ -95,12 +95,12 @@ class AdminTestCase(TestCase):
         response = self.client.get(changelist_url)
         self.assertContains(
             response,
-            '<img src="/static/admin/img/icon-no.gif" width="10" height="10" alt="Unsubscribed"/>',
+            '<img src="/static/newsletter/admin/img/icon-no.gif" width="10" height="10" alt="Unsubscribed"/>',
             html=True
         )
         self.assertContains(
             response,
-            '<img src="/static/admin/img/icon-yes.gif" width="10" height="10" alt="Subscribed"/>',
+            '<img src="/static/newsletter/admin/img/icon-yes.gif" width="10" height="10" alt="Subscribed"/>',
             html=True
         )
         self.assertContains(
