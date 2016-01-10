@@ -13,9 +13,10 @@ from newsletter.models import Message, Newsletter, Submission, Subscription
 test_files_dir = os.path.join(os.path.dirname(__file__), 'files')
 
 
-class AdminTestCase(TestCase):
+class AdminTestMixin(object):
     def setUp(self):
-        super(AdminTestCase, self).setUp()
+        super(AdminTestMixin, self).setUp()
+
         User = get_user_model()
         self.password = 'johnpassword'
         self.admin_user = User.objects.create_superuser(
@@ -26,7 +27,12 @@ class AdminTestCase(TestCase):
             sender='Test Sender', title='Test Newsletter',
             slug='test-newsletter', visible=True, email='test@test.com',
         )
+        self.message = Message.objects.create(
+            newsletter=self.newsletter, title='Test message', slug='test-message'
+        )
 
+
+class AdminTestCase(AdminTestMixin, TestCase):
     def admin_import_file(self, source_file, ignore_errors=''):
         """ Upload an address file for import to admin. """
 
@@ -235,21 +241,18 @@ class AdminTestCase(TestCase):
         """
         Testing message admin change list display and message previews.
         """
-        msg = Message.objects.create(
-            newsletter=self.newsletter, title='Test message', slug='test-message'
-        )
         changelist_url = reverse('admin:newsletter_message_changelist')
         response = self.client.get(changelist_url)
         self.assertContains(
             response,
-            '<a href="%d/preview/">Preview</a>' % msg.pk,
+            '<a href="%d/preview/">Preview</a>' % self.message.pk,
             html=True
         )
 
         # Previews
-        preview_url = reverse('admin:newsletter_message_preview', args=[msg.pk])
-        preview_text_url = reverse('admin:newsletter_message_preview_text', args=[msg.pk])
-        preview_html_url = reverse('admin:newsletter_message_preview_html', args=[msg.pk])
+        preview_url = reverse('admin:newsletter_message_preview', args=[self.message.pk])
+        preview_text_url = reverse('admin:newsletter_message_preview_text', args=[self.message.pk])
+        preview_html_url = reverse('admin:newsletter_message_preview_html', args=[self.message.pk])
         response = self.client.get(preview_url)
         self.assertContains(
             response,
@@ -289,14 +292,17 @@ Unsubscribe: http://example.com/newsletter/test-newsletter/unsubscribe/
         response = self.client.get(preview_html_url)
         self.assertEqual(response.status_code, 404)
 
-    def test_submission_admin(self):
-        """
-        Testing submission admin change list display.
-        """
-        msg = Message.objects.create(
-            newsletter=self.newsletter, title='Test message', slug='test-message'
-        )
-        sub = Submission.from_message(msg)
+
+class SubmissionAdminTests(AdminTestMixin, TestCase):
+    """ Tests for Submission admin. """
+
+    def setUp(self):
+        super(SubmissionAdminTests, self).setUp()
+
+        self.subscription = Submission.from_message(self.message)
+
+    def test_changelist(self):
+        """ Testing submission admin change list display. """
         changelist_url = reverse('admin:newsletter_submission_changelist')
         response = self.client.get(changelist_url)
         self.assertContains(
@@ -304,10 +310,12 @@ Unsubscribe: http://example.com/newsletter/test-newsletter/unsubscribe/
             '<td class="field-admin_status_text">Not sent.</td>'
         )
 
-        # Test that a message cannot be published twice
+    def test_duplicate_fail(self):
+        """ Test that a message cannot be published twice. """
+
         add_url = reverse('admin:newsletter_submission_add')
         response = self.client.post(add_url, data={
-            'message': msg.pk,
+            'message': self.message.pk,
             'publish_date_0': '2016-01-09',
             'publish_date_1': '07:24',
             'publish': 'on',
