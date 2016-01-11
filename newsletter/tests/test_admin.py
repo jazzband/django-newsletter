@@ -299,12 +299,16 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
     def setUp(self):
         super(SubmissionAdminTests, self).setUp()
 
-        self.subscription = Submission.from_message(self.message)
+        self.add_url = reverse('admin:newsletter_submission_add')
+        self.changelist_url = reverse('admin:newsletter_submission_changelist')
 
     def test_changelist(self):
         """ Testing submission admin change list display. """
-        changelist_url = reverse('admin:newsletter_submission_changelist')
-        response = self.client.get(changelist_url)
+
+        # Assure there's a submission
+        Submission.from_message(self.message)
+
+        response = self.client.get(self.changelist_url)
         self.assertContains(
             response,
             '<td class="field-admin_status_text">Not sent.</td>'
@@ -313,14 +317,55 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
     def test_duplicate_fail(self):
         """ Test that a message cannot be published twice. """
 
-        add_url = reverse('admin:newsletter_submission_add')
-        response = self.client.post(add_url, data={
+        # Assure there's a submission
+        Submission.from_message(self.message)
+
+        response = self.client.post(self.add_url, data={
             'message': self.message.pk,
             'publish_date_0': '2016-01-09',
-            'publish_date_1': '07:24',
+            'publish_date_1 ': '07:24',
             'publish': 'on',
         })
         self.assertContains(
             response,
             "This message has already been published in some other submission."
         )
+
+    def test_add(self):
+        """ Test adding a Submission. """
+
+        response = self.client.post(self.add_url, data={
+            'message': self.message.pk,
+            'publish_date_0': '2016-01-09',
+            'publish_date_1': '07:24',
+            'publish': 'on',
+        }, follow=True)
+
+        self.assertContains(response, "added")
+
+        self.assertEqual(Submission.objects.count(), 1)
+        submission = Submission.objects.all()[0]
+
+        self.assertEquals(submission.message, self.message)
+
+    def test_add_wrongmessage_regression(self):
+        """ Regression test for #170. """
+
+        # Create a second message
+        Message.objects.create(
+            newsletter=self.newsletter, title='2nd message', slug='test-message-2'
+        )
+
+        response = self.client.post(self.add_url, data={
+            'message': self.message.pk,
+            'publish_date_0': '2016-01-09',
+            'publish_date_1': '07:24',
+            'publish': 'on',
+        }, follow=True)
+
+        self.assertContains(response, "added")
+
+        self.assertEqual(Submission.objects.count(), 1)
+        submission = Submission.objects.all()[0]
+
+        self.assertEquals(submission.message, self.message)
