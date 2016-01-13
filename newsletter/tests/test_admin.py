@@ -346,7 +346,7 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
         self.assertEqual(Submission.objects.count(), 1)
         submission = Submission.objects.all()[0]
 
-        self.assertEquals(submission.message, self.message)
+        self.assertEqual(submission.message, self.message)
 
     def test_add_wrongmessage_regression(self):
         """ Regression test for #170. """
@@ -368,4 +368,4 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
         self.assertEqual(Submission.objects.count(), 1)
         submission = Submission.objects.all()[0]
 
-        self.assertEquals(submission.message, self.message)
+        self.assertEqual(submission.message, self.message)
