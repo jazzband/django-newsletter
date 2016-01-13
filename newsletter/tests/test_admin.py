@@ -323,7 +323,7 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
         response = self.client.post(self.add_url, data={
             'message': self.message.pk,
             'publish_date_0': '2016-01-09',
-            'publish_date_1 ': '07:24',
+            'publish_date_1': '07:24',
             'publish': 'on',
         })
         self.assertContains(
