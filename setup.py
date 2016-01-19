@@ -19,6 +19,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from newsletter import __version__
+
 from setuptools import setup, find_packages
 
 try:
@@ -40,7 +42,7 @@ except:
 
 setup(
     name='django-newsletter',
-    version="0.6-dev",
+    version=__version__,
     description=(
         'Django app for managing multiple mass-mailing lists with both '
         'plaintext as well as HTML templates (and pluggable WYSIWYG editors '
