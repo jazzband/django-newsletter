@@ -4,7 +4,7 @@ Templates
 To get started, we recommend copying the existing 'stub'-templates from
 the module directory to your project's `templates` dir::
 
-    cp -rv `python -c 'import newsletter; from os import path; print path.dirname(newsletter.__file__)'`/templates/newsletter <project_dir>/templates/
+    cp -rv `python -c 'import newsletter; from os import path; print(path.dirname(newsletter.__file__))'`/templates/newsletter <project_dir>/templates/
 
 Web view templates
 ^^^^^^^^^^^^^^^^^^

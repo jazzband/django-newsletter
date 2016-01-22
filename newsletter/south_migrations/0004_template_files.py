@@ -28,7 +28,7 @@ class Migration(DataMigration):
         )
 
     def write_template(self, path, template):
-        print 'Writing email template from DB to %s' % path
+        print('Writing email template from DB to %s' % path)
 
         f = open(path, 'w')
         f.write(template.encode('utf-8'))
