@@ -1,6 +1,19 @@
 Changes
 =======
 
+0.6 (?-?-2016)
+--------------
+
+- Added support for Django 1.8 and 1.9, and dropped support for older versions.
+- Added support for native Django migrations, replacing South migrations.
+- Added Python 3.4/3.5 support and dropped Python 2.6 support.
+- Replaced IPAddressField by GenericIPAddressField on Django 1.8 and above
+  (#131).
+- Fixed subscription import using the new JSON-based Django serializer (#104).
+- Sent messages now always contain the List-Unsubscribe header.
+- Added Polish and Brazilian Portuguese translations.
+- Improved test coverage.
+
 0.5.2 (1-5-2014)
 ----------------
 
