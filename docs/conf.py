@@ -22,6 +22,7 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 sys.path.insert(0, os.path.abspath('..'))
 
 # Django bogus settings for autodoc
+import django
 from django.conf import settings
 
 settings.configure(
@@ -43,8 +44,10 @@ settings.configure(
     }
 )
 
+django.setup()
+
 from django.core.management import call_command
-call_command('syncdb', interactive=False)
+call_command('migrate', interactive=False)
 
 autodoc_default_flags = ['members', 'show-inheritance']
 autodoc_member_order = 'bysource'
