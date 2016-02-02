@@ -6,8 +6,8 @@ Upgrading
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Based on https://docs.djangoproject.com/en/1.9/topics/migrations/#upgrading-from-south, the procedure should be:
 
-1. Remove `'south'` from `INSTALLED_APPS`.
-2. Run `python manage.py migrate --fake-initial`.
+1. Remove ``'south'`` from ``INSTALLED_APPS``.
+2. Run ``python manage.py migrate --fake-initial``.
 
 0.5: Message templates in files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
