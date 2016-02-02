@@ -1,26 +1,13 @@
 Authors and contributors
 ========================
-- Mathijs de Bruin <mathijs at visualspace dot nl> (maintainer)
-- Jerome Leclanche <jerome dot leclanche at gmail dot com>
-- Jannis [jnns]
-- Alexander Schrijver [flupzor]
-- Jakub Kuczmarski [jkuczm]
-- remarkablerocket
-- Sina Samavati [s1n4]
-- David Sanders [dsanders11]
-- Patrick Craston [pcraston]
+This package is maintained by Mathijs de Bruin [dokterbob] but would not have been possible without the many contributors.
 
-Plus several others whom I forgot to mention. If I did, fire a pull request
-adding your name to this list.
+An overview of the great people that helped and are helping to keep this project alive is maintained by GitHub at:
+
+https://github.com/dokterbob/django-newsletter/graphs/contributors
 
 Translators
 -----------
-- Farsi: Ali Javadi [rohamn] and Hooman Zabeti [hoomanz]
-- French: Santiago Malter-Terrada [smalter]
-- German: Jannis [jnns]
-- Russian: Eugene Akentyev [ak3n]
-- Dutch: Mathijs de Bruin [dokterbob]
-- Italian: Andrea [azanibellato]
-- Islandic: ebergmundur
-- Arabic: Bashar Al-Abdulhadi [KuwaitNET]
-- Czech: tomaasch
+There are many people who have helped to contribute to translations through Transifex. To see who helped where, please refer to the project's page there on:
+
+http://www.transifex.net/projects/p/django-newsletter/
