@@ -6,12 +6,13 @@
 # amrnegm <amrnegm.01@gmail.com>, 2013
 # Bashar Al-Abdulhadi, 2015
 # Bashar Al-Abdulhadi, 2014
+# dokterbob <mathijs@mathijsfietst.nl>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-01-05 17:58+0100\n"
-"PO-Revision-Date: 2015-07-12 13:29+0000\n"
+"PO-Revision-Date: 2016-02-02 13:34+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: Arabic (http://www.transifex.com/dokterbob/django-newsletter/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -237,7 +238,7 @@ msgstr "لم يتم التعرف على نوع الملف '%s'."
 #: admin_forms.py:58
 #, python-format
 msgid "File extension '%s' was not recognized."
-msgstr ""
+msgstr "لم يتم التعرف على امتداد الملف '%s' ."
 
 #: admin_forms.py:62
 msgid "No entries could found in this file."
