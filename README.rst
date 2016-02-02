@@ -1,6 +1,6 @@
-=================
+#################
 django-newsletter
-=================
+#################
 
 .. image:: https://img.shields.io/pypi/v/django-newsletter.svg
     :target: https://pypi.python.org/pypi/django-newsletter
@@ -16,7 +16,6 @@ django-newsletter
    :alt: Code Health
 
 Newsletter application for the Django web framework.
-----------------------------------------------------
 
 What is it?
 ===========

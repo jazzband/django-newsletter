@@ -14,13 +14,13 @@ Changes
 - Significantly improved test coverage.
 
 Small fixes
-```````````
+^^^^^^^^^^^
+
 - Submission admin always takes last message (#170).
 - Check that user has "add_subscription" permission when importing subscriptions (#128).
 - Fix for Submission.publish_date default value (#125).
 - Change subscription status in admin to radio field (#122).
-- Make the Submissions list display the Publish date and time with respect to the server's
- timezone (#112).
+- Make the Submissions list display the Publish date and time with respect to the server's timezone (#112).
 - Several smaller issues: #107, #121, #123
 
 0.5.2 (1-5-2014)
