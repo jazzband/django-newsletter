@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Claude Paroz <claude@2xlibre.net>, 2016
 # Marc Belmont <contact@marcbelmont.com>, 2014
 # Santiago Malter-Terrada <s@yop.li>, 2013
 msgid ""
@@ -10,8 +11,8 @@ msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-01-05 17:58+0100\n"
-"PO-Revision-Date: 2015-07-12 13:29+0000\n"
-"Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
+"PO-Revision-Date: 2016-01-10 16:42+0000\n"
+"Last-Translator: Claude Paroz <claude@2xlibre.net>\n"
 "Language-Team: French (http://www.transifex.com/dokterbob/django-newsletter/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,12 +23,12 @@ msgstr ""
 #: addressimport/parsers.py:40
 #, python-format
 msgid "Entry '%s' does not contain a valid e-mail address."
-msgstr "L'entrée '%s' ne contient pas d'adresse e-mail valide."
+msgstr "L'entrée « %s » ne contient pas d'adresse de courriel valide."
 
 #: addressimport/parsers.py:55
 #, python-format
 msgid "The address file contains duplicate entries for '%s'."
-msgstr "Le fichier d'adresses comporte des doublons pour '%s'."
+msgstr "Le fichier d'adresses comporte des doublons pour « %s »."
 
 #: addressimport/parsers.py:69
 msgid "Some entries are already subscribed to."
@@ -38,7 +39,7 @@ msgstr "Certaines entrées sont déjà abonnées."
 msgid ""
 "E-mail address %(email)s too long, maximum length is %(email_length)s "
 "characters."
-msgstr "L'adresse e-mail %(email)s est trop longue. La taille maximum est %(email_length)s caractères."
+msgstr "L'adresse de courriel %(email)s est trop longue. La taille maximum est %(email_length)s caractères."
 
 #: addressimport/parsers.py:135
 #, python-format
@@ -52,26 +53,26 @@ msgstr "nom"
 
 #: addressimport/parsers.py:200
 msgid "display"
-msgstr "afficher"
+msgstr "affichage"
 
 #: addressimport/parsers.py:207
 #, python-format
 msgid ""
 "Name column not found. The name of this column should be either 'name' or "
 "'%s'."
-msgstr "La colonne du nom n'a pas été trouvée. Le nom de cette colonne doit être 'name' ou '%s'."
+msgstr "La colonne du nom n'a pas été trouvée. Le nom de cette colonne doit être « name » ou « %s »."
 
 #: addressimport/parsers.py:219 addressimport/parsers.py:231
 #: addressimport/parsers.py:244 models.py:37 models.py:176
 msgid "e-mail"
-msgstr "e-mail"
+msgstr "courriel"
 
 #: addressimport/parsers.py:229
 #, python-format
 msgid ""
 "E-mail column not found. The name of this column should be either 'email', "
 "'e-mail' or '%(email)s'."
-msgstr "La colonne de l'e-mail n'a pas été trouvée. Le nom de cette colonne doit être 'email, 'e-mail' ou '%(email)s'."
+msgstr "La colonne de l'adresse électronique n'a pas été trouvée. Le nom de cette colonne doit être « email », « e-mail » ou « %(email)s »."
 
 #: addressimport/parsers.py:239
 #, python-format
@@ -79,26 +80,26 @@ msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
 "'%(e-mail)s'."
-msgstr "Impossible de déterminer les colonnes dans ce fichier CSV. Il doit y avoir un champ nommé 'name' ou '%(name)s' et un nommé 'e-mail' ou '%(e-mail)s'."
+msgstr "Impossible de déterminer les colonnes dans ce fichier CSV. Il doit y avoir un champ nommé « name » ou « %(name)s » et un nommé « e-mail » ou « %(e-mail)s »."
 
 #: addressimport/parsers.py:262
 #, python-format
 msgid "Row with content '%(row)s' does not contain a name and email field."
-msgstr "La ligne '%(row)s' ne contient pas d'e-mail et de nom."
+msgstr "La ligne « %(row)s » ne contient pas de champ de courriel et de nom."
 
 #: addressimport/parsers.py:288
 #, python-format
 msgid "Error reading vCard file: %s"
-msgstr ""
+msgstr "Erreur de lecture du fichier vCard : %s"
 
 #: addressimport/parsers.py:307
 #, python-format
 msgid "Entry '%s' contains no email address."
-msgstr "L'entrée '%s' ne contient pas d'adresse e-mail."
+msgstr "L'entrée « %s » ne contient pas d'adresse électronique."
 
 #: addressimport/parsers.py:343
 msgid "Some entries have no e-mail address."
-msgstr "Plusieurs entrées n'ont pas d'adresse e-mail. "
+msgstr "Plusieurs entrées n'ont pas d'adresse électronique. "
 
 #: admin.py:63
 msgid "Messages"
@@ -133,7 +134,7 @@ msgstr "Envoyé."
 
 #: admin.py:141
 msgid "Delayed submission."
-msgstr "Publication délayée."
+msgstr "Publication reportée."
 
 #: admin.py:143
 msgid "Submitting."
@@ -157,7 +158,7 @@ msgstr "Votre publication est en cours d'envoi."
 
 #: admin.py:208
 msgid "Optional"
-msgstr "Optionnel"
+msgstr "Facultatif"
 
 #: admin.py:235 models.py:460 models.py:512 models.py:668
 msgid "message"
@@ -171,7 +172,7 @@ msgstr "Prévisualisation"
 #: admin.py:267 views.py:606
 msgid ""
 "No HTML template associated with the newsletter this message belongs to."
-msgstr "Pas de templates HTML associé à la newsletter relative à ce message."
+msgstr "Aucun gabarit HTML n'est associé à la newsletter relative à ce message."
 
 #: admin.py:385 admin_forms.py:101
 msgid "Subscribed"
@@ -179,11 +180,11 @@ msgstr "Inscrit"
 
 #: admin.py:387 admin_forms.py:102
 msgid "Unsubscribed"
-msgstr "Non-inscrit"
+msgstr "Désinscrit"
 
 #: admin.py:389
 msgid "Unactivated"
-msgstr "Non-actif"
+msgstr "Désactivé"
 
 #: admin.py:397 models.py:309
 msgid "subscribe date"
@@ -197,8 +198,8 @@ msgstr "date de désinscription"
 #, python-format
 msgid "%s user has been successfully subscribed."
 msgid_plural "%s users have been successfully subscribed."
-msgstr[0] "L'utilisateur %s a bien été inscrit."
-msgstr[1] "Les utilisateurs %s ont bien été inscrits."
+msgstr[0] "%s utilisateur a bien été inscrit."
+msgstr[1] "%s utilisateurs ont bien été inscrits."
 
 #: admin.py:417
 msgid "Subscribe selected users"
@@ -208,7 +209,7 @@ msgstr "Inscrire les utilisateurs sélectionnés"
 #, python-format
 msgid "%s user has been successfully unsubscribed."
 msgid_plural "%s users have been successfully unsubscribed."
-msgstr[0] "L'utilisateur %s a été désinscrit."
+msgstr[0] "%s utilisateur a été désinscrit."
 msgstr[1] "%s utilisateurs ont été désinscrits."
 
 #: admin.py:429
@@ -218,17 +219,17 @@ msgstr "Désinscrire les utilisateurs sélectionnés"
 #: admin.py:484
 #, python-format
 msgid "%s subscriptions have been successfully added."
-msgstr "%s inscriptions ont été ajoutées"
+msgstr "%s inscriptions ont été ajoutées."
 
 #: admin_forms.py:41
 #, python-format
 msgid "File type '%s' was not recognized."
-msgstr "Le type de fichier '%s' n'a pas été reconnu."
+msgstr "Le type de fichier « %s » n'est pas reconnu."
 
 #: admin_forms.py:58
 #, python-format
 msgid "File extension '%s' was not recognized."
-msgstr ""
+msgstr "L'extension de fichier « %s » n'est pas reconnue."
 
 #: admin_forms.py:62
 msgid "No entries could found in this file."
@@ -258,31 +259,31 @@ msgstr "Fichier d'adresses"
 
 #: admin_forms.py:75
 msgid "Ignore non-fatal errors"
-msgstr "Ignorer les erreurs non-bloquantes"
+msgstr "Ignorer les erreurs non bloquantes"
 
 #: admin_forms.py:86
 msgid "You should confirm in order to continue."
-msgstr "Vous devez confirmer avant pouvoir de continuer."
+msgstr "Vous devez confirmer avant de pouvoir continuer."
 
 #: admin_forms.py:89
 #: templates/admin/newsletter/subscription/confirmimportform.html:23
 #: templates/admin/newsletter/subscription/confirmimportform.html:28
 msgid "Confirm import"
-msgstr "Confirmer l'import"
+msgstr "Confirmer l'importation"
 
 #: admin_forms.py:119 admin_forms.py:127
 msgid "If a user has been selected this field should remain empty."
-msgstr "Si un utilisateur a été choisi ce champ doit rester vide."
+msgstr "Si un utilisateur a été choisi, ce champ doit rester vide."
 
 #: admin_forms.py:137
 msgid "Either a user must be selected or an email address must be specified."
-msgstr "Au moins n utilisateur ou une adresse e-mail doivent être choisis au minimum."
+msgstr "Il faut soit choisir un utilisateur ou indiquer une adresse électronique."
 
 #: admin_forms.py:162
 msgid ""
 "This message has already been published in some other submission. Messages "
 "can only be published once."
-msgstr "Ce message a été publié. Les messages ne peuvent être publiés qu'une seule fois."
+msgstr "Ce message a déjà été publié dans un autre envoi. Les messages ne peuvent être publiés qu'une seule fois."
 
 #: admin_utils.py:25
 #, python-format
@@ -291,33 +292,33 @@ msgstr "L'objet %(name)s  avec la clé %(key)r n'existe pas."
 
 #: forms.py:47 forms.py:106
 msgid "An e-mail address is required."
-msgstr "Une adresse e-mail est requise."
+msgstr "Une adresse de courriel est obligatoire."
 
 #: forms.py:55
 #, python-format
 msgid ""
 "The e-mail address '%(email)s' belongs to a user with an account on this "
 "site. Please log in as that user and try again."
-msgstr "L'adresse e-mail '%(email)s' correspond à un utilisateur avec un compte sur ce site. Veuillez-vous connecter en tant que cet utilisateur et essayer à nouveau."
+msgstr "Le courriel « %(email)s » correspond à un utilisateur ayant déjà un compte sur ce site. Veuillez vous connecter en tant que cet utilisateur et essayer à nouveau."
 
 #: forms.py:72
 msgid "Your e-mail address has already been subscribed to."
-msgstr "Votre adresse -email est déjà inscrite."
+msgstr "Votre adresse électronique est déjà inscrite."
 
 #: forms.py:97
 msgid "This subscription has not yet been activated."
-msgstr "L'inscription n'a pas encore été activée."
+msgstr "Cette inscription n'a pas encore été activée."
 
 #: forms.py:114
 #, python-format
 msgid ""
 "This e-mail address belongs to the user '%(username)s'. Please log in as "
 "that user and try again."
-msgstr "Cette adresse e-mail est liée à l'utilisateur '%(username)s'. Veuillez vous connecter en tant que cet utilisateur et essayez à nouveau."
+msgstr "Cette adresse électronique est liée à l'utilisateur « %(username)s ». Connectez-vous en tant que cet utilisateur et essayez à nouveau."
 
 #: forms.py:132
 msgid "This e-mail address has not been subscribed to."
-msgstr "Cette adresse e-mail n'a pas été inscrite."
+msgstr "Cette adresse électronique n'a pas été inscrite."
 
 #: forms.py:147
 msgid "This subscription has already been unsubscribed from."
@@ -325,7 +326,7 @@ msgstr "Cette inscription a déjà été annulée."
 
 #: forms.py:163
 msgid "The validation code supplied by you does not match."
-msgstr "Le code de validation que vous avez entré ne correspond pas."
+msgstr "Le code de validation que vous avez saisi ne correspond pas."
 
 #: forms.py:169
 msgid "Activation code"
@@ -333,7 +334,7 @@ msgstr "Code d'activation"
 
 #: jobs/hourly/submit.py:15
 msgid "Submitting queued newsletter mailings"
-msgstr "Envoi des newsletter dans la queue"
+msgstr "Envoi des newsletters dans la queue"
 
 #: models.py:32
 msgid "newsletter title"
@@ -341,7 +342,7 @@ msgstr "titre de la newsletter"
 
 #: models.py:37
 msgid "Sender e-mail"
-msgstr "E-mail expéditeur"
+msgstr "Courriel de l'expéditeur"
 
 #: models.py:40
 msgid "sender"
@@ -349,7 +350,7 @@ msgstr "expéditeur"
 
 #: models.py:40
 msgid "Sender name"
-msgstr "nom de l'expéditeur"
+msgstr "Nom de l'expéditeur"
 
 #: models.py:44
 msgid "visible"
@@ -357,11 +358,11 @@ msgstr "visible"
 
 #: models.py:48
 msgid "send html"
-msgstr "envoyer le html"
+msgstr "envoyer en HTML"
 
 #: models.py:49
 msgid "Whether or not to send HTML versions of e-mails."
-msgstr ""
+msgstr "Indique si des versions HTML des courriels doivent être envoyés."
 
 #: models.py:101
 msgid "newsletters"
@@ -373,20 +374,20 @@ msgstr "utilisateur"
 
 #: models.py:162
 msgid "optional"
-msgstr "optionnel"
+msgstr "facultatif"
 
 #: models.py:206
 #, python-format
 msgid "Updated subscription %(subscription)s to %(action)s."
-msgstr ""
+msgstr "L'inscription %(subscription)s a été mise à jour avec l'action « %(action)s »."
 
 #: models.py:248
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
-msgstr "Ni e-mail ni nom d'utilisateur fourni."
+msgstr "Ni adresse électronique, ni nom d'utilisateur n'ont été fournis. Il manque quelque chose !"
 
 #: models.py:252
 msgid "If user is set, email must be null and vice versa."
-msgstr "Si un utilisateur est déterminé, l'e-mail doit être nul et inversément."
+msgstr "Si un utilisateur est défini, l'adresse électronique doit être vide et inversement."
 
 #: models.py:294
 msgid "IP address"
@@ -484,22 +485,22 @@ msgstr "publications"
 #: models.py:541
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
-msgstr "%(newsletter)s à %(publish_date)s"
+msgstr "%(newsletter)s le %(publish_date)s"
 
 #: models.py:550
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
-msgstr "Publication en cours de %(submission)s à %(count)d personnes."
+msgstr "Publication de %(submission)s à %(count)d personnes."
 
 #: models.py:597
 #, python-format
 msgid "Submitting message to: %s."
-msgstr "Publication en cours du message à: %s."
+msgstr "Publication du message à : %s."
 
 #: models.py:606
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
-msgstr "Le message %(subscription)s a échoué avec cette erreur: %(error)s"
+msgstr "Le message %(subscription)s a échoué avec cette erreur : %(error)s"
 
 #: models.py:630
 #, python-format
@@ -555,7 +556,7 @@ msgstr "Voir sur le site"
 #: templates/admin/newsletter/message/preview.html:5
 #: templates/admin/newsletter/message/preview.html:19
 msgid "Preview message"
-msgstr "Prévisualiser le message"
+msgstr "Aperçu du message"
 
 #: templates/admin/newsletter/message/preview.html:9
 #: templates/admin/newsletter/subscription/confirmimportform.html:8
@@ -604,7 +605,7 @@ msgstr "Ajouter %(name)s"
 #: templates/admin/newsletter/subscription/importform.html:19
 #: templates/admin/newsletter/subscription/importform.html:24
 msgid "Import addresses"
-msgstr "Importer les adresses"
+msgstr "Importer des adresses"
 
 #: templates/admin/newsletter/subscription/confirmimportform.html:40
 msgid "Confirm"
@@ -612,7 +613,7 @@ msgstr "Confirmer"
 
 #: templates/admin/newsletter/subscription/importform.html:37
 msgid "Upload"
-msgstr "Uploader"
+msgstr "Envoyer"
 
 #: templates/newsletter/newsletter_detail.html:5
 msgid "Newsletter detail"
@@ -635,7 +636,7 @@ msgstr "Mettre à jour les inscriptions"
 #: templates/newsletter/submission_archive.html:5
 #: templates/newsletter/submission_archive.html:10
 msgid "Newsletter archive"
-msgstr "Archive de la newsletter"
+msgstr "Archives de la newsletter"
 
 #: templates/newsletter/subscription_activate.html:5
 #: templates/newsletter/subscription_activate.html:8
@@ -667,22 +668,22 @@ msgstr "Inscription newsletter"
 msgid ""
 "Due to a technical error we were not able to submit your confirmation email."
 " This could be because your email address is invalid."
-msgstr "En raison d'un problème technique nous n'avons pas pu vous envoyer votre e-mail de confirmation. Votre adresse e-mail n'est peut-être pas valide."
+msgstr "En raison d'un problème technique, nous n'avons pas pu vous envoyer de courriel de confirmation. Votre adresse électronique n'est peut-être pas valide."
 
 #: templates/newsletter/subscription_subscribe_activated.html:10
 msgid "Your subscription has successfully been activated."
-msgstr "Votre inscription a déjà été activée."
+msgstr "Votre inscription a été activée avec succès."
 
 #: templates/newsletter/subscription_subscribe_email_sent.html:10
 msgid ""
 "Your subscription request was successfully received and an activation email "
 "has been sent to you. In that email you will find a link which you need to "
 "follow in order to activate your subscription."
-msgstr ""
+msgstr "Votre demande d'inscription a bien été prise en compte et un courriel d'activation vous a été envoyé. Veuillez cliquer sur le lien s'y trouvant afin d'activer votre inscription."
 
 #: templates/newsletter/subscription_subscribe_user.html:19
 msgid "Do you want to subscribe to this newsletter?"
-msgstr "Voulez-vous vous inscrire à cette newsletter?"
+msgstr "Voulez-vous vous inscrire à cette newsletter ?"
 
 #: templates/newsletter/subscription_unsubscribe.html:5
 #: templates/newsletter/subscription_unsubscribe.html:8
@@ -707,11 +708,11 @@ msgid ""
 "Your unsubscription request has successfully been received. An email has "
 "been sent to you with a link you need to follow in order to confirm your "
 "unsubscription."
-msgstr ""
+msgstr "Votre demande de désinscription a bien été prise en compte. Un courriel vous a été envoyé. Veuillez cliquer sur le lien s'y trouvant afin de confirmer votre désinscription."
 
 #: templates/newsletter/subscription_unsubscribe_user.html:20
 msgid "Do you want to unsubscribe from this newsletter?"
-msgstr "Voulez-vous vous désinscrire de cette newsletter?"
+msgstr "Voulez-vous vous désinscrire de cette newsletter ?"
 
 #: templates/newsletter/subscription_update.html:5
 #: templates/newsletter/subscription_update.html:8
@@ -733,15 +734,15 @@ msgid ""
 "Your update request was successfully received and an activation email has "
 "been sent to you. In that email you will find a link which you need to "
 "follow in order to update your subscription."
-msgstr "Votre demande de mise à jour a bien été reçue et un e-mail de confirmation vous a été envoyé. Veuillez cliquer sur le lien s'y trouvant afin de mettre à jour votre inscription."
+msgstr "Votre demande de mise à jour a bien été reçue et un courriel de confirmation vous a été envoyé. Veuillez cliquer sur le lien s'y trouvant afin de mettre à jour votre inscription."
 
 #: templates/widget/image.html:2
 msgid "Currently:"
-msgstr "Actuellement:"
+msgstr "Actuellement :"
 
 #: templates/widget/image.html:4
 msgid "Change:"
-msgstr "Changement:"
+msgstr "Changement :"
 
 #: views.py:114
 msgid "Your changes have been saved."

@@ -5,12 +5,13 @@
 # Translators:
 # Jannis Vajen, 2013
 # Jannis Vajen, 2012
+# dokterbob <mathijs@mathijsfietst.nl>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-01-05 17:58+0100\n"
-"PO-Revision-Date: 2015-07-12 13:29+0000\n"
+"PO-Revision-Date: 2016-01-22 10:43+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: German (http://www.transifex.com/dokterbob/django-newsletter/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -228,7 +229,7 @@ msgstr "Dateityp '%s' wurde nicht erkannt."
 #: admin_forms.py:58
 #, python-format
 msgid "File extension '%s' was not recognized."
-msgstr ""
+msgstr "Die Dateiendung '%s' wurde nicht erkannt."
 
 #: admin_forms.py:62
 msgid "No entries could found in this file."
