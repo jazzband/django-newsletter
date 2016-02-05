@@ -259,10 +259,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def preview_html(self, request, object_id):
         message = self._getobj(request, object_id)
 
-        (subject_template, text_template, html_template) = \
-            message.newsletter.get_templates('message')
-
-        if not html_template:
+        if not message.html_template:
             raise Http404(_(
                 'No HTML template associated with the newsletter this '
                 'message belongs to.'
@@ -275,14 +272,11 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                      'STATIC_URL': settings.STATIC_URL,
                      'MEDIA_URL': settings.MEDIA_URL})
 
-        return HttpResponse(html_template.render(c))
+        return HttpResponse(message.html_template.render(c))
 
     @xframe_options_sameorigin
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
-
-        (subject_template, text_template, html_template) = \
-            message.newsletter.get_templates('message')
 
         c = Context({
             'message': message,
@@ -293,7 +287,10 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             'MEDIA_URL': settings.MEDIA_URL
         }, autoescape=False)
 
-        return HttpResponse(text_template.render(c), content_type='text/plain')
+        return HttpResponse(
+            message.text_template.render(c),
+            content_type='text/plain'
+        )
 
     def submit(self, request, object_id):
         submission = Submission.from_message(self._getobj(request, object_id))

@@ -10,6 +10,7 @@ from django.db.models import permalink
 from django.template import Context
 from django.template.loader import select_template
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.utils.timezone import now
@@ -515,6 +516,23 @@ class Message(models.Model):
             self.newsletter = Newsletter.get_default()
         super(Message, self).save(**kwargs)
 
+    @cached_property
+    def templates(self):
+        """Return a (subject_template, text_template, html_template) tuple."""
+        return self.newsletter.get_templates('message')
+
+    @property
+    def subject_template(self):
+        return self.templates[0]
+
+    @property
+    def text_template(self):
+        return self.templates[1]
+
+    @property
+    def html_template(self):
+        return self.templates[2]
+
     @classmethod
     def get_default(cls):
         try:
@@ -540,6 +558,16 @@ class Submission(models.Model):
             'publish_date': self.publish_date
         }
 
+    @cached_property
+    def extra_headers(self):
+        return {
+            'List-Unsubscribe': 'http://%s%s' % (
+                Site.objects.get_current().domain,
+                reverse('newsletter_unsubscribe_request',
+                        args=[self.message.newsletter.slug])
+            ),
+        }
+
     def submit(self):
         subscriptions = self.subscriptions.filter(subscribed=True)
 
@@ -555,71 +583,62 @@ class Submission(models.Model):
         self.save()
 
         try:
-            (subject_template, text_template, html_template) = \
-                self.message.newsletter.get_templates('message')
-            current_site = Site.objects.get_current()
-            extra_headers = {
-                'List-Unsubscribe': 'http://%s%s' % (
-                    current_site.domain,
-                    reverse('newsletter_unsubscribe_request',
-                            args=[self.message.newsletter.slug])
-                ),
-            }
-
             for subscription in subscriptions:
-                variable_dict = {
-                    'subscription': subscription,
-                    'site': current_site,
-                    'submission': self,
-                    'message': self.message,
-                    'newsletter': self.newsletter,
-                    'date': self.publish_date,
-                    'STATIC_URL': settings.STATIC_URL,
-                    'MEDIA_URL': settings.MEDIA_URL
-                }
-
-                unescaped_context = Context(variable_dict, autoescape=False)
-
-                subject = subject_template.render(unescaped_context).strip()
-                text = text_template.render(unescaped_context)
-
-                message = EmailMultiAlternatives(
-                    subject, text,
-                    from_email=self.newsletter.get_sender(),
-                    to=[subscription.get_recipient()],
-                    headers=extra_headers,
-                )
-
-                if html_template:
-                    escaped_context = Context(variable_dict)
-
-                    message.attach_alternative(
-                        html_template.render(escaped_context),
-                        "text/html"
-                    )
-
-                try:
-                    logger.debug(
-                        ugettext(u'Submitting message to: %s.'),
-                        subscription
-                    )
-
-                    message.send()
-
-                except Exception as e:
-                    # TODO: Test coverage for this branch.
-                    logger.error(
-                        ugettext(u'Message %(subscription)s failed '
-                                 u'with error: %(error)s'),
-                        {'subscription': subscription,
-                         'error': e}
-                    )
-
+                self.send_message(subscription)
             self.sent = True
 
         finally:
             self.sending = False
             self.save()
+
+    def send_message(self, subscription):
+        variable_dict = {
+            'subscription': subscription,
+            'site': Site.objects.get_current(),
+            'submission': self,
+            'message': self.message,
+            'newsletter': self.newsletter,
+            'date': self.publish_date,
+            'STATIC_URL': settings.STATIC_URL,
+            'MEDIA_URL': settings.MEDIA_URL
+        }
+
+        unescaped_context = Context(variable_dict, autoescape=False)
+
+        subject = self.message.subject_template.render(unescaped_context).strip()
+        text = self.message.text_template.render(unescaped_context)
+
+        message = EmailMultiAlternatives(
+            subject, text,
+            from_email=self.newsletter.get_sender(),
+            to=[subscription.get_recipient()],
+            headers=self.extra_headers,
+        )
+
+        if self.message.html_template:
+            escaped_context = Context(variable_dict)
+
+            message.attach_alternative(
+                self.message.html_template.render(escaped_context),
+                "text/html"
+            )
+
+        try:
+            logger.debug(
+                ugettext(u'Submitting message to: %s.'),
+                subscription
+            )
+
+            message.send()
+
+        except Exception as e:
+            # TODO: Test coverage for this branch.
+            logger.error(
+                ugettext(u'Message %(subscription)s failed '
+                         u'with error: %(error)s'),
+                {'subscription': subscription,
+                 'error': e}
+            )
 
     @classmethod
     def submit_queue(cls):

@@ -1163,21 +1163,16 @@ class ArchiveTestcase(NewsletterListTestCase):
         except IndexError:
             self.newsletter = None
 
-        # Make sure there's a HTML template for this newsletter,
-        # otherwise the archive will not function.
-
-        (subject_template, text_template, html_template) = \
-            self.newsletter.get_templates('message')
-
-        self.assertTrue(html_template)
-
         # Create a message first
-        message = Message(
+        message = Message.objects.create(
             title='Test message',
             slug='test-message',
+            newsletter=self.newsletter,
         )
 
-        message.save()
+        # Make sure there's a HTML template for this newsletter,
+        # otherwise the archive will not function.
+        self.assertTrue(message.html_template)
 
         # Create a submission
         self.submission = Submission.from_message(message)
