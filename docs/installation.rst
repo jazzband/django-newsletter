@@ -102,3 +102,8 @@ Installation
         @daily /path/to/my/project/manage.py runjobs daily
         @weekly /path/to/my/project/manage.py runjobs weekly
         @monthly /path/to/my/project/manage.py runjobs monthly
+
+To send mail, ``django-newsletter`` uses Django-provided email utilities, so
+ensure that `EMAIL_* settings
+<https://docs.djangoproject.com/en/stable/ref/settings/#email-backend`_ are
+properly configured for your project.
