@@ -1,11 +1,12 @@
 import itertools
-
+import six
 import unittest
 
 from datetime import timedelta
 
 from django.core import mail
 
+from django.test.utils import patch_logger
 from django.utils.six.moves import range
 from django.utils.timezone import now
 
@@ -86,6 +87,21 @@ class ArticleTestCase(MailingTestCase):
             if last:
                 self.assertTrue(a.sortorder > last)
             last = a.sortorder
+
+
+class MessageTestCase(MailingTestCase):
+    def test_message_str(self):
+        m1 = Message(title='Test message', slug='test-message')
+        with patch_logger('newsletter.models', 'warning') as warnings:
+            self.assertEqual(six.text_type(m1), "Test message")
+        self.assertEqual(len(warnings), 1)
+
+        m2 = Message.objects.create(
+            title='Test message str',
+            newsletter=self.n,
+            slug='test-message-str'
+        )
+        self.assertEqual(six.text_type(m2), "Test message str in Test newsletter")
 
 
 class CreateSubmissionTestCase(MailingTestCase):

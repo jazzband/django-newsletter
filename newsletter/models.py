@@ -495,6 +495,11 @@ class Message(models.Model):
         verbose_name=_('modified'), auto_now=True, editable=False
     )
 
+    class Meta:
+        verbose_name = _('message')
+        verbose_name_plural = _('messages')
+        unique_together = ('slug', 'newsletter')
+
     def __str__(self):
         try:
             return _(u"%(title)s in %(newsletter)s") % {
@@ -502,17 +507,8 @@ class Message(models.Model):
                 'newsletter': self.newsletter
             }
         except Newsletter.DoesNotExist:
-            logger.warn(
-                'Database inconsistency, related newsletter not found '
-                'for message with id %d', self.id
-            )
-
-            return "%s" % self.title
-
-    class Meta:
-        verbose_name = _('message')
-        verbose_name_plural = _('messages')
-        unique_together = ('slug', 'newsletter')
+            logger.warning('No newsletter has been set for this message yet.')
+            return self.title
 
     def save(self, **kwargs):
         if self.pk is None:
