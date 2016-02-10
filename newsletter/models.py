@@ -517,21 +517,21 @@ class Message(models.Model):
         super(Message, self).save(**kwargs)
 
     @cached_property
-    def templates(self):
+    def _templates(self):
         """Return a (subject_template, text_template, html_template) tuple."""
         return self.newsletter.get_templates('message')
 
     @property
     def subject_template(self):
-        return self.templates[0]
+        return self._templates[0]
 
     @property
     def text_template(self):
-        return self.templates[1]
+        return self._templates[1]
 
     @property
     def html_template(self):
-        return self.templates[2]
+        return self._templates[2]
 
     @classmethod
     def get_default(cls):
