@@ -19,22 +19,27 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import warnings
+
 from setuptools import setup, find_packages
 
 try:
     README = open('README.rst').read() + '\n\n'
     README += open('CHANGES.rst').read()
 except:
+    warnings.warn('Could not read README.rst and/or CHANGES.rst')
     README = None
 
 try:
     REQUIREMENTS = open('requirements.txt').read()
 except:
+    warnings.warn('Could not read requirements.txt')
     REQUIREMENTS = None
 
 try:
     TEST_REQUIREMENTS = open('requirements_test.txt').read()
 except:
+    warnings.warn('Could not read requirements_test.txt')
     TEST_REQUIREMENTS = None
 
 
