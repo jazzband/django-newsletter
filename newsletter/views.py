@@ -597,8 +597,7 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
     def get_template(self):
         """ Get the message template for the current newsletter. """
 
-        (subject_template, text_template, html_template) = \
-            self.object.newsletter.get_templates('message')
+        html_template = self.object.message.html_template
 
         # No HTML -> no party!
         if not html_template:
