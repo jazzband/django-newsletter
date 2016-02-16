@@ -88,8 +88,9 @@ if you have more than a couple lines of styling.
 `Django-Premailer <https://github.com/alexhayes/django-premailer>`_ is an
 open-source package available via pip that adds a template tag that applies
 a premailer. Unfortunately that package is not kept up to date, and doesn't
-work with newer versions of Django. An example of a working version is
-available at this `gist <https://gist.github.com/Sheepzez/2f06f0bf54fc33cdcaab>`_.
+work with newer versions of Django (1.6+) due to a change in Django API.
+An example of a working version is available at this
+`gist <https://gist.github.com/Sheepzez/2f06f0bf54fc33cdcaab>`_.
 Requires `Python Premailer <Requires `https://pypi.python.org/pypi/premailer>`_
 installed.
 
