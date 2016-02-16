@@ -79,3 +79,30 @@ The following templates can be defined:
 `update_subject.txt`
     Subject template with confirmation link for updating subscriptions.
 
+Using a premailer
+^^^^^^^^^^^^^^^^^
+A premailer is a program that translates embedded CSS into inline CSS. Inline
+CSS is much more widely supported in emails, but can make templates very messy
+if you have more than a couple lines of styling.
+
+`Django-Premailer <https://github.com/alexhayes/django-premailer>`_ is an
+open-source package available via pip that adds a template tag that applies
+a premailer. Unfortunately that package is not kept up to date, and doesn't
+work with newer versions of Django. An example of a working version is
+available at this `gist <https://gist.github.com/Sheepzez/2f06f0bf54fc33cdcaab>`_.
+Requires `Python Premailer <Requires `https://pypi.python.org/pypi/premailer>`_
+installed.
+
+You can then use the template tag in your templates as follows::
+
+  {% load premailer}{% premailer %}
+  <html>
+  <style type="text/css">
+  h1 { border:1px solid black }
+  p { color:red;}
+  </style>
+
+  <h1 style="font-weight:bolder">Hey</h1>
+  <p>Hej</p>
+  </html>
+  {% endpremailer %}
