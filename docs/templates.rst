@@ -85,14 +85,15 @@ A premailer is a program that translates embedded CSS into inline CSS. Inline
 CSS is much more widely supported in emails, but can make templates very messy
 if you have more than a couple lines of styling.
 
-`Django-Premailer <https://github.com/alexhayes/django-premailer>`_ is an
-open-source package available via pip that adds a template tag that applies
-a premailer. Unfortunately that package is not kept up to date, and doesn't
-work with newer versions of Django (1.6+) due to a change in Django API.
+`django-premailer <https://pypi.python.org/pypi/django-premailer>`_ is an
+open-source package on PyPI that adds a template tag that applies
+a premailer. Unfortunately, the package was
+`broken for Django 1.6 and upwards <https://github.com/alexhayes/django-premailer/issues/3>`_
+at the time of writing.
 An example of a working version is available at this
-`gist <https://gist.github.com/Sheepzez/2f06f0bf54fc33cdcaab>`_.
-Requires `Python Premailer <Requires `https://pypi.python.org/pypi/premailer>`_
-installed.
+`gist <https://gist.github.com/Sheepzez/2f06f0bf54fc33cdcaab>`_
+(requires `premailer <https://pypi.python.org/pypi/premailer>`_ to be
+installed).
 
 You can then use the template tag in your templates as follows::
 
