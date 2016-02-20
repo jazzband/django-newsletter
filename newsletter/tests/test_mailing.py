@@ -213,6 +213,13 @@ class SubmitSubmissionTestCase(MailingTestCase):
     def test_submitsubmission(self):
         """ Test queue-based submission. """
 
+        # Adding a subscription after the submission has been created, it should
+        # not be used when submitting self.sub
+        new_subscr = Subscription.objects.create(
+            name='Other Name', email='other@test.com',
+            newsletter=self.n, subscribed=True
+        )
+
         self.sub.prepared = True
         self.sub.publish_date = now() - timedelta(seconds=1)
         self.sub.save()
