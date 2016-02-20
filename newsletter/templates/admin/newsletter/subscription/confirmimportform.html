@@ -28,8 +28,8 @@
 <h1>{% trans "Confirm import" %}</h1>
 <div id="content-main">
     <ul>
-    {% for subscriber in subscribers.values %}
-    <li>{{ subscriber }}</li>
+    {% for email, name in subscribers.items %}
+    <li>{% if name %}{{ name }} &lt;{{ email }}&gt;{% else %}{{ email }}{% endif %}</li>
     {% endfor %}
     </ul>
     <form enctype="multipart/form-data" method="post">

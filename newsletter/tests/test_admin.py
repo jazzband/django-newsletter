@@ -54,6 +54,7 @@ class AdminTestCase(AdminTestMixin, TestCase):
         response = self.admin_import_file(source_file, ignore_errors)
 
         self.assertContains(response, "<h1>Confirm import</h1>")
+        self.assertContains(response, "<li>Jill Martin &lt;jill@example.org&gt;</li>")
 
         import_confirm_url = reverse(
             'admin:newsletter_subscription_import_confirm'

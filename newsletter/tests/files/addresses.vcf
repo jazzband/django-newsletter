@@ -13,5 +13,5 @@ BEGIN:VCARD
 VERSION:3.0
 N:Martin;Jill
 FN:Jill Martin
-EMAIL;TYPE=INTERNET:jill.martin@example.org
+EMAIL;TYPE=INTERNET:jill@example.org
 END:VCARD
