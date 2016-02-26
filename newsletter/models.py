@@ -422,25 +422,10 @@ class Article(models.Model):
     An Article within a Message which will be send through a Submission.
     """
 
-    @classmethod
-    def get_next_order(cls):
-        """
-        Get the next available Article ordering as to assure uniqueness.
-        """
-
-        next_order = cls.objects.aggregate(
-            models.Max('sortorder')
-        )['sortorder__max']
-
-        if next_order:
-            return next_order + 10
-        else:
-            return 10
-
     sortorder = models.PositiveIntegerField(
         help_text=_('Sort order determines the order in which articles are '
                     'concatenated in a post.'),
-        verbose_name=_('sort order'), db_index=True,
+        verbose_name=_('sort order'), blank=True
     )
 
     title = models.CharField(max_length=200, verbose_name=_('title'))
@@ -466,15 +451,17 @@ class Article(models.Model):
         ordering = ('sortorder',)
         verbose_name = _('article')
         verbose_name_plural = _('articles')
+        unique_together = ('post', 'sortorder')
 
     def __str__(self):
         return self.title
 
     def save(self):
-        if self.pk is None:
+        if self.sortorder is None:
             # If saving a new object get the next available Article ordering
             # as to assure uniqueness.
-            self.sortorder = Article.get_next_order()
+            self.sortorder = self.post.get_next_article_sortorder()
+
         super(Article, self).save()
 
 
@@ -515,6 +502,18 @@ class Message(models.Model):
         if self.pk is None:
             self.newsletter = Newsletter.get_default()
         super(Message, self).save(**kwargs)
+
+    def get_next_article_sortorder(self):
+        """ Get next available sortorder for Article. """
+
+        next_order = self.articles.aggregate(
+            models.Max('sortorder')
+        )['sortorder__max']
+
+        if next_order:
+            return next_order + 10
+        else:
+            return 10
 
     @cached_property
     def _templates(self):

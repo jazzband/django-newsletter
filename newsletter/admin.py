@@ -36,7 +36,8 @@ from .models import (
 from django.utils.timezone import now
 
 from .admin_forms import (
-    SubmissionAdminForm, SubscriptionAdminForm, ImportForm, ConfirmForm
+    SubmissionAdminForm, SubscriptionAdminForm, ImportForm, ConfirmForm,
+    ArticleFormSet
 )
 from .admin_utils import ExtendibleModelAdminMixin, make_subscription
 
@@ -201,6 +202,7 @@ if (
 class ArticleInline(AdminImageMixin, StackedInline):
     model = Article
     extra = 2
+    formset = ArticleFormSet
     fieldsets = (
         (None, {
             'fields': ('title', 'sortorder', 'text')
