@@ -438,7 +438,11 @@ class SubscribeRequestView(ActionRequestView):
         kwargs = super(SubscribeRequestView, self).get_form_kwargs()
 
         if self.request.method in ('POST', 'PUT'):
-            kwargs['ip'] = self.request.META.get('REMOTE_ADDR')
+            x_forwarded_for = self.request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                kwargs['ip'] = x_forwarded_for
+            else:
+                kwargs['ip'] = self.request.META.get('REMOTE_ADDR')
 
         return kwargs
 
