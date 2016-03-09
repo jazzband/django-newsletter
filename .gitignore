@@ -10,8 +10,9 @@ MANIFEST
 *.egg*
 distribute-*
 .DS_Store
-pep8*
-coverage*
+.coverage
 env
 django_setuptest*
 docs/_*
+.idea/
+venv/

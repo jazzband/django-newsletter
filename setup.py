@@ -19,22 +19,33 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import warnings
+
 from setuptools import setup, find_packages
 
 try:
     README = open('README.rst').read() + '\n\n'
     README += open('CHANGES.rst').read()
 except:
+    warnings.warn('Could not read README.rst and/or CHANGES.rst')
     README = None
 
 try:
     REQUIREMENTS = open('requirements.txt').read()
 except:
+    warnings.warn('Could not read requirements.txt')
     REQUIREMENTS = None
+
+try:
+    TEST_REQUIREMENTS = open('requirements_test.txt').read()
+except:
+    warnings.warn('Could not read requirements_test.txt')
+    TEST_REQUIREMENTS = None
+
 
 setup(
     name='django-newsletter',
-    version="0.5.1",
+    version="0.6",
     description=(
         'Django app for managing multiple mass-mailing lists with both '
         'plaintext as well as HTML templates (and pluggable WYSIWYG editors '
@@ -57,14 +68,11 @@ setup(
         'License :: OSI Approved :: GNU Affero General Public License v3',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Utilities'
     ),
-    test_suite='setuptest.setuptest.SetupTestSuite',
-    tests_require=(
-        'django-setuptest',
-        'argparse',  # apparently needed by django-setuptest on python 2.6
-        'django-imperavi',
-        'django-tinymce',
-        'pytz'
-    ),
+    test_suite='runtests.runtests',
+    tests_require=TEST_REQUIREMENTS
 )

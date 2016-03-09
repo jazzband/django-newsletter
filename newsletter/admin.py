@@ -1,26 +1,31 @@
 import logging
 logger = logging.getLogger(__name__)
 
+import six
+
 from django.db import models
 
 from django.conf import settings
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from django.contrib import admin, messages
 from django.contrib.sites.models import Site
 
 from django.core import serializers
+from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
-from django.template import RequestContext, Context
+from django.template import Context
 
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 
-from django.utils.translation import ugettext, ungettext, ugettext_lazy as _
+from django.utils.translation import ugettext as _, ungettext
 from django.utils.formats import date_format
 
 from django.views.decorators.clickjacking import xframe_options_sameorigin
+from django.views.i18n import javascript_catalog
 
 from sorl.thumbnail.admin import AdminImageMixin
 
@@ -30,17 +35,19 @@ from .models import (
 
 from django.utils.timezone import now
 
-from .admin_forms import *
-from .admin_utils import *
+from .admin_forms import (
+    SubmissionAdminForm, SubscriptionAdminForm, ImportForm, ConfirmForm
+)
+from .admin_utils import ExtendibleModelAdminMixin, make_subscription
 
 from .settings import newsletter_settings
 
 # Contsruct URL's for icons
 ICON_URLS = {
-    'yes': '%sadmin/img/icon-yes.gif' % settings.STATIC_URL,
+    'yes': '%snewsletter/admin/img/icon-yes.gif' % settings.STATIC_URL,
     'wait': '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL,
     'submit': '%snewsletter/admin/img/submitting.gif' % settings.STATIC_URL,
-    'no': '%sadmin/img/icon-no.gif' % settings.STATIC_URL
+    'no': '%snewsletter/admin/img/icon-no.gif' % settings.STATIC_URL
 }
 
 
@@ -53,7 +60,7 @@ class NewsletterAdmin(admin.ModelAdmin):
     """ List extensions """
     def admin_messages(self, obj):
         return '<a href="../message/?newsletter__id__exact=%s">%s</a>' % (
-            obj.id, ugettext('Messages')
+            obj.id, _('Messages')
         )
     admin_messages.allow_tags = True
     admin_messages.short_description = ''
@@ -61,13 +68,13 @@ class NewsletterAdmin(admin.ModelAdmin):
     def admin_subscriptions(self, obj):
         return \
             '<a href="../subscription/?newsletter__id__exact=%s">%s</a>' % \
-            (obj.id, ugettext('Subscriptions'))
+            (obj.id, _('Subscriptions'))
     admin_subscriptions.allow_tags = True
     admin_subscriptions.short_description = ''
 
     def admin_submissions(self, obj):
         return '<a href="../submission/?newsletter__id__exact=%s">%s</a>' % (
-            obj.id, ugettext('Submissions')
+            obj.id, _('Submissions')
         )
     admin_submissions.allow_tags = True
     admin_submissions.short_description = ''
@@ -87,19 +94,19 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     """ List extensions """
     def admin_message(self, obj):
         return '<a href="%d/">%s</a>' % (obj.id, obj.message.title)
-    admin_message.short_description = ugettext('submission')
+    admin_message.short_description = _('submission')
     admin_message.allow_tags = True
 
     def admin_newsletter(self, obj):
         return '<a href="../newsletter/%s/">%s</a>' % (
             obj.newsletter.id, obj.newsletter
         )
-    admin_newsletter.short_description = ugettext('newsletter')
+    admin_newsletter.short_description = _('newsletter')
     admin_newsletter.allow_tags = True
 
     def admin_publish_date(self, obj):
         if obj.publish_date:
-            return date_format(obj.publish_date)
+            return date_format(obj.publish_date, 'DATETIME_FORMAT')
         else:
             return ''
     admin_publish_date.short_description = _("publish date")
@@ -128,42 +135,46 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def admin_status_text(self, obj):
         if obj.prepared:
             if obj.sent:
-                return ugettext("Sent.")
+                return _("Sent.")
             else:
                 if obj.publish_date > now():
-                    return ugettext("Delayed submission.")
+                    return _("Delayed submission.")
                 else:
-                    return ugettext("Submitting.")
+                    return _("Submitting.")
         else:
-            return ugettext("Not sent.")
-    admin_status_text.short_description = ugettext('Status')
+            return _("Not sent.")
+    admin_status_text.short_description = _('Status')
 
     """ Views """
     def submit(self, request, object_id):
         submission = self._getobj(request, object_id)
 
         if submission.sent or submission.prepared:
-            messages.info(request, ugettext("Submission already sent."))
-            return HttpResponseRedirect('../')
+            messages.info(request, _("Submission already sent."))
+            change_url = reverse(
+                'admin:newsletter_submission_change', args=[object_id]
+            )
+            return HttpResponseRedirect(change_url)
 
         submission.prepared = True
         submission.save()
 
-        messages.info(request, ugettext("Your submission is being sent."))
+        messages.info(request, _("Your submission is being sent."))
 
-        return HttpResponseRedirect('../../')
+        changelist_url = reverse('admin:newsletter_submission_changelist')
+        return HttpResponseRedirect(changelist_url)
 
     """ URLs """
     def get_urls(self):
         urls = super(SubmissionAdmin, self).get_urls()
 
-        my_urls = patterns(
-            '', url(
+        my_urls = [
+            url(
                 r'^(.+)/submit/$',
                 self._wrap(self.submit),
                 name=self._view_name('submit')
             )
-        )
+        ]
 
         return my_urls + urls
 
@@ -221,11 +232,11 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     """ List extensions """
     def admin_title(self, obj):
         return '<a href="%d/">%s</a>' % (obj.id, obj.title)
-    admin_title.short_description = ugettext('message')
+    admin_title.short_description = _('message')
     admin_title.allow_tags = True
 
     def admin_preview(self, obj):
-        return '<a href="%d/preview/">%s</a>' % (obj.id, ugettext('Preview'))
+        return '<a href="%d/preview/">%s</a>' % (obj.id, _('Preview'))
     admin_preview.short_description = ''
     admin_preview.allow_tags = True
 
@@ -233,25 +244,22 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         return '<a href="../newsletter/%s/">%s</a>' % (
             obj.newsletter.id, obj.newsletter
         )
-    admin_newsletter.short_description = ugettext('newsletter')
+    admin_newsletter.short_description = _('newsletter')
     admin_newsletter.allow_tags = True
 
     """ Views """
     def preview(self, request, object_id):
-        return render_to_response(
+        return render(
+            request,
             "admin/newsletter/message/preview.html",
             {'message': self._getobj(request, object_id)},
-            RequestContext(request, {}),
         )
 
     @xframe_options_sameorigin
     def preview_html(self, request, object_id):
         message = self._getobj(request, object_id)
 
-        (subject_template, text_template, html_template) = \
-            message.newsletter.get_templates('message')
-
-        if not html_template:
+        if not message.html_template:
             raise Http404(_(
                 'No HTML template associated with the newsletter this '
                 'message belongs to.'
@@ -264,14 +272,11 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                      'STATIC_URL': settings.STATIC_URL,
                      'MEDIA_URL': settings.MEDIA_URL})
 
-        return HttpResponse(html_template.render(c))
+        return HttpResponse(message.html_template.render(c))
 
     @xframe_options_sameorigin
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
-
-        (subject_template, text_template, html_template) = \
-            message.newsletter.get_templates('message')
 
         c = Context({
             'message': message,
@@ -282,12 +287,18 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             'MEDIA_URL': settings.MEDIA_URL
         }, autoescape=False)
 
-        return HttpResponse(text_template.render(c), mimetype='text/plain')
+        return HttpResponse(
+            message.text_template.render(c),
+            content_type='text/plain'
+        )
 
     def submit(self, request, object_id):
         submission = Submission.from_message(self._getobj(request, object_id))
 
-        return HttpResponseRedirect('../../../submission/%s/' % submission.id)
+        change_url = reverse(
+            'admin:newsletter_submission_change', args=[submission.id])
+
+        return HttpResponseRedirect(change_url)
 
     def subscribers_json(self, request, object_id):
         message = self._getobj(request, object_id)
@@ -295,14 +306,13 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         json = serializers.serialize(
             "json", message.newsletter.get_subscriptions(), fields=()
         )
-        return HttpResponse(json, mimetype='application/json')
+        return HttpResponse(json, content_type='application/json')
 
     """ URLs """
     def get_urls(self):
         urls = super(MessageAdmin, self).get_urls()
 
-        my_urls = patterns(
-            '',
+        my_urls = [
             url(r'^(.+)/preview/$',
                 self._wrap(self.preview),
                 name=self._view_name('preview')),
@@ -318,7 +328,7 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             url(r'^(.+)/subscribers/json/$',
                 self._wrap(self.subscribers_json),
                 name=self._view_name('subscribers_json')),
-        )
+        ]
 
         return my_urls + urls
 
@@ -342,13 +352,14 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     )
     date_hierarchy = 'subscribe_date'
     actions = ['make_subscribed', 'make_unsubscribed']
+    exclude = ['unsubscribed']
 
     """ List extensions """
     def admin_newsletter(self, obj):
         return '<a href="../newsletter/%s/">%s</a>' % (
             obj.newsletter.id, obj.newsletter
         )
-    admin_newsletter.short_description = ugettext('newsletter')
+    admin_newsletter.short_description = _('newsletter')
     admin_newsletter.allow_tags = True
 
     def admin_status(self, obj):
@@ -368,12 +379,12 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     def admin_status_text(self, obj):
         if obj.subscribed:
-            return ugettext("Subscribed")
+            return _("Subscribed")
         elif obj.unsubscribed:
-            return ugettext("Unsubscribed")
+            return _("Unsubscribed")
         else:
-            return ugettext("Unactivated")
-    admin_status_text.short_description = ugettext('Status')
+            return _("Unactivated")
+    admin_status_text.short_description = _('Status')
 
     def admin_subscribe_date(self, obj):
         if obj.subscribe_date:
@@ -395,8 +406,8 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         self.message_user(
             request,
             ungettext(
-                "%s user has been successfully subscribed.",
-                "%s users have been successfully subscribed.",
+                "%d user has been successfully subscribed.",
+                "%d users have been successfully subscribed.",
                 rows_updated
             ) % rows_updated
         )
@@ -407,8 +418,8 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         self.message_user(
             request,
             ungettext(
-                "%s user has been successfully unsubscribed.",
-                "%s users have been successfully unsubscribed.",
+                "%d user has been successfully unsubscribed.",
+                "%d users have been successfully unsubscribed.",
                 rows_updated
             ) % rows_updated
         )
@@ -416,58 +427,82 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
 
     """ Views """
     def subscribers_import(self, request):
+        if not request.user.has_perm('newsletter.add_subscription'):
+            raise PermissionDenied()
         if request.POST:
             form = ImportForm(request.POST, request.FILES)
             if form.is_valid():
                 request.session['addresses'] = form.get_addresses()
-                return HttpResponseRedirect('confirm/')
+                request.session['newsletter_pk'] = \
+                    form.cleaned_data['newsletter'].pk
+
+                confirm_url = reverse(
+                    'admin:newsletter_subscription_import_confirm'
+                )
+                return HttpResponseRedirect(confirm_url)
         else:
             form = ImportForm()
 
-        return render_to_response(
+        return render(
+            request,
             "admin/newsletter/subscription/importform.html",
             {'form': form},
-            RequestContext(request, {}),
         )
 
     def subscribers_import_confirm(self, request):
         # If no addresses are in the session, start all over.
-        if not 'addresses' in request.session:
-            return HttpResponseRedirect('../')
+
+        if 'addresses' not in request.session:
+            import_url = reverse('admin:newsletter_subscription_import')
+            return HttpResponseRedirect(import_url)
 
         addresses = request.session['addresses']
+        newsletter = Newsletter.objects.get(
+            pk=request.session['newsletter_pk']
+        )
+
         logger.debug('Confirming addresses: %s', addresses)
+
         if request.POST:
             form = ConfirmForm(request.POST)
             if form.is_valid():
                 try:
-                    for address in addresses.values():
-                        address.save()
+                    for email, name in six.iteritems(addresses):
+                        address_inst = make_subscription(
+                            newsletter, email, name
+                        )
+                        address_inst.save()
                 finally:
                     del request.session['addresses']
+                    del request.session['newsletter_pk']
 
                 messages.success(
                     request,
-                    _('%s subscriptions have been successfully added.') %
-                    len(addresses)
+                    ungettext(
+                        "%d subscription has been successfully added.",
+                        "%d subscriptions have been successfully added.",
+                        len(addresses)
+                    ) % len(addresses)
                 )
 
-                return HttpResponseRedirect('../../')
+                changelist_url = reverse(
+                    'admin:newsletter_subscription_changelist'
+                )
+                return HttpResponseRedirect(changelist_url)
         else:
             form = ConfirmForm()
 
-        return render_to_response(
+        return render(
+            request,
             "admin/newsletter/subscription/confirmimportform.html",
             {'form': form, 'subscribers': addresses},
-            RequestContext(request, {}),
         )
 
     """ URLs """
     def get_urls(self):
         urls = super(SubscriptionAdmin, self).get_urls()
 
-        my_urls = patterns(
-            '',
+        my_urls = [
             url(r'^import/$',
                 self._wrap(self.subscribers_import),
                 name=self._view_name('import')),
@@ -478,10 +513,10 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             # Translated JS strings - these should be app-wide but are
             # only used in this part of the admin. For now, leave them here.
             url(r'^jsi18n/$',
-                'django.views.i18n.javascript_catalog',
+                javascript_catalog,
                 {'packages': ('newsletter',)},
                 name='newsletter_js18n')
-        )
+        ]
 
         return my_urls + urls
 

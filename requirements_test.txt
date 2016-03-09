@@ -1,0 +1,6 @@
+django-imperavi
+django-tinymce
+pytz
+Pillow
+webtest
+django-webtest

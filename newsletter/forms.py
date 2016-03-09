@@ -1,10 +1,7 @@
-from django.utils.translation import ugettext_lazy as _
-
 from django import forms
-from django.forms.util import ValidationError
-
-from .utils import get_user_model
-User = get_user_model()
+from django.contrib.auth import get_user_model
+from django.forms.utils import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Subscription
 
@@ -50,6 +47,7 @@ class SubscribeRequestForm(NewsletterForm):
             raise ValidationError(_("An e-mail address is required."))
 
         # Check whether we should be subscribed to as a user
+        User = get_user_model()
         try:
             user = User.objects.get(email__exact=data)
 
@@ -108,6 +106,7 @@ class UpdateRequestForm(NewsletterForm):
             raise ValidationError(_("An e-mail address is required."))
 
         # Check whether we should update as a user
+        User = get_user_model()
         try:
             user = User.objects.get(email__exact=data)
 

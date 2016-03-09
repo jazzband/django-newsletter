@@ -6,29 +6,29 @@ from datetime import datetime, timedelta
 
 import time
 
-# Conditioally import pytz
+import unittest
+
+# Conditionally import pytz
 try:
     import pytz
 except ImportError:
     pytz = None
 
-from django import VERSION as DJANGO_VERSION
+from django.contrib.auth import get_user_model
 
 from django.core import mail
 from django.core.urlresolvers import reverse
 
-from django.utils import unittest, timezone
+from django.utils import timezone
+from django.utils.encoding import force_text
 
-from django.test.utils import override_settings
+from django.test.utils import override_settings, patch_logger
 
 from ..models import (
     Newsletter, Subscription, Submission, Message, get_default_sites
 )
 
 from ..forms import UpdateForm
-
-from ..utils import get_user_model
-User = get_user_model()
 
 from .utils import MailTestCase, UserTestCase, WebTestCase, ComparingTestCase
 
@@ -108,16 +108,16 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
 
             # Check returned URL's exist and equal result of lookup methods
             self.assertTrue(subscribe_url)
-            self.assertEquals(subscribe_url, n.subscribe_url())
+            self.assertEqual(subscribe_url, n.subscribe_url())
 
             self.assertTrue(unsubscribe_url)
-            self.assertEquals(unsubscribe_url, n.unsubscribe_url())
+            self.assertEqual(unsubscribe_url, n.unsubscribe_url())
 
             self.assertTrue(update_url)
-            self.assertEquals(update_url, n.update_url())
+            self.assertEqual(update_url, n.update_url())
 
             self.assertTrue(archive_url)
-            self.assertEquals(archive_url, n.archive_url())
+            self.assertEqual(archive_url, n.archive_url())
 
             # Request detail URL and assert it links to all other URL's
             response = self.client.get(detail_url)
@@ -160,7 +160,7 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
 
         response = self.client.get(detail_url)
 
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
 
 class UserNewsletterListTestCase(UserTestCase,
@@ -172,7 +172,7 @@ class UserNewsletterListTestCase(UserTestCase,
         self.assertEqual(subscriptions.count(), 1)
 
         subscription = subscriptions[0]
-        self.assert_(subscription.create_date)
+        self.assertTrue(subscription.create_date)
 
         return subscriptions[0]
 
@@ -188,36 +188,20 @@ class UserNewsletterListTestCase(UserTestCase,
             total_forms, len(self.newsletters.filter(visible=True))
         )
 
-        if DJANGO_VERSION[:2] == (1, 4):
-            # Django 1.4
-            self.assertContains(
-                response,
-                '<input type="hidden" name="form-TOTAL_FORMS" value="%d" '
-                'id="id_form-TOTAL_FORMS" />' % total_forms
-            )
+        self.assertContains(
+            response,
+            '<input id="id_form-TOTAL_FORMS" name="form-TOTAL_FORMS" '
+            'type="hidden" value="%d" />' % total_forms
+        )
 
-            self.assertContains(
-                response,
-                '<input type="hidden" name="form-INITIAL_FORMS" value="%d" '
-                'id="id_form-INITIAL_FORMS" />' % total_forms
-            )
-
-        else:
-            # Django 1.5
-            self.assertContains(
-                response,
-                '<input id="id_form-TOTAL_FORMS" name="form-TOTAL_FORMS" '
-                'type="hidden" value="%d" />' % total_forms
-            )
-
-            self.assertContains(
-                response,
-                '<input id="id_form-INITIAL_FORMS" name="form-INITIAL_FORMS" '
-                'type="hidden" value="%d" />' % total_forms
-            )
+        self.assertContains(
+            response,
+            '<input id="id_form-INITIAL_FORMS" name="form-INITIAL_FORMS" '
+            'type="hidden" value="%d" />' % total_forms
+        )
 
         for form in formset.forms:
-            self.assert_(
+            self.assertTrue(
                 form.instance.newsletter in self.newsletters,
                 "%s not in %s" % (form.instance.newsletter, self.newsletters)
             )
@@ -252,7 +236,7 @@ class UserNewsletterListTestCase(UserTestCase,
         response = self.client.post(self.list_url, params)
 
         # Make sure the result is a success
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         subscriptions = Subscription.objects.filter(
             user=self.user
@@ -260,7 +244,7 @@ class UserNewsletterListTestCase(UserTestCase,
 
         # Assert all newsletters have related subscriptions now
         self.assertTrue(subscriptions.count())
-        self.assertEquals(
+        self.assertEqual(
             subscriptions.count(),
             self.newsletters.filter(visible=True).count()
         )
@@ -270,11 +254,11 @@ class UserNewsletterListTestCase(UserTestCase,
         # Make sure no subscriptions exist on beforehand
         Subscription.objects.all().delete()
 
-        # TODO: Use a Mock to assert a warning has been logged
-        # Ref: http://www.michaelpollmeier.com/python-mock-how-to-assert-a-substring-of-logger-output/
-
         # A post without any form elements should fail, horribly
-        self.client.post(self.list_url)
+        with patch_logger('newsletter.views', 'warning') as messages:
+            self.client.post(self.list_url)
+        self.assertEqual(len(messages), 1)
+        self.assertIn("Invalid form post received", messages[0])
 
         # A post with correct management data with weird values
         # should cause the formset not to validate.
@@ -299,7 +283,10 @@ class UserNewsletterListTestCase(UserTestCase,
             count += 1
 
         # Post the form
-        self.client.post(self.list_url, params)
+        with patch_logger('newsletter.views', 'warning') as messages:
+            self.client.post(self.list_url, params)
+        self.assertEqual(len(messages), 1)
+        self.assertIn("Invalid form post received", messages[0])
 
         # Assert no subscriptions have been created
         self.assertFalse(
@@ -363,17 +350,17 @@ class SubscribeTestCase(WebTestCase, MailTestCase):
     def test_urls(self):
         # TODO: is performing this test in each subclass
         #     of WebSubscribeTestCase really needed?
-        self.assert_(self.subscribe_url)
-        self.assert_(self.update_url)
-        self.assert_(self.unsubscribe_url)
-        self.assert_(self.subscribe_confirm_url)
-        self.assert_(self.unsubscribe_confirm_url)
-        self.assert_(self.subscribe_email_sent_url)
-        self.assert_(self.update_email_sent_url)
-        self.assert_(self.unsubscribe_email_sent_url)
-        self.assert_(self.subscribe_activated_url)
-        self.assert_(self.update_activated_url)
-        self.assert_(self.unsubscribe_activated_url)
+        self.assertTrue(self.subscribe_url)
+        self.assertTrue(self.update_url)
+        self.assertTrue(self.unsubscribe_url)
+        self.assertTrue(self.subscribe_confirm_url)
+        self.assertTrue(self.unsubscribe_confirm_url)
+        self.assertTrue(self.subscribe_email_sent_url)
+        self.assertTrue(self.update_email_sent_url)
+        self.assertTrue(self.unsubscribe_email_sent_url)
+        self.assertTrue(self.subscribe_activated_url)
+        self.assertTrue(self.update_activated_url)
+        self.assertTrue(self.unsubscribe_activated_url)
 
 
 class UserSubscribeTestCase(
@@ -389,7 +376,7 @@ class UserSubscribeTestCase(
         self.assertEqual(subscriptions.count(), 1)
 
         subscription = subscriptions[0]
-        self.assert_(subscription.create_date)
+        self.assertTrue(subscription.create_date)
 
         return subscriptions[0]
 
@@ -422,7 +409,7 @@ class UserSubscribeTestCase(
         self.assertEqual(response.context['user'], self.user)
 
         subscription = self.get_user_subscription()
-        self.assert_(subscription.subscribed)
+        self.assertTrue(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
 
     def test_subscribe_twice(self):
@@ -466,7 +453,7 @@ class UserSubscribeTestCase(
         self.assertContains(response, 'id="id_submit"')
 
         subscription = self.get_user_subscription()
-        self.assert_(subscription.subscribed)
+        self.assertTrue(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
 
     def test_unsubscribe_not_subscribed_view(self):
@@ -478,7 +465,7 @@ class UserSubscribeTestCase(
 
         self.assertIn(
             'You are not subscribed to',
-            unicode(list(response.context['messages'])[0])
+            force_text(list(response.context['messages'])[0])
         )
 
     def test_unsubscribe_post(self):
@@ -497,7 +484,7 @@ class UserSubscribeTestCase(
 
         subscription = self.get_user_subscription()
         self.assertFalse(subscription.subscribed)
-        self.assert_(subscription.unsubscribed)
+        self.assertTrue(subscription.unsubscribed)
         self.assertLessThan(
             subscription.unsubscribe_date,
             timezone.now() + timedelta(seconds=1)
@@ -536,7 +523,7 @@ class AnonymousSubscribeTestCase(
 
         subscription_qs = self.n.subscription_set.filter(**kwargs)
 
-        self.assertEquals(subscription_qs.count(), 1)
+        self.assertEqual(subscription_qs.count(), 1)
 
         return subscription_qs[0]
 
@@ -574,7 +561,7 @@ class AnonymousSubscribeTestCase(
         self.assertFalse(subscription.unsubscribed)
 
         """ Check the subscription email. """
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         activate_url = subscription.subscribe_activate_url()
         full_activate_url = 'http://%s%s' % (self.site.domain, activate_url)
@@ -609,7 +596,7 @@ class AnonymousSubscribeTestCase(
 
         """ Check the subscription email. """
         # no email should be send
-        self.assertEquals(len(mail.outbox), 0)
+        self.assertEqual(len(mail.outbox), 0)
 
     # Only run this test when settings overrides are available
     @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
@@ -623,15 +610,17 @@ class AnonymousSubscribeTestCase(
         """
 
         with override_settings(
-            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+            EMAIL_BACKEND='newsletter.tests.utils.FailingEmailBackend'
         ):
-            with override_settings(EMAIL_PORT=12345678):
+            with patch_logger('newsletter.views', 'error') as messages:
                 response = self.client.post(
                     self.subscribe_url, {
                         'name_field': 'Test Name',
                         'email_field': 'test@ifjoidjsufhdsidhsuufihs.dfs'
                     }
                 )
+            self.assertEqual(len(messages), 1)
+            self.assertIn("Connection refused", messages[0])
 
         self.assertTrue(response.context['error'])
 
@@ -644,7 +633,7 @@ class AnonymousSubscribeTestCase(
         This is a regression of #14 on GitHub.
         """
 
-        self.assertEquals(Subscription.objects.all().count(), 0)
+        self.assertEqual(Subscription.objects.all().count(), 0)
 
         # Request subscription
         self.client.post(
@@ -654,7 +643,7 @@ class AnonymousSubscribeTestCase(
             }
         )
 
-        self.assertEquals(Subscription.objects.all().count(), 1)
+        self.assertEqual(Subscription.objects.all().count(), 1)
 
         # Request subscription
         self.client.post(
@@ -664,7 +653,7 @@ class AnonymousSubscribeTestCase(
             }
         )
 
-        self.assertEquals(Subscription.objects.all().count(), 1)
+        self.assertEqual(Subscription.objects.all().count(), 1)
 
     def test_subscribe_twice(self):
         """ Subscribing twice should not be possible. """
@@ -718,7 +707,7 @@ class AnonymousSubscribeTestCase(
         )
 
         self.assertFalse(subscription.subscribed)
-        self.assert_(subscription.unsubscribed)
+        self.assertTrue(subscription.unsubscribed)
 
         # Resubscribe request
         response = self.client.post(
@@ -733,7 +722,7 @@ class AnonymousSubscribeTestCase(
         self.assertRedirects(response, self.subscribe_email_sent_url)
 
         # self.assertFalse(subscription.subscribed)
-        self.assert_(subscription.unsubscribed)
+        self.assertTrue(subscription.unsubscribed)
 
         # Activate subscription
         response = self.client.post(
@@ -752,7 +741,7 @@ class AnonymousSubscribeTestCase(
             email_field__exact='test@email.com'
         )
 
-        self.assert_(subscription.subscribed)
+        self.assertTrue(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
 
     def test_user_update(self):
@@ -761,6 +750,7 @@ class AnonymousSubscribeTestCase(
         belonging to an existing user.
         """
 
+        User = get_user_model()
         password = User.objects.make_random_password()
         user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', password)
@@ -794,7 +784,7 @@ class AnonymousSubscribeTestCase(
         self.assertFalse(subscription.subscribed)
 
         activate_url = subscription.subscribe_activate_url()
-        self.assert_(activate_url)
+        self.assertTrue(activate_url)
 
         response = self.client.get(activate_url)
         self.assertInContext(response, 'form', UpdateForm)
@@ -815,7 +805,7 @@ class AnonymousSubscribeTestCase(
             email_field__exact='test@email.com'
         )
 
-        self.assert_(subscription.subscribed)
+        self.assertTrue(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
 
         dt = (subscription.subscribe_date - subscription.create_date).seconds
@@ -839,7 +829,7 @@ class AnonymousSubscribeTestCase(
         self.assertRedirects(response, self.unsubscribe_email_sent_url)
 
         """ Check the subscription email. """
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         activate_url = subscription.unsubscribe_activate_url()
         full_activate_url = 'http://%s%s' % (self.site.domain, activate_url)
@@ -877,7 +867,7 @@ class AnonymousSubscribeTestCase(
 
         """ Check the subscription email. """
         # no email should be send
-        self.assertEquals(len(mail.outbox), 0)
+        self.assertEqual(len(mail.outbox), 0)
 
     @override_settings(NEWSLETTER_CONFIRM_EMAIL_UNSUBSCRIBE=True)
     def test_unsubscribe_request_post_error(self):
@@ -895,12 +885,14 @@ class AnonymousSubscribeTestCase(
         subscription.save()
 
         with override_settings(
-            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+            EMAIL_BACKEND='newsletter.tests.utils.FailingEmailBackend'
         ):
-            with override_settings(EMAIL_PORT=12345678):
+            with patch_logger('newsletter.views', 'error') as messages:
                 response = self.client.post(
                     self.unsubscribe_url, {'email_field': 'test@email.com'}
                 )
+            self.assertEqual(len(messages), 1)
+            self.assertIn("Connection refused", messages[0])
 
         self.assertTrue(response.context['error'])
 
@@ -943,7 +935,7 @@ class AnonymousSubscribeTestCase(
             email_field__exact=testemail2
         )
 
-        self.assert_(subscription.unsubscribed)
+        self.assertTrue(subscription.unsubscribed)
         self.assertEqual(subscription.name, testname2)
         self.assertEqual(subscription.email, testemail2)
 
@@ -978,7 +970,7 @@ class AnonymousSubscribeTestCase(
         self.assertRedirects(response, self.update_email_sent_url)
 
         """ Check the subscription email. """
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         activate_url = subscription.update_activate_url()
         full_activate_url = 'http://%s%s' % (self.site.domain, activate_url)
@@ -1006,7 +998,7 @@ class AnonymousSubscribeTestCase(
 
         """ Check the subscription email. """
         # no email should be send
-        self.assertEquals(len(mail.outbox), 0)
+        self.assertEqual(len(mail.outbox), 0)
 
     @override_settings(NEWSLETTER_CONFIRM_EMAIL_UPDATE=True)
     def test_update_request_post_error(self):
@@ -1024,12 +1016,16 @@ class AnonymousSubscribeTestCase(
         subscription.save()
 
         with override_settings(
-            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+            EMAIL_BACKEND='newsletter.tests.utils.FailingEmailBackend'
         ):
-            with override_settings(EMAIL_PORT=12345678):
+
+
+            with patch_logger('newsletter.views', 'error') as messages:
                 response = self.client.post(
                     self.update_url, {'email_field': 'test@email.com'}
                 )
+            self.assertEqual(len(messages), 1)
+            self.assertIn("Connection refused", messages[0])
 
         self.assertTrue(response.context['error'])
 
@@ -1093,8 +1089,8 @@ class AnonymousSubscribeTestCase(
             email_field__exact=testemail2
         )
 
-        self.assert_(subscription)
-        self.assert_(subscription.subscribed)
+        self.assertTrue(subscription)
+        self.assertTrue(subscription.subscribed)
         self.assertEqual(subscription.name, testname2)
         self.assertEqual(subscription.email, testemail2)
 
@@ -1162,24 +1158,21 @@ class ArchiveTestcase(NewsletterListTestCase):
         """ Make sure we have a few submissions to test with. """
 
         # Pick some newsletter
-        self.newsletter = Newsletter.objects.all()[0]
+        try:
+            self.newsletter = Newsletter.objects.all()[0]
+        except IndexError:
+            self.newsletter = None
+
+        # Create a message first
+        message = Message.objects.create(
+            title='Test message',
+            slug='test-message',
+            newsletter=self.newsletter,
+        )
 
         # Make sure there's a HTML template for this newsletter,
         # otherwise the archive will not function.
-
-        (subject_template, text_template, html_template) = \
-            self.newsletter.get_templates('message')
-
-        self.assertTrue(html_template)
-
-        # Create a message first
-        message = Message(
-            title='Test message',
-            slug='test-message',
-            newsletter=self.newsletter
-        )
-
-        message.save()
+        self.assertTrue(message.html_template)
 
         # Create a submission
         self.submission = Submission.from_message(message)
@@ -1290,7 +1283,7 @@ class ActionTemplateViewMixin(object):
         """ Assertions common for all actions. """
         response = self.client.get(self.get_action_url(action))
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertInContext(response, 'newsletter', Newsletter, self.n)
         self.assertInContext(response, 'action', value=action)
 

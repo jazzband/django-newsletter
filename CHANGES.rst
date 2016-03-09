@@ -1,6 +1,28 @@
 Changes
 =======
 
+0.6 (2-2-2016)
+--------------
+
+- Added support for Django 1.8 and 1.9, and dropped support for older versions.
+- Added support for native Django migrations, replacing South migrations.
+- Added Python 3.4/3.5 support and dropped Python 2.6 support.
+- Replaced IPAddressField by GenericIPAddressField (#131).
+- Fixed addresses serialization with JSON-based sessions (#104).
+- Add List-Unsubscribe header to sent messages (#169).
+- Added Polish and Brazilian Portuguese translations.
+- Significantly improved test coverage.
+
+Small fixes
+^^^^^^^^^^^
+
+- Submission admin always takes last message (#170).
+- Check that user has "add_subscription" permission when importing subscriptions (#128).
+- Fix for Submission.publish_date default value (#125).
+- Change subscription status in admin to radio field (#122).
+- Make the Submissions list display the Publish date and time with respect to the server's timezone (#112).
+- Several smaller issues: #107, #121, #123
+
 0.5.2 (1-5-2014)
 ----------------
 

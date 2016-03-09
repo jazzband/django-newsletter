@@ -73,23 +73,19 @@ Installation
 #)  Import subscription, unsubscription and archive URL's somewhere in your
     `urls.py`::
 
-        urlpatterns = patterns('',
+        urlpatterns = [
             ...
-            (r'^newsletter/', include('newsletter.urls')),
+            url(r'^newsletter/', include('newsletter.urls')),
             ...
-        )
+        ]
 
 #)  Enable Django's `staticfiles <http://docs.djangoproject.com/en/dev/howto/static-files/>`_
     app so the admin icons, CSS and JavaScript will be available where
     we expect it.
 
-#)  Create required data structure with `South <http://south.readthedocs.org/en/latest/about.html>`_ (recommended)::
+#)  Create the required data structure::
 
         ./manage.py migrate
-
-    Without South::
-
-        ./manage.py syncdb
 
 #)  Change the default contact email listed in
     ``templates/newsletter/subscription_subscribe.html`` and
@@ -100,16 +96,14 @@ Installation
     where ``<message_type>`` can be one from `subscribe`, `unsubscribe`, `message`
     or `update`.
 
-#)  (Optionally) Run the tests to see if it all works::
-
-        ./manage.py test
-
-    If it does: that's a good sign. You'll probably have yourself a
-    working configuration!
-
 #)  Add jobs for sending out mail queues to `crontab <http://linuxmanpages.com/man5/crontab.5.php>`_::
 
         @hourly /path/to/my/project/manage.py runjobs hourly
         @daily /path/to/my/project/manage.py runjobs daily
         @weekly /path/to/my/project/manage.py runjobs weekly
         @monthly /path/to/my/project/manage.py runjobs monthly
+
+To send mail, ``django-newsletter`` uses Django-provided email utilities, so
+ensure that `EMAIL_* settings
+<https://docs.djangoproject.com/en/stable/ref/settings/#email-backend`_ are
+properly configured for your project.

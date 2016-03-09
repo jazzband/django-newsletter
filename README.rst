@@ -1,18 +1,21 @@
-=================
+#################
 django-newsletter
-=================
+#################
 
-.. image:: https://badge.fury.io/py/django-newsletter.png
-    :target: http://badge.fury.io/py/django-newsletter
+.. image:: https://img.shields.io/pypi/v/django-newsletter.svg
+    :target: https://pypi.python.org/pypi/django-newsletter
 
-.. image:: https://secure.travis-ci.org/dokterbob/django-newsletter.png?branch=master
+.. image:: https://img.shields.io/travis/dokterbob/django-newsletter/master.svg
     :target: http://travis-ci.org/dokterbob/django-newsletter
 
-.. image:: https://pypip.in/d/django-newsletter/badge.png
-        :target: https://crate.io/packages/django-newsletter?version=latest
+.. image:: https://coveralls.io/repos/dokterbob/django-newsletter/badge.svg?branch=master&service=github
+    :target: https://coveralls.io/github/dokterbob/django-newsletter?branch=master
+
+.. image:: https://landscape.io/github/dokterbob/django-newsletter/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/dokterbob/django-newsletter/master
+   :alt: Code Health
 
 Newsletter application for the Django web framework.
-----------------------------------------------------
 
 What is it?
 ===========
@@ -32,8 +35,7 @@ Extended documentation is available on
 
 Translations
 ============
-All strings have been translated to Dutch, German, French, Farsi, Russian,
-English, Arabic, Icelandic, Czech and Italian with more languages on their way.
+All strings have been translated to German, French, English, Russion, Polish, Dutch, Italian, Arabic, Brazilian Portuguese, Icelandic and Czech with more languages on their way.
 
 Contributions to translations are welcome through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_. Strings will be included as
 soon as near-full coverage is reached.
@@ -43,9 +45,7 @@ soon as near-full coverage is reached.
 
 Compatibility
 =============
-Currently, django-newsletter is being tested to run on Python 2.6, 2.7 and the
-latest Django 1.4 and 1.5 releases. Apart from tests it *should* be compatible
-with Python 2.5 as well.
+Currently, django-newsletter is officially supported for Django 1.8 and 1.9 and Python 2.7, 3.4 and 3.5.
 
 Requirements
 ============
@@ -59,6 +59,22 @@ Fairly extensive tests are available for internal frameworks, web
 (+15k) has been confirmed to work in multiple production environments. Tests
 for pull req's and the master branch are automatically run through
 `Travis CI <http://travis-ci.org/dokterbob/django-newsletter>`_.
+
+Contributing
+=============
+.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=ready&title=Ready
+   :target: https://waffle.io/dokterbob/django-newsletter
+   :alt: 'Stories in Ready'
+
+.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=in%20progress&title=Progress
+   :target: https://waffle.io/dokterbob/django-newsletter
+   :alt: 'Stories in Progress'
+
+.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=under%20review&title=Review
+   :target: https://waffle.io/dokterbob/django-newsletter
+   :alt: 'Stories Under Review'
+
+Should you wish to contribute, great! Please have a look at the `waffle.io board <https://waffle.io/dokterbob/django-newsletter>`_. Issues in the 'Ready' column are ready for implementation, just drag the issue to 'In Progress' and then to 'Review'. Issues in the backlog require some further discussion concering the scope and methods of implementation, please feel free to mingle in discussions. Lastly, should you see an issue with the 'Review' status, feel free to help out other contributors with your feedback.
 
 Feedback
 ========

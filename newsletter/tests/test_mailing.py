@@ -1,10 +1,13 @@
 import itertools
+import six
+import unittest
 
 from datetime import timedelta
 
 from django.core import mail
 
-from django.utils import unittest
+from django.test.utils import patch_logger
+from django.utils.six.moves import range
 from django.utils.timezone import now
 
 from ..models import (
@@ -79,11 +82,26 @@ class ArticleTestCase(MailingTestCase):
         total = 3
 
         last = 0
-        for current in xrange(total):
+        for current in range(total):
             a = self.make_article()
             if last:
-                self.assert_(a.sortorder > last)
+                self.assertTrue(a.sortorder > last)
             last = a.sortorder
+
+
+class MessageTestCase(MailingTestCase):
+    def test_message_str(self):
+        m1 = Message(title='Test message', slug='test-message')
+        with patch_logger('newsletter.models', 'warning') as warnings:
+            self.assertEqual(six.text_type(m1), "Test message")
+        self.assertEqual(len(warnings), 1)
+
+        m2 = Message.objects.create(
+            title='Test message str',
+            newsletter=self.n,
+            slug='test-message-str'
+        )
+        self.assertEqual(six.text_type(m2), "Test message str in Test newsletter")
 
 
 class CreateSubmissionTestCase(MailingTestCase):
@@ -150,8 +168,8 @@ class CreateSubmissionTestCase(MailingTestCase):
         sub = Submission.from_message(self.m)
 
         subscriptions = sub.subscriptions.all()
-        self.assert_(self.s in list(subscriptions))
-        self.assert_(s2 in list(subscriptions))
+        self.assertTrue(self.s in list(subscriptions))
+        self.assertTrue(s2 in list(subscriptions))
 
     def test_twosubmissions_unsubscried(self):
         """ Test submission with two subscribers, one unactivated. """
@@ -195,6 +213,13 @@ class SubmitSubmissionTestCase(MailingTestCase):
     def test_submitsubmission(self):
         """ Test queue-based submission. """
 
+        # Adding a subscription after the submission has been created, it should
+        # not be used when submitting self.sub
+        new_subscr = Subscription.objects.create(
+            name='Other Name', email='other@test.com',
+            newsletter=self.n, subscribed=True
+        )
+
         self.sub.prepared = True
         self.sub.publish_date = now() - timedelta(seconds=1)
         self.sub.save()
@@ -204,15 +229,19 @@ class SubmitSubmissionTestCase(MailingTestCase):
         # Get the object fresh from DB, as to assure no caching takes place
         submission = Submission.objects.get(pk=self.sub.pk)
 
-        self.assert_(submission.sent)
+        self.assertTrue(submission.sent)
         self.assertFalse(submission.sending)
 
         # Make sure mail is being sent out
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         # Make sure a submission contains the title and unsubscribe URL
         self.assertEmailContains(submission.message.title)
         self.assertEmailContains(submission.newsletter.unsubscribe_url())
+        self.assertEmailHasHeader(
+            'List-Unsubscribe',
+            'http://example.com/newsletter/test-newsletter/unsubscribe/'
+        )
 
 
 class SubscriptionTestCase(UserTestCase, MailingTestCase):
@@ -242,12 +271,12 @@ class SubscriptionTestCase(UserTestCase, MailingTestCase):
             self.assertFalse(s.unsubscribe_date)
 
             # Repeat this to ensure consequencentness
-            for x in xrange(2):
+            for x in range(2):
                 s.subscribed = True
                 s.save()
 
-                self.assert_(s.subscribed)
-                self.assert_(s.subscribe_date)
+                self.assertTrue(s.subscribed)
+                self.assertTrue(s.subscribe_date)
                 self.assertFalse(s.unsubscribed)
                 old_subscribe_date = s.subscribe_date
 
@@ -255,14 +284,14 @@ class SubscriptionTestCase(UserTestCase, MailingTestCase):
                 s.save()
 
                 self.assertFalse(s.subscribed)
-                self.assert_(s.unsubscribed)
-                self.assert_(s.unsubscribe_date)
+                self.assertTrue(s.unsubscribed)
+                self.assertTrue(s.unsubscribe_date)
 
                 s.unsubscribed = False
                 s.save()
 
                 self.assertFalse(s.unsubscribed)
-                self.assert_(s.subscribed)
+                self.assertTrue(s.subscribed)
                 self.assertNotEqual(s.subscribe_date, old_subscribe_date)
 
 
@@ -335,7 +364,7 @@ class HtmlEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
         """
 
         # Make sure one mail is being sent out
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         # Make sure mail contains HTML alternative
         self.assertEmailAlternativesContainMimetype('text/html')
@@ -365,7 +394,7 @@ class TextOnlyEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
         """
 
         # Make sure one mail is being sent out
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         # Make sure mail is text only
         self.assertEmailHasNoAlternatives()
@@ -415,7 +444,7 @@ class TemplateOverridesTestCase(MailingTestCase, AllEmailsTestsMixin):
         """
 
         # Make sure one mail is being sent out
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         # Make sure mail subject contains string
         # from template override for given action

@@ -229,7 +229,7 @@ class ActionMixin(ProcessUrlDataMixin):
         else:
             try:
                 return [self.template_name % {'action': self.action}]
-            except KeyError, e:
+            except KeyError as e:
                 raise ImproperlyConfigured(
                     '%(class_name)s inherits from ActionMixin and can contain '
                     '%%(action)s in template_name to be replaced '
@@ -414,7 +414,7 @@ class ActionRequestView(ActionFormView):
         try:
             self.subscription.send_activation_email(action=self.action)
 
-        except (SMTPException, socket.error), e:
+        except (SMTPException, socket.error) as e:
             logger.exception(
                 'Error %s while submitting email to %s.',
                 e, self.subscription.email
@@ -479,7 +479,7 @@ class UpdateRequestView(ActionRequestView):
         return redirect(self.subscription.update_activate_url())
 
 
-class UpdateSubscriptionViev(ActionFormView):
+class UpdateSubscriptionView(ActionFormView):
     form_class = UpdateForm
     template_name = "newsletter/subscription_activate.html"
 
@@ -490,7 +490,7 @@ class UpdateSubscriptionViev(ActionFormView):
         """
         assert 'email' in kwargs
 
-        super(UpdateSubscriptionViev, self).process_url_data(*args, **kwargs)
+        super(UpdateSubscriptionView, self).process_url_data(*args, **kwargs)
 
         self.subscription = get_object_or_404(
             Subscription, newsletter=self.newsletter,
@@ -509,7 +509,7 @@ class UpdateSubscriptionViev(ActionFormView):
 
     def get_form_kwargs(self):
         """ Add instance to form kwargs. """
-        kwargs = super(UpdateSubscriptionViev, self).get_form_kwargs()
+        kwargs = super(UpdateSubscriptionView, self).get_form_kwargs()
 
         kwargs['instance'] = self.subscription
 
@@ -524,7 +524,7 @@ class UpdateSubscriptionViev(ActionFormView):
 
         subscription.update(self.action)
 
-        return super(UpdateSubscriptionViev, self).form_valid(form)
+        return super(UpdateSubscriptionView, self).form_valid(form)
 
 
 class SubmissionViewBase(NewsletterMixin):
@@ -597,8 +597,7 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
     def get_template(self):
         """ Get the message template for the current newsletter. """
 
-        (subject_template, text_template, html_template) = \
-            self.object.newsletter.get_templates('message')
+        html_template = self.object.message.html_template
 
         # No HTML -> no party!
         if not html_template:

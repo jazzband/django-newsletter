@@ -1,20 +1,21 @@
 {% extends "admin/change_form.html" %}
 
 {% load i18n %}
-{% load url from future %}
+{% load static from staticfiles %}
 
 {% block extrahead %}
 {{ block.super }}
 <script src="{% url "admin:newsletter_js18n" %}" type="text/javascript"></script>
-<script src="{{ STATIC_URL }}newsletter/admin/js/subscriber_lookup.js" type="text/javascript"></script>
-<script src="{{ STATIC_URL }}newsletter/admin/js/submit_interface.js" type="text/javascript"></script>
+<script src="{% static "newsletter/admin/js/subscriber_lookup.js" %}" type="text/javascript"></script>
+<script src="{% static "newsletter/admin/js/submit_interface.js" %}" type="text/javascript"></script>
 {% endblock %}
 
 {% block object-tools %}
 {% if change %}{% if not is_popup %}
-  <ul class="object-tools"><li><a href="history/" class="historylink">{% trans "History" %}</a></li>
-  {% if has_absolute_url %}<li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
-  <li><a id="submitlink" href="submit/">{% trans "Submit" %}</a></li>
+  <ul class="object-tools">
+    <li><a href="{% url 'admin:newsletter_submission_history' object_id %}" class="historylink">{% trans "History" %}</a></li>
+    {% if has_absolute_url %}<li><a href="{{ absolute_url }}" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif %}
+    <li><a href="{% url 'admin:newsletter_submission_submit' object_id %}" id="submitlink">{% trans "Submit" %}</a></li>
   </ul>
 {% endif %}{% endif %}
 {% endblock %}

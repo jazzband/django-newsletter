@@ -2,6 +2,16 @@
 Upgrading
 =========
 
+0.6: Upgrading from South to Django Migrations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Based on https://docs.djangoproject.com/en/1.9/topics/migrations/#upgrading-from-south, the procedure should be:
+
+1. Remove ``'south'`` from ``INSTALLED_APPS``.
+2. Run ``python manage.py migrate --fake-initial``.
+
+If you are upgrading from below 0.5, you need to upgrade to 0.5 first to
+perform required South migrations before moving to 0.6.
+
 0.5: Message templates in files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 As of 0.5 message templates are living in the filesystem like normal files

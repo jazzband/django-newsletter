@@ -1,31 +1,37 @@
 import logging
+<<<<<<< HEAD
 logger = logging.getLogger(__name__)
 import time
+=======
+
+from django.conf import settings
+from django.contrib.sites.models import Site
+from django.contrib.sites.managers import CurrentSiteManager
+from django.core.mail import EmailMultiAlternatives
+from django.core.urlresolvers import reverse
+>>>>>>> fd93133b2aba3864f3b211be491dae979fa5ab17
 from django.db import models
 from django.db.models import permalink
-
-from django.template import Context, TemplateDoesNotExist
+from django.template import Context
 from django.template.loader import select_template
-
+from django.utils.encoding import python_2_unicode_compatible
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.utils.timezone import now
 
-from django.core.mail import EmailMultiAlternatives
-
-from django.contrib.sites.models import Site
-from django.contrib.sites.managers import CurrentSiteManager
-
-from django.conf import settings
-
 from sorl.thumbnail import ImageField
 
 from .utils import (
-    make_activation_code, get_default_sites, ACTIONS, get_user_model
+    make_activation_code, get_default_sites, ACTIONS
 )
-User = get_user_model()
+
+logger = logging.getLogger(__name__)
+
+AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
+@python_2_unicode_compatible
 class Newsletter(models.Model):
     site = models.ManyToManyField(Site, default=get_default_sites)
     delay_between_each_email = models.IntegerField(default=0)
@@ -94,7 +100,7 @@ class Newsletter(models.Model):
 
         return (subject_template, text_template, html_template)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
@@ -145,19 +151,17 @@ class Newsletter(models.Model):
         return Subscription.objects.filter(newsletter=self, subscribed=True)
 
     @classmethod
-    def get_default_id(cls):
+    def get_default(cls):
         try:
-            objs = cls.objects.all()
-            if objs.count() == 1:
-                return objs[0].id
-        except:
-            pass
-        return None
+            return cls.objects.all()[0]
+        except IndexError:
+            return None
 
 
+@python_2_unicode_compatible
 class Subscription(models.Model):
     user = models.ForeignKey(
-        User, blank=True, null=True, verbose_name=_('user')
+        AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('user')
     )
 
     name_field = models.CharField(
@@ -294,7 +298,7 @@ class Subscription(models.Model):
 
         super(Subscription, self).save(*args, **kwargs)
 
-    ip = models.IPAddressField(_("IP address"), blank=True, null=True)
+    ip = models.GenericIPAddressField(_("IP address"), blank=True, null=True)
 
     newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
 
@@ -320,7 +324,7 @@ class Subscription(models.Model):
         verbose_name=_("unsubscribe date"), null=True, blank=True
     )
 
-    def __unicode__(self):
+    def __str__(self):
         if self.name:
             return _(u"%(name)s <%(email)s> to %(newsletter)s") % {
                 'name': self.name,
@@ -417,6 +421,7 @@ class Subscription(models.Model):
         })
 
 
+@python_2_unicode_compatible
 class Article(models.Model):
     """
     An Article within a Message which will be send through a Submission.
@@ -441,7 +446,6 @@ class Article(models.Model):
         help_text=_('Sort order determines the order in which articles are '
                     'concatenated in a post.'),
         verbose_name=_('sort order'), db_index=True,
-        default=lambda: Article.get_next_order()
     )
 
     title = models.CharField(max_length=200, verbose_name=_('title'))
@@ -468,10 +472,18 @@ class Article(models.Model):
         verbose_name = _('article')
         verbose_name_plural = _('articles')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
+    def save(self):
+        if self.pk is None:
+            # If saving a new object get the next available Article ordering
+            # as to assure uniqueness.
+            self.sortorder = Article.get_next_order()
+        super(Article, self).save()
 
+
+@python_2_unicode_compatible
 class Message(models.Model):
     """ Message as sent through a Submission. """
 
@@ -479,8 +491,7 @@ class Message(models.Model):
     slug = models.SlugField(verbose_name=_('slug'))
 
     newsletter = models.ForeignKey(
-        'Newsletter', verbose_name=_('newsletter'),
-        default=Newsletter.get_default_id
+        'Newsletter', verbose_name=_('newsletter')
     )
 
     date_create = models.DateTimeField(
@@ -490,37 +501,52 @@ class Message(models.Model):
         verbose_name=_('modified'), auto_now=True, editable=False
     )
 
-    def __unicode__(self):
+    class Meta:
+        verbose_name = _('message')
+        verbose_name_plural = _('messages')
+        unique_together = ('slug', 'newsletter')
+
+    def __str__(self):
         try:
             return _(u"%(title)s in %(newsletter)s") % {
                 'title': self.title,
                 'newsletter': self.newsletter
             }
         except Newsletter.DoesNotExist:
-            logger.warn(
-                'Database inconsistency, related newsletter not found '
-                'for message with id %d', self.id
-            )
+            logger.warning('No newsletter has been set for this message yet.')
+            return self.title
 
-            return "%s" % self.title
+    def save(self, **kwargs):
+        if self.pk is None:
+            self.newsletter = Newsletter.get_default()
+        super(Message, self).save(**kwargs)
 
-    class Meta:
-        verbose_name = _('message')
-        verbose_name_plural = _('messages')
-        unique_together = ('slug', 'newsletter')
+    @cached_property
+    def _templates(self):
+        """Return a (subject_template, text_template, html_template) tuple."""
+        return self.newsletter.get_templates('message')
+
+    @property
+    def subject_template(self):
+        return self._templates[0]
+
+    @property
+    def text_template(self):
+        return self._templates[1]
+
+    @property
+    def html_template(self):
+        return self._templates[2]
 
     @classmethod
-    def get_default_id(cls):
+    def get_default(cls):
         try:
-            objs = cls.objects.all().order_by('-date_create')
-            if not objs.count() == 0:
-                return objs[0].id
-        except:
-            pass
-
-        return None
+            return cls.objects.order_by('-date_create').all()[0]
+        except IndexError:
+            return None
 
 
+@python_2_unicode_compatible
 class Submission(models.Model):
     """
     Submission represents a particular Message as it is being submitted
@@ -531,10 +557,20 @@ class Submission(models.Model):
         verbose_name = _('submission')
         verbose_name_plural = _('submissions')
 
-    def __unicode__(self):
+    def __str__(self):
         return _(u"%(newsletter)s on %(publish_date)s") % {
             'newsletter': self.message,
             'publish_date': self.publish_date
+        }
+
+    @cached_property
+    def extra_headers(self):
+        return {
+            'List-Unsubscribe': 'http://%s%s' % (
+                Site.objects.get_current().domain,
+                reverse('newsletter_unsubscribe_request',
+                        args=[self.message.newsletter.slug])
+            ),
         }
 
     def submit(self):
@@ -552,10 +588,8 @@ class Submission(models.Model):
         self.save()
 
         try:
-            (subject_template, text_template, html_template) = \
-                self.message.newsletter.get_templates('message')
-
             for subscription in subscriptions:
+<<<<<<< HEAD
                 variable_dict = {
                     'subscription': subscription,
                     'site': Site.objects.get_current(),
@@ -606,11 +640,63 @@ class Submission(models.Model):
                          'error': e}
                     )
 
+=======
+                self.send_message(subscription)
+>>>>>>> fd93133b2aba3864f3b211be491dae979fa5ab17
             self.sent = True
 
         finally:
             self.sending = False
             self.save()
+
+    def send_message(self, subscription):
+        variable_dict = {
+            'subscription': subscription,
+            'site': Site.objects.get_current(),
+            'submission': self,
+            'message': self.message,
+            'newsletter': self.newsletter,
+            'date': self.publish_date,
+            'STATIC_URL': settings.STATIC_URL,
+            'MEDIA_URL': settings.MEDIA_URL
+        }
+
+        unescaped_context = Context(variable_dict, autoescape=False)
+
+        subject = self.message.subject_template.render(unescaped_context).strip()
+        text = self.message.text_template.render(unescaped_context)
+
+        message = EmailMultiAlternatives(
+            subject, text,
+            from_email=self.newsletter.get_sender(),
+            to=[subscription.get_recipient()],
+            headers=self.extra_headers,
+        )
+
+        if self.message.html_template:
+            escaped_context = Context(variable_dict)
+
+            message.attach_alternative(
+                self.message.html_template.render(escaped_context),
+                "text/html"
+            )
+
+        try:
+            logger.debug(
+                ugettext(u'Submitting message to: %s.'),
+                subscription
+            )
+
+            message.send()
+
+        except Exception as e:
+            # TODO: Test coverage for this branch.
+            logger.error(
+                ugettext(u'Message %(subscription)s failed '
+                         u'with error: %(error)s'),
+                {'subscription': subscription,
+                 'error': e}
+            )
 
     @classmethod
     def submit_queue(cls):
@@ -659,8 +745,7 @@ class Submission(models.Model):
         'Newsletter', verbose_name=_('newsletter'), editable=False
     )
     message = models.ForeignKey(
-        'Message', verbose_name=_('message'), editable=True,
-        default=Message.get_default_id, null=False
+        'Message', verbose_name=_('message'), editable=True, null=False
     )
 
     subscriptions = models.ManyToManyField(
@@ -673,7 +758,7 @@ class Submission(models.Model):
 
     publish_date = models.DateTimeField(
         verbose_name=_('publication date'), blank=True, null=True,
-        default=now(), db_index=True
+        default=now, db_index=True
     )
     publish = models.BooleanField(
         default=True, verbose_name=_('publish'),

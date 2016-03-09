@@ -1,36 +1,31 @@
 language: python
 
+sudo: false
+
 python:
-  - "2.6"
-  - "2.7"
-  - "3.3"
+  - 2.7
+  - 3.4
+  - 3.5
 
 env:
-  - DJANGO=Django==1.4.12
-  - DJANGO=Django==1.5.7
-  - DJANGO=Django==1.6.4
-  - DJANGO=https://www.djangoproject.com/download/1.7b3/tarball/
+  - DJANGO="Django<1.9"  # Django 1.8.x
+  - DJANGO="Django<1.10" # Django 1.9.x
 
-matrix:
-  allow_failures:
-    # Allow failures for unreleased Django version
-    - env: DJANGO=https://www.djangoproject.com/download/1.7b3/tarball/
-    # Allow failures for Python 3.3
-    - python: "3.3"
-  exclude:
-    # Django 1.4 and 1.5 do not fully support Python 3.3
-    - env: DJANGO=Django==1.4.12
-      python: "3.3"
-    - env: DJANGO=Django==1.5.7
-      python: "3.3"
-    # 1.7 doesn't support Python 2.6 anymore
-    - env: DJANGO=https://www.djangoproject.com/download/1.7b3/tarball/
-      python: "2.6"
+cache:
+  directories:
+    - $HOME/.cache/pip
 
 # command to install dependencies
 install:
-  - pip install -q $DJANGO --use-mirrors
-  - pip install -r requirements.txt --use-mirrors
+  # Latest PIP uses wheel by default
+  - pip install --upgrade pip
+  - pip install $DJANGO
+  - pip install -r requirements.txt
+  - pip install -r requirements_test.txt
+  - pip install coveralls
 
 # command to run tests
-script: python setup.py test
+script: coverage run setup.py test
+
+after_success:
+  coveralls

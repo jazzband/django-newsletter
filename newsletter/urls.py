@@ -1,17 +1,13 @@
-from django.conf.urls import patterns
-
 from surlex.dj import surl
 
 from .views import (
     NewsletterListView, NewsletterDetailView,
     SubmissionArchiveIndexView, SubmissionArchiveDetailView,
     SubscribeRequestView, UnsubscribeRequestView, UpdateRequestView,
-    ActionTemplateView, UpdateSubscriptionViev,
+    ActionTemplateView, UpdateSubscriptionView,
 )
 
-urlpatterns = patterns(
-    '',
-
+urlpatterns = [
     # Newsletter list and detail view
     surl('^$', NewsletterListView.as_view(), name='newsletter_list'),
     surl(
@@ -59,12 +55,12 @@ urlpatterns = patterns(
     surl(
         '^<newsletter_slug:s>/subscription/<email=[-_a-zA-Z0-9@\.\+~]+>/'
         '<action=subscribe|update|unsubscribe>/activate/<activation_code:s>/$',
-        UpdateSubscriptionViev.as_view(), name='newsletter_update_activate'
+        UpdateSubscriptionView.as_view(), name='newsletter_update_activate'
     ),
     surl(
         '^<newsletter_slug:s>/subscription/<email=[-_a-zA-Z0-9@\.\+~]+>/'
         '<action=subscribe|update|unsubscribe>/activate/$',
-        UpdateSubscriptionViev.as_view(), name='newsletter_update'
+        UpdateSubscriptionView.as_view(), name='newsletter_update'
     ),
 
     # Action activation completed view
@@ -85,4 +81,4 @@ urlpatterns = patterns(
         '^<newsletter_slug:s>/archive/$',
         SubmissionArchiveIndexView.as_view(), name='newsletter_archive'
     ),
-)
+]

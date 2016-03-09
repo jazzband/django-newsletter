@@ -1,4 +1,18 @@
+<<<<<<< HEAD
 {% load url from future %}{% load thumbnail %}
+=======
+{% load thumbnail %}<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>{{ newsletter.title }}: {{ message.title }}</title>
+</head>
+<body>
+    <h1>{{ newsletter.title }}</h1>
+    <h2>{{ message.title }}</h2>
+>>>>>>> fd93133b2aba3864f3b211be491dae979fa5ab17
     {% for article in message.articles.all %}
         
         {% thumbnail article.image "200x200" as image %}

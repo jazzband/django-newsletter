@@ -4,7 +4,7 @@ Templates
 To get started, we recommend copying the existing 'stub'-templates from
 the module directory to your project's `templates` dir::
 
-    cp -rv `python -c 'import newsletter; from os import path; print path.dirname(newsletter.__file__)'`/templates/newsletter <project_dir>/templates/
+    cp -rv `python -c 'import newsletter; from os import path; print(path.dirname(newsletter.__file__))'`/templates/newsletter <project_dir>/templates/
 
 Web view templates
 ^^^^^^^^^^^^^^^^^^
@@ -79,3 +79,32 @@ The following templates can be defined:
 `update_subject.txt`
     Subject template with confirmation link for updating subscriptions.
 
+Using a premailer
+^^^^^^^^^^^^^^^^^
+A premailer is a program that translates embedded CSS into inline CSS. Inline
+CSS is much more widely supported in emails, but can make templates very messy
+if you have more than a couple lines of styling.
+
+`django-premailer <https://pypi.python.org/pypi/django-premailer>`_ is an
+open-source package on PyPI that adds a template tag that applies
+a premailer. Unfortunately, the package was
+`broken for Django 1.6 and upwards <https://github.com/alexhayes/django-premailer/issues/3>`_
+at the time of writing.
+An example of a working version is available at this
+`gist <https://gist.github.com/Sheepzez/2f06f0bf54fc33cdcaab>`_
+(requires `premailer <https://pypi.python.org/pypi/premailer>`_ to be
+installed).
+
+You can then use the template tag in your templates as follows::
+
+  {% load premailer}{% premailer %}
+  <html>
+  <style type="text/css">
+  h1 { border:1px solid black }
+  p { color:red;}
+  </style>
+
+  <h1 style="font-weight:bolder">Hey</h1>
+  <p>Hej</p>
+  </html>
+  {% endpremailer %}

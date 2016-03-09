@@ -1,0 +1,2 @@
+ignore-paths:
+    - newsletter/south_migrations
