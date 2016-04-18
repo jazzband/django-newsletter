@@ -65,6 +65,7 @@ class NewsletterSettings(Settings):
     settings_prefix = 'NEWSLETTER'
 
     DEFAULT_CONFIRM_EMAIL = True
+    DELAY_BETWEEN_EACH_EMAIL = 0
 
     @property
     def DEFAULT_CONFIRM_EMAIL_SUBSCRIBE(self):

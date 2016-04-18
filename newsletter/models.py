@@ -1,4 +1,5 @@
 import logging
+logger = logging.getLogger(__name__)
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -29,7 +30,7 @@ AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 @python_2_unicode_compatible
 class Newsletter(models.Model):
     site = models.ManyToManyField(Site, default=get_default_sites)
-
+    delay_between_each_email = models.IntegerField(default=0)
     title = models.CharField(
         max_length=200, verbose_name=_('newsletter title')
     )
@@ -569,6 +570,7 @@ class Submission(models.Model):
         }
 
     def submit(self):
+        import time
         subscriptions = self.subscriptions.filter(subscribed=True)
 
         logger.info(
@@ -584,6 +586,56 @@ class Submission(models.Model):
 
         try:
             for subscription in subscriptions:
+                variable_dict = {
+                    'subscription': subscription,
+                    'site': Site.objects.get_current(),
+                    'submission': self,
+                    'message': self.message,
+                    'newsletter': self.newsletter,
+                    'date': self.publish_date,
+                    'STATIC_URL': settings.STATIC_URL,
+                    'MEDIA_URL': settings.MEDIA_URL
+                }
+
+                unescaped_context = Context(variable_dict, autoescape=False)
+
+                subject = subject_template.render(unescaped_context).strip()
+                text = text_template.render(unescaped_context)
+
+                message = EmailMultiAlternatives(
+                    subject, text,
+                    from_email=self.newsletter.get_sender(),
+                    to=[subscription.get_recipient()]
+                )
+
+                if html_template:
+                    escaped_context = Context(variable_dict)
+
+                    message.attach_alternative(
+                        html_template.render(escaped_context),
+                        "text/html"
+                    )
+
+                try:
+                    logger.debug(
+                        ugettext(u'Submitting message to: %s.'),
+                        subscription
+                    )
+
+                    message.send()
+                    time.sleep(self.newsletter.delay_between_each_email)		    
+                    print(time.ctime())
+                    print(subscription.get_recipient())
+
+                except Exception, e:
+                    # TODO: Test coverage for this branch.
+                    logger.error(
+                        ugettext(u'Message %(subscription)s failed '
+                                 u'with error: %(error)s'),
+                        {'subscription': subscription,
+                         'error': e}
+                    )
+                time.sleep(settings.DELAY_BETWEEN_EACH_EMAIL)
                 self.send_message(subscription)
             self.sent = True
 
