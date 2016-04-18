@@ -1,15 +1,11 @@
 import logging
-<<<<<<< HEAD
 logger = logging.getLogger(__name__)
-import time
-=======
 
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
 from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
->>>>>>> fd93133b2aba3864f3b211be491dae979fa5ab17
 from django.db import models
 from django.db.models import permalink
 from django.template import Context
@@ -574,6 +570,7 @@ class Submission(models.Model):
         }
 
     def submit(self):
+        import time
         subscriptions = self.subscriptions.filter(subscribed=True)
 
         logger.info(
@@ -589,7 +586,6 @@ class Submission(models.Model):
 
         try:
             for subscription in subscriptions:
-<<<<<<< HEAD
                 variable_dict = {
                     'subscription': subscription,
                     'site': Site.objects.get_current(),
@@ -639,10 +635,8 @@ class Submission(models.Model):
                         {'subscription': subscription,
                          'error': e}
                     )
-
-=======
+                time.sleep(settings.DELAY_BETWEEN_EACH_EMAIL)
                 self.send_message(subscription)
->>>>>>> fd93133b2aba3864f3b211be491dae979fa5ab17
             self.sent = True
 
         finally:
