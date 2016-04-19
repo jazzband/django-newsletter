@@ -70,6 +70,13 @@ Installation
     If not set, django-newsletter will fall back to Django's default TextField
     widget.
 
+#)  Configure delay between each Email (optional).
+
+    As default the configuration delay between each Email is 0 but you can easily
+    change it to what ever you feel is good for your company::
+
+        DELAY_BETWEEN_EACH_EMAIL = 0
+
 #)  Import subscription, unsubscription and archive URL's somewhere in your
     `urls.py`::
 

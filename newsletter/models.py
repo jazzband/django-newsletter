@@ -15,6 +15,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.utils.timezone import now
 
+from .settings import NewsletterSettings
+
 from sorl.thumbnail import ImageField
 
 from .utils import (
@@ -569,6 +571,7 @@ class Submission(models.Model):
         }
 
     def submit(self):
+        import time
         subscriptions = self.subscriptions.filter(subscribed=True)
 
         logger.info(
@@ -584,9 +587,12 @@ class Submission(models.Model):
 
         try:
             for subscription in subscriptions:
+                if hasattr(settings, 'DELAY_BETWEEN_EACH_EMAIL'):
+                    time.sleep(settings.DELAY_BETWEEN_EACH_EMAIL)
+                else:
+                    time.sleep(NewsletterSettings.DELAY_BETWEEN_EACH_EMAIL)
                 self.send_message(subscription)
             self.sent = True
-
         finally:
             self.sending = False
             self.save()
