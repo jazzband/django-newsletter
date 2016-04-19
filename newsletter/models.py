@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.utils.timezone import now
 
-from settings import NewsletterSettings
+from .settings import NewsletterSettings
 
 from sorl.thumbnail import ImageField
 
