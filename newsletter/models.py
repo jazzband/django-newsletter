@@ -569,6 +569,7 @@ class Submission(models.Model):
         }
 
     def submit(self):
+        import time
         subscriptions = self.subscriptions.filter(subscribed=True)
 
         logger.info(
@@ -584,6 +585,8 @@ class Submission(models.Model):
 
         try:
             for subscription in subscriptions:
+                if hasattr(settings, 'DELAY_BETWEEN_EACH_EMAIL'):
+                    time.sleep(settings.DELAY_BETWEEN_EACH_EMAIL)
                 self.send_message(subscription)
             self.sent = True
 
