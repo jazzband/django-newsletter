@@ -1,4 +1,5 @@
 import logging
+import time
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -569,7 +570,6 @@ class Submission(models.Model):
         }
 
     def submit(self):
-        import time
         subscriptions = self.subscriptions.filter(subscribed=True)
 
         logger.info(
