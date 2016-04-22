@@ -96,7 +96,7 @@ Installation
     where ``<message_type>`` can be one from `subscribe`, `unsubscribe`, `message`
     or `update`.
 
-#)  Add jobs for sending out mail queues to `crontab <http://linuxmanpages.com/man5/crontab.5.php>`_::
+#)  Add jobs for sending out mail queues to `crontab <http://man7.org/linux/man-pages/man5/crontab.5.html>`_::
 
         @hourly /path/to/my/project/manage.py runjobs hourly
         @daily /path/to/my/project/manage.py runjobs daily
@@ -104,6 +104,6 @@ Installation
         @monthly /path/to/my/project/manage.py runjobs monthly
 
 To send mail, ``django-newsletter`` uses Django-provided email utilities, so
-ensure that `EMAIL_* settings
-<https://docs.djangoproject.com/en/stable/ref/settings/#email-backend`_ are
+ensure that `email settings
+<https://docs.djangoproject.com/en/stable/ref/settings/#email-backend>`_ are
 properly configured for your project.
