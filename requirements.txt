@@ -7,3 +7,4 @@ surlex>=0.2.0
 sorl-thumbnail>=11.12.1b
 six
 unicodecsv<0.15
+Pillow
