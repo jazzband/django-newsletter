@@ -58,7 +58,7 @@ setup(
     author='Mathijs de Bruin',
     author_email='mathijs@mathijsfietst.nl',
     url='http://github.com/dokterbob/django-newsletter/',
-    packages=find_packages(),
+    packages=find_packages(exclude=("tests", "test_project")),
     include_package_data=True,
     classifiers=(
         'Development Status :: 6 - Mature',
@@ -73,6 +73,6 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Topic :: Utilities'
     ),
-    test_suite='runtests.runtests',
+    test_suite='runtests.run_tests',
     tests_require=TEST_REQUIREMENTS
 )

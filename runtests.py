@@ -1,38 +1,39 @@
-#!/usr/bin/env python  # Run tests for application
-# Source: https://stackoverflow.com/questions/3841725/how-to-launch-tests-for-django-reusable-app
+#!/usr/bin/env python
 
 import os
 import sys
-from argparse import ArgumentParser
 
 import django
+from django.core.management.commands.test import Command as TestCommand
 
-from django.test.runner import DiscoverRunner
 
+def setup_django():
+    """ Setup Django for testing using the test_project directory """
 
-# Any parameter should be optional as automated tests do not set parameters
-def runtests(options=None):
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+    test_project_dir = os.path.join(os.path.dirname(__file__), 'test_project')
+    sys.path.insert(0, test_project_dir)
+
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'test_project.settings'
     django.setup()
 
-    verbosity = options.verbosity if options else 1
-    failfast = options.failfast if options else False
-    test_runner = DiscoverRunner(verbosity=verbosity, failfast=failfast)
 
-    labels = options.labels if options else []
-    failures = test_runner.run_tests(labels or ['newsletter'])
-    sys.exit(failures)
+def run_tests():
+    """ Run tests via setuptools, all tests with no special options """
+
+    setup_django()
+
+    # Bypass argument parsing and run the test command manually with no args
+    TestCommand().handle()
+
+    sys.exit(0)  # TestCommand exits itself on failure, we only exit on success
 
 
-if __name__ == '__main__':
-    parser = ArgumentParser(description="Run the django-newsletter test suite.")
-    parser.add_argument('labels', nargs='*', metavar='label',
-        help='Optional path(s) to test modules; e.g. "newsletter.tests.test_mailing".')
-    parser.add_argument(
-        '-v', '--verbosity', default=1, type=int, choices=[0, 1, 2, 3],
-        help='Verbosity level; 0=minimal output, 1=normal output, 2=all output')
-    parser.add_argument(
-        '--failfast', action='store_true', dest='failfast', default=False,
-        help='Tells Django to stop running the test suite after first failed test.')
-    options = parser.parse_args()
-    runtests(options)
+if __name__ == "__main__":
+    setup_django()
+
+    # Command expects to be called via 'manage.py test' so
+    # add the extra argument so that it can parse correctly
+    sys.argv.insert(1, 'test')
+
+    # Run the test command with argv to get all the argument goodies
+    TestCommand().run_from_argv(sys.argv)
