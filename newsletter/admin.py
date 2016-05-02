@@ -1,5 +1,4 @@
 import logging
-logger = logging.getLogger(__name__)
 
 import six
 
@@ -9,6 +8,7 @@ from django.conf import settings
 from django.conf.urls import url
 
 from django.contrib import admin, messages
+from django.contrib.admin.templatetags.admin_static import static
 from django.contrib.sites.models import Site
 
 from django.core import serializers
@@ -17,12 +17,15 @@ from django.core.urlresolvers import reverse
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
-from django.template import Context
-
 from django.shortcuts import render
 
-from django.utils.translation import ugettext as _, ungettext
+from django.template import Context
+from django.template.response import SimpleTemplateResponse
+
 from django.utils.formats import date_format
+from django.utils.html import format_html
+from django.utils.timezone import now
+from django.utils.translation import ugettext as _, ungettext
 
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.i18n import javascript_catalog
@@ -33,8 +36,6 @@ from .models import (
     Newsletter, Subscription, Article, Message, Submission
 )
 
-from django.utils.timezone import now
-
 from .admin_forms import (
     SubmissionAdminForm, SubscriptionAdminForm, ImportForm, ConfirmForm,
     ArticleFormSet
@@ -43,13 +44,22 @@ from .admin_utils import ExtendibleModelAdminMixin, make_subscription
 
 from .settings import newsletter_settings
 
+
+logger = logging.getLogger(__name__)
+
+
 # Contsruct URL's for icons
-ICON_URLS = {
-    'yes': '%snewsletter/admin/img/icon-yes.gif' % settings.STATIC_URL,
-    'wait': '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL,
-    'submit': '%snewsletter/admin/img/submitting.gif' % settings.STATIC_URL,
-    'no': '%snewsletter/admin/img/icon-no.gif' % settings.STATIC_URL
-}
+def icon_url(icon, alt_text, _urls={}):
+    if not _urls:
+        _urls['yes'] = static('newsletter/admin/img/icon-yes.gif')
+        _urls['wait'] = static('newsletter/admin/img/waiting.gif')
+        _urls['submit'] = static('newsletter/admin/img/submitting.gif')
+        _urls['no'] = static('newsletter/admin/img/icon-no.gif')
+
+    return format_html(
+        '<img src="{}" width="10" height="10" alt="{}"/>',
+        _urls[icon], alt_text
+    )
 
 
 class NewsletterAdmin(admin.ModelAdmin):
@@ -59,29 +69,41 @@ class NewsletterAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
     """ List extensions """
-    def admin_messages(self, obj):
-        return '<a href="../message/?newsletter__id__exact=%s">%s</a>' % (
-            obj.id, _('Messages')
+    def _admin_url(self, obj, model, text):
+        url = reverse('admin:%s_%s_changelist' %
+                      (model._meta.app_label, model._meta.model_name),
+                      current_app=self.admin_site.name)
+
+        return format_html(
+            '<a href="{}?newsletter__id={}">{}</a>', url, obj.id, text
         )
-    admin_messages.allow_tags = True
+
+    def admin_messages(self, obj):
+        return self._admin_url(obj, Message, _("Messages"))
     admin_messages.short_description = ''
 
     def admin_subscriptions(self, obj):
-        return \
-            '<a href="../subscription/?newsletter__id__exact=%s">%s</a>' % \
-            (obj.id, _('Subscriptions'))
-    admin_subscriptions.allow_tags = True
+        return self._admin_url(obj, Subscription, _("Subscriptions"))
     admin_subscriptions.short_description = ''
 
     def admin_submissions(self, obj):
-        return '<a href="../submission/?newsletter__id__exact=%s">%s</a>' % (
-            obj.id, _('Submissions')
-        )
-    admin_submissions.allow_tags = True
+        return self._admin_url(obj, Submission, _("Submissions"))
     admin_submissions.short_description = ''
 
 
-class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
+class NewsletterAdminLinkMixin(object):
+    def admin_newsletter(self, obj):
+        opts = Newsletter._meta
+        newsletter = obj.newsletter
+        url = reverse('admin:%s_%s_change' % (opts.app_label, opts.model_name),
+                      args=(newsletter.id,), current_app=self.admin_site.name)
+
+        return format_html('<a href="{}">{}</a>', url, newsletter)
+    admin_newsletter.short_description = _('newsletter')
+
+
+class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin,
+                      NewsletterAdminLinkMixin):
     form = SubmissionAdminForm
     list_display = (
         'admin_message', 'admin_newsletter', 'admin_publish_date', 'publish',
@@ -93,17 +115,16 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     filter_horizontal = ('subscriptions',)
 
     """ List extensions """
-    def admin_message(self, obj):
-        return '<a href="%d/">%s</a>' % (obj.id, obj.message.title)
-    admin_message.short_description = _('submission')
-    admin_message.allow_tags = True
+    def _admin_url(self, model, obj_id, text):
+        url = reverse('admin:%s_%s_change' %
+                      (model._meta.app_label, model._meta.model_name),
+                      args=(obj_id,), current_app=self.admin_site.name)
 
-    def admin_newsletter(self, obj):
-        return '<a href="../newsletter/%s/">%s</a>' % (
-            obj.newsletter.id, obj.newsletter
-        )
-    admin_newsletter.short_description = _('newsletter')
-    admin_newsletter.allow_tags = True
+        return format_html('<a href="{}">{}</a>', url, text)
+
+    def admin_message(self, obj):
+        return self._admin_url(Submission, obj.id, obj.message.title)
+    admin_message.short_description = _('submission')
 
     def admin_publish_date(self, obj):
         if obj.publish_date:
@@ -115,33 +136,25 @@ class SubmissionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def admin_status(self, obj):
         if obj.prepared:
             if obj.sent:
-                return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                    ICON_URLS['yes'], self.admin_status_text(obj))
+                icon = 'yes'
+            elif obj.publish_date > now():
+                icon = 'wait'
             else:
-                if obj.publish_date > now():
-                    return \
-                        u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                            ICON_URLS['wait'], self.admin_status_text(obj))
-                else:
-                    return \
-                        u'<img src="%s" width="12" height="12" alt="%s"/>' % (
-                            ICON_URLS['wait'], self.admin_status_text(obj))
+                icon = 'submit'
         else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                ICON_URLS['no'], self.admin_status_text(obj))
+            icon = 'no'
 
+        return icon_url(icon, self.admin_status_text(obj))
     admin_status.short_description = ''
-    admin_status.allow_tags = True
 
     def admin_status_text(self, obj):
         if obj.prepared:
             if obj.sent:
                 return _("Sent.")
+            elif obj.publish_date > now():
+                return _("Delayed submission.")
             else:
-                if obj.publish_date > now():
-                    return _("Delayed submission.")
-                else:
-                    return _("Submitting.")
+                return _("Submitting.")
         else:
             return _("Not sent.")
     admin_status_text.short_description = _('Status')
@@ -219,12 +232,14 @@ class ArticleInline(AdminImageMixin, StackedInline):
         }
 
 
-class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
+class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin,
+                   NewsletterAdminLinkMixin):
     save_as = True
     list_display = (
-        'admin_title', 'admin_newsletter', 'admin_preview', 'date_create',
+        'title', 'admin_newsletter', 'admin_preview', 'date_create',
         'date_modify'
     )
+    list_display_links = ('title',)
     list_filter = ('newsletter', )
     date_hierarchy = 'date_create'
     prepopulated_fields = {'slug': ('title',)}
@@ -232,22 +247,12 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     inlines = [ArticleInline, ]
 
     """ List extensions """
-    def admin_title(self, obj):
-        return '<a href="%d/">%s</a>' % (obj.id, obj.title)
-    admin_title.short_description = _('message')
-    admin_title.allow_tags = True
-
     def admin_preview(self, obj):
-        return '<a href="%d/preview/">%s</a>' % (obj.id, _('Preview'))
-    admin_preview.short_description = ''
-    admin_preview.allow_tags = True
+        url = reverse('admin:' + self._view_name('preview'), args=(obj.id,),
+                      current_app=self.admin_site.name)
 
-    def admin_newsletter(self, obj):
-        return '<a href="../newsletter/%s/">%s</a>' % (
-            obj.newsletter.id, obj.newsletter
-        )
-    admin_newsletter.short_description = _('newsletter')
-    admin_newsletter.allow_tags = True
+        return format_html('<a href="{}">{}</a>', url, _("Preview"))
+    admin_preview.short_description = ''
 
     """ Views """
     def preview(self, request, object_id):
@@ -267,14 +272,14 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
                 'message belongs to.'
             ))
 
-        c = Context({'message': message,
-                     'site': Site.objects.get_current(),
-                     'newsletter': message.newsletter,
-                     'date': now(),
-                     'STATIC_URL': settings.STATIC_URL,
-                     'MEDIA_URL': settings.MEDIA_URL})
+        c = {'message': message,
+             'site': Site.objects.get_current(),
+             'newsletter': message.newsletter,
+             'date': now(),
+             'STATIC_URL': settings.STATIC_URL,
+             'MEDIA_URL': settings.MEDIA_URL}
 
-        return HttpResponse(message.html_template.render(c))
+        return SimpleTemplateResponse(message.html_template, context=c)
 
     @xframe_options_sameorigin
     def preview_text(self, request, object_id):
@@ -289,9 +294,8 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
             'MEDIA_URL': settings.MEDIA_URL
         }, autoescape=False)
 
-        return HttpResponse(
-            message.text_template.render(c),
-            content_type='text/plain'
+        return SimpleTemplateResponse(
+            message.text_template, context=c, content_type='text/plain'
         )
 
     def submit(self, request, object_id):
@@ -335,7 +339,8 @@ class MessageAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
         return my_urls + urls
 
 
-class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
+class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin,
+                        NewsletterAdminLinkMixin):
     form = SubscriptionAdminForm
     list_display = (
         'name', 'email', 'admin_newsletter', 'admin_subscribe_date',
@@ -357,27 +362,16 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     exclude = ['unsubscribed']
 
     """ List extensions """
-    def admin_newsletter(self, obj):
-        return '<a href="../newsletter/%s/">%s</a>' % (
-            obj.newsletter.id, obj.newsletter
-        )
-    admin_newsletter.short_description = _('newsletter')
-    admin_newsletter.allow_tags = True
-
     def admin_status(self, obj):
         if obj.unsubscribed:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                ICON_URLS['no'], self.admin_status_text(obj))
-
-        if obj.subscribed:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                ICON_URLS['yes'], self.admin_status_text(obj))
+            icon = 'no'
+        elif obj.subscribed:
+            icon = 'yes'
         else:
-            return u'<img src="%s" width="10" height="10" alt="%s"/>' % (
-                ICON_URLS['wait'], self.admin_status_text(obj))
+            icon = 'wait'
 
+        return icon_url(icon, self.admin_status_text(obj))
     admin_status.short_description = ''
-    admin_status.allow_tags = True
 
     def admin_status_text(self, obj):
         if obj.subscribed:

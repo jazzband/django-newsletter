@@ -1,36 +1,41 @@
 from functools import update_wrapper
 
+from django.contrib.admin.exceptions import DisallowedModelAdminToField
+from django.contrib.admin.options import TO_FIELD_VAR
 from django.contrib.admin.utils import unquote
+from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.utils.encoding import force_text
+from django.utils.html import escape
 from django.utils.translation import ugettext as _
 from .models import Subscription
 
 
 class ExtendibleModelAdminMixin(object):
     def _getobj(self, request, object_id):
-            opts = self.model._meta
+        opts = self.model._meta
 
-            try:
-                obj = self.get_queryset(request).get(pk=unquote(object_id))
-            except self.model.DoesNotExist:
-                # Don't raise Http404 just yet, because we haven't checked
-                # permissions yet. We don't want an unauthenticated user to
-                # be able to determine whether a given object exists.
-                obj = None
+        to_field = request.POST.get(
+            TO_FIELD_VAR, request.GET.get(TO_FIELD_VAR))
+        if to_field and not self.to_field_allowed(request, to_field):
+            raise DisallowedModelAdminToField(
+                "The field %s cannot be referenced." % to_field)
 
-            if obj is None:
-                raise Http404(
-                    _(
-                        '%(name)s object with primary key '
-                        '%(key)r does not exist.'
-                    ) % {
-                        'name': force_text(opts.verbose_name),
-                        'key': force_text(object_id)
-                    }
-                )
+        obj = self.get_object(request, unquote(object_id), to_field)
 
-            return obj
+        if not self.has_change_permission(request, obj):
+            raise PermissionDenied
+
+        if obj is None:
+            raise Http404(
+                _('%(name)s object with primary key %(key)r does not exist.') %
+                {
+                    'name': force_text(opts.verbose_name),
+                    'key': escape(object_id)
+                }
+            )
+
+        return obj
 
     def _wrap(self, view):
         def wrapper(*args, **kwargs):
