@@ -1,6 +1,6 @@
 {% extends "admin/change_form.html" %}
 
-{% load i18n %}
+{% load i18n admin_urls %}
 {% load static from staticfiles %}
 
 {% block extrahead %}
@@ -10,16 +10,11 @@
 <script src="{% static "newsletter/admin/js/submit_interface.js" %}" type="text/javascript"></script>
 {% endblock %}
 
-{% block object-tools %}
-{% if change %}{% if not is_popup %}
-  <ul class="object-tools">
-    <li><a href="{% url 'admin:newsletter_submission_history' object_id %}" class="historylink">{% trans "History" %}</a></li>
-    {% if has_absolute_url %}<li><a href="{{ absolute_url }}" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif %}
-    <li><a href="{% url 'admin:newsletter_submission_submit' object_id %}" id="submitlink">{% trans "Submit" %}</a></li>
-  </ul>
-{% endif %}{% endif %}
-{% endblock %}
+{% block object-tools-items %}
+  {{ block.super }}
 
+  <li><a href="{% url opts|admin_urlname:'submit' original.pk %}" id="submitlink">{% trans "Submit" %}</a></li>
+{% endblock %}
 
 {% block after_related_objects %}{{ block.super }}<script type="text/javascript">
 django.jQuery(window).load(function() {
