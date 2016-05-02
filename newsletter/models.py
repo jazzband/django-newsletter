@@ -605,7 +605,8 @@ class Submission(models.Model):
 
         unescaped_context = Context(variable_dict, autoescape=False)
 
-        subject = self.message.subject_template.render(unescaped_context).strip()
+        subject = self.message.subject_template.render(
+            unescaped_context).strip()
         text = self.message.text_template.render(unescaped_context)
 
         message = EmailMultiAlternatives(

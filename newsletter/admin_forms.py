@@ -1,5 +1,4 @@
 import logging
-logger = logging.getLogger(__name__)
 
 from django import forms
 
@@ -11,6 +10,9 @@ from .models import Subscription, Newsletter, Submission
 from .addressimport.parsers import parse_csv, parse_vcard, parse_ldif
 
 
+logger = logging.getLogger(__name__)
+
+
 class ImportForm(forms.Form):
 
     def clean(self):
@@ -20,7 +22,7 @@ class ImportForm(forms.Form):
                 'newsletter' in self.cleaned_data):
             return self.cleaned_data
             # TESTME: Should an error be raised here or not?
-            #raise forms.ValidationError(_("No file has been specified."))
+            # raise forms.ValidationError(_("No file has been specified."))
 
         ignore_errors = self.cleaned_data['ignore_errors']
         newsletter = self.cleaned_data['newsletter']

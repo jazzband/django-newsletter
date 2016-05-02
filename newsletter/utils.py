@@ -1,7 +1,6 @@
 """ Generic helper functions """
 
 import logging
-logger = logging.getLogger(__name__)
 
 import random
 
@@ -10,6 +9,10 @@ from hashlib import sha1
 
 from django.contrib.sites.models import Site
 from django.utils.encoding import force_bytes
+
+
+logger = logging.getLogger(__name__)
+
 
 # Possible actions that user can perform
 ACTIONS = ('subscribe', 'unsubscribe', 'update')
