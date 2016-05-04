@@ -1,7 +1,5 @@
 import logging
 
-logger = logging.getLogger(__name__)
-
 import datetime
 import socket
 
@@ -39,6 +37,9 @@ from .forms import (
 )
 from .settings import newsletter_settings
 from .utils import ACTIONS
+
+
+logger = logging.getLogger(__name__)
 
 
 class NewsletterViewBase(object):
