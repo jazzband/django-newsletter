@@ -166,3 +166,15 @@ class SubmissionAdminForm(forms.ModelForm):
                 )
 
         return publish
+
+
+class ArticleFormSet(forms.BaseInlineFormSet):
+    """ Formset for articles yielding default sortoder. """
+
+    def __init__(self, *args, **kwargs):
+        super(ArticleFormSet, self).__init__(*args, **kwargs)
+
+        assert self.instance
+        next_sortorder = self.instance.get_next_article_sortorder()
+        for index, form in enumerate(self.extra_forms):
+            form.initial['sortorder'] = next_sortorder + index * 10
