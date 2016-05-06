@@ -32,7 +32,9 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
 ]
 
-ROOT_URLCONF = 'tests.urls'
+ROOT_URLCONF = 'test_project.urls'
+
+FIXTURE_DIRS = [os.path.join(test_dir, 'fixtures'),]
 
 SITE_ID = 1
 

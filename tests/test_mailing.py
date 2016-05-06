@@ -10,10 +10,10 @@ from django.test.utils import patch_logger
 from django.utils.six.moves import range
 from django.utils.timezone import now
 
-from ..models import (
+from newsletter.models import (
     Newsletter, Subscription, Submission, Message, Article, get_default_sites
 )
-from ..utils import ACTIONS
+from newsletter.utils import ACTIONS
 
 from .utils import MailTestCase, UserTestCase, template_exists
 
