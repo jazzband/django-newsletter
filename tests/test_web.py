@@ -568,6 +568,40 @@ class AnonymousSubscribeTestCase(
 
         self.assertEmailContains(full_activate_url)
 
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
+    def test_subscribe_request_post_emptyemail(self):
+        """ Post the subscription form without email shoud fail. """
+
+        response = self.client.post(
+            self.subscribe_url, {
+                'name_field': 'Test Name',
+                'email_field': ''
+            }
+        )
+
+        self.assertContains(response, 'This field is required.')
+
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
+    def test_subscribe_request_post_existinguser_email(self):
+        """ Post the subscription form without email shoud fail. """
+
+        User = get_user_model()
+        password = User.objects.make_random_password()
+        user = User.objects.create_user(
+            'john', 'lennon@thebeatles.com', password)
+        user.save()
+
+        response = self.client.post(
+            self.subscribe_url, {
+                'name_field': 'Test Name',
+                'email_field': user.email
+            }
+        )
+
+        self.assertContains(
+            response, "belongs to a user with an account on this site"
+        )
+
     @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=False)
     def test_subscribe_request_post_no_email(self):
         """
@@ -976,6 +1010,38 @@ class AnonymousSubscribeTestCase(
         full_activate_url = 'http://%s%s' % (self.site.domain, activate_url)
 
         self.assertEmailContains(full_activate_url)
+
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
+    def test_update_request_post_emptyemail(self):
+        """ Post the update form without email shoud fail. """
+
+        response = self.client.post(
+            self.update_url, {
+                'email_field': ''
+            }
+        )
+
+        self.assertContains(response, 'This field is required.')
+
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
+    def test_update_request_post_existinguser_email(self):
+        """ Post the update form without email shoud fail. """
+
+        User = get_user_model()
+        password = User.objects.make_random_password()
+        user = User.objects.create_user(
+            'john', 'lennon@thebeatles.com', password)
+        user.save()
+
+        response = self.client.post(
+            self.update_url, {
+                'email_field': user.email
+            }
+        )
+
+        self.assertContains(
+            response, "belongs to a user with an account on this site"
+        )
 
     @override_settings(NEWSLETTER_CONFIRM_EMAIL_UPDATE=False)
     def test_update_request_post_no_email(self):

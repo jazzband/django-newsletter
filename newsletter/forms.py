@@ -41,14 +41,10 @@ class SubscribeRequestForm(NewsletterForm):
     subscription.
     """
 
+    email_field = forms.EmailField(validators=[validate_email_nouser])
+
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
-
-        if not data:
-            raise ValidationError(_("An e-mail address is required."))
-
-        # Check whether we should be subscribed to as a user
-        validate_email_nouser(data)
 
         # Check whether we have already been subscribed to
         try:
@@ -78,6 +74,8 @@ class UpdateRequestForm(NewsletterForm):
     email being sent.
     """
 
+    email_field = forms.EmailField(validators=[validate_email_nouser])
+
     class Meta(NewsletterForm.Meta):
         fields = ('email_field',)
 
@@ -91,12 +89,6 @@ class UpdateRequestForm(NewsletterForm):
 
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
-
-        if not data:
-            raise ValidationError(_("An e-mail address is required."))
-
-        # Check whether we should update as a user
-        validate_email_nouser(data)
 
         # Set our instance on the basis of the email field, or raise
         # a validationerror
