@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.auth import get_user_model
 from django.forms.utils import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
