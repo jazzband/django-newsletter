@@ -123,7 +123,7 @@ class CreateSubmissionTestCase(MailingTestCase):
         self.assertFalse(sub.sending)
 
     def test_submission_subscribed(self):
-        """ Test a simpel submission with single subscriber. """
+        """ Test a simple submission with single subscriber. """
 
         self.s.subscribed = False
         self.s.save()
@@ -201,9 +201,9 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.assertFalse(self.sub.sending)
 
     def test_nosubmit(self):
-        """ Assure nothing happends if not prepared. """
+        """ Assure nothing happens if not prepared. """
 
-        # Assure nothing happends
+        # Assure nothing happens
         Submission.submit_queue()
 
         self.assertFalse(self.sub.prepared)

@@ -545,7 +545,7 @@ class Submission(models.Model):
     """
     Submission represents a particular Message as it is being submitted
     to a list of Subscribers. This is where actual queueing and submission
-    happends.
+    happen.
     """
     class Meta:
         verbose_name = _('submission')
