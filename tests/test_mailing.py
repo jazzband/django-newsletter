@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import itertools
 import six
 import unittest
@@ -16,6 +19,8 @@ from newsletter.models import (
 from newsletter.utils import ACTIONS
 
 from .utils import MailTestCase, UserTestCase, template_exists
+
+NUM_SUBSCRIBED = 2
 
 
 class MailingTestCase(MailTestCase):
@@ -40,11 +45,14 @@ class MailingTestCase(MailTestCase):
                          slug='test-message')
         self.m.save()
 
-        self.s = Subscription(
+        self.s = Subscription.objects.create(
             name='Test Name', email='test@test.com',
             newsletter=self.n, subscribed=True
         )
-        self.s.save()
+        self.s2 = Subscription.objects.create(
+            name='René Luçon', email='rene@test.com',
+            newsletter=self.n, subscribed=True
+        )
 
     def send_email(self, action):
         assert action in ACTIONS + ('message', ), 'Unknown action: %s' % action
@@ -59,7 +67,8 @@ class MailingTestCase(MailTestCase):
             # Send message email
             Submission.submit_queue()
         else:
-            self.s.send_activation_email(action)
+            for subscriber in self.n.get_subscriptions():
+                subscriber.send_activation_email(action)
 
 
 class ArticleTestCase(MailingTestCase):
@@ -116,7 +125,7 @@ class CreateSubmissionTestCase(MailingTestCase):
         sub = Submission.from_message(self.m)
 
         subscriptions = sub.subscriptions.all()
-        self.assertEqual(list(subscriptions), [self.s])
+        self.assertEqual(set(subscriptions), {self.s, self.s2})
 
         self.assertFalse(sub.prepared)
         self.assertFalse(sub.sent)
@@ -131,7 +140,7 @@ class CreateSubmissionTestCase(MailingTestCase):
         sub = Submission.from_message(self.m)
 
         subscriptions = sub.subscriptions.all()
-        self.assertEqual(list(subscriptions), [])
+        self.assertEqual(list(subscriptions), [self.s2])
 
     def test_submission_unsubscribed(self):
         """ Test submission with unsubscribed activated subscriber. """
@@ -142,7 +151,7 @@ class CreateSubmissionTestCase(MailingTestCase):
         sub = Submission.from_message(self.m)
 
         subscriptions = sub.subscriptions.all()
-        self.assertEqual(list(subscriptions), [])
+        self.assertEqual(list(subscriptions), [self.s2])
 
     def test_submission_unsubscribed_unactivated(self):
         """ Test submissions with unsubscribed unactivated subscriber. """
@@ -154,36 +163,7 @@ class CreateSubmissionTestCase(MailingTestCase):
         sub = Submission.from_message(self.m)
 
         subscriptions = sub.subscriptions.all()
-        self.assertEqual(list(subscriptions), [])
-
-    def test_twosubmissions(self):
-        """ Test submission with two activated subscribers. """
-
-        s2 = Subscription(
-            name='Test Name 2', email='test2@test.com',
-            newsletter=self.n, subscribed=True
-        )
-        s2.save()
-
-        sub = Submission.from_message(self.m)
-
-        subscriptions = sub.subscriptions.all()
-        self.assertTrue(self.s in list(subscriptions))
-        self.assertTrue(s2 in list(subscriptions))
-
-    def test_twosubmissions_unsubscried(self):
-        """ Test submission with two subscribers, one unactivated. """
-
-        s2 = Subscription(
-            name='Test Name 2', email='test2@test.com',
-            newsletter=self.n, subscribed=False
-        )
-        s2.save()
-
-        sub = Submission.from_message(self.m)
-
-        subscriptions = sub.subscriptions.all()
-        self.assertEqual(list(subscriptions), [self.s])
+        self.assertEqual(list(subscriptions), [self.s2])
 
 
 class SubmitSubmissionTestCase(MailingTestCase):
@@ -233,7 +213,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.assertFalse(submission.sending)
 
         # Make sure mail is being sent out
-        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), NUM_SUBSCRIBED)
 
         # Make sure a submission contains the title and unsubscribe URL
         self.assertEmailContains(submission.message.title)
@@ -364,7 +344,7 @@ class HtmlEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
         """
 
         # Make sure one mail is being sent out
-        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), NUM_SUBSCRIBED)
 
         # Make sure mail contains HTML alternative
         self.assertEmailAlternativesContainMimetype('text/html')
@@ -394,7 +374,7 @@ class TextOnlyEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
         """
 
         # Make sure one mail is being sent out
-        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), NUM_SUBSCRIBED)
 
         # Make sure mail is text only
         self.assertEmailHasNoAlternatives()
@@ -444,7 +424,7 @@ class TemplateOverridesTestCase(MailingTestCase, AllEmailsTestsMixin):
         """
 
         # Make sure one mail is being sent out
-        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), NUM_SUBSCRIBED)
 
         # Make sure mail subject contains string
         # from template override for given action
