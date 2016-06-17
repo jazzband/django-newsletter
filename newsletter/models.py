@@ -1,5 +1,6 @@
 import logging
 
+import django
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
@@ -14,7 +15,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.utils.timezone import now
 
+
 from sorl.thumbnail import ImageField
+from distutils.version import LooseVersion
 
 from .utils import (
     make_activation_code, get_default_sites, ACTIONS
@@ -23,7 +26,6 @@ from .utils import (
 logger = logging.getLogger(__name__)
 
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
-
 
 @python_2_unicode_compatible
 class Newsletter(models.Model):
@@ -137,10 +139,7 @@ class Newsletter(models.Model):
         )
 
     def get_sender(self):
-        try:
-            return u'%s <%s>' % (self.sender.encode('ascii'), self.email)
-        except UnicodeEncodeError:
-            return self.email
+        return get_address(self.sender, self.email)
 
     def get_subscriptions(self):
         logger.debug(u'Looking up subscribers for %s', self)
@@ -341,12 +340,7 @@ class Subscription(models.Model):
         unique_together = ('user', 'email_field', 'newsletter')
 
     def get_recipient(self):
-        if self.name:
-            try:
-                return u'%s <%s>' % (self.name.encode('ascii'), self.email)
-            except UnicodeEncodeError:
-                pass
-        return u'%s' % (self.email)
+        return get_address(self.name, self.email)
 
     def send_activation_email(self, action):
         assert action in ACTIONS, 'Unknown action: %s' % action
@@ -709,3 +703,12 @@ class Submission(models.Model):
         default=False, verbose_name=_('sending'),
         db_index=True, editable=False
     )
+
+def get_address(name, email):
+    if LooseVersion(django.get_version()) >= LooseVersion('1.9'):
+        return u'%s <%s>' % (name, self.email)
+    else:
+        try:
+            return u'%s <%s>' % (name.encode('ascii'), self.email)
+        except UnicodeEncodeError:
+            return self.email
