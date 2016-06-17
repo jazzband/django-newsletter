@@ -137,7 +137,10 @@ class Newsletter(models.Model):
         )
 
     def get_sender(self):
-        return u'%s <%s>' % (self.sender, self.email)
+        try:
+            return u'%s <%s>' % (self.sender.encode('ascii'), self.email)
+        except UnicodeEncodeError:
+            return self.email
 
     def get_subscriptions(self):
         logger.debug(u'Looking up subscribers for %s', self)
@@ -339,8 +342,10 @@ class Subscription(models.Model):
 
     def get_recipient(self):
         if self.name:
-            return u'%s <%s>' % (self.name, self.email)
-
+            try:
+                return u'%s <%s>' % (self.name.encode('ascii'), self.email)
+            except UnicodeEncodeError:
+                pass
         return u'%s' % (self.email)
 
     def send_activation_email(self, action):
