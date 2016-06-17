@@ -706,9 +706,9 @@ class Submission(models.Model):
 
 def get_address(name, email):
     if LooseVersion(django.get_version()) >= LooseVersion('1.9'):
-        return u'%s <%s>' % (name, self.email)
+        return u'%s <%s>' % (name, email)
     else:
         try:
-            return u'%s <%s>' % (name.encode('ascii'), self.email)
+            return u'%s <%s>' % (name.encode('ascii'), email)
         except UnicodeEncodeError:
-            return self.email
+            return email
