@@ -1,9 +1,9 @@
 from django import forms
-from django.contrib.auth import get_user_model
 from django.forms.utils import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Subscription
+from .validators import validate_email_nouser
 
 
 class NewsletterForm(forms.ModelForm):
@@ -40,25 +40,10 @@ class SubscribeRequestForm(NewsletterForm):
     subscription.
     """
 
+    email_field = forms.EmailField(validators=[validate_email_nouser])
+
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
-
-        if not data:
-            raise ValidationError(_("An e-mail address is required."))
-
-        # Check whether we should be subscribed to as a user
-        User = get_user_model()
-        try:
-            user = User.objects.get(email__exact=data)
-
-            raise ValidationError(_(
-                "The e-mail address '%(email)s' belongs to a user with an "
-                "account on this site. Please log in as that user "
-                "and try again."
-            ) % {'email': user.email})
-
-        except User.DoesNotExist:
-            pass
 
         # Check whether we have already been subscribed to
         try:
@@ -88,6 +73,8 @@ class UpdateRequestForm(NewsletterForm):
     email being sent.
     """
 
+    email_field = forms.EmailField(validators=[validate_email_nouser])
+
     class Meta(NewsletterForm.Meta):
         fields = ('email_field',)
 
@@ -101,23 +88,6 @@ class UpdateRequestForm(NewsletterForm):
 
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
-
-        if not data:
-            raise ValidationError(_("An e-mail address is required."))
-
-        # Check whether we should update as a user
-        User = get_user_model()
-        try:
-            user = User.objects.get(email__exact=data)
-
-            raise ValidationError(
-                _("This e-mail address belongs to the user '%(username)s'. "
-                  "Please log in as that user and try again.")
-                % {'username': user.username}
-            )
-
-        except User.DoesNotExist:
-            pass
 
         # Set our instance on the basis of the email field, or raise
         # a validationerror
