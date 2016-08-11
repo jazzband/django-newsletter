@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-21 16:35+0200\n"
+"POT-Creation-Date: 2016-08-11 16:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -289,38 +289,27 @@ msgstr ""
 msgid "%(name)s object with primary key %(key)r does not exist."
 msgstr ""
 
-#: forms.py:47 forms.py:106
-msgid "An e-mail address is required."
-msgstr ""
-
-#: forms.py:55 forms.py:114
-#, python-format
-msgid ""
-"The e-mail address '%(email)s' belongs to a user with an account on this "
-"site. Please log in as that user and try again."
-msgstr ""
-
-#: forms.py:72
+#: forms.py:57
 msgid "Your e-mail address has already been subscribed to."
 msgstr ""
 
-#: forms.py:97
+#: forms.py:84
 msgid "This subscription has not yet been activated."
 msgstr ""
 
-#: forms.py:132
+#: forms.py:102
 msgid "This e-mail address has not been subscribed to."
 msgstr ""
 
-#: forms.py:147
+#: forms.py:117
 msgid "This subscription has already been unsubscribed from."
 msgstr ""
 
-#: forms.py:163
+#: forms.py:133
 msgid "The validation code supplied by you does not match."
 msgstr ""
 
-#: forms.py:169
+#: forms.py:139
 msgid "Activation code"
 msgstr ""
 
@@ -716,6 +705,13 @@ msgstr ""
 
 #: templates/widget/image.html:4
 msgid "Change:"
+msgstr ""
+
+#: validators.py:15
+#, python-format
+msgid ""
+"The e-mail address '%(email)s' belongs to a user with an account on this "
+"site. Please log in as that user and try again."
 msgstr ""
 
 #: views.py:115
