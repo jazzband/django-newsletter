@@ -17,7 +17,7 @@ Installation
     `VirtualEnv <http://pypi.python.org/pypi/virtualenv>`_ in order to
     keep your Python environment somewhat clean.)
 
-#)  Add newsletter and to ``INSTALLED_APPS`` in settings.py and make sure that
+#)  Add newsletter to ``INSTALLED_APPS`` in settings.py and make sure that
     your favourite rich text widget (optional), some Django contrib dependencies,
     `sorl-thumbnail <http://sorl-thumbnail.readthedocs.org/en/latest/installation.html>`_
     and `django-extensions <https://github.com/django-extensions/django-extensions>`_
