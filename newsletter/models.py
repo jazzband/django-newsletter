@@ -156,7 +156,8 @@ class Newsletter(models.Model):
 @python_2_unicode_compatible
 class Subscription(models.Model):
     user = models.ForeignKey(
-        AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('user')
+        AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('user'),
+        on_delete=models.CASCADE
     )
 
     name_field = models.CharField(
@@ -295,7 +296,9 @@ class Subscription(models.Model):
 
     ip = models.GenericIPAddressField(_("IP address"), blank=True, null=True)
 
-    newsletter = models.ForeignKey('Newsletter', verbose_name=_('newsletter'))
+    newsletter = models.ForeignKey(
+        Newsletter, verbose_name=_('newsletter'), on_delete=models.CASCADE
+    )
 
     create_date = models.DateTimeField(editable=False, default=now)
 
@@ -444,7 +447,8 @@ class Article(models.Model):
     # Message this article is associated with
     # TODO: Refactor post to message (post is legacy notation).
     post = models.ForeignKey(
-        'Message', verbose_name=_('message'), related_name='articles'
+        'Message', verbose_name=_('message'), related_name='articles',
+        on_delete=models.CASCADE
     )
 
     class Meta:
@@ -473,7 +477,7 @@ class Message(models.Model):
     slug = models.SlugField(verbose_name=_('slug'))
 
     newsletter = models.ForeignKey(
-        'Newsletter', verbose_name=_('newsletter')
+        Newsletter, verbose_name=_('newsletter'), on_delete=models.CASCADE
     )
 
     date_create = models.DateTimeField(
@@ -684,10 +688,12 @@ class Submission(models.Model):
         )
 
     newsletter = models.ForeignKey(
-        'Newsletter', verbose_name=_('newsletter'), editable=False
+        Newsletter, verbose_name=_('newsletter'), editable=False,
+        on_delete=models.CASCADE
     )
     message = models.ForeignKey(
-        'Message', verbose_name=_('message'), editable=True, null=False
+        Message, verbose_name=_('message'), editable=True, null=False,
+        on_delete=models.CASCADE
     )
 
     subscriptions = models.ManyToManyField(

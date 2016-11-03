@@ -75,8 +75,8 @@ class Migration(migrations.Migration):
                 ('prepared', models.BooleanField(default=False, verbose_name='prepared', db_index=True, editable=False)),
                 ('sent', models.BooleanField(default=False, verbose_name='sent', db_index=True, editable=False)),
                 ('sending', models.BooleanField(default=False, verbose_name='sending', db_index=True, editable=False)),
-                ('message', models.ForeignKey(verbose_name='message', to='newsletter.Message')),
-                ('newsletter', models.ForeignKey(editable=False, to='newsletter.Newsletter', verbose_name='newsletter')),
+                ('message', models.ForeignKey(verbose_name='message', to='newsletter.Message', on_delete=models.CASCADE)),
+                ('newsletter', models.ForeignKey(editable=False, to='newsletter.Newsletter', verbose_name='newsletter', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'submission',
@@ -97,8 +97,8 @@ class Migration(migrations.Migration):
                 ('subscribe_date', models.DateTimeField(null=True, verbose_name='subscribe date', blank=True)),
                 ('unsubscribed', models.BooleanField(default=False, db_index=True, verbose_name='unsubscribed')),
                 ('unsubscribe_date', models.DateTimeField(null=True, verbose_name='unsubscribe date', blank=True)),
-                ('newsletter', models.ForeignKey(verbose_name='newsletter', to='newsletter.Newsletter')),
-                ('user', models.ForeignKey(verbose_name='user', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('newsletter', models.ForeignKey(verbose_name='newsletter', to='newsletter.Newsletter', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(verbose_name='user', blank=True, to=settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'subscription',
@@ -119,7 +119,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='message',
             name='newsletter',
-            field=models.ForeignKey(verbose_name='newsletter', to='newsletter.Newsletter'),
+            field=models.ForeignKey(verbose_name='newsletter', to='newsletter.Newsletter', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
@@ -129,7 +129,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='article',
             name='post',
-            field=models.ForeignKey(related_name='articles', verbose_name='message', to='newsletter.Message'),
+            field=models.ForeignKey(related_name='articles', verbose_name='message', to='newsletter.Message', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]
