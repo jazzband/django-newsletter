@@ -72,11 +72,11 @@ class AdminTestCase(AdminTestMixin, TestCase):
         response = self.client.get(changelist_url)
         self.assertContains(
             response,
-            '<a href="../message/?newsletter__id__exact=%s">Messages</a>' % self.newsletter.pk
+            '<a href="/admin/newsletter/message/?newsletter__id=%s">Messages</a>' % self.newsletter.pk
         )
         self.assertContains(
             response,
-            '<a href="../subscription/?newsletter__id__exact=%s">Subscriptions</a>' % self.newsletter.pk
+            '<a href="/admin/newsletter/subscription/?newsletter__id=%s">Subscriptions</a>' % self.newsletter.pk
         )
 
     def test_subscription_admin(self):
@@ -246,7 +246,7 @@ class AdminTestCase(AdminTestMixin, TestCase):
         response = self.client.get(changelist_url)
         self.assertContains(
             response,
-            '<a href="%d/preview/">Preview</a>' % self.message.pk,
+            '<a href="/admin/newsletter/message/%d/preview/">Preview</a>' % self.message.pk,
             html=True
         )
 
