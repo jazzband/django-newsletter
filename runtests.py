@@ -22,8 +22,8 @@ def run_tests():
 
     setup_django()
 
-    # Bypass argument parsing and run the test command manually with no args
-    TestCommand().handle()
+    # Bypass argument parsing and run the test command manually with minimal args
+    TestCommand().handle(**{'testrunner': None, 'liveserver': None})
 
     sys.exit(0)  # TestCommand exits itself on failure, we only exit on success
 
