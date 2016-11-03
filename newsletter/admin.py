@@ -11,6 +11,7 @@ from django.conf import settings
 from django.conf.urls import url
 
 from django.contrib import admin, messages
+from django.contrib.admin.templatetags.admin_static import static
 from django.contrib.sites.models import Site
 
 from django.core import serializers
@@ -46,13 +47,16 @@ from .admin_utils import ExtendibleModelAdminMixin, make_subscription
 
 from .settings import newsletter_settings
 
-# Contsruct URL's for icons
 ICON_URLS = {
-    'yes': '%snewsletter/admin/img/icon-yes.gif' % settings.STATIC_URL,
-    'wait': '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL,
-    'submit': '%snewsletter/admin/img/submitting.gif' % settings.STATIC_URL,
-    'no': '%snewsletter/admin/img/icon-no.gif' % settings.STATIC_URL
+    'yes': 'newsletter/admin/img/icon-yes.svg',
+    'wait': 'newsletter/admin/img/waiting.gif',
+    'submit': 'newsletter/admin/img/submitting.gif',
+    'no': 'newsletter/admin/img/icon-no.svg',
 }
+
+
+def icon_url(icon_name):
+    return static(ICON_URLS[icon_name])
 
 
 class NewsletterAdmin(admin.ModelAdmin):
@@ -124,23 +128,23 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
             if obj.sent:
                 return format_html(
                     '<img src="{}" width="10" height="10" alt="{}"/>',
-                    ICON_URLS['yes'], self.admin_status_text(obj)
+                    icon_url('yes'), self.admin_status_text(obj)
                 )
             else:
                 if obj.publish_date > now():
                     return format_html(
                         '<img src="{}" width="10" height="10" alt="{}"/>',
-                        ICON_URLS['wait'], self.admin_status_text(obj)
+                        icon_url('wait'), self.admin_status_text(obj)
                     )
                 else:
                     return format_html(
                         '<img src="{}" width="12" height="12" alt="{}"/>',
-                        ICON_URLS['wait'], self.admin_status_text(obj)
+                        icon_url('wait'), self.admin_status_text(obj)
                     )
         else:
             return format_html(
                 '<img src="{}" width="10" height="10" alt="{}"/>',
-                ICON_URLS['no'], self.admin_status_text(obj)
+                icon_url('no'), self.admin_status_text(obj)
             )
     admin_status.short_description = ''
 
@@ -367,12 +371,12 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         img_tag = '<img src="{}" width="10" height="10" alt="{}"/>'
         alt_txt = self.admin_status_text(obj)
         if obj.unsubscribed:
-            return format_html(img_tag, ICON_URLS['no'], alt_txt)
+            return format_html(img_tag, icon_url('no'), alt_txt)
 
         if obj.subscribed:
-            return format_html(img_tag, ICON_URLS['yes'], alt_txt)
+            return format_html(img_tag, icon_url('yes'), alt_txt)
         else:
-            return format_html(img_tag, ICON_URLS['wait'], alt_txt)
+            return format_html(img_tag, icon_url('wait'), alt_txt)
     admin_status.short_description = ''
 
     def admin_status_text(self, obj):
