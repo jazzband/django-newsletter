@@ -45,7 +45,8 @@ soon as near-full coverage is reached.
 
 Compatibility
 =============
-Currently, django-newsletter is officially supported for Django 1.8 and 1.9 and Python 2.7, 3.4 and 3.5.
+Currently, django-newsletter is officially supported for Django 1.8, 1.9, 1.10
+and Python 2.7, 3.4 and 3.5.
 
 Requirements
 ============
