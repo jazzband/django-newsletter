@@ -1,4 +1,4 @@
-++++++++++++++++++++
+{% load i18n %}++++++++++++++++++++
 
 {{ newsletter.title }}: {{ message.title }}
 
@@ -12,4 +12,4 @@
 
 ++++++++++++++++++++
 
-Unsubscribe: http://{{ site }}{% url "newsletter_unsubscribe_request" newsletter.slug %}
+{% trans "Unsubscribe:" %} http://{{ site }}{% url "newsletter_unsubscribe_request" newsletter.slug %}

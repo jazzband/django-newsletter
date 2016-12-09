@@ -1,9 +1,9 @@
-Dear {{ subscription.name }},
+{% load i18n %}{% blocktrans with name=subscription.name title=newsletter.title domain=site.domain url=subscription.subscribe_activate_url %}Dear {{ name }},
 
-you, or someone in your name requested a subscription to {{ newsletter.title }}.
+you, or someone in your name requested a subscription to {{ title }}.
 
 If you would like to confirm your subscription, please follow this activation link:
-http://{{ site.domain }}{{ subscription.subscribe_activate_url }}
+http://{{ domain }}{{ url }}
 
-Kind regards,
+Kind regards,{% endblocktrans %}
 {{ newsletter.sender }}
