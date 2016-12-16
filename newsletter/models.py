@@ -1,4 +1,5 @@
 import logging
+import time
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -587,6 +588,8 @@ class Submission(models.Model):
 
         try:
             for subscription in subscriptions:
+                if hasattr(settings, 'DELAY_BETWEEN_EACH_EMAIL'):
+                    time.sleep(settings.DELAY_BETWEEN_EACH_EMAIL)
                 self.send_message(subscription)
             self.sent = True
 
