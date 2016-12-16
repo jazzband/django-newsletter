@@ -40,7 +40,7 @@ class SubscribeRequestForm(NewsletterForm):
     subscription.
     """
 
-    email_field = forms.EmailField(validators=[validate_email_nouser])
+    email_field = forms.EmailField(label=_("e-mail"), validators=[validate_email_nouser])
 
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
@@ -73,7 +73,7 @@ class UpdateRequestForm(NewsletterForm):
     email being sent.
     """
 
-    email_field = forms.EmailField(validators=[validate_email_nouser])
+    email_field = forms.EmailField(label=_("e-mail"), validators=[validate_email_nouser])
 
     class Meta(NewsletterForm.Meta):
         fields = ('email_field',)

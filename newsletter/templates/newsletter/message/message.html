@@ -1,7 +1,6 @@
-{% load thumbnail %}<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-   "http://www.w3.org/TR/html4/strict.dtd">
+{% load thumbnail i18n %}<!DOCTYPE html>
 
-<html lang="en">
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>{{ newsletter.title }}: {{ message.title }}</title>
@@ -19,15 +18,15 @@
         <div>{{ article.text|safe }}</div>
         
         {% if article.url %}
-            <div><a href="{{ article.url }}">Read more</a></div>
+            <div><a href="{{ article.url }}">{% trans "Read more" %}</a></div>
         {% endif %}
     {% endfor %}
     
     <ul>
         {% if submission.publish %}
-        <li><a href="http://{{ site.domain }}{{ submission.get_absolute_url }}">Read message online</a></li>
+        <li><a href="http://{{ site.domain }}{{ submission.get_absolute_url }}">{% trans "Read message online" %}</a></li>
         {% endif %}
-        <li><a href="http://{{ site.domain }}{% url "newsletter_unsubscribe_request" newsletter.slug %}">Unsubscribe</a></li>
+        <li><a href="http://{{ site.domain }}{% url "newsletter_unsubscribe_request" newsletter.slug %}">{% trans "Unsubscribe" %}</a></li>
     </ul>
 </body>
 </html>

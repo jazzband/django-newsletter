@@ -1,20 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-   "http://www.w3.org/TR/html4/strict.dtd">
+{% load i18n %}<!DOCTYPE html>
 
-<html lang="en">
+<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unsubscription from {{ newsletter.title }}</title>
+    <title>{% blocktrans with title=newsletter.title %}Unsubscription from {{ title }}{% endblocktrans %}</title>
 </head>
 <body>
-Dear {{ subscription.name }},
+{% blocktrans with name=subscription.name title=newsletter.title domain=site.domain url=subscription.unsubscribe_activate_url %}Dear {{ name }},
 
-you, or someone in your name requested unsubscription from {{ newsletter.title }}.
+you, or someone in your name requested unsubscription from {{ title }}.
 
 If you would like to confirm your unsubscription, please follow this activation link:
-http://{{ site.domain }}{{ subscription.unsubscribe_activate_url }}
+http://{{ domain }}{{ url }}
 
-Kind regards,
+Kind regards,{% endblocktrans %}
 {{ newsletter.sender }}
 </body>
 </html>

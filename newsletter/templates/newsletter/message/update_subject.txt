@@ -1,1 +1,1 @@
-{{ newsletter.title }} - Update information
+{% load i18n %}{{ newsletter.title }} - {% trans "Update information" %}
