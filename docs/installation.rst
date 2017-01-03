@@ -70,6 +70,21 @@ Installation
     If not set, django-newsletter will fall back to Django's default TextField
     widget.
 
+#)  Configure delay and batch size (optional).
+
+    The delay between each email, batches en batch size can be specified with e.g.::
+
+        # Amount of seconds to wait between each email
+        ``NEWSLETTER_EMAIL_DELAY = 1``
+        
+        # Amount of seconds to waiw between each batch
+        ``NEWSLETTER_BATCH_DELAY = 60``
+        
+        # Number of emails in one batch
+        ``NEWSLETTER_BATCH_SIZE = 100``
+    
+    If the delays are not set, it will default to not sleeping.
+
 #)  Import subscription, unsubscription and archive URL's somewhere in your
     `urls.py`::
 
