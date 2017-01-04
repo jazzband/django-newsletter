@@ -3,10 +3,12 @@ from __future__ import unicode_literals
 
 import itertools
 import six
+import time
 import unittest
 
 from datetime import timedelta
 
+from django.conf import settings
 from django.core import mail
 
 from django.test.utils import patch_logger
@@ -172,6 +174,12 @@ class SubmitSubmissionTestCase(MailingTestCase):
 
         self.sub = Submission.from_message(self.m)
         self.sub.save()
+    
+    def tearDown(self):
+        # Restore delay settings
+        settings.NEWSLETTER_EMAIL_DELAY = 0
+        settings.NEWSLETTER_BATCH_DELAY = 0
+        settings.NEWSLETTER_BATCH_SIZE = 0
 
     def test_submission(self):
         """ Assure initial Submission is in expected state. """
@@ -222,6 +230,35 @@ class SubmitSubmissionTestCase(MailingTestCase):
             'List-Unsubscribe',
             'http://example.com/newsletter/test-newsletter/unsubscribe/'
         )
+    
+    def test_delayedsumbmission(self):
+        """ Test delays between emails """
+        
+        settings.NEWSLETTER_EMAIL_DELAY = 0.01
+        
+        self.sub.prepared = True
+        self.sub.publish_date = now() - timedelta(seconds=1)
+        self.sub.save()
+        
+        with unittest.mock.patch('time.sleep', return_value=None) as mock:
+            Submission.submit_queue()
+        
+        mock.assert_called_with(0.01)
+    
+    def test_delayedbatchsumbmission(self):
+        """ Test delays between emails """
+        
+        settings.NEWSLETTER_BATCH_SIZE = 1
+        settings.NEWSLETTER_BATCH_DELAY = 0.02
+        
+        self.sub.prepared = True
+        self.sub.publish_date = now() - timedelta(seconds=1)
+        self.sub.save()
+        
+        with unittest.mock.patch('time.sleep', return_value=None) as mock:
+            Submission.submit_queue()
+        
+        mock.assert_called_with(0.02)
 
 
 class SubscriptionTestCase(UserTestCase, MailingTestCase):
