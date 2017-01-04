@@ -588,11 +588,11 @@ class Submission(models.Model):
 
         try:
             for idx, subscription in enumerate(subscriptions, start=1):
-		if hasattr(settings, hasattr(settings, 'NEWSLETTER_EMAIL_DELAY'):
-		    time.sleep(settings.NEWSLETTER_EMAIL_DELAY)
-		if hasattr(settings, hasattr(settings, 'NEWSLETTER_BATCH_SIZE') and settings.NEWSLETTER_BATCH_SIZE > 0:
-		    if idx % settings.NEWSLETTER_BATCH_SIZE = 0:
-		        time.sleep(settings.NEWSLETTER_BATCH_DELAY)
+                if hasattr(settings, 'NEWSLETTER_EMAIL_DELAY'):
+                    time.sleep(settings.NEWSLETTER_EMAIL_DELAY)
+                if hasattr(settings, 'NEWSLETTER_BATCH_SIZE') and settings.NEWSLETTER_BATCH_SIZE > 0:
+                    if idx % settings.NEWSLETTER_BATCH_SIZE == 0:
+                        time.sleep(settings.NEWSLETTER_BATCH_DELAY)
                 self.send_message(subscription)
             self.sent = True
 
