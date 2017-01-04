@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import itertools
+import mock
 import six
 import time
 import unittest
@@ -233,10 +234,10 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.sub.save()
         
         with self.settings(NEWSLETTER_EMAIL_DELAY=0.01):
-            with unittest.mock.patch('time.sleep', return_value=None) as mock:
+            with mock.patch('time.sleep', return_value=None) as sleep_mock:
                 Submission.submit_queue()
         
-        mock.assert_called_with(0.01)
+        sleep_mock.assert_called_with(0.01)
     
     def test_delayedbatchsumbmission(self):
         """ Test delays between emails """
@@ -246,10 +247,10 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.sub.save()
         
         with self.settings(NEWSLETTER_BATCH_SIZE=1, NEWSLETTER_BATCH_DELAY=0.02):
-            with unittest.mock.patch('time.sleep', return_value=None) as mock:
+            with mock.patch('time.sleep', return_value=None) as sleep_mock:
                 Submission.submit_queue()
         
-        mock.assert_called_with(0.02)
+        sleep_mock.assert_called_with(0.02)
 
 
 class SubscriptionTestCase(UserTestCase, MailingTestCase):
