@@ -3,3 +3,4 @@ django-tinymce
 pytz
 webtest
 django-webtest
+mock

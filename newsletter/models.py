@@ -1,4 +1,5 @@
 import logging
+import time
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -586,7 +587,12 @@ class Submission(models.Model):
         self.save()
 
         try:
-            for subscription in subscriptions:
+            for idx, subscription in enumerate(subscriptions, start=1):
+                if hasattr(settings, 'NEWSLETTER_EMAIL_DELAY'):
+                    time.sleep(settings.NEWSLETTER_EMAIL_DELAY)
+                if hasattr(settings, 'NEWSLETTER_BATCH_SIZE') and settings.NEWSLETTER_BATCH_SIZE > 0:
+                    if idx % settings.NEWSLETTER_BATCH_SIZE == 0:
+                        time.sleep(settings.NEWSLETTER_BATCH_DELAY)
                 self.send_message(subscription)
             self.sent = True
 
