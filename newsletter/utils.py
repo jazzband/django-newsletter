@@ -2,14 +2,9 @@
 
 import logging
 
-import random
-
-from datetime import datetime
-from hashlib import sha1
 
 from django.contrib.sites.models import Site
-from django.utils.encoding import force_bytes
-
+from django.utils.crypto import get_random_string
 
 logger = logging.getLogger(__name__)
 
@@ -20,13 +15,9 @@ ACTIONS = ('subscribe', 'unsubscribe', 'update')
 
 def make_activation_code():
     """ Generate a unique activation code. """
-    random_string = str(random.random())
-    random_digest = sha1(force_bytes(random_string)).hexdigest()[:5]
-    time_string = str(datetime.now().microsecond)
 
-    combined_string = random_digest + time_string
-
-    return sha1(force_bytes(combined_string)).hexdigest()
+    # Use Django's crypto get_random_string() instead of rolling our own.
+    return get_random_string(length=40)
 
 
 def get_default_sites():
