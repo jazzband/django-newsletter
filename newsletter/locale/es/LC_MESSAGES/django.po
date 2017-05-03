@@ -24,7 +24,7 @@ msgstr ""
 #: addressimport/parsers.py:40
 #, python-format
 msgid "Entry '%s' does not contain a valid e-mail address."
-msgstr "La entrada '%s' no contiene una dirección de email valida."
+msgstr "La entrada '%s' no contiene una dirección de correo válida."
 
 #: addressimport/parsers.py:55
 #, python-format
@@ -40,7 +40,7 @@ msgstr "Algunas entradas ya están suscritas."
 msgid ""
 "E-mail address %(email)s too long, maximum length is %(email_length)s "
 "characters."
-msgstr "Dirección de E-mail %(email)s  demasiado larga, el máximo es de %(email_length)s caracteres "
+msgstr "Dirección de correo %(email)s  demasiado larga, el máximo es de %(email_length)s caracteres "
 
 #: addressimport/parsers.py:135
 #, python-format
@@ -61,19 +61,19 @@ msgstr "mostrar"
 msgid ""
 "Name column not found. The name of this column should be either 'name' or "
 "'%s'."
-msgstr "Nombre de columna no se encuentra. El nombre de esta columna debe ser 'nombre' o '%s'."
+msgstr "Nombre de columna no encontrado. El nombre de esta columna debe ser 'nombre' o '%s'."
 
 #: addressimport/parsers.py:219 addressimport/parsers.py:231
 #: addressimport/parsers.py:244 models.py:37 models.py:176
 msgid "e-mail"
-msgstr "e-mail"
+msgstr "correo electrónico"
 
 #: addressimport/parsers.py:229
 #, python-format
 msgid ""
 "E-mail column not found. The name of this column should be either 'email', "
 "'e-mail' or '%(email)s'."
-msgstr "La columna E-mail no se encuentra. El nombre de esta columna debe ser 'e-mail', 'e-mail' o '%(email)s'."
+msgstr "La columna e-mail no se encuentra. El nombre de esta columna debe ser 'email', 'e-mail' o '%(email)s'."
 
 #: addressimport/parsers.py:239
 #, python-format
@@ -86,21 +86,21 @@ msgstr "No se pudo determinar adecuadamente las columnas apropiadas en el archiv
 #: addressimport/parsers.py:262
 #, python-format
 msgid "Row with content '%(row)s' does not contain a name and email field."
-msgstr "La fila con el contenido '%(row)s' no contiene un campo de nombre y email."
+msgstr "La fila con el contenido '%(row)s' no contiene un campo de nombre y correo electrónico."
 
 #: addressimport/parsers.py:288
 #, python-format
 msgid "Error reading vCard file: %s"
-msgstr "Error leyendo archivo vCard %s"
+msgstr "Error leyendo archivo vCard: %s"
 
 #: addressimport/parsers.py:307
 #, python-format
 msgid "Entry '%s' contains no email address."
-msgstr "La entrada '%s' no contiene una dirección de email."
+msgstr "La entrada '%s' no contiene una dirección de correo electrónico."
 
 #: addressimport/parsers.py:343
 msgid "Some entries have no e-mail address."
-msgstr "Algunas entradas no tienen dirección de email."
+msgstr "Algunas entradas no tienen dirección de correo electrónico."
 
 #: admin.py:63
 msgid "Messages"
@@ -135,7 +135,7 @@ msgstr "Enviado."
 
 #: admin.py:141
 msgid "Delayed submission."
-msgstr "Envio demorado"
+msgstr "Envío demorado"
 
 #: admin.py:143
 msgid "Submitting."
@@ -151,7 +151,7 @@ msgstr "Estado"
 
 #: admin.py:153
 msgid "Submission already sent."
-msgstr "Envio ya enviado."
+msgstr "Envío ya enviado."
 
 #: admin.py:162
 msgid "Your submission is being sent."
@@ -177,11 +177,11 @@ msgstr "No hay una plantilla HTML asociada al boletín de noticias al que perten
 
 #: admin.py:385 admin_forms.py:101
 msgid "Subscribed"
-msgstr "Subscripto"
+msgstr "Suscripción realizada"
 
 #: admin.py:387 admin_forms.py:102
 msgid "Unsubscribed"
-msgstr "Desuscrito"
+msgstr "Suscripción cancelada"
 
 #: admin.py:389
 msgid "Unactivated"
@@ -193,14 +193,14 @@ msgstr "fecha de suscripción"
 
 #: admin.py:404 models.py:317
 msgid "unsubscribe date"
-msgstr "fecha de suscripción"
+msgstr "fecha de baja"
 
 #: admin.py:412
 #, python-format
 msgid "%s user has been successfully subscribed."
 msgid_plural "%s users have been successfully subscribed."
-msgstr[0] "%s usuarios se han suscrito exitosamente."
-msgstr[1] "%s usuarios se han suscrito exitosamente."
+msgstr[0] "%s usuario se ha suscrito con éxito."
+msgstr[1] "%s usuarios se han suscrito con éxito."
 
 #: admin.py:417
 msgid "Subscribe selected users"
@@ -210,17 +210,17 @@ msgstr "Subscribir usuarios seleccionados"
 #, python-format
 msgid "%s user has been successfully unsubscribed."
 msgid_plural "%s users have been successfully unsubscribed."
-msgstr[0] "%s usuarios se han dado de baja exitosamente."
-msgstr[1] "%s usuarios se han dado de baja exitosamente."
+msgstr[0] "%s usuario se ha dado de baja con éxito."
+msgstr[1] "%s usuarios se han dado de baja con éxito."
 
 #: admin.py:429
 msgid "Unsubscribe selected users"
-msgstr "Desubscribir usuarios seleccionados"
+msgstr "Dar de baja usuarios seleccionados"
 
 #: admin.py:484
 #, python-format
 msgid "%s subscriptions have been successfully added."
-msgstr "%s suscripciones se han añadido exitosamente."
+msgstr "%s suscripciones se han añadido con éxito."
 
 #: admin_forms.py:41
 #, python-format
@@ -256,7 +256,7 @@ msgstr "Boletín de Noticias"
 
 #: admin_forms.py:73
 msgid "Address file"
-msgstr "Archivo de direcciónes"
+msgstr "Archivo de direcciones"
 
 #: admin_forms.py:75
 msgid "Ignore non-fatal errors"
@@ -278,7 +278,7 @@ msgstr "Si un usuario ha sido seleccionado este campo debería permanecer vacío
 
 #: admin_forms.py:137
 msgid "Either a user must be selected or an email address must be specified."
-msgstr "O bien un usuario debe ser seleccionado o una dirección de correo debe ser especificada."
+msgstr "Debes seleccionar un usuario o especificar una dirección de correo electrónico."
 
 #: admin_forms.py:162
 msgid ""
@@ -293,7 +293,7 @@ msgstr "El objeto %(name)s con clave primaria %(key)r no existe."
 
 #: forms.py:47 forms.py:106
 msgid "An e-mail address is required."
-msgstr "Una dirección de e-mail es requerida."
+msgstr "Se requiere una dirección de correo electrónico."
 
 #: forms.py:55
 #, python-format
@@ -304,11 +304,11 @@ msgstr "La dirección de correo electrónico '%(email)s' pertenece a un usuario 
 
 #: forms.py:72
 msgid "Your e-mail address has already been subscribed to."
-msgstr "Su dirección de e-mail ya ha sido suscrita."
+msgstr "Su dirección de correo electrónico ya ha sido suscrita."
 
 #: forms.py:97
 msgid "This subscription has not yet been activated."
-msgstr "Tu subscripción no ha sido activada todavía."
+msgstr "Tu suscripción no ha sido activada todavía."
 
 #: forms.py:114
 #, python-format
@@ -327,7 +327,7 @@ msgstr "Esta suscripción ya se ha cancelado."
 
 #: forms.py:163
 msgid "The validation code supplied by you does not match."
-msgstr "El código de validación ingresado por usted no coincide."
+msgstr "El código de validación introducido por usted no coincide."
 
 #: forms.py:169
 msgid "Activation code"
@@ -335,7 +335,7 @@ msgstr "Código de activación"
 
 #: jobs/hourly/submit.py:15
 msgid "Submitting queued newsletter mailings"
-msgstr "Enviando emails de newsletter en cola."
+msgstr "Enviando correos electrónicos pendientes del boletín."
 
 #: models.py:32
 msgid "newsletter title"
@@ -343,7 +343,7 @@ msgstr "título del boletín de noticias"
 
 #: models.py:37
 msgid "Sender e-mail"
-msgstr "Correo del remitente"
+msgstr "Correo electrónico del remitente"
 
 #: models.py:40
 msgid "sender"
@@ -380,15 +380,15 @@ msgstr "opcional"
 #: models.py:206
 #, python-format
 msgid "Updated subscription %(subscription)s to %(action)s."
-msgstr "Suscripción editada %(subscription)s a %(action)s."
+msgstr "Suscripción %(subscription)s editada a %(action)s."
 
 #: models.py:248
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
-msgstr "Ni el email o el nombre del usuario está seteado."
+msgstr "No hay ni correo electrónico ni nombre del usuario. ¡Esto es una inconsistencia!"
 
 #: models.py:252
 msgid "If user is set, email must be null and vice versa."
-msgstr "Si el usuario está especificado, el campo email debe estar vacío y vice versa."
+msgstr "Si el usuario está especificado, el campo de correo electrónico debe estar vacío y viceversa."
 
 #: models.py:294
 msgid "IP address"
@@ -400,16 +400,16 @@ msgstr "Código de activación"
 
 #: models.py:306
 msgid "subscribed"
-msgstr "subscripto"
+msgstr "suscrito"
 
 #: models.py:314
 msgid "unsubscribed"
-msgstr "desuscripto"
+msgstr "cancelado"
 
 #: models.py:322
 #, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
-msgstr "%(name)s <%(email)s> a %(newsletter)s"
+msgstr "<%(email)s> de %(name) a %(newsletter)s"
 
 #: models.py:329
 #, python-format
@@ -428,7 +428,7 @@ msgstr "suscripciones"
 msgid ""
 "Sort order determines the order in which articles are concatenated in a "
 "post."
-msgstr "Orden de clasificación determina el orden en el que los artículos se concatenan en una publicación."
+msgstr "El orden de clasificación determina el orden en el que los artículos se concatenan en una publicación."
 
 #: models.py:441
 msgid "sort order"
@@ -481,7 +481,7 @@ msgstr "mensajes"
 
 #: models.py:538
 msgid "submissions"
-msgstr "envios"
+msgstr "envíos"
 
 #: models.py:541
 #, python-format
@@ -577,7 +577,7 @@ msgstr "Cambiar"
 #: templates/admin/newsletter/message/preview.html:23
 #: templates/admin/newsletter/subscription/importform.html:29
 msgid "Create submission"
-msgstr "Crear subscripción"
+msgstr "Crear envío"
 
 #: templates/admin/newsletter/message/preview.html:26
 msgid "HTML"
@@ -661,7 +661,7 @@ msgstr "Activar"
 #: templates/newsletter/subscription_subscribe_user.html:5
 #: templates/newsletter/subscription_subscribe_user.html:8
 msgid "Newsletter subscribe"
-msgstr "Suscribirse al newsletter"
+msgstr "Suscribirse al boletín"
 
 #: templates/newsletter/subscription_subscribe.html:11
 #: templates/newsletter/subscription_unsubscribe.html:11
@@ -680,11 +680,11 @@ msgid ""
 "Your subscription request was successfully received and an activation email "
 "has been sent to you. In that email you will find a link which you need to "
 "follow in order to activate your subscription."
-msgstr "Tu petición de subscripción ha sido recibida y se te ha enviado un correo. En dicho correo encontrarás un enlace, que debes seguir, para que activar tu subscripción."
+msgstr "Tu petición de suscripción ha sido recibida y se te ha enviado un correo. En dicho correo encontrarás un enlace que debes seguir para que activar tu suscripción."
 
 #: templates/newsletter/subscription_subscribe_user.html:19
 msgid "Do you want to subscribe to this newsletter?"
-msgstr "Desea suscribirse a este Boletín de Noticias?"
+msgstr "Desea suscribirse a este boletín de noticias?"
 
 #: templates/newsletter/subscription_unsubscribe.html:5
 #: templates/newsletter/subscription_unsubscribe.html:8
@@ -693,34 +693,34 @@ msgstr "Desea suscribirse a este Boletín de Noticias?"
 #: templates/newsletter/subscription_unsubscribe_user.html:5
 #: templates/newsletter/subscription_unsubscribe_user.html:8
 msgid "Newsletter unsubscribe"
-msgstr "Newsletter desuscrito"
+msgstr "Dar de baja de boletín de noticias"
 
 #: templates/newsletter/subscription_unsubscribe.html:23
 #: templates/newsletter/subscription_unsubscribe_user.html:23
 msgid "Unsubscribe"
-msgstr "Desuscribirse"
+msgstr "Dar de baja"
 
 #: templates/newsletter/subscription_unsubscribe_activated.html:10
 msgid "You have successfully been unsubscribed."
-msgstr "Te has dado de baja exitosamente."
+msgstr "Te has dado de baja con éxito."
 
 #: templates/newsletter/subscription_unsubscribe_email_sent.html:10
 msgid ""
 "Your unsubscription request has successfully been received. An email has "
 "been sent to you with a link you need to follow in order to confirm your "
 "unsubscription."
-msgstr "Tu petición de desubscripción ha sido recibida. Un correo ha sido enviado con un enlace, que debes seguir, para que confirmar tu desubscripción."
+msgstr "Tu petición de baja ha sido recibida y se te ha enviado un correo. En dicho correo encontrarás un enlace que debes seguir para confirmar tu baja."
 
 #: templates/newsletter/subscription_unsubscribe_user.html:20
 msgid "Do you want to unsubscribe from this newsletter?"
-msgstr "Desea desuscribirse de este Boletín de Noticias?"
+msgstr "Desea darse de baja de este boletín de noticias?"
 
 #: templates/newsletter/subscription_update.html:5
 #: templates/newsletter/subscription_update.html:8
 #: templates/newsletter/subscription_update_email_sent.html:5
 #: templates/newsletter/subscription_update_email_sent.html:8
 msgid "Newsletter update"
-msgstr "Actualización de Boletín de Noticias"
+msgstr "Actualizar boletín de noticias"
 
 #: templates/newsletter/subscription_update.html:23
 msgid "Update subscription"
@@ -728,14 +728,14 @@ msgstr "Actualizar suscripción"
 
 #: templates/newsletter/subscription_update_activated.html:10
 msgid "Your subscription has successfully been updated."
-msgstr "Tu subscripción ha sido actualizada con éxito."
+msgstr "Tu suscripción ha sido actualizada con éxito."
 
 #: templates/newsletter/subscription_update_email_sent.html:10
 msgid ""
 "Your update request was successfully received and an activation email has "
 "been sent to you. In that email you will find a link which you need to "
 "follow in order to update your subscription."
-msgstr "Tu petición de actualización ha sido recibida y se te ha enviado un correo. En dicho correo encontrarás un enlace, que debes seguir, para que confirmar la actualización de tu subscripción."
+msgstr "Tu petición de actualización ha sido recibida y se te ha enviado un correo. En dicho correo encontrarás un enlace que debes seguir para que confirmar la actualización de tu suscripción."
 
 #: templates/widget/image.html:2
 msgid "Currently:"
@@ -762,7 +762,7 @@ msgstr "El usuario %(rs)s se suscribió a %(my_newsletter)s."
 #: views.py:319
 #, python-format
 msgid "You are already subscribed to %s."
-msgstr "Ya esta suscrito a %s."
+msgstr "Ya está suscrito a %s."
 
 #: views.py:344
 #, python-format
