@@ -2,7 +2,6 @@
 
 import logging
 
-
 from django.contrib.sites.models import Site
 from django.utils.crypto import get_random_string
 

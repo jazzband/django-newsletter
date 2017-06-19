@@ -2,8 +2,8 @@ import logging
 import time
 
 from django.conf import settings
-from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
+from django.contrib.sites.models import Site
 from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -12,15 +12,12 @@ from django.template import Context
 from django.template.loader import select_template
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
-from django.utils.timezone import now
-
 from sorl.thumbnail import ImageField
 
-from .utils import (
-    make_activation_code, get_default_sites, ACTIONS
-)
+from .utils import ACTIONS, get_default_sites, make_activation_code
 
 logger = logging.getLogger(__name__)
 
@@ -139,10 +136,10 @@ class Newsletter(models.Model):
         )
 
     def get_sender(self):
-        return u'%s <%s>' % (self.sender, self.email)
+        return '%s <%s>' % (self.sender, self.email)
 
     def get_subscriptions(self):
-        logger.debug(u'Looking up subscribers for %s', self)
+        logger.debug('Looking up subscribers for %s', self)
 
         return Subscription.objects.filter(newsletter=self, subscribed=True)
 
@@ -207,7 +204,7 @@ class Subscription(models.Model):
             self.unsubscribed = True
 
         logger.debug(
-            _(u'Updated subscription %(subscription)s to %(action)s.'),
+            _('Updated subscription %(subscription)s to %(action)s.'),
             {
                 'subscription': self,
                 'action': action
@@ -223,7 +220,7 @@ class Subscription(models.Model):
         Internal helper method for managing subscription state
         during subscription.
         """
-        logger.debug(u'Subscribing subscription %s.', self)
+        logger.debug('Subscribing subscription %s.', self)
 
         self.subscribe_date = now()
         self.subscribed = True
@@ -234,7 +231,7 @@ class Subscription(models.Model):
         Internal helper method for managing subscription state
         during unsubscription.
         """
-        logger.debug(u'Unsubscribing subscription %s.', self)
+        logger.debug('Unsubscribing subscription %s.', self)
 
         self.subscribed = False
         self.unsubscribed = True
@@ -272,7 +269,7 @@ class Subscription(models.Model):
             # If we are subscribed now and we used not to be so, subscribe.
             # If we user to be unsubscribed but are not so anymore, subscribe.
             if ((self.subscribed and not old_subscribed) or
-               (old_unsubscribed and not self.unsubscribed)):
+                    (old_unsubscribed and not self.unsubscribed)):
                 self._subscribe()
 
                 assert not self.unsubscribed
@@ -325,14 +322,14 @@ class Subscription(models.Model):
 
     def __str__(self):
         if self.name:
-            return _(u"%(name)s <%(email)s> to %(newsletter)s") % {
+            return _("%(name)s <%(email)s> to %(newsletter)s") % {
                 'name': self.name,
                 'email': self.email,
                 'newsletter': self.newsletter
             }
 
         else:
-            return _(u"%(email)s to %(newsletter)s") % {
+            return _("%(email)s to %(newsletter)s") % {
                 'email': self.email,
                 'newsletter': self.newsletter
             }
@@ -344,9 +341,9 @@ class Subscription(models.Model):
 
     def get_recipient(self):
         if self.name:
-            return u'%s <%s>' % (self.name, self.email)
+            return '%s <%s>' % (self.name, self.email)
 
-        return u'%s' % (self.email)
+        return '%s' % (self.email)
 
     def send_activation_email(self, action):
         assert action in ACTIONS, 'Unknown action: %s' % action
@@ -384,8 +381,8 @@ class Subscription(models.Model):
         message.send()
 
         logger.debug(
-            u'Activation email sent for action "%(action)s" to %(subscriber)s '
-            u'with activation code "%(action_code)s".', {
+            'Activation email sent for action "%(action)s" to %(subscriber)s '
+            'with activation code "%(action_code)s".', {
                 'action_code': self.activation_code,
                 'action': action,
                 'subscriber': self
@@ -495,7 +492,7 @@ class Message(models.Model):
 
     def __str__(self):
         try:
-            return _(u"%(title)s in %(newsletter)s") % {
+            return _("%(title)s in %(newsletter)s") % {
                 'title': self.title,
                 'newsletter': self.newsletter
             }
@@ -557,7 +554,7 @@ class Submission(models.Model):
         verbose_name_plural = _('submissions')
 
     def __str__(self):
-        return _(u"%(newsletter)s on %(publish_date)s") % {
+        return _("%(newsletter)s on %(publish_date)s") % {
             'newsletter': self.message,
             'publish_date': self.publish_date
         }
@@ -576,7 +573,7 @@ class Submission(models.Model):
         subscriptions = self.subscriptions.filter(subscribed=True)
 
         logger.info(
-            ugettext(u"Submitting %(submission)s to %(count)d people"),
+            ugettext("Submitting %(submission)s to %(count)d people"),
             {'submission': self, 'count': subscriptions.count()}
         )
 
@@ -590,7 +587,9 @@ class Submission(models.Model):
             for idx, subscription in enumerate(subscriptions, start=1):
                 if hasattr(settings, 'NEWSLETTER_EMAIL_DELAY'):
                     time.sleep(settings.NEWSLETTER_EMAIL_DELAY)
-                if hasattr(settings, 'NEWSLETTER_BATCH_SIZE') and settings.NEWSLETTER_BATCH_SIZE > 0:
+                if hasattr(
+                        settings,
+                        'NEWSLETTER_BATCH_SIZE') and settings.NEWSLETTER_BATCH_SIZE > 0:
                     if idx % settings.NEWSLETTER_BATCH_SIZE == 0:
                         time.sleep(settings.NEWSLETTER_BATCH_DELAY)
                 self.send_message(subscription)
@@ -635,7 +634,7 @@ class Submission(models.Model):
 
         try:
             logger.debug(
-                ugettext(u'Submitting message to: %s.'),
+                ugettext('Submitting message to: %s.'),
                 subscription
             )
 
@@ -644,8 +643,8 @@ class Submission(models.Model):
         except Exception as e:
             # TODO: Test coverage for this branch.
             logger.error(
-                ugettext(u'Message %(subscription)s failed '
-                         u'with error: %(error)s'),
+                ugettext('Message %(subscription)s failed '
+                         'with error: %(error)s'),
                 {'subscription': subscription,
                  'error': e}
             )

@@ -1,43 +1,30 @@
-import logging
-
 import datetime
+import logging
 import socket
-
 from smtplib import SMTPException
 
-from django.core.exceptions import ValidationError, ImproperlyConfigured
-from django.core.urlresolvers import reverse
 from django.conf import settings
-
-from django.template.response import SimpleTemplateResponse
-
-from django.shortcuts import get_object_or_404, redirect
-from django.http import Http404
-
-from django.views.generic import (
-    ListView, DetailView,
-    ArchiveIndexView, DateDetailView,
-    TemplateView, FormView
-)
-
 from django.contrib import messages
-from django.contrib.sites.models import Site
 from django.contrib.auth.decorators import login_required
-
-from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext, ugettext_lazy as _
-from django.utils import timezone
-
+from django.contrib.sites.models import Site
+from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.urlresolvers import reverse
 from django.forms.models import modelformset_factory
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect
+from django.template.response import SimpleTemplateResponse
+from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
+from django.views.generic import (ArchiveIndexView, DateDetailView, DetailView,
+                                  FormView, ListView, TemplateView)
 
-from .models import Newsletter, Subscription, Submission
-from .forms import (
-    SubscribeRequestForm, UserUpdateForm, UpdateRequestForm,
-    UnsubscribeRequestForm, UpdateForm
-)
+from .forms import (SubscribeRequestForm, UnsubscribeRequestForm, UpdateForm,
+                    UpdateRequestForm, UserUpdateForm)
+from .models import Newsletter, Submission, Subscription
 from .settings import newsletter_settings
 from .utils import ACTIONS
-
 
 logger = logging.getLogger(__name__)
 

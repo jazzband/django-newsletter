@@ -11,7 +11,13 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import os
+import sys
+
+# Django bogus settings for autodoc
+import django
+from django.conf import settings
+from django.core.management import call_command
 
 # Determine whether rendering on RTD
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -21,9 +27,6 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('..'))
 
-# Django bogus settings for autodoc
-import django
-from django.conf import settings
 
 settings.configure(
     SECRET_KEY='bogus', SITE_ID=1,
@@ -46,7 +49,6 @@ settings.configure(
 
 django.setup()
 
-from django.core.management import call_command
 call_command('migrate', interactive=False)
 
 autodoc_default_flags = ['members', 'show-inheritance']

@@ -1,50 +1,36 @@
-from __future__ import unicode_literals
+
 
 import logging
-logger = logging.getLogger(__name__)
 
 import six
-
-from django.db import models
-
 from django.conf import settings
 from django.conf.urls import url
-
 from django.contrib import admin, messages
 from django.contrib.sites.models import Site
-
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
-
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-
-from django.template import Context
-
+from django.db import models
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-
-from django.utils.html import format_html
-from django.utils.translation import ugettext as _, ungettext
+from django.template import Context
 from django.utils.formats import date_format
-
+from django.utils.html import format_html
+from django.utils.timezone import now
+from django.utils.translation import ugettext as _
+from django.utils.translation import ungettext
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.i18n import javascript_catalog
-
 from sorl.thumbnail.admin import AdminImageMixin
 
-from .models import (
-    Newsletter, Subscription, Article, Message, Submission
-)
-
-from django.utils.timezone import now
-
-from .admin_forms import (
-    SubmissionAdminForm, SubscriptionAdminForm, ImportForm, ConfirmForm,
-    ArticleFormSet
-)
+from .admin_forms import (ArticleFormSet, ConfirmForm, ImportForm,
+                          SubmissionAdminForm, SubscriptionAdminForm)
 from .admin_utils import ExtendibleModelAdminMixin, make_subscription
-
+from .models import Article, Message, Newsletter, Submission, Subscription
 from .settings import newsletter_settings
+
+logger = logging.getLogger(__name__)
+
 
 # Contsruct URL's for icons
 ICON_URLS = {
@@ -57,11 +43,12 @@ ICON_URLS = {
 
 class NewsletterAdmin(admin.ModelAdmin):
     list_display = (
-        'title', 'admin_subscriptions', 'admin_messages', 'admin_submissions'
+        'id', 'title', 'admin_subscriptions', 'admin_messages', 'admin_submissions'
     )
     prepopulated_fields = {'slug': ('title',)}
 
     """ List extensions """
+
     def _admin_url(self, obj, model, text):
         url = reverse('admin:%s_%s_changelist' %
                       (model._meta.app_label, model._meta.model_name),
@@ -108,6 +95,7 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     filter_horizontal = ('subscriptions',)
 
     """ List extensions """
+
     def admin_message(self, obj):
         return format_html('<a href="{}/">{}</a>', obj.id, obj.message.title)
     admin_message.short_description = _('submission')
@@ -158,6 +146,7 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     admin_status_text.short_description = _('Status')
 
     """ Views """
+
     def submit(self, request, object_id):
         submission = self._getobj(request, object_id)
 
@@ -177,6 +166,7 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         return HttpResponseRedirect(changelist_url)
 
     """ URLs """
+
     def get_urls(self):
         urls = super(SubmissionAdmin, self).get_urls()
 
@@ -244,6 +234,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     inlines = [ArticleInline, ]
 
     """ List extensions """
+
     def admin_title(self, obj):
         return format_html('<a href="{}/">{}</a>', obj.id, obj.title)
     admin_title.short_description = _('message')
@@ -255,6 +246,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     admin_preview.short_description = ''
 
     """ Views """
+
     def preview(self, request, object_id):
         return render(
             request,
@@ -316,6 +308,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         return HttpResponse(json, content_type='application/json')
 
     """ URLs """
+
     def get_urls(self):
         urls = super(MessageAdmin, self).get_urls()
 
@@ -363,6 +356,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     exclude = ['unsubscribed']
 
     """ List extensions """
+
     def admin_status(self, obj):
         img_tag = '<img src="{}" width="10" height="10" alt="{}"/>'
         alt_txt = self.admin_status_text(obj)
@@ -399,6 +393,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     admin_unsubscribe_date.short_description = _("unsubscribe date")
 
     """ Actions """
+
     def make_subscribed(self, request, queryset):
         rows_updated = queryset.update(subscribed=True)
         self.message_user(
@@ -424,6 +419,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     make_unsubscribed.short_description = _("Unsubscribe selected users")
 
     """ Views """
+
     def subscribers_import(self, request):
         if not request.user.has_perm('newsletter.add_subscription'):
             raise PermissionDenied()
@@ -497,6 +493,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         )
 
     """ URLs """
+
     def get_urls(self):
         urls = super(SubscriptionAdmin, self).get_urls()
 
