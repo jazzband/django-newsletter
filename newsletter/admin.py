@@ -43,7 +43,7 @@ ICON_URLS = {
 
 class NewsletterAdmin(admin.ModelAdmin):
     list_display = (
-        'title', 'admin_subscriptions', 'admin_messages', 'admin_submissions'
+        'id', 'title', 'admin_subscriptions', 'admin_messages', 'admin_submissions'
     )
     prepopulated_fields = {'slug': ('title',)}
 
