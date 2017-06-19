@@ -21,7 +21,7 @@
 
 import warnings
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 try:
     README = open('README.rst').read() + '\n\n'
