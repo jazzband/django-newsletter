@@ -360,10 +360,9 @@ class Subscription(models.Model):
             'MEDIA_URL': settings.MEDIA_URL
         }
 
-        unescaped_context = Context(variable_dict, autoescape=False)
-
-        subject = subject_template.render(unescaped_context).strip()
-        text = text_template.render(unescaped_context)
+        # unescaped_context = Context(variable_dict, autoescape=False)                                    
+        subject = subject_template.render(variable_dict).strip()
+        text = text_template.render(variable_dict)
 
         message = EmailMultiAlternatives(
             subject, text,
