@@ -371,10 +371,10 @@ class Subscription(models.Model):
         )
 
         if html_template:
-            escaped_context = Context(variable_dict)
+            # escaped_context = Context(variable_dict)
 
             message.attach_alternative(
-                html_template.render(escaped_context), "text/html"
+                html_template.render(variable_dict), "text/html"
             )
 
         message.send()
