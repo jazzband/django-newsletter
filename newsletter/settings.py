@@ -6,7 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 from .utils import Singleton
 
 
-class Settings(object):
+class Settings(object, metaclass=Singleton):
     """
     A settings object that proxies settings and handles defaults, inspired
     by `django-appconf` and the way it works  in `django-rest-framework`.
@@ -22,8 +22,6 @@ class Settings(object):
     If a setting has not been explicitly defined in Django's settings, defaults
     can be specified as `DEFAULT_SETTING_NAME` class variable or property.
     """
-
-    __metaclass__ = Singleton
 
     def __init__(self):
         """
@@ -101,5 +99,6 @@ class NewsletterSettings(Settings):
                 )
 
         return None
+
 
 newsletter_settings = NewsletterSettings()
