@@ -1,6 +1,7 @@
 import logging
 import time
 
+from django import get_version
 from django.conf import settings
 from django.contrib.sites.managers import CurrentSiteManager
 from django.contrib.sites.models import Site
@@ -8,7 +9,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import permalink
-from django.template import Context
 from django.template.loader import select_template
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
@@ -18,6 +18,9 @@ from django.utils.translation import ugettext
 from sorl.thumbnail import ImageField
 
 from .utils import ACTIONS, get_default_sites, make_activation_code
+
+if get_version() < '1.10':
+    from django.template import Context
 
 logger = logging.getLogger(__name__)
 
@@ -360,9 +363,15 @@ class Subscription(models.Model):
             'MEDIA_URL': settings.MEDIA_URL
         }
 
-        # unescaped_context = Context(variable_dict, autoescape=False)                                    
-        subject = subject_template.render(variable_dict).strip()
-        text = text_template.render(variable_dict)
+        # Passing a Context or a RequestContext is still possible when the template is loaded 
+        # by a DjangoTemplates backend but it’s deprecated and won’t be supported in Django 1.10.
+        if get_version() < '1.10':
+            unescaped_context = Context(variable_dict, autoescape=False)
+            subject = subject_template.render(unescaped_context).strip()
+            text = text_template.render(unescaped_context)
+        else:
+            subject = subject_template.render(variable_dict).strip()
+            text = text_template.render(variable_dict)
 
         message = EmailMultiAlternatives(
             subject, text,
@@ -371,11 +380,13 @@ class Subscription(models.Model):
         )
 
         if html_template:
-            # escaped_context = Context(variable_dict)
-
-            message.attach_alternative(
-                html_template.render(variable_dict), "text/html"
-            )
+            if get_version() < '1.10':
+                escaped_context = Context(variable_dict)
+                message.attach_alternative(
+                                html_template.render(escaped_context), "text/html")
+            else:
+               message.attach_alternative(
+                   html_template.render(variable_dict), "text/html")
 
         message.send()
 
@@ -610,11 +621,13 @@ class Submission(models.Model):
             'MEDIA_URL': settings.MEDIA_URL
         }
 
-        unescaped_context = Context(variable_dict, autoescape=False)
-
-        subject = self.message.subject_template.render(
-            unescaped_context).strip()
-        text = self.message.text_template.render(unescaped_context)
+        if get_version() < '1.10':
+            unescaped_context = Context(variable_dict, autoescape=False)
+            subject = self.message.subject_template.render(unescaped_context).strip()
+            text = self.message.text_template.render(unescaped_context)
+        else:
+            subject = self.message.subject_template.render(variable_dict).strip()
+            text = self.message.text_template.render(variable_dict)
 
         message = EmailMultiAlternatives(
             subject, text,
@@ -624,12 +637,17 @@ class Submission(models.Model):
         )
 
         if self.message.html_template:
-            escaped_context = Context(variable_dict)
-
-            message.attach_alternative(
-                self.message.html_template.render(escaped_context),
-                "text/html"
-            )
+            if get_version() < '1.10':
+                escaped_context = Context(variable_dict)
+                message.attach_alternative(
+                    self.message.html_template.render(escaped_context),
+                    "text/html"
+                )
+            else:
+                message.attach_alternative(
+                    self.message.html_template.render(variable_dict),
+                    "text/html"
+                )
 
         try:
             logger.debug(

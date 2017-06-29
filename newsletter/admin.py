@@ -3,6 +3,7 @@
 import logging
 
 import six
+from django import get_version
 from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin, messages
@@ -22,6 +23,9 @@ from django.utils.translation import ungettext
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.i18n import javascript_catalog
 from sorl.thumbnail.admin import AdminImageMixin
+
+if get_version() < '1.10':
+    from django.template import Context
 
 from .admin_forms import (ArticleFormSet, ConfirmForm, ImportForm,
                           SubmissionAdminForm, SubscriptionAdminForm)
@@ -264,12 +268,20 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
                 'message belongs to.'
             ))
 
-        c = Context({'message': message,
+        if get_version() < '1.10':
+             c = Context({'message': message,
                      'site': Site.objects.get_current(),
                      'newsletter': message.newsletter,
                      'date': now(),
                      'STATIC_URL': settings.STATIC_URL,
                      'MEDIA_URL': settings.MEDIA_URL})
+        else:
+             c = {'message': message,
+                  'site': Site.objects.get_current(),
+                  'newsletter': message.newsletter,
+                  'date': now(),
+                  'STATIC_URL': settings.STATIC_URL,
+                  'MEDIA_URL': settings.MEDIA_URL}
 
         return HttpResponse(message.html_template.render(c))
 
@@ -277,14 +289,25 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
 
-        c = Context({
-            'message': message,
-            'site': Site.objects.get_current(),
-            'newsletter': message.newsletter,
-            'date': now(),
-            'STATIC_URL': settings.STATIC_URL,
-            'MEDIA_URL': settings.MEDIA_URL
-        }, autoescape=False)
+        
+        if get_version() < '1.10':
+            c = Context({
+                'message': message,
+                'site': Site.objects.get_current(),
+                'newsletter': message.newsletter,
+                'date': now(),
+                'STATIC_URL': settings.STATIC_URL,
+                'MEDIA_URL': settings.MEDIA_URL
+            }, autoescape=False)
+        else:
+            c = {
+                'message': message,
+                'site': Site.objects.get_current(),
+                'newsletter': message.newsletter,
+                'date': now(),
+                'STATIC_URL': settings.STATIC_URL,
+                'MEDIA_URL': settings.MEDIA_URL
+            }
 
         return HttpResponse(
             message.text_template.render(c),
