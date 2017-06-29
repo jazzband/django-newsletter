@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import logging
 import time
 
@@ -364,7 +365,7 @@ class Subscription(models.Model):
         }
 
         # Passing a Context or a RequestContext is still possible when the template is loaded
-        # by a DjangoTemplates backend but it’s deprecated and won’t be
+        # by a DjangoTemplates backend but its deprecated and wont be
         # supported in Django 1.10.
         if get_version() < '1.10':
             unescaped_context = Context(variable_dict, autoescape=False)
