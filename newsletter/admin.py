@@ -48,8 +48,11 @@ ICON_URLS = {
 
 class NewsletterAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'title', 'admin_subscriptions', 'admin_messages', 'admin_submissions'
-    )
+        'id',
+        'title',
+        'admin_subscriptions',
+        'admin_messages',
+        'admin_submissions')
     prepopulated_fields = {'slug': ('title',)}
 
     """ List extensions """
@@ -270,19 +273,19 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
             ))
 
         if get_version() < '1.10':
-             c = Context({'message': message,
-                     'site': Site.objects.get_current(),
-                     'newsletter': message.newsletter,
-                     'date': now(),
-                     'STATIC_URL': settings.STATIC_URL,
-                     'MEDIA_URL': settings.MEDIA_URL})
+            c = Context({'message': message,
+                         'site': Site.objects.get_current(),
+                         'newsletter': message.newsletter,
+                         'date': now(),
+                         'STATIC_URL': settings.STATIC_URL,
+                         'MEDIA_URL': settings.MEDIA_URL})
         else:
-             c = {'message': message,
-                  'site': Site.objects.get_current(),
-                  'newsletter': message.newsletter,
-                  'date': now(),
-                  'STATIC_URL': settings.STATIC_URL,
-                  'MEDIA_URL': settings.MEDIA_URL}
+            c = {'message': message,
+                 'site': Site.objects.get_current(),
+                 'newsletter': message.newsletter,
+                 'date': now(),
+                 'STATIC_URL': settings.STATIC_URL,
+                 'MEDIA_URL': settings.MEDIA_URL}
 
         return HttpResponse(message.html_template.render(c))
 
@@ -290,7 +293,6 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
 
-        
         if get_version() < '1.10':
             c = Context({
                 'message': message,

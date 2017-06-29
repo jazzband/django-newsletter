@@ -363,8 +363,9 @@ class Subscription(models.Model):
             'MEDIA_URL': settings.MEDIA_URL
         }
 
-        # Passing a Context or a RequestContext is still possible when the template is loaded 
-        # by a DjangoTemplates backend but it’s deprecated and won’t be supported in Django 1.10.
+        # Passing a Context or a RequestContext is still possible when the template is loaded
+        # by a DjangoTemplates backend but it’s deprecated and won’t be
+        # supported in Django 1.10.
         if get_version() < '1.10':
             unescaped_context = Context(variable_dict, autoescape=False)
             subject = subject_template.render(unescaped_context).strip()
@@ -383,10 +384,10 @@ class Subscription(models.Model):
             if get_version() < '1.10':
                 escaped_context = Context(variable_dict)
                 message.attach_alternative(
-                                html_template.render(escaped_context), "text/html")
+                    html_template.render(escaped_context), "text/html")
             else:
-               message.attach_alternative(
-                   html_template.render(variable_dict), "text/html")
+                message.attach_alternative(
+                    html_template.render(variable_dict), "text/html")
 
         message.send()
 
@@ -623,10 +624,12 @@ class Submission(models.Model):
 
         if get_version() < '1.10':
             unescaped_context = Context(variable_dict, autoescape=False)
-            subject = self.message.subject_template.render(unescaped_context).strip()
+            subject = self.message.subject_template.render(
+                unescaped_context).strip()
             text = self.message.text_template.render(unescaped_context)
         else:
-            subject = self.message.subject_template.render(variable_dict).strip()
+            subject = self.message.subject_template.render(
+                variable_dict).strip()
             text = self.message.text_template.render(variable_dict)
 
         message = EmailMultiAlternatives(
