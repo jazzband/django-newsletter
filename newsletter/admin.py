@@ -24,14 +24,15 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.i18n import javascript_catalog
 from sorl.thumbnail.admin import AdminImageMixin
 
-if get_version() < '1.10':
-    from django.template import Context
-
 from .admin_forms import (ArticleFormSet, ConfirmForm, ImportForm,
                           SubmissionAdminForm, SubscriptionAdminForm)
 from .admin_utils import ExtendibleModelAdminMixin, make_subscription
 from .models import Article, Message, Newsletter, Submission, Subscription
 from .settings import newsletter_settings
+
+if get_version() < '1.10':
+    from django.template import Context
+
 
 logger = logging.getLogger(__name__)
 
