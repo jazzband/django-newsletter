@@ -19,8 +19,6 @@ from django.core.urlresolvers import reverse
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
-from django.template import Context
-
 from django.shortcuts import render
 
 from django.utils.html import format_html
@@ -43,6 +41,8 @@ from .admin_forms import (
     ArticleFormSet
 )
 from .admin_utils import ExtendibleModelAdminMixin, make_subscription
+
+from .compat import get_context
 
 from .settings import newsletter_settings
 
@@ -272,12 +272,12 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
                 'message belongs to.'
             ))
 
-        c = Context({'message': message,
-                     'site': Site.objects.get_current(),
-                     'newsletter': message.newsletter,
-                     'date': now(),
-                     'STATIC_URL': settings.STATIC_URL,
-                     'MEDIA_URL': settings.MEDIA_URL})
+        c = get_context({'message': message,
+                         'site': Site.objects.get_current(),
+                         'newsletter': message.newsletter,
+                         'date': now(),
+                         'STATIC_URL': settings.STATIC_URL,
+                         'MEDIA_URL': settings.MEDIA_URL})
 
         return HttpResponse(message.html_template.render(c))
 
@@ -285,7 +285,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
 
-        c = Context({
+        c = get_context({
             'message': message,
             'site': Site.objects.get_current(),
             'newsletter': message.newsletter,
