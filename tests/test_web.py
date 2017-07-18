@@ -191,13 +191,15 @@ class UserNewsletterListTestCase(UserTestCase,
         self.assertContains(
             response,
             '<input id="id_form-TOTAL_FORMS" name="form-TOTAL_FORMS" '
-            'type="hidden" value="%d" />' % total_forms
+            'type="hidden" value="%d" />' % total_forms,
+            html=True
         )
 
         self.assertContains(
             response,
             '<input id="id_form-INITIAL_FORMS" name="form-INITIAL_FORMS" '
-            'type="hidden" value="%d" />' % total_forms
+            'type="hidden" value="%d" />' % total_forms,
+            html=True
         )
 
         for form in formset.forms:

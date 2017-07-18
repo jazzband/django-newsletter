@@ -8,7 +8,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import permalink
-from django.template import Context
 from django.template.loader import select_template
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
@@ -18,6 +17,7 @@ from django.utils.timezone import now
 
 from sorl.thumbnail import ImageField
 
+from .compat import get_context
 from .utils import (
     make_activation_code, get_default_sites, ACTIONS
 )
@@ -363,7 +363,7 @@ class Subscription(models.Model):
             'MEDIA_URL': settings.MEDIA_URL
         }
 
-        unescaped_context = Context(variable_dict, autoescape=False)
+        unescaped_context = get_context(variable_dict, autoescape=False)
 
         subject = subject_template.render(unescaped_context).strip()
         text = text_template.render(unescaped_context)
@@ -375,7 +375,7 @@ class Subscription(models.Model):
         )
 
         if html_template:
-            escaped_context = Context(variable_dict)
+            escaped_context = get_context(variable_dict)
 
             message.attach_alternative(
                 html_template.render(escaped_context), "text/html"
@@ -612,7 +612,7 @@ class Submission(models.Model):
             'MEDIA_URL': settings.MEDIA_URL
         }
 
-        unescaped_context = Context(variable_dict, autoescape=False)
+        unescaped_context = get_context(variable_dict, autoescape=False)
 
         subject = self.message.subject_template.render(
             unescaped_context).strip()
@@ -626,7 +626,7 @@ class Submission(models.Model):
         )
 
         if self.message.html_template:
-            escaped_context = Context(variable_dict)
+            escaped_context = get_context(variable_dict)
 
             message.attach_alternative(
                 self.message.html_template.render(escaped_context),
