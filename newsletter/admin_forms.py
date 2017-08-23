@@ -1,14 +1,11 @@
 import logging
 
 from django import forms
-
-from django.contrib.admin import widgets, options
-
+from django.contrib.admin import options, widgets
 from django.utils.translation import ugettext as _
 
-from .models import Subscription, Newsletter, Submission
-from .addressimport.parsers import parse_csv, parse_vcard, parse_ldif
-
+from .addressimport.parsers import parse_csv, parse_ldif, parse_vcard
+from .models import Newsletter, Submission, Subscription
 
 logger = logging.getLogger(__name__)
 

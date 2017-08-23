@@ -1,11 +1,10 @@
 from surlex.dj import surl
 
-from .views import (
-    NewsletterListView, NewsletterDetailView,
-    SubmissionArchiveIndexView, SubmissionArchiveDetailView,
-    SubscribeRequestView, UnsubscribeRequestView, UpdateRequestView,
-    ActionTemplateView, UpdateSubscriptionView,
-)
+from .views import (ActionTemplateView, NewsletterDetailView,
+                    NewsletterListView, SubmissionArchiveDetailView,
+                    SubmissionArchiveIndexView, SubscribeRequestView,
+                    UnsubscribeRequestView, UpdateRequestView,
+                    UpdateSubscriptionView)
 
 urlpatterns = [
     # Newsletter list and detail view
