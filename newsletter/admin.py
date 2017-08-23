@@ -11,7 +11,7 @@ from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.template import Context
 from django.utils.formats import date_format
@@ -35,6 +35,8 @@ if get_version() < '1.10':
 
 logger = logging.getLogger(__name__)
 
+from .compat import get_context
+from .settings import newsletter_settings
 
 # Contsruct URL's for icons
 ICON_URLS = {
@@ -285,7 +287,6 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
                  'date': now(),
                  'STATIC_URL': settings.STATIC_URL,
                  'MEDIA_URL': settings.MEDIA_URL}
-
         return HttpResponse(message.html_template.render(c))
 
     @xframe_options_sameorigin

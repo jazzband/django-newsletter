@@ -23,6 +23,11 @@ from .utils import ACTIONS, get_default_sites, make_activation_code
 if get_version() < '1.10':
     from django.template import Context
 
+from .compat import get_context
+from .utils import (
+    make_activation_code, get_default_sites, ACTIONS
+)
+
 logger = logging.getLogger(__name__)
 
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
@@ -375,6 +380,7 @@ class Subscription(models.Model):
             subject = subject_template.render(variable_dict).strip()
             text = text_template.render(variable_dict)
 
+
         message = EmailMultiAlternatives(
             subject, text,
             from_email=self.newsletter.get_sender(),
@@ -633,6 +639,7 @@ class Submission(models.Model):
                 variable_dict).strip()
             text = self.message.text_template.render(variable_dict)
 
+
         message = EmailMultiAlternatives(
             subject, text,
             from_email=self.newsletter.get_sender(),
@@ -652,7 +659,6 @@ class Submission(models.Model):
                     self.message.html_template.render(variable_dict),
                     "text/html"
                 )
-
         try:
             logger.debug(
                 ugettext('Submitting message to: %s.'),
