@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
 from django.core.mail import EmailMultiAlternatives
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import permalink
 from django.template.loader import select_template
@@ -17,7 +16,7 @@ from django.utils.timezone import now
 
 from sorl.thumbnail import ImageField
 
-from .compat import get_context
+from .compat import get_context, reverse
 from .utils import (
     make_activation_code, get_default_sites, ACTIONS
 )
@@ -667,7 +666,10 @@ class Submission(models.Model):
         submission.message = message
         submission.newsletter = message.newsletter
         submission.save()
-        submission.subscriptions = message.newsletter.get_subscriptions()
+        try:
+            submission.subscriptions.set(message.newsletter.get_subscriptions())
+        except AttributeError:  # Django < 1.10
+            submission.subscriptions = message.newsletter.get_subscriptions()
         return submission
 
     def save(self):

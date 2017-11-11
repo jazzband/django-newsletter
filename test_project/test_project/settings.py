@@ -26,11 +26,12 @@ import django
 if django.VERSION > (1, 8):
     INSTALLED_APPS.remove('imperavi')
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 ]
+MIDDLEWARE_CLASSES = MIDDLEWARE  # Django < 1.10
 
 ROOT_URLCONF = 'test_project.urls'
 

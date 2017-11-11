@@ -6,7 +6,6 @@ import socket
 from smtplib import SMTPException
 
 from django.core.exceptions import ValidationError, ImproperlyConfigured
-from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from django.template.response import SimpleTemplateResponse
@@ -30,6 +29,7 @@ from django.utils import timezone
 
 from django.forms.models import modelformset_factory
 
+from .compat import reverse
 from .models import Newsletter, Subscription, Submission
 from .forms import (
     SubscribeRequestForm, UserUpdateForm, UpdateRequestForm,
@@ -40,6 +40,11 @@ from .utils import ACTIONS
 
 
 logger = logging.getLogger(__name__)
+
+
+def is_authenticated(user):
+    # Compat method for Django < 1.10
+    return user.is_authenticated if isinstance(user.is_authenticated, bool) else user.is_authenticated()
 
 
 class NewsletterViewBase(object):
@@ -68,7 +73,7 @@ class NewsletterListView(NewsletterViewBase, ListView):
     def get_context_data(self, **kwargs):
         context = super(NewsletterListView, self).get_context_data(**kwargs)
 
-        if self.request.user.is_authenticated():
+        if is_authenticated(self.request.user):
             # Add a formset for logged in users.
             context['formset'] = self.get_formset()
 
@@ -447,7 +452,7 @@ class SubscribeRequestView(ActionRequestView):
         return form.save()
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if is_authenticated(request.user):
             kwargs['confirm'] = self.confirm
             return SubscribeUserView.as_view()(request, *args, **kwargs)
 
@@ -462,7 +467,7 @@ class UnsubscribeRequestView(ActionRequestView):
     confirm = False
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if is_authenticated(request.user):
             kwargs['confirm'] = self.confirm
             return UnsubscribeUserView.as_view()(request, *args, **kwargs)
 

@@ -17,7 +17,6 @@ except ImportError:
 from django.contrib.auth import get_user_model
 
 from django.core import mail
-from django.core.urlresolvers import reverse
 
 from django.utils import timezone
 from django.utils.encoding import force_text
@@ -28,6 +27,7 @@ from newsletter.models import (
     Newsletter, Subscription, Submission, Message, get_default_sites
 )
 
+from newsletter.compat import reverse
 from newsletter.forms import UpdateForm
 
 from .utils import MailTestCase, UserTestCase, WebTestCase, ComparingTestCase
@@ -303,7 +303,10 @@ class SubscribeTestCase(WebTestCase, MailTestCase):
                             sender='Test Sender',
                             email='test@testsender.com')
         self.n.save()
-        self.n.site = get_default_sites()
+        try:
+            self.n.site.set(get_default_sites())
+        except AttributeError:  # Django < 1.10
+            self.n.site = get_default_sites()
 
         self.subscribe_url = \
             reverse('newsletter_subscribe_request',

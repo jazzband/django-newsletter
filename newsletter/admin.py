@@ -15,7 +15,6 @@ from django.contrib.sites.models import Site
 
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
@@ -26,7 +25,12 @@ from django.utils.translation import ugettext as _, ungettext
 from django.utils.formats import date_format
 
 from django.views.decorators.clickjacking import xframe_options_sameorigin
-from django.views.i18n import javascript_catalog
+try:
+    from django.views.i18n import JavaScriptCatalog
+    HAS_CBV_JSCAT = True
+except ImportError:  # Django < 1.10
+    from django.views.i18n import javascript_catalog
+    HAS_CBV_JSCAT = False
 
 from sorl.thumbnail.admin import AdminImageMixin
 
@@ -42,7 +46,7 @@ from .admin_forms import (
 )
 from .admin_utils import ExtendibleModelAdminMixin, make_subscription
 
-from .compat import get_context
+from .compat import get_context, reverse
 
 from .settings import newsletter_settings
 
@@ -507,14 +511,18 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
             url(r'^import/confirm/$',
                 self._wrap(self.subscribers_import_confirm),
                 name=self._view_name('import_confirm')),
-
-            # Translated JS strings - these should be app-wide but are
-            # only used in this part of the admin. For now, leave them here.
-            url(r'^jsi18n/$',
+        ]
+        # Translated JS strings - these should be app-wide but are
+        # only used in this part of the admin. For now, leave them here.
+        if HAS_CBV_JSCAT:
+            my_urls.append(url(r'^jsi18n/$',
+                JavaScriptCatalog.as_view(packages=('newsletter',)),
+                name='newsletter_js18n'))
+        else:
+            my_urls.append(url(r'^jsi18n/$',
                 javascript_catalog,
                 {'packages': ('newsletter',)},
-                name='newsletter_js18n')
-        ]
+                name='newsletter_js18n'))
 
         return my_urls + urls
 
