@@ -1,76 +1,77 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
+# Translators:
+# Sophocles Tsivides <sophocles.tsivides@gmail.com>, 2017
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-16 11:31+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2017-11-16 11:31+0000\n"
+"Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
+"Language-Team: Greek (Greece) (http://www.transifex.com/dokterbob/django-newsletter/language/el_GR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: el_GR\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: addressimport/parsers.py:40
 #, python-format
 msgid "Entry '%s' does not contain a valid e-mail address."
-msgstr ""
+msgstr "Η καταχώρηση '%s' δεν περιέχει έγκυρη διεύθυνση e-mail."
 
 #: addressimport/parsers.py:55
 #, python-format
 msgid "The address file contains duplicate entries for '%s'."
-msgstr ""
+msgstr "Το αρχείο διευθύνσεων περιέχει διπλές καταχωρήσεις για '%s΄."
 
 #: addressimport/parsers.py:69
 msgid "Some entries are already subscribed to."
-msgstr ""
+msgstr "Ορισμένες καταχωρήσεις έχουν ήδη εγγραφεί."
 
 #: addressimport/parsers.py:108
 #, python-format
 msgid ""
 "E-mail address %(email)s too long, maximum length is %(email_length)s "
 "characters."
-msgstr ""
+msgstr "Η διεύθυνση e-mail %(email)s είναι πολύ μεγάλη, το μέγιστος μήκος είναι %(email_length)s χαρακτήρες."
 
 #: addressimport/parsers.py:135
 #, python-format
 msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
-msgstr ""
+msgstr "Το όνομα %(name)s είναι πολύ μεγάλο, το μέγιστος μήκος είναι %(name_length)s χαρακτήρες."
 
 #: addressimport/parsers.py:196 addressimport/parsers.py:208
 #: addressimport/parsers.py:243 models.py:165
 msgid "name"
-msgstr ""
+msgstr "όνομα"
 
 #: addressimport/parsers.py:200
 msgid "display"
-msgstr ""
+msgstr "προβολή"
 
 #: addressimport/parsers.py:207
 #, python-format
 msgid ""
 "Name column not found. The name of this column should be either 'name' or "
 "'%s'."
-msgstr ""
+msgstr "Δεν βρέθηκε στήλη ονόματος. Το όνομα αυτής της στήλης πρέπει να είναι είτε 'όνομα' είτε '%s'."
 
 #: addressimport/parsers.py:219 addressimport/parsers.py:231
 #: addressimport/parsers.py:244 forms.py:43 forms.py:76 models.py:39
 #: models.py:179
 msgid "e-mail"
-msgstr ""
+msgstr "e-mail"
 
 #: addressimport/parsers.py:229
 #, python-format
 msgid ""
 "E-mail column not found. The name of this column should be either 'email', "
 "'e-mail' or '%(email)s'."
-msgstr ""
+msgstr "Δεν βρέθηκε στήλη e-mail. Το όνομα αυτής της στήλης πρέπει να είναι είτε 'e-mail' είτε '%(email)s'."
 
 #: addressimport/parsers.py:239
 #, python-format
@@ -78,161 +79,161 @@ msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
 "'%(e-mail)s'."
-msgstr ""
+msgstr "Δεν ήταν δυνατό να προσδιοριστούν σωστά οι στήλες στο αρχείο CSV. Πρέπει να υπάρχει ένα πεδίο που ονομάζεται 'όνομα' ή %(name)s και ένα που ονομάζεται 'e-mail' ή '% (e-mail) s'."
 
 #: addressimport/parsers.py:264
 #, python-format
 msgid "Row with content '%(row)s' does not contain a name and email field."
-msgstr ""
+msgstr "Η σειρά με περιεχόμενο '%(row)s' δεν περιέχει πεδίο ονόματος και e-mail."
 
 #: addressimport/parsers.py:290
 #, python-format
 msgid "Error reading vCard file: %s"
-msgstr ""
+msgstr "Σφάλμα ανάγνωσης αρχείου vCard: %s"
 
 #: addressimport/parsers.py:309
 #, python-format
 msgid "Entry '%s' contains no email address."
-msgstr ""
+msgstr "Η καταχώρηση '%s' δεν περιέχει διεύθυνση e-mail."
 
 #: addressimport/parsers.py:345
 msgid "Some entries have no e-mail address."
-msgstr ""
+msgstr "Ορισμένες καταχωρήσεις δεν έχουν διεύθυνση e-mail."
 
 #: admin.py:79
 msgid "Messages"
-msgstr ""
+msgstr "Μηνύματα"
 
 #: admin.py:83
 #: templates/admin/newsletter/subscription/confirmimportform.html:16
 #: templates/admin/newsletter/subscription/importform.html:16
 msgid "Subscriptions"
-msgstr ""
+msgstr "Συνδρομές"
 
 #: admin.py:87
 msgid "Submissions"
-msgstr ""
+msgstr "Υποβολές"
 
 #: admin.py:99 models.py:102 models.py:300 models.py:480 models.py:699
 msgid "newsletter"
-msgstr ""
+msgstr "ενημερωτικό δελτίο"
 
 #: admin.py:117 models.py:555
 msgid "submission"
-msgstr ""
+msgstr "υποβολή"
 
 #: admin.py:124
 msgid "publish date"
-msgstr ""
+msgstr "ημερομηνία δημοσίευσης"
 
 #: admin.py:154
 msgid "Sent."
-msgstr ""
+msgstr "Απεστάλη."
 
 #: admin.py:157
 msgid "Delayed submission."
-msgstr ""
+msgstr "Καθυστερημένη υποβολή."
 
 #: admin.py:159
 msgid "Submitting."
-msgstr ""
+msgstr "Υποβολή."
 
 #: admin.py:161
 msgid "Not sent."
-msgstr ""
+msgstr "Δεν απεστάλη."
 
 #: admin.py:162 admin.py:389 admin_forms.py:115
 msgid "Status"
-msgstr ""
+msgstr "Κατάσταση"
 
 #: admin.py:169
 msgid "Submission already sent."
-msgstr ""
+msgstr "Η υποβολή έχει ήδη σταλεί."
 
 #: admin.py:178
 msgid "Your submission is being sent."
-msgstr ""
+msgstr "Η υποβολή σας αποστέλλεται."
 
 #: admin.py:225
 msgid "Optional"
-msgstr ""
+msgstr "Προαιρετικό"
 
 #: admin.py:253 models.py:450 models.py:491 models.py:703
 msgid "message"
-msgstr ""
+msgstr "μήνυμα"
 
 #: admin.py:258 templates/admin/newsletter/message/change_form.html:8
 #: templates/admin/newsletter/message/preview.html:13
 msgid "Preview"
-msgstr ""
+msgstr "Προεπισκόπηση"
 
 #: admin.py:275 views.py:611
 msgid ""
 "No HTML template associated with the newsletter this message belongs to."
-msgstr ""
+msgstr "Δεν υπάρχει πρότυπο HTML που να σχετίζεται με το newsletter στο οποίο ανήκει αυτό το μήνυμα."
 
 #: admin.py:384 admin_forms.py:103
 msgid "Subscribed"
-msgstr ""
+msgstr "Εγγεγραμμένος"
 
 #: admin.py:386 admin_forms.py:104
 msgid "Unsubscribed"
-msgstr ""
+msgstr "Έχει διαγραφεί"
 
 #: admin.py:388
 msgid "Unactivated"
-msgstr ""
+msgstr "Μη ενεργοποιημένος"
 
 #: admin.py:396 models.py:314
 msgid "subscribe date"
-msgstr ""
+msgstr "ημερομηνία εγγραφής"
 
 #: admin.py:403 models.py:322
 msgid "unsubscribe date"
-msgstr ""
+msgstr "ημερομηνία διαγραφής"
 
 #: admin.py:411
 #, python-format
 msgid "%d user has been successfully subscribed."
 msgid_plural "%d users have been successfully subscribed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " %dχρήστες έχουν εγγραφεί επιτυχώς. "
+msgstr[1] " %dχρήστες έχουν εγγραφεί επιτυχώς."
 
 #: admin.py:416
 msgid "Subscribe selected users"
-msgstr ""
+msgstr "Εγγραφή επιλεγμένων χρηστών"
 
 #: admin.py:423
 #, python-format
 msgid "%d user has been successfully unsubscribed."
 msgid_plural "%d users have been successfully unsubscribed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%dχρήστες έχουν διαγραφεί επιτυχώς. "
+msgstr[1] "%dχρήστες έχουν διαγραφεί επιτυχώς. "
 
 #: admin.py:428
 msgid "Unsubscribe selected users"
-msgstr ""
+msgstr "Διαγραφή επιλεγμένων χρηστών"
 
 #: admin.py:484
 #, python-format
 msgid "%d subscription has been successfully added."
 msgid_plural "%d subscriptions have been successfully added."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d συνδρομές προστέθηκαν επιτυχώς."
+msgstr[1] "%d συνδρομές προστέθηκαν επιτυχώς."
 
 #: admin_forms.py:43
 #, python-format
 msgid "File type '%s' was not recognized."
-msgstr ""
+msgstr "Ο τύπος αρχείου '%s' δεν αναγνωρίστηκε."
 
 #: admin_forms.py:60
 #, python-format
 msgid "File extension '%s' was not recognized."
-msgstr ""
+msgstr "Η επέκταση αρχείου '%s' δεν αναγνωρίστηκε."
 
 #: admin_forms.py:64
 msgid "No entries could found in this file."
-msgstr ""
+msgstr "Σε αυτό το αρχείο δεν βρέθηκαν καταχωρήσεις."
 
 #: admin_forms.py:72
 #: templates/admin/newsletter/subscription/confirmimportform.html:12
@@ -250,317 +251,318 @@ msgstr ""
 #: templates/newsletter/subscription_update_activated.html:5
 #: templates/newsletter/subscription_update_activated.html:8
 msgid "Newsletter"
-msgstr ""
+msgstr "Newsletter"
 
 #: admin_forms.py:75
 msgid "Address file"
-msgstr ""
+msgstr "Διεύθυνση αρχείου"
 
 #: admin_forms.py:77
 msgid "Ignore non-fatal errors"
-msgstr ""
+msgstr "Αγνοήστε τα μη μοιραία σφάλματα"
 
 #: admin_forms.py:88
 msgid "You should confirm in order to continue."
-msgstr ""
+msgstr "Θα πρέπει να επιβεβαιώσετε για να συνεχίσετε."
 
 #: admin_forms.py:91
 #: templates/admin/newsletter/subscription/confirmimportform.html:23
 #: templates/admin/newsletter/subscription/confirmimportform.html:28
 msgid "Confirm import"
-msgstr ""
+msgstr "Επιβεβαίωση εισαγωγής"
 
 #: admin_forms.py:121 admin_forms.py:129
 msgid "If a user has been selected this field should remain empty."
-msgstr ""
+msgstr "Εάν έχει επιλεγεί χρήστης, αυτό το πεδίο πρέπει να παραμείνει κενό."
 
 #: admin_forms.py:139
 msgid "Either a user must be selected or an email address must be specified."
-msgstr ""
+msgstr "Πρέπει να επιλεγεί ένας χρήστης ή να οριστεί μια διεύθυνση e-mail."
 
 #: admin_forms.py:164
 msgid ""
 "This message has already been published in some other submission. Messages "
 "can only be published once."
-msgstr ""
+msgstr "Αυτό το μήνυμα έχει ήδη δημοσιευθεί σε κάποια άλλη υποβολή. Τα μηνύματα μπορούν να δημοσιεύονται μόνο μία φορά."
 
 #: admin_utils.py:25
 #, python-format
 msgid "%(name)s object with primary key %(key)r does not exist."
-msgstr ""
+msgstr "%(name)s αντικείμενο με πρωτεύον κλειδί %(key)r δεν υπάρχει."
 
 #: forms.py:57
 msgid "Your e-mail address has already been subscribed to."
-msgstr ""
+msgstr "Η διεύθυνση e-mail σας έχει ήδη εγγραφεί."
 
 #: forms.py:84
 msgid "This subscription has not yet been activated."
-msgstr ""
+msgstr "Αυτή η συνδρομή δεν έχει ενεργοποιηθεί ακόμα."
 
 #: forms.py:102
 msgid "This e-mail address has not been subscribed to."
-msgstr ""
+msgstr "Αυτή η διεύθυνση e-mail δεν έχει εγγραφεί."
 
 #: forms.py:117
 msgid "This subscription has already been unsubscribed from."
-msgstr ""
+msgstr "Αυτή η συνδρομή έχει ήδη διαγραφεί."
 
 #: forms.py:133
 msgid "The validation code supplied by you does not match."
-msgstr ""
+msgstr "Ο κωδικός επικύρωσης που εισήχθη από εσάς δεν ταιριάζει."
 
 #: forms.py:139
 msgid "Activation code"
-msgstr ""
+msgstr "Κωδικός ενεργοποίησης"
 
 #: jobs/hourly/submit.py:15
 msgid "Submitting queued newsletter mailings"
-msgstr ""
+msgstr "Υποβολή ουράς αναμονής αποστολής newsletter"
 
 #: models.py:34
 msgid "newsletter title"
-msgstr ""
+msgstr "τίτλος newsletter"
 
 #: models.py:39
 msgid "Sender e-mail"
-msgstr ""
+msgstr "E-mail αποστολέα"
 
 #: models.py:42
 msgid "sender"
-msgstr ""
+msgstr "αποστολέας"
 
 #: models.py:42
 msgid "Sender name"
-msgstr ""
+msgstr "Όνομα αποστολέα"
 
 #: models.py:46
 msgid "visible"
-msgstr ""
+msgstr "ορατό"
 
 #: models.py:50
 msgid "send html"
-msgstr ""
+msgstr "αποστολή html"
 
 #: models.py:51
 msgid "Whether or not to send HTML versions of e-mails."
-msgstr ""
+msgstr "Να αποστέλλονται ή όχι e-mails σε έκδοση HTML."
 
 #: models.py:103
 msgid "newsletters"
-msgstr ""
+msgstr "newsletters"
 
 #: models.py:159
 msgid "user"
-msgstr ""
+msgstr "χρήστης"
 
 #: models.py:165
 msgid "optional"
-msgstr ""
+msgstr "προαιρετικό"
 
 #: models.py:209
 #, python-format
 msgid "Updated subscription %(subscription)s to %(action)s."
-msgstr ""
+msgstr "Ενημερώθηκε η συνδρομή %(subscription)s σε %(action)s."
 
 #: models.py:251
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
-msgstr ""
+msgstr "Δεν έχει οριστεί ούτε e-mail ούτε ένα όνομα χρήστη. Αυτό είναι ασυνέπεια!"
 
 #: models.py:255
 msgid "If user is set, email must be null and vice versa."
-msgstr ""
+msgstr "Εάν έχει οριστεί χρήστης, το e-mail πρέπει να είναι κενό και αντίστροφα."
 
 #: models.py:297
 msgid "IP address"
-msgstr ""
+msgstr "Διεύθυνση IP"
 
 #: models.py:306
 msgid "activation code"
-msgstr ""
+msgstr "κωδικός ενεργοποίησης"
 
 #: models.py:311
 msgid "subscribed"
-msgstr ""
+msgstr "εγγεγραμμένος"
 
 #: models.py:319
 msgid "unsubscribed"
-msgstr ""
+msgstr "διαγραμμένος"
 
 #: models.py:327
 #, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
-msgstr ""
+msgstr "%(name)s<%(email)s σε %(newsletter)s"
 
 #: models.py:334
 #, python-format
 msgid "%(email)s to %(newsletter)s"
-msgstr ""
+msgstr "%(email)s σε %(newsletter)s"
 
 #: models.py:340
 msgid "subscription"
-msgstr ""
+msgstr "συνδρομή"
 
 #: models.py:341
 msgid "subscriptions"
-msgstr ""
+msgstr "συνδρομές"
 
 #: models.py:429
 msgid ""
-"Sort order determines the order in which articles are concatenated in a post."
-msgstr ""
+"Sort order determines the order in which articles are concatenated in a "
+"post."
+msgstr "Η σειρά ταξινόμησης καθορίζει τη σειρά με την οποία τα άρθρα συνδέονται σε μια δημοσίευση."
 
 #: models.py:431
 msgid "sort order"
-msgstr ""
+msgstr "σειρά ταξινόμησης"
 
 #: models.py:434 models.py:476
 msgid "title"
-msgstr ""
+msgstr "τίτλος"
 
 #: models.py:435
 msgid "text"
-msgstr ""
+msgstr "κείμενο"
 
 #: models.py:438
 msgid "link"
-msgstr ""
+msgstr "σύνδεσμος"
 
 #: models.py:444
 msgid "image"
-msgstr ""
+msgstr "εικόνα"
 
 #: models.py:456
 msgid "article"
-msgstr ""
+msgstr "άρθρο"
 
 #: models.py:457
 msgid "articles"
-msgstr ""
+msgstr "άρθρα"
 
 #: models.py:477
 msgid "slug"
-msgstr ""
+msgstr "τίτλος"
 
 #: models.py:484
 msgid "created"
-msgstr ""
+msgstr "δημιουργήθηκε"
 
 #: models.py:487
 msgid "modified"
-msgstr ""
+msgstr "τροποποιήθηκε"
 
 #: models.py:492
 msgid "messages"
-msgstr ""
+msgstr "μηνύματα"
 
 #: models.py:497
 #, python-format
 msgid "%(title)s in %(newsletter)s"
-msgstr ""
+msgstr "%(title)s σε %(newsletter)s"
 
 #: models.py:556
 msgid "submissions"
-msgstr ""
+msgstr "υποβολές"
 
 #: models.py:559
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
-msgstr ""
+msgstr "%(newsletter)s σε %(publish_date)s"
 
 #: models.py:578
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
-msgstr ""
+msgstr "Υποβάλλονται %(submission)s σε %(count)d άτομα"
 
 #: models.py:637
 #, python-format
 msgid "Submitting message to: %s."
-msgstr ""
+msgstr "Υποβολή μηνύματος σε: %s."
 
 #: models.py:646
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
-msgstr ""
+msgstr "Το μήνυμα %(subscription)sαπέτυχε με σφάλμα: %(error)s"
 
 #: models.py:664
 #, python-format
 msgid "Submission of message %s"
-msgstr ""
+msgstr "Υποβολή μηνύματος %s"
 
 #: models.py:709
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
-msgstr ""
+msgstr "Εάν δεν επιλέξετε κανένα, το σύστημα θα εντοπίσει αυτόματα τους συνδρομητές για εσάς."
 
 #: models.py:711
 msgid "recipients"
-msgstr ""
+msgstr "παραλήπτες"
 
 #: models.py:716
 msgid "publication date"
-msgstr ""
+msgstr "ημερομηνία δημοσίευσης"
 
 #: models.py:720
 msgid "publish"
-msgstr ""
+msgstr "δημοσίευση"
 
 #: models.py:721
 msgid "Publish in archive."
-msgstr ""
+msgstr "Δημοσίευση στο αρχείο."
 
 #: models.py:725
 msgid "prepared"
-msgstr ""
+msgstr "ετοιμάστηκε"
 
 #: models.py:729
 msgid "sent"
-msgstr ""
+msgstr "απεστάλη"
 
 #: models.py:733
 msgid "sending"
-msgstr ""
+msgstr "αποστέλλεται"
 
 #: templates/admin/newsletter/message/preview.html:5
 #: templates/admin/newsletter/message/preview.html:19
 msgid "Preview message"
-msgstr ""
+msgstr "Προεπισκόπηση μηνύματος"
 
 #: templates/admin/newsletter/message/preview.html:9
 #: templates/admin/newsletter/subscription/confirmimportform.html:8
 #: templates/admin/newsletter/subscription/importform.html:8
 msgid "Home"
-msgstr ""
+msgstr "Κεντρική σελίδα"
 
 #: templates/admin/newsletter/message/preview.html:11
 msgid "Message"
-msgstr ""
+msgstr "Μήνυμα"
 
 #: templates/admin/newsletter/message/preview.html:22
 #: templates/admin/newsletter/subscription/importform.html:28
 msgid "Change"
-msgstr ""
+msgstr "Αλλαγή"
 
 #: templates/admin/newsletter/message/preview.html:23
 #: templates/admin/newsletter/subscription/importform.html:29
 msgid "Create submission"
-msgstr ""
+msgstr "Δημιουργία υποβολής"
 
 #: templates/admin/newsletter/message/preview.html:26
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: templates/admin/newsletter/message/preview.html:30
 msgid "Text"
-msgstr ""
+msgstr "Κείμενο"
 
 #: templates/admin/newsletter/submission/change_form.html:16
 msgid "Submit"
-msgstr ""
+msgstr "Υποβολή"
 
 #: templates/admin/newsletter/subscription/change_list.html:5
 msgid "Import"
-msgstr ""
+msgstr "Εισαγωγή"
 
 #: templates/admin/newsletter/subscription/confirmimportform.html:3
 #: templates/admin/newsletter/subscription/confirmimportform.html:20
@@ -568,15 +570,15 @@ msgstr ""
 #: templates/admin/newsletter/subscription/importform.html:19
 #: templates/admin/newsletter/subscription/importform.html:24
 msgid "Import addresses"
-msgstr ""
+msgstr "Εισαγωγή διευθύνσεων"
 
 #: templates/admin/newsletter/subscription/confirmimportform.html:40
 msgid "Confirm"
-msgstr ""
+msgstr "Επιβεβαίωση"
 
 #: templates/admin/newsletter/subscription/importform.html:37
 msgid "Upload"
-msgstr ""
+msgstr "Μεταφόρτωση"
 
 #: templates/newsletter/message/message.html:21
 msgid "Read more"
@@ -591,7 +593,7 @@ msgstr ""
 #: templates/newsletter/subscription_unsubscribe.html:23
 #: templates/newsletter/subscription_unsubscribe_user.html:23
 msgid "Unsubscribe"
-msgstr ""
+msgstr "Διαγραφή"
 
 #: templates/newsletter/message/message.txt:15
 msgid "Unsubscribe:"
@@ -610,8 +612,7 @@ msgid ""
 "\n"
 "you, or someone in your name requested a subscription to %(title)s.\n"
 "\n"
-"If you would like to confirm your subscription, please follow this "
-"activation link:\n"
+"If you would like to confirm your subscription, please follow this activation link:\n"
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
@@ -634,8 +635,7 @@ msgid ""
 "\n"
 "you, or someone in your name requested unsubscription from %(title)s.\n"
 "\n"
-"If you would like to confirm your unsubscription, please follow this "
-"activation link:\n"
+"If you would like to confirm your unsubscription, please follow this activation link:\n"
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
@@ -656,11 +656,9 @@ msgstr ""
 msgid ""
 "Dear %(name)s,\n"
 "\n"
-"you, or someone in your name requested updating your personal information "
-"for %(title)s.\n"
+"you, or someone in your name requested updating your personal information for %(title)s.\n"
 "\n"
-"To make changes to your information in our database, please follow this "
-"activation link:\n"
+"To make changes to your information in our database, please follow this activation link:\n"
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
@@ -672,14 +670,14 @@ msgstr ""
 
 #: templates/newsletter/newsletter_detail.html:5
 msgid "Newsletter detail"
-msgstr ""
+msgstr "Λεπτομέρειες newsletter"
 
 #: templates/newsletter/newsletter_detail.html:13
 #: templates/newsletter/newsletter_list.html:16
 #: templates/newsletter/subscription_subscribe.html:23
 #: templates/newsletter/subscription_subscribe_user.html:22
 msgid "Subscribe"
-msgstr ""
+msgstr "Εγγραφή"
 
 #: templates/newsletter/newsletter_detail.html:17
 msgid "Update"
@@ -696,16 +694,16 @@ msgstr ""
 
 #: templates/newsletter/newsletter_list.html:5
 msgid "Newsletter list"
-msgstr ""
+msgstr "Λίστα newsletter"
 
 #: templates/newsletter/newsletter_list.html:27
 msgid "Update subscriptions"
-msgstr ""
+msgstr "Ενημέρωση συνδρομών"
 
 #: templates/newsletter/submission_archive.html:5
 #: templates/newsletter/submission_archive.html:10
 msgid "Newsletter archive"
-msgstr ""
+msgstr "Αρχείο newsletter"
 
 #: templates/newsletter/subscription_activate.html:5
 #: templates/newsletter/subscription_activate.html:8
@@ -716,11 +714,11 @@ msgstr ""
 #: templates/newsletter/subscription_update_activated.html:5
 #: templates/newsletter/subscription_update_activated.html:8
 msgid "activate"
-msgstr ""
+msgstr "ενεργοποίηση"
 
 #: templates/newsletter/subscription_activate.html:13
 msgid "Activate"
-msgstr ""
+msgstr "Ενεργοποίηση"
 
 #: templates/newsletter/subscription_subscribe.html:5
 #: templates/newsletter/subscription_subscribe.html:8
@@ -729,30 +727,30 @@ msgstr ""
 #: templates/newsletter/subscription_subscribe_user.html:5
 #: templates/newsletter/subscription_subscribe_user.html:8
 msgid "Newsletter subscribe"
-msgstr ""
+msgstr "Εγγραφή στο newsletter"
 
 #: templates/newsletter/subscription_subscribe.html:11
 #: templates/newsletter/subscription_unsubscribe.html:11
 #: templates/newsletter/subscription_update.html:11
 msgid ""
-"Due to a technical error we were not able to submit your confirmation email. "
-"This could be because your email address is invalid."
-msgstr ""
+"Due to a technical error we were not able to submit your confirmation email."
+" This could be because your email address is invalid."
+msgstr "Λόγω τεχνικού σφάλματος, δεν ήταν δυνατή η υποβολή του e-mail επιβεβαίωσης. Αυτό μπορεί να οφείλεται στο γεγονός ότι η διεύθυνση e-mail σας δεν είναι έγκυρη."
 
 #: templates/newsletter/subscription_subscribe_activated.html:10
 msgid "Your subscription has successfully been activated."
-msgstr ""
+msgstr "Η συνδρομή σας έχει ενεργοποιηθεί με επιτυχία."
 
 #: templates/newsletter/subscription_subscribe_email_sent.html:10
 msgid ""
 "Your subscription request was successfully received and an activation email "
 "has been sent to you. In that email you will find a link which you need to "
 "follow in order to activate your subscription."
-msgstr ""
+msgstr "Το αίτημα συνδρομής σας λήφθηκε με επιτυχία και εστάλη e-mail ενεργοποίησης. Σε αυτό το e-mail θα βρείτε έναν σύνδεσμο που πρέπει να ακολουθήσετε για να ενεργοποιήσετε τη συνδρομή σας."
 
 #: templates/newsletter/subscription_subscribe_user.html:19
 msgid "Do you want to subscribe to this newsletter?"
-msgstr ""
+msgstr "Θέλετε να εγγραφείτε σε αυτό το newsletter;"
 
 #: templates/newsletter/subscription_unsubscribe.html:5
 #: templates/newsletter/subscription_unsubscribe.html:8
@@ -761,90 +759,90 @@ msgstr ""
 #: templates/newsletter/subscription_unsubscribe_user.html:5
 #: templates/newsletter/subscription_unsubscribe_user.html:8
 msgid "Newsletter unsubscribe"
-msgstr ""
+msgstr "Διαγραφή από το newsletter"
 
 #: templates/newsletter/subscription_unsubscribe_activated.html:10
 msgid "You have successfully been unsubscribed."
-msgstr ""
+msgstr "Έχετε καταργήσει την εγγραφή σας με επιτυχία."
 
 #: templates/newsletter/subscription_unsubscribe_email_sent.html:10
 msgid ""
 "Your unsubscription request has successfully been received. An email has "
 "been sent to you with a link you need to follow in order to confirm your "
 "unsubscription."
-msgstr ""
+msgstr "Το αίτημά σας για κατάργηση εγγραφής έχει ληφθεί με επιτυχία. Σας έχει σταλεί ένα e-mail με έναν σύνδεσμο που πρέπει να ακολουθήσετε για να επιβεβαιώσετε την κατάργηση της εγγραφής σας."
 
 #: templates/newsletter/subscription_unsubscribe_user.html:20
 msgid "Do you want to unsubscribe from this newsletter?"
-msgstr ""
+msgstr "Θέλετε να διαγραφείτε από αυτό το newsletter;"
 
 #: templates/newsletter/subscription_update.html:5
 #: templates/newsletter/subscription_update.html:8
 #: templates/newsletter/subscription_update_email_sent.html:5
 #: templates/newsletter/subscription_update_email_sent.html:8
 msgid "Newsletter update"
-msgstr ""
+msgstr "Ενημέρωση newsletter"
 
 #: templates/newsletter/subscription_update.html:23
 msgid "Update subscription"
-msgstr ""
+msgstr "Ενημέρωση συνδρομής"
 
 #: templates/newsletter/subscription_update_activated.html:10
 msgid "Your subscription has successfully been updated."
-msgstr ""
+msgstr "Η συνδρομή σας έχει ενημερωθεί με επιτυχία."
 
 #: templates/newsletter/subscription_update_email_sent.html:10
 msgid ""
 "Your update request was successfully received and an activation email has "
 "been sent to you. In that email you will find a link which you need to "
 "follow in order to update your subscription."
-msgstr ""
+msgstr "Η αίτησή σας για ενημέρωση λήφθηκε με επιτυχία και εστάλη ένα e-mail ενεργοποίησης. Σε αυτό το e-mail θα βρείτε έναν σύνδεσμο που πρέπει να ακολουθήσετε για να ενημερώσετε τη συνδρομή σας."
 
 #: templates/widget/image.html:2
 msgid "Currently:"
-msgstr ""
+msgstr "Επί του παρόντος:"
 
 #: templates/widget/image.html:4
 msgid "Change:"
-msgstr ""
+msgstr "Αλλαγή:"
 
 #: validators.py:15
 #, python-format
 msgid ""
 "The e-mail address '%(email)s' belongs to a user with an account on this "
 "site. Please log in as that user and try again."
-msgstr ""
+msgstr "Η διεύθυνση e-mail '%(email)s' ανήκει σε χρήστη με λογαριασμό σε αυτόν τον ιστότοπο. Συνδεθείτε ως αυτός ο χρήστης και δοκιμάστε ξανά."
 
 #: views.py:120
 msgid "Your changes have been saved."
-msgstr ""
+msgstr "Οι αλλαγές σας έχουν αποθηκευτεί."
 
 #: views.py:311
 #, python-format
 msgid "You have been subscribed to %s."
-msgstr ""
+msgstr "Έχετε εγγραφεί στο %s."
 
 #: views.py:315
 #, python-format
 msgid "User %(rs)s subscribed to %(my_newsletter)s."
-msgstr ""
+msgstr "Ο χρήστης %(rs)sέχει εγγραφεί στο %(my_newsletter)s."
 
 #: views.py:325
 #, python-format
 msgid "You are already subscribed to %s."
-msgstr ""
+msgstr "Έχετε ήδη εγγραφεί στο %s."
 
 #: views.py:350
 #, python-format
 msgid "You have been unsubscribed from %s."
-msgstr ""
+msgstr "Έχετε καταργηθεί η εγγραφή από το %s."
 
 #: views.py:354
 #, python-format
 msgid "User %(rs)s unsubscribed from %(my_newsletter)s."
-msgstr ""
+msgstr "Ο χρήστης %(rs)sέχει διαγραφεί από το %(my_newsletter)s."
 
 #: views.py:367
 #, python-format
 msgid "You are not subscribed to %s."
-msgstr ""
+msgstr "Δεν έχετε εγγραφεί στο %s."
