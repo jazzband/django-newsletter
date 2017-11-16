@@ -2,12 +2,12 @@ import os
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
-from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import patch_logger
 
 from newsletter import admin  # Triggers model admin registration
 from newsletter.admin_utils import make_subscription
+from newsletter.compat import reverse
 from newsletter.models import Message, Newsletter, Submission, Subscription
 
 test_files_dir = os.path.join(os.path.dirname(__file__), 'files')

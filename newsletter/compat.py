@@ -1,5 +1,10 @@
 from django import get_version
 
+try:
+    from django.urls import reverse
+except ImportError:  # Django < 1.10
+    from django.core.urlresolvers import reverse
+
 if get_version() < '1.10':
     from django.template import Context
 

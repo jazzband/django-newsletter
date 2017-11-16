@@ -41,7 +41,10 @@ class MailingTestCase(MailTestCase):
     def setUp(self):
         self.n = Newsletter(**self.get_newsletter_kwargs())
         self.n.save()
-        self.n.site = get_default_sites()
+        try:
+            self.n.site.set(get_default_sites())
+        except AttributeError:  # Django < 1.10
+            self.n.site = get_default_sites()
 
         self.m = Message(title='Test message',
                          newsletter=self.n,

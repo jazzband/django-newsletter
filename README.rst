@@ -48,6 +48,8 @@ Compatibility
 Currently, django-newsletter is officially supported for Django 1.8, 1.10, 1.11
 and Python 2.7, 3.4 and 3.5.
 
+There is tentative support for Django 2.0 but it requires further testing.
+
 Requirements
 ============
 Please refer to `requirements.txt <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_
