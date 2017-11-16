@@ -1,5 +1,5 @@
 django-extensions
-Django>=1.8.7
+Django>=1.8.18
 python-card-me<1.0
 ldif3<3.2
 chardet
