@@ -1,6 +1,48 @@
 Changes
 =======
 
+0.7b1 (16-11-2017)
+------------------
+
+- Support for Django 1.10, 1.11 and tentative support for 2.0.
+- Drop support for Django 1.9.
+- Added support for Python 3.6.
+
+- Isolated the send_message process in anticipation of dropping of
+  django-extensions dependency (#39).
+- Custom ArticleFormSet for improved Article sortorder, hidden
+  by default. (#194)
+- Move tests to separate directory, exclude from binaries and use
+  Django's native test runner. (#206)
+- Cleanup of form validation. (#209)
+- Settings for delays between emails, batches and the size of batches. (#223)
+- Add missing translatable strings in templates. (#220)
+- Added translations for es, el_GR.
+- Updated translations for fa, fr, nl.
+
+Security fixes
+^^^^^^^^^^^^^^
+
+- Don’t leak username in unsubscribe form.
+- Use Django’s crypto code to generate random code.
+
+Small fixes
+^^^^^^^^^^^
+
+- Add MySQL contrib to export list of subscribers.
+- Add note about EMAIL_* settings in installation docs.
+- Added test for `Message.__str__`.
+- Warnings when files cannot be read in setup.py.
+- Move test requirements to their approriate place. Closes (#190)
+- Note on upgrading from <0.5.
+- Added documentation on premailers. Closes (#178)
+- Display email on import confirmation page.
+- Fix broken links in requirements. (#205)
+- Move Pillow to requirements, fixes (#202).
+- Add a second subscription for mailing tests.
+- Require Django 1.8.18 (latest point release).
+- HTML5 doctype for default templates.
+
 0.6 (2-2-2016)
 --------------
 
