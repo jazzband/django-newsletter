@@ -60,7 +60,7 @@ setup(
     url='http://github.com/dokterbob/django-newsletter/',
     packages=find_packages(exclude=("tests", "test_project")),
     include_package_data=True,
-    classifiers=(
+    classifiers=[
         'Development Status :: 6 - Mature',
         'Environment :: Web Environment',
         'Framework :: Django',
@@ -73,7 +73,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Topic :: Utilities'
-    ),
+    ],
     test_suite='runtests.run_tests',
     tests_require=TEST_REQUIREMENTS
 )
