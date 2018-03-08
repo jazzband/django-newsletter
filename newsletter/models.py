@@ -671,7 +671,7 @@ class Submission(models.Model):
             submission.subscriptions = message.newsletter.get_subscriptions()
         return submission
 
-    def save(self):
+    def save(self, **kwargs):
         """ Set the newsletter from associated message upon saving. """
         assert self.message.newsletter
 
