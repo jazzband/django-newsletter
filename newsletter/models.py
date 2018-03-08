@@ -459,7 +459,7 @@ class Article(models.Model):
     def __str__(self):
         return self.title
 
-    def save(self):
+    def save(self, **kwargs):
         if self.sortorder is None:
             # If saving a new object get the next available Article ordering
             # as to assure uniqueness.
