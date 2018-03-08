@@ -1,4 +1,4 @@
-django-extensions
+django-extensions<2.0.1 # Bug causes build to fail: https://github.com/django-extensions/django-extensions/issues/1176
 Django>=1.8.18
 python-card-me<1.0
 ldif3<3.2
