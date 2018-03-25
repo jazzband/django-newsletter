@@ -2,6 +2,13 @@
 Upgrading
 =========
 
+0.7: Management command instead of django-extensions cron job
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+In this version, we have deprecated support for the django-extensions cron
+job. Hence, it will become necessary to update the crontab; whereas before
+messages where submitted with the `runjobs hourly` cron job, this has now
+become `submit_newsletter`.
+
 0.6: Upgrading from South to Django Migrations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Based on https://docs.djangoproject.com/en/1.9/topics/migrations/#upgrading-from-south, the procedure should be:
