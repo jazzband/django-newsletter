@@ -32,7 +32,6 @@ settings.configure(
         'django.contrib.sessions',
         'django.contrib.auth',
         'django.contrib.sites',
-        'django_extensions',
         'sorl.thumbnail',
         'newsletter'
     ],
