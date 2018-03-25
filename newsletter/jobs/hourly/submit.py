@@ -1,16 +1,15 @@
-import logging
-
-logger = logging.getLogger(__name__)
+import warnings
 
 from django_extensions.management.jobs import HourlyJob
-
-from django.utils.translation import ugettext as _
-from newsletter.models import Submission
+from django.core.management import call_command
 
 
 class Job(HourlyJob):
     help = "Submit pending messages."
 
     def execute(self):
-        logger.info(_('Submitting queued newsletter mailings'))
-        Submission.submit_queue()
+        warnings.warn(
+            "The django-extensions cron job is deprecated in favor of the"
+            "submit_newsletter management command.", DeprecationWarning)
+
+        call_command('submit_newsletter')

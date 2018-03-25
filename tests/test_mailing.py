@@ -259,6 +259,17 @@ class SubmitSubmissionTestCase(MailingTestCase):
 
         sleep_mock.assert_called_with(0.02)
 
+    def test_management_command(self):
+        """ Test submission through management command. """
+
+        from django.core.management import call_command
+
+        with mock.patch.object(
+            Submission, 'submit_queue', return_value=None
+        ) as mock_submit:
+            call_command('submit_newsletter')
+            mock_submit.assert_called_once()
+
 
 class SubscriptionTestCase(UserTestCase, MailingTestCase):
     def setUp(self):
