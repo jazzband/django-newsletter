@@ -4,12 +4,10 @@ from __future__ import unicode_literals
 import itertools
 import mock
 import six
-import time
 import unittest
 
 from datetime import timedelta
 
-from django.conf import settings
 from django.core import mail
 
 from django.test.utils import patch_logger
@@ -116,7 +114,10 @@ class MessageTestCase(MailingTestCase):
             newsletter=self.n,
             slug='test-message-str'
         )
-        self.assertEqual(six.text_type(m2), "Test message str in Test newsletter")
+
+        self.assertEqual(
+            six.text_type(m2), "Test message str in Test newsletter"
+        )
 
 
 class CreateSubmissionTestCase(MailingTestCase):
@@ -178,7 +179,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
 
         self.sub = Submission.from_message(self.m)
         self.sub.save()
-    
+
     def test_submission(self):
         """ Assure initial Submission is in expected state. """
 
@@ -199,9 +200,9 @@ class SubmitSubmissionTestCase(MailingTestCase):
     def test_submitsubmission(self):
         """ Test queue-based submission. """
 
-        # Adding a subscription after the submission has been created, it should
-        # not be used when submitting self.sub
-        new_subscr = Subscription.objects.create(
+        # Adding a subscription after the submission has been created, it
+        # should not be used when submitting self.sub
+        Subscription.objects.create(
             name='Other Name', email='other@test.com',
             newsletter=self.n, subscribed=True
         )
@@ -228,31 +229,34 @@ class SubmitSubmissionTestCase(MailingTestCase):
             'List-Unsubscribe',
             'http://example.com/newsletter/test-newsletter/unsubscribe/'
         )
-    
+
     def test_delayedsumbmission(self):
         """ Test delays between emails """
-        
+
         self.sub.prepared = True
         self.sub.publish_date = now() - timedelta(seconds=1)
         self.sub.save()
-        
+
         with self.settings(NEWSLETTER_EMAIL_DELAY=0.01):
             with mock.patch('time.sleep', return_value=None) as sleep_mock:
                 Submission.submit_queue()
-        
+
         sleep_mock.assert_called_with(0.01)
-    
+
     def test_delayedbatchsumbmission(self):
         """ Test delays between emails """
-        
+
         self.sub.prepared = True
         self.sub.publish_date = now() - timedelta(seconds=1)
         self.sub.save()
-        
-        with self.settings(NEWSLETTER_BATCH_SIZE=1, NEWSLETTER_BATCH_DELAY=0.02):
+
+        with self.settings(
+            NEWSLETTER_BATCH_SIZE=1,
+            NEWSLETTER_BATCH_DELAY=0.02
+        ):
             with mock.patch('time.sleep', return_value=None) as sleep_mock:
                 Submission.submit_queue()
-        
+
         sleep_mock.assert_called_with(0.02)
 
 
