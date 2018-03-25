@@ -1,6 +1,16 @@
 Changes
 =======
 
+0.7b2 (25-03-2018)
+------------------
+
+- Drop support for deprecated Django 1.10.
+- Introduce `submit_newsletter` management command, deprecating cron job and
+  dropping `django-extensions` dependency.
+
+- Fix for encoding of non-ASCII recipient names for Django < 1.9 (#244).
+- Allow programmatic access Article and Submission save() methods (#246).
+
 0.7b1 (16-11-2017)
 ------------------
 
