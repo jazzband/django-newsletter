@@ -476,7 +476,7 @@ class Message(models.Model):
     slug = models.SlugField(verbose_name=_('slug'))
 
     newsletter = models.ForeignKey(
-        Newsletter, verbose_name=_('newsletter'), on_delete=models.CASCADE
+        Newsletter, verbose_name=_('newsletter'), on_delete=models.CASCADE, default=Newsletter.get_default
     )
 
     date_create = models.DateTimeField(
@@ -500,11 +500,6 @@ class Message(models.Model):
         except Newsletter.DoesNotExist:
             logger.warning('No newsletter has been set for this message yet.')
             return self.title
-
-    def save(self, **kwargs):
-        if self.pk is None:
-            self.newsletter = Newsletter.get_default()
-        super(Message, self).save(**kwargs)
 
     def get_next_article_sortorder(self):
         """ Get next available sortorder for Article. """
