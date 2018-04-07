@@ -106,8 +106,8 @@ class MessageTestCase(MailingTestCase):
     def test_message_str(self):
         m1 = Message(title='Test message', slug='test-message')
         with patch_logger('newsletter.models', 'warning') as warnings:
-            self.assertEqual(six.text_type(m1), "Test message")
-        self.assertEqual(len(warnings), 1)
+            self.assertEqual(six.text_type(m1), "Test message in Test newsletter")
+        self.assertEqual(len(warnings), 0)
 
         m2 = Message.objects.create(
             title='Test message str',
