@@ -15,6 +15,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='message',
             name='newsletter',
-            field=models.ForeignKey(default=newsletter.models.get_default_newsletter, verbose_name='newsletter', to='newsletter.Newsletter'),
+            field=models.ForeignKey(default=newsletter.models.get_default_newsletter,
+                                    verbose_name='newsletter',
+                                    to='newsletter.Newsletter',
+                                    on_delete=models.CASCADE),
         ),
     ]
