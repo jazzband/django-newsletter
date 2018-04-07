@@ -459,7 +459,7 @@ class Article(models.Model):
     def __str__(self):
         return self.title
 
-    def save(self):
+    def save(self, **kwargs):
         if self.sortorder is None:
             # If saving a new object get the next available Article ordering
             # as to assure uniqueness.
@@ -671,7 +671,7 @@ class Submission(models.Model):
             submission.subscriptions = message.newsletter.get_subscriptions()
         return submission
 
-    def save(self):
+    def save(self, **kwargs):
         """ Set the newsletter from associated message upon saving. """
         assert self.message.newsletter
 
@@ -734,6 +734,8 @@ class Submission(models.Model):
     )
 
 def get_address(name, email):
+    # Converting name to ascii for compatibility with django < 1.9.
+    # Remove this when django 1.8 is no longer supported.
     if LooseVersion(django.get_version()) < LooseVersion('1.9'):
         name = name.encode('ascii', 'ignore').decode('ascii').strip()
     if name:

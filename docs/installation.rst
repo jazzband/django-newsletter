@@ -4,7 +4,7 @@ Installation
 
 #) Make sure all `requirements <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_ are properly setup.
 
-#)  Get it from the Cheese Shop::
+#)  Install the package from PyPI::
 
         pip install django-newsletter
 
@@ -18,10 +18,9 @@ Installation
     keep your Python environment somewhat clean.)
 
 #)  Add newsletter to ``INSTALLED_APPS`` in settings.py and make sure that
-    your favourite rich text widget (optional), some Django contrib dependencies,
-    `sorl-thumbnail <http://sorl-thumbnail.readthedocs.org/en/latest/installation.html>`_
-    and `django-extensions <https://github.com/django-extensions/django-extensions>`_
-    (the latter is used for the submission jobs) are there as well::
+    your favourite rich text widget (optional), some Django contrib dependencies
+    and `sorl-thumbnail <http://sorl-thumbnail.readthedocs.org/en/latest/installation.html>`_
+    are in there as well::
 
         INSTALLED_APPS = (
             'django.contrib.contenttypes',
@@ -31,7 +30,6 @@ Installation
             ...
             # Imperavi (or tinymce) rich text editor is optional
             # 'imperavi',
-            'django_extensions',
             'sorl.thumbnail',
             ...
             'newsletter',
@@ -76,14 +74,14 @@ Installation
 
         # Amount of seconds to wait between each email. Here 100ms is used.
         ``NEWSLETTER_EMAIL_DELAY = 0.1``
-        
+
         # Amount of seconds to wait between each batch. Here one minute is used.
         ``NEWSLETTER_BATCH_DELAY = 60``
-        
+
         # Number of emails in one batch
         ``NEWSLETTER_BATCH_SIZE = 100``
-    
-    For both delays, sub-second delays can also be used. If the delays are not 
+
+    For both delays, sub-second delays can also be used. If the delays are not
     set, it will default to not sleeping.
 
 #)  Import subscription, unsubscription and archive URL's somewhere in your
@@ -112,12 +110,25 @@ Installation
     where ``<message_type>`` can be one from `subscribe`, `unsubscribe`, `message`
     or `update`.
 
-#)  Add jobs for sending out mail queues to `crontab <http://man7.org/linux/man-pages/man5/crontab.5.html>`_::
+#)  You may now navigate to the Django admin where the Newsletter module
+    should be available for you to play with.
 
-        @hourly /path/to/my/project/manage.py runjobs hourly
-        @daily /path/to/my/project/manage.py runjobs daily
-        @weekly /path/to/my/project/manage.py runjobs weekly
-        @monthly /path/to/my/project/manage.py runjobs monthly
+    In order to test if submissions work, make sure you create a newsletter,
+    a subscription, a message and finally a submission.
+
+    After creating the submission, you must schedule it by clicking the
+    'submit' button in the top right of the page where you edit it.
+
+#)  Now you may perform a test submission with the `submit_newsletter`
+    management command (`-v 2` is for extra verbosity)::
+
+        ./manage.py submit_newsletter -v 2
+
+#)  Add the `submit_newsletter` management command to `crontab <http://man7.org/linux/man-pages/man5/crontab.5.html>`_.
+
+    For example (for sending every 15 minutes)::
+
+        */15  *  *   *   *     <path_to_virtualenv>/bin/python <project_root>/manage.py submit_newsletter 1>/dev/null 2>&1
 
 To send mail, ``django-newsletter`` uses Django-provided email utilities, so
 ensure that `email settings

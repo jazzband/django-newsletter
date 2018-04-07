@@ -1,15 +1,16 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
+# dokterbob <mathijs@mathijsfietst.nl>, 2018
 # Sophocles Tsivides <sophocles.tsivides@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-16 11:31+0000\n"
-"PO-Revision-Date: 2017-11-16 11:31+0000\n"
+"PO-Revision-Date: 2018-03-25 19:06+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: Greek (Greece) (http://www.transifex.com/dokterbob/django-newsletter/language/el_GR/)\n"
 "MIME-Version: 1.0\n"
@@ -79,7 +80,7 @@ msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
 "'%(e-mail)s'."
-msgstr "Δεν ήταν δυνατό να προσδιοριστούν σωστά οι στήλες στο αρχείο CSV. Πρέπει να υπάρχει ένα πεδίο που ονομάζεται 'όνομα' ή %(name)s και ένα που ονομάζεται 'e-mail' ή '% (e-mail) s'."
+msgstr "Δεν ήταν δυνατό να προσδιοριστούν σωστά οι στήλες στο αρχείο CSV. Πρέπει να υπάρχει ένα πεδίο που ονομάζεται 'όνομα' ή %(name)s και ένα που ονομάζεται 'e-mail' ή '%(e-mail)s'."
 
 #: addressimport/parsers.py:264
 #, python-format
