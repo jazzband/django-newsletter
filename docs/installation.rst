@@ -34,7 +34,7 @@ Installation
             ...
         )
 
-#)  Configure any of the `optional features <settings>`.
+#)  Configure any of the optional :doc:`settings`.
 
 #)  Import subscription, unsubscription and archive URL's somewhere in your
     `urls.py`::
