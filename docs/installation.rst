@@ -2,8 +2,6 @@
 Installation
 ============
 
-#) Make sure all `requirements <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_ are properly setup.
-
 #)  Install the package from PyPI::
 
         pip install django-newsletter
