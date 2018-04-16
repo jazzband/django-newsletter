@@ -11,6 +11,6 @@ Usage
 #) Queue the submission for submission.
 #) Process the submission queue::
 
-       ./manage.py runjob submit
+       ./manage.py submit_newsletter
 
 #) For a proper understanding, please take a look at the :ref:`reference`.
