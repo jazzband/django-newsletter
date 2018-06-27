@@ -151,7 +151,7 @@ class Newsletter(models.Model):
     @classmethod
     def get_default(cls):
         try:
-            return cls.objects.all()[0]
+            return cls.objects.all()[0].pk
         except IndexError:
             return None
 
