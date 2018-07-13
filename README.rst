@@ -64,19 +64,10 @@ for pull req's and the master branch are automatically run through
 
 Contributing
 =============
-.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=ready&title=Ready
-   :target: https://waffle.io/dokterbob/django-newsletter
-   :alt: 'Stories in Ready'
+Want to contribute, great!
 
-.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=in%20progress&title=Progress
-   :target: https://waffle.io/dokterbob/django-newsletter
-   :alt: 'Stories in Progress'
-
-.. image:: https://badge.waffle.io/dokterbob/django-newsletter.png?label=under%20review&title=Review
-   :target: https://waffle.io/dokterbob/django-newsletter
-   :alt: 'Stories Under Review'
-
-Should you wish to contribute, great! Please have a look at the `waffle.io board <https://waffle.io/dokterbob/django-newsletter>`_. Issues in the 'Ready' column are ready for implementation, just drag the issue to 'In Progress' and then to 'Review'. Issues in the backlog require some further discussion concering the scope and methods of implementation, please feel free to mingle in discussions. Lastly, should you see an issue with the 'Review' status, feel free to help out other contributors with your feedback.
+Please refer to the `issues <https://github.com/dokterbob/django-newsletter/issues>` on
+GitHub and read `CONTRIBUTING.rst <https://github.com/dokterbob/django-newsletter/blob/master/CONTRIBUTING.rst>`.
 
 Feedback
 ========
