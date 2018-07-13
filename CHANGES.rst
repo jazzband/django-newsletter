@@ -1,10 +1,14 @@
 Changes
 =======
 
-0.7 ()
+0.7 (13-07-2018)
 ------------------
 
-- Updated Arabic translations.
+- Updated locales (ar, de).
+- Proper default Newsletter for Message, fixes #224.
+- Instructions for embedding a sign-up form (#250).
+- Migration issue with Django 2.0 (#254).
+- Miscellaneous documentation improvements.
 
 0.7b2 (25-03-2018)
 ------------------
