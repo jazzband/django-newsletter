@@ -16,5 +16,4 @@ Steps
 7. Create signed tag: `git tag -s vx.y`.
 8. Create release on GitHub with CHANGELOG as release notes.
 9. Create build: `python setup.py sdist bdist_wheel`
-10. Sign build: `gpg --detach-sign -a dist/<tarball|wheel>`
-10. Upload build: `twine upload dist/*`
+10. Upload build: `cd dist; twine upload -s *`
