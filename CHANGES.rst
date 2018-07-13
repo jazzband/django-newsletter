@@ -4,6 +4,7 @@ Changes
 0.7 (13-07-2018)
 ------------------
 
+- Fixed security issue allowing subscription without confirmation (#108).
 - Updated locales (ar, de).
 - Proper default Newsletter for Message, fixes #224.
 - Instructions for embedding a sign-up form (#250).
