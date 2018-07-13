@@ -7,7 +7,6 @@ python:
   - 3.4
   - 3.5
   - 3.6
-  - 3.7
 
 env:
   - DJANGO="Django<1.12"    # Django 1.11.x
@@ -27,8 +26,6 @@ matrix:
       python: 2.7
     - env: DJANGO="Django==2.1b1"
       python: 3.4
-    - env: DJANGO="Django<1.12"
-      python: 3.7
 
   allow_failures:
     - env: DJANGO="Django==2.1b1"
