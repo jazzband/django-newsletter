@@ -24,6 +24,8 @@ matrix:
       python: 2.7
     - env: DJANGO="Django==2.1.2"
       python: 2.7
+    - env: DJANGO="Django==2.1.2"
+      python: 3.4
 
 
 # command to install dependencies
