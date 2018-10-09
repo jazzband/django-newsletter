@@ -11,7 +11,7 @@ python:
 env:
   - DJANGO="Django<1.12"    # Django 1.11.x
   - DJANGO="Django<2.1"     # Django 2.0.x
-  - DJANGO="Django==2.1b1"  # Django 2.1b
+  - DJANGO="Django<2.2"     # Django 2.1.2 LTS
 
 cache:
   directories:
@@ -22,13 +22,11 @@ matrix:
     # Only supported Python/Django combinations
     - env: DJANGO="Django<2.1"
       python: 2.7
-    - env: DJANGO="Django==2.1b1"
+    - env: DJANGO="Django<2.2"
       python: 2.7
-    - env: DJANGO="Django==2.1b1"
+    - env: DJANGO="Django<2.2"
       python: 3.4
 
-  allow_failures:
-    - env: DJANGO="Django==2.1b1"
 
 # command to install dependencies
 install:
