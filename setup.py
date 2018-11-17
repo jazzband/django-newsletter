@@ -45,7 +45,7 @@ except:
 
 setup(
     name='django-newsletter',
-    version="0.7",
+    version="0.8b1",
     description=(
         'Django app for managing multiple mass-mailing lists with both '
         'plaintext as well as HTML templates (and pluggable WYSIWYG editors '
