@@ -19,5 +19,6 @@ six = "*"
 unicodecsv = "<0.15"
 Django = ">=1.8.19"
 Pillow = "*"
+pip = "==18.0"
 
 [dev-packages]
