@@ -1,4 +1,4 @@
-Django>=1.8.19
+Django>=1.11.16
 python-card-me<1.0
 ldif3<3.2
 chardet

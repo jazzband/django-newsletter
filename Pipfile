@@ -17,7 +17,8 @@ surlex = ">=0.2.0"
 sorl-thumbnail = ">=11.12.1b"
 six = "*"
 unicodecsv = "<0.15"
-Django = ">=1.8.19"
+Django = ">=1.11.16"
 Pillow = "*"
+pip = "==18.0"
 
 [dev-packages]

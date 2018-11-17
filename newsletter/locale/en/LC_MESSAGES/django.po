@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-16 11:31+0000\n"
+"POT-Creation-Date: 2018-11-17 19:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,7 +44,7 @@ msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
 msgstr ""
 
 #: addressimport/parsers.py:196 addressimport/parsers.py:208
-#: addressimport/parsers.py:243 models.py:165
+#: addressimport/parsers.py:243 models.py:147
 msgid "name"
 msgstr ""
 
@@ -60,8 +60,8 @@ msgid ""
 msgstr ""
 
 #: addressimport/parsers.py:219 addressimport/parsers.py:231
-#: addressimport/parsers.py:244 forms.py:43 forms.py:76 models.py:39
-#: models.py:179
+#: addressimport/parsers.py:244 forms.py:44 forms.py:79 forms.py:134
+#: models.py:41 models.py:161
 msgid "e-mail"
 msgstr ""
 
@@ -113,11 +113,11 @@ msgstr ""
 msgid "Submissions"
 msgstr ""
 
-#: admin.py:99 models.py:102 models.py:300 models.py:480 models.py:699
+#: admin.py:99 models.py:104 models.py:281 models.py:458 models.py:673
 msgid "newsletter"
 msgstr ""
 
-#: admin.py:117 models.py:555
+#: admin.py:117 models.py:528
 msgid "submission"
 msgstr ""
 
@@ -157,7 +157,7 @@ msgstr ""
 msgid "Optional"
 msgstr ""
 
-#: admin.py:253 models.py:450 models.py:491 models.py:703
+#: admin.py:253 models.py:425 models.py:469 models.py:677
 msgid "message"
 msgstr ""
 
@@ -183,11 +183,11 @@ msgstr ""
 msgid "Unactivated"
 msgstr ""
 
-#: admin.py:396 models.py:314
+#: admin.py:396 models.py:295
 msgid "subscribe date"
 msgstr ""
 
-#: admin.py:403 models.py:322
+#: admin.py:403 models.py:303
 msgid "unsubscribe date"
 msgstr ""
 
@@ -289,235 +289,239 @@ msgstr ""
 msgid "%(name)s object with primary key %(key)r does not exist."
 msgstr ""
 
-#: forms.py:57
+#: forms.py:59
 msgid "Your e-mail address has already been subscribed to."
 msgstr ""
 
-#: forms.py:84
+#: forms.py:88
 msgid "This subscription has not yet been activated."
 msgstr ""
 
-#: forms.py:102
+#: forms.py:106
 msgid "This e-mail address has not been subscribed to."
 msgstr ""
 
-#: forms.py:117
+#: forms.py:121
 msgid "This subscription has already been unsubscribed from."
 msgstr ""
 
-#: forms.py:133
+#: forms.py:142
 msgid "The validation code supplied by you does not match."
 msgstr ""
 
-#: forms.py:139
+#: forms.py:148
 msgid "Activation code"
 msgstr ""
 
-#: jobs/hourly/submit.py:15
+#: management/commands/submit_newsletter.py:14
+msgid "Submit pending messages."
+msgstr ""
+
+#: management/commands/submit_newsletter.py:30
 msgid "Submitting queued newsletter mailings"
 msgstr ""
 
-#: models.py:34
+#: models.py:36
 msgid "newsletter title"
 msgstr ""
 
-#: models.py:39
+#: models.py:41
 msgid "Sender e-mail"
 msgstr ""
 
-#: models.py:42
+#: models.py:44
 msgid "sender"
 msgstr ""
 
-#: models.py:42
+#: models.py:44
 msgid "Sender name"
 msgstr ""
 
-#: models.py:46
+#: models.py:48
 msgid "visible"
 msgstr ""
 
-#: models.py:50
+#: models.py:52
 msgid "send html"
 msgstr ""
 
-#: models.py:51
+#: models.py:53
 msgid "Whether or not to send HTML versions of e-mails."
 msgstr ""
 
-#: models.py:103
+#: models.py:105
 msgid "newsletters"
 msgstr ""
 
-#: models.py:159
+#: models.py:141
 msgid "user"
 msgstr ""
 
-#: models.py:165
+#: models.py:147
 msgid "optional"
 msgstr ""
 
-#: models.py:209
+#: models.py:191
 #, python-format
 msgid "Updated subscription %(subscription)s to %(action)s."
 msgstr ""
 
-#: models.py:251
+#: models.py:232
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
 msgstr ""
 
-#: models.py:255
+#: models.py:236
 msgid "If user is set, email must be null and vice versa."
 msgstr ""
 
-#: models.py:297
+#: models.py:278
 msgid "IP address"
 msgstr ""
 
-#: models.py:306
+#: models.py:287
 msgid "activation code"
 msgstr ""
 
-#: models.py:311
+#: models.py:292
 msgid "subscribed"
 msgstr ""
 
-#: models.py:319
+#: models.py:300
 msgid "unsubscribed"
 msgstr ""
 
-#: models.py:327
+#: models.py:308
 #, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
 msgstr ""
 
-#: models.py:334
+#: models.py:315
 #, python-format
 msgid "%(email)s to %(newsletter)s"
 msgstr ""
 
-#: models.py:340
+#: models.py:321
 msgid "subscription"
 msgstr ""
 
-#: models.py:341
+#: models.py:322
 msgid "subscriptions"
 msgstr ""
 
-#: models.py:429
+#: models.py:404
 msgid ""
 "Sort order determines the order in which articles are concatenated in a post."
 msgstr ""
 
-#: models.py:431
+#: models.py:406
 msgid "sort order"
 msgstr ""
 
-#: models.py:434 models.py:476
+#: models.py:409 models.py:454
 msgid "title"
 msgstr ""
 
-#: models.py:435
+#: models.py:410
 msgid "text"
 msgstr ""
 
-#: models.py:438
+#: models.py:413
 msgid "link"
 msgstr ""
 
-#: models.py:444
+#: models.py:419
 msgid "image"
 msgstr ""
 
-#: models.py:456
+#: models.py:431
 msgid "article"
 msgstr ""
 
-#: models.py:457
+#: models.py:432
 msgid "articles"
 msgstr ""
 
-#: models.py:477
+#: models.py:455
 msgid "slug"
 msgstr ""
 
-#: models.py:484
+#: models.py:462
 msgid "created"
 msgstr ""
 
-#: models.py:487
+#: models.py:465
 msgid "modified"
 msgstr ""
 
-#: models.py:492
+#: models.py:470
 msgid "messages"
 msgstr ""
 
-#: models.py:497
+#: models.py:475
 #, python-format
 msgid "%(title)s in %(newsletter)s"
 msgstr ""
 
-#: models.py:556
+#: models.py:529
 msgid "submissions"
 msgstr ""
 
-#: models.py:559
+#: models.py:532
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
 msgstr ""
 
-#: models.py:578
+#: models.py:551
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
 msgstr ""
 
-#: models.py:637
+#: models.py:610
 #, python-format
 msgid "Submitting message to: %s."
 msgstr ""
 
-#: models.py:646
+#: models.py:619
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
 msgstr ""
 
-#: models.py:664
+#: models.py:637
 #, python-format
 msgid "Submission of message %s"
 msgstr ""
 
-#: models.py:709
+#: models.py:683
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
 msgstr ""
 
-#: models.py:711
+#: models.py:685
 msgid "recipients"
 msgstr ""
 
-#: models.py:716
+#: models.py:690
 msgid "publication date"
 msgstr ""
 
-#: models.py:720
+#: models.py:694
 msgid "publish"
 msgstr ""
 
-#: models.py:721
+#: models.py:695
 msgid "Publish in archive."
 msgstr ""
 
-#: models.py:725
+#: models.py:699
 msgid "prepared"
 msgstr ""
 
-#: models.py:729
+#: models.py:703
 msgid "sent"
 msgstr ""
 
-#: models.py:733
+#: models.py:707
 msgid "sending"
 msgstr ""
 

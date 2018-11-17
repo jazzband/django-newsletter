@@ -45,7 +45,7 @@ except:
 
 setup(
     name='django-newsletter',
-    version="0.7",
+    version="0.8b1",
     description=(
         'Django app for managing multiple mass-mailing lists with both '
         'plaintext as well as HTML templates (and pluggable WYSIWYG editors '
@@ -72,6 +72,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Utilities'
     ],
     test_suite='runtests.run_tests',
