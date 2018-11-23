@@ -3,6 +3,7 @@ import time
 import django
 
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
 from django.core.mail import EmailMultiAlternatives
@@ -51,6 +52,11 @@ class Newsletter(models.Model):
     send_html = models.BooleanField(
         default=True, verbose_name=_('send html'),
         help_text=_('Whether or not to send HTML versions of e-mails.')
+    )
+
+    groups = models.ManyToManyField(
+        Group, related_name='groups', verbose_name=_('Groups'),
+        blank=True
     )
 
     objects = models.Manager()
