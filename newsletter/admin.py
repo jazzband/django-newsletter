@@ -65,6 +65,16 @@ class NewsletterAdmin(admin.ModelAdmin):
     )
     prepopulated_fields = {'slug': ('title',)}
 
+    # filter queryset by user group
+    def get_queryset(self, request):
+        qs = super(NewsletterAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        newsqs = qs.filter(
+            groups__name__in=request.user.groups.values_list('name', flat=True)
+        )
+        return qs.filter(groups__isnull=True).union(newsqs)
+
     """ List extensions """
     def _admin_url(self, obj, model, text):
         url = reverse('admin:%s_%s_changelist' %
