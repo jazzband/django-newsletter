@@ -258,6 +258,27 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
     inlines = [ArticleInline, ]
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "newsletter" and not request.user.is_superuser :
+            newsqs = Newsletter.objects.filter(
+                groups__name__in=request.user.groups.values_list('name', flat=True)
+            )
+            nogroupsqs = Newsletter.objects.filter(groups__isnull=True)
+            kwargs["queryset"] = newsqs | nogroupsqs
+        return super(MessageAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+    # filter queryset by user group
+    def get_queryset(self, request):
+        qs = super(MessageAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        newsqs = Newsletter.objects.filter(
+            groups__name__in=request.user.groups.values_list('name', flat=True)
+        )
+        nogroupsqs = Newsletter.objects.filter(groups__isnull=True)
+        
+        return qs.filter(newsletter__in=(newsqs | nogroupsqs))
+
     """ List extensions """
     def admin_title(self, obj):
         return format_html('<a href="{}/">{}</a>', obj.id, obj.title)
