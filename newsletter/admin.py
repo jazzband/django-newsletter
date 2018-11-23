@@ -73,8 +73,9 @@ class NewsletterAdmin(admin.ModelAdmin):
         newsqs = qs.filter(
             groups__name__in=request.user.groups.values_list('name', flat=True)
         )
-        return qs.filter(groups__isnull=True).union(newsqs)
-
+        nogroupsqs = qs.filter(groups__isnull=True)
+        return newsqs | nogroupsqs
+    
     """ List extensions """
     def _admin_url(self, obj, model, text):
         url = reverse('admin:%s_%s_changelist' %
