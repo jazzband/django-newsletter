@@ -1,12 +1,7 @@
 from __future__ import unicode_literals
-
-import logging
-logger = logging.getLogger(__name__)
-
 import six
 
 from django.db import models
-
 from django.conf import settings
 from django.conf.urls import url
 
@@ -50,6 +45,9 @@ from .compat import get_context, reverse
 
 from .settings import newsletter_settings
 
+import logging
+logger = logging.getLogger(__name__)
+
 # Contsruct URL's for icons
 ICON_URLS = {
     'yes': '%snewsletter/admin/img/icon-yes.gif' % settings.STATIC_URL,
@@ -75,8 +73,9 @@ class NewsletterAdmin(admin.ModelAdmin):
         )
         nogroupsqs = qs.filter(groups__isnull=True)
         return newsqs | nogroupsqs
-    
+
     """ List extensions """
+
     def _admin_url(self, obj, model, text):
         url = reverse('admin:%s_%s_changelist' %
                       (model._meta.app_label, model._meta.model_name),
@@ -100,6 +99,7 @@ class NewsletterAdmin(admin.ModelAdmin):
 
 
 class NewsletterAdminLinkMixin(object):
+
     def admin_newsletter(self, obj):
         opts = Newsletter._meta
         newsletter = obj.newsletter
@@ -122,7 +122,37 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     save_as = True
     filter_horizontal = ('subscriptions',)
 
+    """ restrict access by newsletter groups """
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "message" and not request.user.is_superuser:
+            newsqs = Newsletter.objects.filter(
+                groups__name__in=request.user.groups.values_list(
+                    'name', flat=True)
+            )
+            nogroupsqs = Newsletter.objects.filter(groups__isnull=True)
+
+            kwargs["queryset"] = Message.objects.filter(
+                newsletter__in=(newsqs | nogroupsqs))
+        return super(SubmissionAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs)
+
+    # filter queryset by user group
+
+    def get_queryset(self, request):
+        qs = super(SubmissionAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        newsqs = Newsletter.objects.filter(
+            groups__name__in=request.user.groups.values_list('name', flat=True)
+        )
+        nogroupsqs = Newsletter.objects.filter(groups__isnull=True)
+        listMessages = Message.objects.filter(
+            newsletter__in=(newsqs | nogroupsqs))
+        return qs.filter(message__in=listMessages)
+
     """ List extensions """
+
     def admin_message(self, obj):
         return format_html('<a href="{}/">{}</a>', obj.id, obj.message.title)
     admin_message.short_description = _('submission')
@@ -173,6 +203,7 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     admin_status_text.short_description = _('Status')
 
     """ Views """
+
     def submit(self, request, object_id):
         submission = self._getobj(request, object_id)
 
@@ -192,6 +223,7 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         return HttpResponseRedirect(changelist_url)
 
     """ URLs """
+
     def get_urls(self):
         urls = super(SubmissionAdmin, self).get_urls()
 
@@ -258,14 +290,17 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
     inlines = [ArticleInline, ]
 
+    # show only newsletter for user's groups
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "newsletter" and not request.user.is_superuser :
+        if db_field.name == "newsletter" and not request.user.is_superuser:
             newsqs = Newsletter.objects.filter(
-                groups__name__in=request.user.groups.values_list('name', flat=True)
+                groups__name__in=request.user.groups.values_list(
+                    'name', flat=True)
             )
             nogroupsqs = Newsletter.objects.filter(groups__isnull=True)
             kwargs["queryset"] = newsqs | nogroupsqs
-        return super(MessageAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        return super(MessageAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs)
 
     # filter queryset by user group
     def get_queryset(self, request):
@@ -276,10 +311,11 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
             groups__name__in=request.user.groups.values_list('name', flat=True)
         )
         nogroupsqs = Newsletter.objects.filter(groups__isnull=True)
-        
+
         return qs.filter(newsletter__in=(newsqs | nogroupsqs))
 
     """ List extensions """
+
     def admin_title(self, obj):
         return format_html('<a href="{}/">{}</a>', obj.id, obj.title)
     admin_title.short_description = _('message')
@@ -291,6 +327,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     admin_preview.short_description = ''
 
     """ Views """
+
     def preview(self, request, object_id):
         return render(
             request,
@@ -352,6 +389,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         return HttpResponse(json, content_type='application/json')
 
     """ URLs """
+
     def get_urls(self):
         urls = super(MessageAdmin, self).get_urls()
 
@@ -398,7 +436,33 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     actions = ['make_subscribed', 'make_unsubscribed']
     exclude = ['unsubscribed']
 
+    """ restrict access by newsletter groups """
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "newsletter" and not request.user.is_superuser:
+            newsqs = Newsletter.objects.filter(
+                groups__name__in=request.user.groups.values_list(
+                    'name', flat=True)
+            )
+            nogroupsqs = Newsletter.objects.filter(groups__isnull=True)
+            kwargs["queryset"] = newsqs | nogroupsqs
+        return super(SubscriptionAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs)
+
+    # filter queryset by user group
+    def get_queryset(self, request):
+        qs = super(SubscriptionAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        newsqs = Newsletter.objects.filter(
+            groups__name__in=request.user.groups.values_list('name', flat=True)
+        )
+        nogroupsqs = Newsletter.objects.filter(groups__isnull=True)
+
+        return qs.filter(newsletter__in=(newsqs | nogroupsqs))
+
     """ List extensions """
+
     def admin_status(self, obj):
         img_tag = '<img src="{}" width="10" height="10" alt="{}"/>'
         alt_txt = self.admin_status_text(obj)
@@ -435,6 +499,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     admin_unsubscribe_date.short_description = _("unsubscribe date")
 
     """ Actions """
+
     def make_subscribed(self, request, queryset):
         rows_updated = queryset.update(subscribed=True)
         self.message_user(
@@ -460,6 +525,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     make_unsubscribed.short_description = _("Unsubscribe selected users")
 
     """ Views """
+
     def subscribers_import(self, request):
         if not request.user.has_perm('newsletter.add_subscription'):
             raise PermissionDenied()
@@ -533,6 +599,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         )
 
     """ URLs """
+
     def get_urls(self):
         urls = super(SubscriptionAdmin, self).get_urls()
 
@@ -548,13 +615,14 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         # only used in this part of the admin. For now, leave them here.
         if HAS_CBV_JSCAT:
             my_urls.append(url(r'^jsi18n/$',
-                JavaScriptCatalog.as_view(packages=('newsletter',)),
-                name='newsletter_js18n'))
+                               JavaScriptCatalog.as_view(
+                                   packages=('newsletter',)),
+                               name='newsletter_js18n'))
         else:
             my_urls.append(url(r'^jsi18n/$',
-                javascript_catalog,
-                {'packages': ('newsletter',)},
-                name='newsletter_js18n'))
+                               javascript_catalog,
+                               {'packages': ('newsletter',)},
+                               name='newsletter_js18n'))
 
         return my_urls + urls
 
