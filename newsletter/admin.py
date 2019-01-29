@@ -124,6 +124,11 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
     """ restrict access by newsletter groups """
 
+    def get_form(self, request, *args, **kwargs):
+        form = super(SubmissionAdmin, self).get_form(request, *args, **kwargs)
+        form.current_user = request.user
+        return form
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "message" and not request.user.is_superuser:
             newsqs = Newsletter.objects.filter(
