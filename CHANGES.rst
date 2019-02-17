@@ -1,6 +1,22 @@
 Changes
 =======
 
+0.8b1 (17-11-2018)
+------------------
+
+- Django 2.1 support (#257).
+- Python 3.7 support (#256).
+
+0.7 (13-07-2018)
+------------------
+
+- Fixed security issue allowing subscription without confirmation (#108).
+- Updated locales (ar, de).
+- Proper default Newsletter for Message, fixes #224.
+- Instructions for embedding a sign-up form (#250).
+- Migration issue with Django 2.0 (#254).
+- Miscellaneous documentation improvements.
+
 0.7b2 (25-03-2018)
 ------------------
 

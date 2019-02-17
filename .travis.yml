@@ -9,9 +9,9 @@ python:
   - 3.6
 
 env:
-  - DJANGO="Django<1.9"  # Django 1.8.x
-  - DJANGO="Django<1.12" # Django 1.11.x
-  - DJANGO="Django<2.1" # Django 2.0.x
+  - DJANGO="Django<1.12"    # Django 1.11.x
+  - DJANGO="Django<2.1"     # Django 2.0.x
+  - DJANGO="Django<2.2"     # Django 2.1.x LTS
 
 cache:
   directories:
@@ -20,10 +20,25 @@ cache:
 matrix:
   exclude:
     # Only supported Python/Django combinations
+    - env: DJANGO="Django<1.12"
+      python: 3.7
     - env: DJANGO="Django<2.1"
       python: 2.7
-    - env: DJANGO="Django<1.9"
-      python: 3.6
+    - env: DJANGO="Django<2.2"
+      python: 2.7
+    - env: DJANGO="Django<2.2"
+      python: 3.4
+  include:
+    # Travis workaround for Python 3.7 support.
+    # https://github.com/travis-ci/travis-ci/issues/9069#issuecomment-425720905
+    - python: 3.7
+      sudo: required
+      dist: xenial
+      env: DJANGO="Django<2.1"
+    - python: 3.7
+      sudo: required
+      dist: xenial
+      env: DJANGO="Django<2.2"
 
 # command to install dependencies
 install:

@@ -1,7 +1,3 @@
-# Python 2.5 compatibility
-# Get the with statement from the future
-from __future__ import with_statement
-
 from datetime import datetime, timedelta
 
 import time
@@ -520,6 +516,9 @@ class AnonymousSubscribeTestCase(
     ComparingTestCase
 ):
 
+    testname = 'Test Subscriber'
+    testemail = 'test@email.com'
+
     def get_only_subscription(self, **kwargs):
         """
         Assert there's exactly one subscription that match kwargs lookup.
@@ -550,8 +549,8 @@ class AnonymousSubscribeTestCase(
 
         response = self.client.post(
             self.subscribe_url, {
-                'name_field': 'Test Name',
-                'email_field': 'test@email.com'
+                'name_field': self.testname,
+                'email_field': self.testemail
             }
         )
 
@@ -559,7 +558,7 @@ class AnonymousSubscribeTestCase(
         self.assertRedirects(response, self.subscribe_email_sent_url)
 
         subscription = self.get_only_subscription(
-            email_field__exact='test@email.com'
+            email_field__exact=self.testemail
         )
 
         self.assertFalse(subscription.subscribed)
@@ -579,7 +578,7 @@ class AnonymousSubscribeTestCase(
 
         response = self.client.post(
             self.subscribe_url, {
-                'name_field': 'Test Name',
+                'name_field': self.testname,
                 'email_field': ''
             }
         )
@@ -598,7 +597,7 @@ class AnonymousSubscribeTestCase(
 
         response = self.client.post(
             self.subscribe_url, {
-                'name_field': 'Test Name',
+                'name_field': self.testname,
                 'email_field': user.email
             }
         )
@@ -616,8 +615,8 @@ class AnonymousSubscribeTestCase(
 
         response = self.client.post(
             self.subscribe_url, {
-                'name_field': 'Test Name',
-                'email_field': 'test@email.com'
+                'name_field': self.testname,
+                'email_field': self.testemail
             }
         )
 
@@ -625,7 +624,7 @@ class AnonymousSubscribeTestCase(
         self.assertRedirects(response, self.subscribe_activated_url)
 
         subscription = self.get_only_subscription(
-            email_field__exact='test@email.com'
+            email_field__exact=self.testemail
         )
 
         # email confirmation is switched off,
@@ -654,7 +653,7 @@ class AnonymousSubscribeTestCase(
             with patch_logger('newsletter.views', 'error') as messages:
                 response = self.client.post(
                     self.subscribe_url, {
-                        'name_field': 'Test Name',
+                        'name_field': self.testname,
                         'email_field': 'test@ifjoidjsufhdsidhsuufihs.dfs'
                     }
                 )
@@ -677,8 +676,8 @@ class AnonymousSubscribeTestCase(
         # Request subscription
         self.client.post(
             self.subscribe_url, {
-                'name_field': 'Test Name',
-                'email_field': 'test@email.com'
+                'name_field': self.testname,
+                'email_field': self.testemail
             }
         )
 
@@ -687,8 +686,8 @@ class AnonymousSubscribeTestCase(
         # Request subscription
         self.client.post(
             self.subscribe_url, {
-                'name_field': 'Test Name',
-                'email_field': 'test@email.com'
+                'name_field': self.testname,
+                'email_field': self.testemail
             }
         )
 
@@ -698,15 +697,15 @@ class AnonymousSubscribeTestCase(
         """ Subscribing twice should not be possible. """
 
         subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com',
+                                    name=self.testname,
+                                    email=self.testemail,
                                     subscribed=True)
         subscription.save()
 
         response = self.client.post(
             self.subscribe_url, {
-                'name_field': 'Test Name',
-                'email_field': 'test@email.com'
+                'name_field': self.testname,
+                'email_field': self.testemail
             }
         )
 
@@ -723,8 +722,8 @@ class AnonymousSubscribeTestCase(
 
         # Create a subscription
         subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com',
+                                    name=self.testname,
+                                    email=self.testemail,
                                     subscribed=True)
         subscription.save()
 
@@ -742,7 +741,7 @@ class AnonymousSubscribeTestCase(
         self.assertRedirects(response, self.unsubscribe_activated_url)
 
         subscription = self.get_only_subscription(
-            email_field__exact='test@email.com'
+            email_field__exact=self.testemail
         )
 
         self.assertFalse(subscription.subscribed)
@@ -777,7 +776,7 @@ class AnonymousSubscribeTestCase(
         self.assertRedirects(response, self.subscribe_activated_url)
 
         subscription = self.get_only_subscription(
-            email_field__exact='test@email.com'
+            email_field__exact=self.testemail
         )
 
         self.assertTrue(subscription.subscribed)
@@ -799,7 +798,7 @@ class AnonymousSubscribeTestCase(
         for url in (self.subscribe_url, self.update_url, self.unsubscribe_url):
             response = self.client.post(
                 url, {
-                    'name_field': 'Test Name',
+                    'name_field': self.testname,
                     'email_field': user.email
                 }
             )
@@ -814,8 +813,8 @@ class AnonymousSubscribeTestCase(
         """ Test subscription activation. """
 
         subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com')
+                                    name=self.testname,
+                                    email=self.testemail)
         subscription.save()
 
         time.sleep(WAIT_TIME)
@@ -832,7 +831,7 @@ class AnonymousSubscribeTestCase(
         response = self.client.post(
             activate_url, {
                 'name_field': 'Test Name',
-                'email_field': 'test@email.com',
+                'email_field': self.testemail,
                 'user_activation_code': subscription.activation_code
             }
         )
@@ -841,7 +840,7 @@ class AnonymousSubscribeTestCase(
         self.assertRedirects(response, self.subscribe_activated_url)
 
         subscription = self.get_only_subscription(
-            email_field__exact='test@email.com'
+            email_field__exact=self.testemail
         )
 
         self.assertTrue(subscription.subscribed)
@@ -850,18 +849,51 @@ class AnonymousSubscribeTestCase(
         dt = (subscription.subscribe_date - subscription.create_date).seconds
         self.assertBetween(dt, WAIT_TIME, WAIT_TIME + 1)
 
+    def test_subscribe_request_activate_form_loophole(self):
+        """
+        Prevent updating to unconfirmed email address. (#108)
+        """
+
+        subscription = Subscription(newsletter=self.n,
+                                    name=self.testname,
+                                    email=self.testemail)
+        subscription.save()
+
+        activate_url = subscription.subscribe_activate_url()
+
+        response = self.client.get(activate_url)
+        self.assertInContext(response, 'form', UpdateForm)
+        self.assertContains(response, subscription.activation_code)
+
+        testname2 = 'Test Name2'
+        testemail2 = 'test2@email.com'
+        response = self.client.post(activate_url, {
+            'name_field': testname2,
+            'email_field': testemail2,
+            'user_activation_code': subscription.activation_code
+        })
+
+        # Assure we are redirected to "update activated" page.
+        self.assertRedirects(response, self.subscribe_activated_url)
+
+        subscription = Subscription.objects.get(pk=subscription.pk)
+
+        self.assertTrue(subscription)
+        self.assertTrue(subscription.subscribed)
+        self.assertEqual(subscription.email, self.testemail)
+
     @override_settings(NEWSLETTER_CONFIRM_EMAIL_UNSUBSCRIBE=True)
     def test_unsubscribe_request_post(self):
         """ Post the unsubscribe request form. """
 
         subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com',
+                                    name=self.testname,
+                                    email=self.testemail,
                                     subscribed=True)
         subscription.save()
 
         response = self.client.post(
-            self.unsubscribe_url, {'email_field': 'test@email.com'}
+            self.unsubscribe_url, {'email_field': self.testemail}
         )
 
         # Assure we are redirected to "unsubscribe activation email sent" page.
@@ -883,20 +915,20 @@ class AnonymousSubscribeTestCase(
         """
 
         subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com',
+                                    name=self.testname,
+                                    email=self.testemail,
                                     subscribed=True)
         subscription.save()
 
         response = self.client.post(
-            self.unsubscribe_url, {'email_field': 'test@email.com'}
+            self.unsubscribe_url, {'email_field': self.testemail}
         )
 
         # Assure we are redirected to "unsubscribe activated" page.
         self.assertRedirects(response, self.unsubscribe_activated_url)
 
         changed_subscription = self.get_only_subscription(
-            email_field__exact='test@email.com'
+            email_field__exact=self.testemail
         )
 
         # email confirmation is switched off,
@@ -918,8 +950,8 @@ class AnonymousSubscribeTestCase(
         we know pretty sure is bound to fail.
         """
         subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com',
+                                    name=self.testname,
+                                    email=self.testemail,
                                     subscribed=True)
         subscription.save()
 
@@ -928,7 +960,7 @@ class AnonymousSubscribeTestCase(
         ):
             with patch_logger('newsletter.views', 'error') as messages:
                 response = self.client.post(
-                    self.unsubscribe_url, {'email_field': 'test@email.com'}
+                    self.unsubscribe_url, {'email_field': self.testemail}
                 )
             self.assertEqual(len(messages), 1)
             self.assertIn("Connection refused", messages[0])
@@ -949,8 +981,8 @@ class AnonymousSubscribeTestCase(
         """ Update a request. """
 
         subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com')
+                                    name=self.testname,
+                                    email=self.testemail)
         subscription.save()
 
         activate_url = subscription.unsubscribe_activate_url()
@@ -960,10 +992,8 @@ class AnonymousSubscribeTestCase(
         self.assertContains(response, subscription.activation_code)
 
         testname2 = 'Test Name2'
-        testemail2 = 'test2@email.com'
         response = self.client.post(activate_url, {
             'name_field': testname2,
-            'email_field': testemail2,
             'user_activation_code': subscription.activation_code
         })
 
@@ -971,12 +1001,12 @@ class AnonymousSubscribeTestCase(
         self.assertRedirects(response, self.unsubscribe_activated_url)
 
         subscription = self.get_only_subscription(
-            email_field__exact=testemail2
+            email_field__exact=self.testemail
         )
 
         self.assertTrue(subscription.unsubscribed)
         self.assertEqual(subscription.name, testname2)
-        self.assertEqual(subscription.email, testemail2)
+        self.assertEqual(subscription.email, self.testemail)
 
         dt = (timezone.now() - subscription.unsubscribe_date).seconds
         self.assertLessThan(dt, 2)
@@ -996,13 +1026,13 @@ class AnonymousSubscribeTestCase(
         """ Test the update request post view. """
 
         subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com',
+                                    name=self.testname,
+                                    email=self.testemail,
                                     subscribed=True)
         subscription.save()
 
         response = self.client.post(
-            self.update_url, {'email_field': 'test@email.com'}
+            self.update_url, {'email_field': self.testemail}
         )
 
         # Assure we are redirected to "update activation email sent" page.
@@ -1056,13 +1086,13 @@ class AnonymousSubscribeTestCase(
         """
 
         subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com',
+                                    name=self.testname,
+                                    email=self.testemail,
                                     subscribed=True)
         subscription.save()
 
         response = self.client.post(
-            self.update_url, {'email_field': 'test@email.com'}
+            self.update_url, {'email_field': self.testemail}
         )
 
         self.assertRedirects(response, subscription.update_activate_url())
@@ -1081,8 +1111,8 @@ class AnonymousSubscribeTestCase(
         we know pretty sure is bound to fail.
         """
         subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com',
+                                    name=self.testname,
+                                    email=self.testemail,
                                     subscribed=True)
         subscription.save()
 
@@ -1090,10 +1120,9 @@ class AnonymousSubscribeTestCase(
             EMAIL_BACKEND='tests.utils.FailingEmailBackend'
         ):
 
-
             with patch_logger('newsletter.views', 'error') as messages:
                 response = self.client.post(
-                    self.update_url, {'email_field': 'test@email.com'}
+                    self.update_url, {'email_field': self.testemail}
                 )
             self.assertEqual(len(messages), 1)
             self.assertIn("Connection refused", messages[0])
@@ -1104,14 +1133,14 @@ class AnonymousSubscribeTestCase(
         """ Test updating unsubscribed subscriptions view. """
 
         subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com',
+                                    name=self.testname,
+                                    email=self.testemail,
                                     subscribed=False)
         subscription.save()
 
         for url in (self.update_url, self.unsubscribe_url):
             response = self.client.post(
-                url, {'email_field': 'test@email.com'}
+                url, {'email_field': self.testemail}
             )
 
             self.assertContains(
@@ -1135,8 +1164,64 @@ class AnonymousSubscribeTestCase(
         """ Update a request. """
 
         subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com')
+                                    name=self.testname,
+                                    email=self.testemail)
+        subscription.save()
+
+        activate_url = subscription.update_activate_url()
+
+        response = self.client.get(activate_url)
+        self.assertInContext(response, 'form', UpdateForm)
+        self.assertContains(response, subscription.activation_code)
+
+        testname2 = 'Test Name2'
+        response = self.client.post(activate_url, {
+            'name_field': testname2,
+            'user_activation_code': subscription.activation_code
+        })
+
+        # Assure we are redirected to "update activated" page.
+        self.assertRedirects(response, self.update_activated_url)
+
+        subscription = self.get_only_subscription(
+            email_field__exact=self.testemail
+        )
+
+        self.assertTrue(subscription)
+        self.assertTrue(subscription.subscribed)
+        self.assertEqual(subscription.name, testname2)
+        self.assertEqual(subscription.email, self.testemail)
+
+    def test_update_request_activate_form(self):
+        """
+        Test requesting a form for activating an update without activation
+        code in the URL.
+        """
+
+        subscription = Subscription(newsletter=self.n,
+                                    name=self.testname,
+                                    email=self.testemail)
+        subscription.save()
+
+        activate_url = reverse('newsletter_update', kwargs={
+            'newsletter_slug': self.n.slug,
+            'action': 'update',
+            'email': subscription.email
+        })
+
+        response = self.client.get(activate_url)
+
+        # Make sure the form is there
+        self.assertInContext(response, 'form', UpdateForm)
+
+    def test_update_request_activate_form_loophole(self):
+        """
+        Prevent updating to unconfirmed email address. (#108)
+        """
+
+        subscription = Subscription(newsletter=self.n,
+                                    name=self.testname,
+                                    email=self.testemail)
         subscription.save()
 
         activate_url = subscription.update_activate_url()
@@ -1156,36 +1241,11 @@ class AnonymousSubscribeTestCase(
         # Assure we are redirected to "update activated" page.
         self.assertRedirects(response, self.update_activated_url)
 
-        subscription = self.get_only_subscription(
-            email_field__exact=testemail2
-        )
+        subscription = Subscription.objects.get(pk=subscription.pk)
 
         self.assertTrue(subscription)
         self.assertTrue(subscription.subscribed)
-        self.assertEqual(subscription.name, testname2)
-        self.assertEqual(subscription.email, testemail2)
-
-    def test_update_request_activate_form(self):
-        """
-        Test requesting a form for activating an update without activation
-        code in the URL.
-        """
-
-        subscription = Subscription(newsletter=self.n,
-                                    name='Test Name',
-                                    email='test@email.com')
-        subscription.save()
-
-        activate_url = reverse('newsletter_update', kwargs={
-            'newsletter_slug': self.n.slug,
-            'action': 'update',
-            'email': subscription.email
-        })
-
-        response = self.client.get(activate_url)
-
-        # Make sure the form is there
-        self.assertInContext(response, 'form', UpdateForm)
+        self.assertEqual(subscription.email, self.testemail)
 
 
 class InvisibleAnonymousSubscribeTestCase(AnonymousSubscribeTestCase):

@@ -14,6 +14,7 @@ the admin interface.
    :maxdepth: 2
 
    installation
+   settings
    usage
    templates
    reference

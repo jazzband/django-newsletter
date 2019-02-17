@@ -40,7 +40,9 @@ class SubscribeRequestForm(NewsletterForm):
     subscription.
     """
 
-    email_field = forms.EmailField(label=_("e-mail"), validators=[validate_email_nouser])
+    email_field = forms.EmailField(
+        label=_("e-mail"), validators=[validate_email_nouser]
+    )
 
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
@@ -73,7 +75,9 @@ class UpdateRequestForm(NewsletterForm):
     email being sent.
     """
 
-    email_field = forms.EmailField(label=_("e-mail"), validators=[validate_email_nouser])
+    email_field = forms.EmailField(
+        label=_("e-mail"), validators=[validate_email_nouser]
+    )
 
     class Meta(NewsletterForm.Meta):
         fields = ('email_field',)
@@ -125,6 +129,11 @@ class UpdateForm(NewsletterForm):
     This form allows one to actually update to or unsubscribe from the
     newsletter. To do this, a correct activation code is required.
     """
+
+    email_field = forms.EmailField(
+        label=_("e-mail"), validators=[validate_email_nouser], disabled=True
+    )
+
     def clean_user_activation_code(self):
         data = self.cleaned_data['user_activation_code']
 
