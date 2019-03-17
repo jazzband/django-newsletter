@@ -639,3 +639,19 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
             context=context,
             **response_kwargs
         )
+
+    def _get_allow_future(self):
+        """
+        BaseDateDetailView does a comparison of the date an object
+        was created with
+            from django.utils.timezone import now
+        and
+            datetime.date.today()
+
+        These will be wrong at some times of the day, depending on timzeone
+
+        This is here if needed, but won't be used.
+        :return:
+        """
+        return True
+
