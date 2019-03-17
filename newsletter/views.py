@@ -260,7 +260,7 @@ class ActionFormView(NewsletterMixin, ActionMixin, FormView):
 
     def get_url_from_viewname(self, viewname):
         """
-        Return url for given `viename`
+        Return url for given `viewname`
         and associated with this view newsletter and action.
         """
 
