@@ -733,7 +733,7 @@ class AnonymousSubscribeTestCase(
             {
                 'name_field': subscription.name,
                 'email_field': subscription.email,
-                'user_activation_code': subscription.activation_code
+                'user_activation_code': subscription.get_activation_code()
             }
         )
 
@@ -768,7 +768,7 @@ class AnonymousSubscribeTestCase(
             {
                 'name_field': subscription.name,
                 'email_field': subscription.email,
-                'user_activation_code': subscription.activation_code
+                'user_activation_code': subscription.get_activation_code()
             }
         )
 
@@ -826,13 +826,13 @@ class AnonymousSubscribeTestCase(
 
         response = self.client.get(activate_url)
         self.assertInContext(response, 'form', UpdateForm)
-        self.assertContains(response, subscription.activation_code)
+        self.assertContains(response, subscription.get_activation_code())
 
         response = self.client.post(
             activate_url, {
                 'name_field': 'Test Name',
                 'email_field': self.testemail,
-                'user_activation_code': subscription.activation_code
+                'user_activation_code': subscription.get_activation_code()
             }
         )
 
@@ -863,14 +863,14 @@ class AnonymousSubscribeTestCase(
 
         response = self.client.get(activate_url)
         self.assertInContext(response, 'form', UpdateForm)
-        self.assertContains(response, subscription.activation_code)
+        self.assertContains(response, subscription.get_activation_code())
 
         testname2 = 'Test Name2'
         testemail2 = 'test2@email.com'
         response = self.client.post(activate_url, {
             'name_field': testname2,
             'email_field': testemail2,
-            'user_activation_code': subscription.activation_code
+            'user_activation_code': subscription.get_activation_code()
         })
 
         # Assure we are redirected to "update activated" page.
@@ -989,12 +989,12 @@ class AnonymousSubscribeTestCase(
 
         response = self.client.get(activate_url)
         self.assertInContext(response, 'form', UpdateForm)
-        self.assertContains(response, subscription.activation_code)
+        self.assertContains(response, subscription.get_activation_code())
 
         testname2 = 'Test Name2'
         response = self.client.post(activate_url, {
             'name_field': testname2,
-            'user_activation_code': subscription.activation_code
+            'user_activation_code': subscription.get_activation_code()
         })
 
         # Assure we are redirected to "unsubscribe activated" page.
@@ -1172,12 +1172,12 @@ class AnonymousSubscribeTestCase(
 
         response = self.client.get(activate_url)
         self.assertInContext(response, 'form', UpdateForm)
-        self.assertContains(response, subscription.activation_code)
+        self.assertContains(response, subscription.get_activation_code())
 
         testname2 = 'Test Name2'
         response = self.client.post(activate_url, {
             'name_field': testname2,
-            'user_activation_code': subscription.activation_code
+            'user_activation_code': subscription.get_activation_code()
         })
 
         # Assure we are redirected to "update activated" page.
@@ -1228,14 +1228,14 @@ class AnonymousSubscribeTestCase(
 
         response = self.client.get(activate_url)
         self.assertInContext(response, 'form', UpdateForm)
-        self.assertContains(response, subscription.activation_code)
+        self.assertContains(response, subscription.get_activation_code())
 
         testname2 = 'Test Name2'
         testemail2 = 'test2@email.com'
         response = self.client.post(activate_url, {
             'name_field': testname2,
             'email_field': testemail2,
-            'user_activation_code': subscription.activation_code
+            'user_activation_code': subscription.get_activation_code()
         })
 
         # Assure we are redirected to "update activated" page.

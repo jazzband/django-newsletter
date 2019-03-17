@@ -360,7 +360,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         'user__email'
     )
     readonly_fields = (
-        'ip', 'subscribe_date', 'unsubscribe_date', 'activation_code'
+        'ip', 'subscribe_date', 'unsubscribe_date', 'activation_code', 'activation_uuid',
     )
     date_hierarchy = 'subscribe_date'
     actions = ['make_subscribed', 'make_unsubscribed']

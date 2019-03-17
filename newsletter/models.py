@@ -1,4 +1,5 @@
 import logging
+import uuid
 import time
 import django
 
@@ -20,7 +21,7 @@ from distutils.version import LooseVersion
 
 from .compat import get_context, reverse
 from .utils import (
-    make_activation_code, get_default_sites, ACTIONS
+    get_default_sites, ACTIONS
 )
 
 logger = logging.getLogger(__name__)
@@ -283,10 +284,42 @@ class Subscription(models.Model):
 
     create_date = models.DateTimeField(editable=False, default=now)
 
+    #
     activation_code = models.CharField(
-        verbose_name=_('activation code'), max_length=40,
-        default=make_activation_code
+        verbose_name=_('activation code legacy'), max_length=40,
+        blank=True,
     )
+
+    activation_uuid = models.UUIDField(
+        verbose_name=_('activation code'),
+        default=uuid.uuid4
+    )
+
+    def get_activation_code(self):
+        return self.activation_code or self.activation_uuid
+
+    def valid_activation(self, data):
+        """
+        Compare the data to legacy or new activation code.
+
+        If legacy code is not blank, we compare against that first, othersise
+        use the uuid.
+
+        If the data is not a UUID, we will attempt to coerce it. If that fails,
+        we will return false
+        """
+        if self.activation_code:
+            # Legacy code is set, use that
+            return data == self.activation_code
+
+        #
+        if not isinstance(data, uuid.UUID):
+            try:
+                data = uuid.UUID(data)
+            except ValueError:
+                return False
+
+        return data == self.activation_uuid
 
     subscribed = models.BooleanField(
         default=False, verbose_name=_('subscribed'), db_index=True
@@ -363,7 +396,7 @@ class Subscription(models.Model):
         logger.debug(
             u'Activation email sent for action "%(action)s" to %(subscriber)s '
             u'with activation code "%(action_code)s".', {
-                'action_code': self.activation_code,
+                'action_code': self.get_activation_code(),
                 'action': action,
                 'subscriber': self
             }
@@ -374,7 +407,7 @@ class Subscription(models.Model):
             'newsletter_slug': self.newsletter.slug,
             'email': self.email,
             'action': 'subscribe',
-            'activation_code': self.activation_code
+            'activation_code': self.get_activation_code()
         })
 
     def unsubscribe_activate_url(self):
@@ -382,7 +415,7 @@ class Subscription(models.Model):
             'newsletter_slug': self.newsletter.slug,
             'email': self.email,
             'action': 'unsubscribe',
-            'activation_code': self.activation_code
+            'activation_code': self.get_activation_code()
         })
 
     def update_activate_url(self):
@@ -390,7 +423,7 @@ class Subscription(models.Model):
             'newsletter_slug': self.newsletter.slug,
             'email': self.email,
             'action': 'update',
-            'activation_code': self.activation_code
+            'activation_code': self.get_activation_code()
         })
 
 
