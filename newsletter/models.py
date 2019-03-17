@@ -403,25 +403,22 @@ class Subscription(models.Model):
         )
 
     def subscribe_activate_url(self):
-        return reverse('newsletter_update_activate', kwargs={
+        return reverse('newsletter_update_activate_uuid', kwargs={
             'newsletter_slug': self.newsletter.slug,
-            'email': self.email,
             'action': 'subscribe',
             'activation_code': self.get_activation_code()
         })
 
     def unsubscribe_activate_url(self):
-        return reverse('newsletter_update_activate', kwargs={
+        return reverse('newsletter_update_activate_uuid', kwargs={
             'newsletter_slug': self.newsletter.slug,
-            'email': self.email,
             'action': 'unsubscribe',
             'activation_code': self.get_activation_code()
         })
 
     def update_activate_url(self):
-        return reverse('newsletter_update_activate', kwargs={
+        return reverse('newsletter_update_activate_uuid', kwargs={
             'newsletter_slug': self.newsletter.slug,
-            'email': self.email,
             'action': 'update',
             'activation_code': self.get_activation_code()
         })

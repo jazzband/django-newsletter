@@ -2,6 +2,7 @@ import logging
 
 import datetime
 import socket
+import uuid
 
 from smtplib import SMTPException
 
@@ -494,16 +495,29 @@ class UpdateSubscriptionView(ActionFormView):
         Add email, subscription and activation_code
         to instance attributes.
         """
-        assert 'email' in kwargs
 
         super(UpdateSubscriptionView, self).process_url_data(*args, **kwargs)
 
-        self.subscription = get_object_or_404(
-            Subscription, newsletter=self.newsletter,
-            email_field__exact=kwargs['email']
-        )
-        # activation_code is optional kwarg which defaults to None
+        # If activation code is a valid UUID, search using that code
         self.activation_code = kwargs.get('activation_code')
+        try:
+            code_uuid = uuid.UUID(self.activation_code)
+            self.subscription = get_object_or_404(
+                Subscription, newsletter=self.newsletter,
+                activation_uuid=code_uuid
+            )
+
+        except (TypeError, ValueError)as e:
+            # Code isn't a valid uuid, so use email
+            if 'email' in kwargs:
+                self.subscription = get_object_or_404(
+                    Subscription, newsletter=self.newsletter,
+                    email_field__exact=kwargs['email']
+                )
+            else:
+                raise Http404(ugettext(
+                    'Confirmation not found'
+                ))
 
     def get_initial(self):
         """ Returns the initial data to use for forms on this view. """

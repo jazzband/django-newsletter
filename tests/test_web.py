@@ -1196,6 +1196,8 @@ class AnonymousSubscribeTestCase(
         """
         Test requesting a form for activating an update without activation
         code in the URL.
+
+        NOTE: This is no longer valid, code is required.
         """
 
         subscription = Subscription(newsletter=self.n,
@@ -1203,10 +1205,10 @@ class AnonymousSubscribeTestCase(
                                     email=self.testemail)
         subscription.save()
 
-        activate_url = reverse('newsletter_update', kwargs={
+        activate_url = reverse('newsletter_update_activate_uuid', kwargs={
             'newsletter_slug': self.n.slug,
+            'activation_code': subscription.get_activation_code(),
             'action': 'update',
-            'email': subscription.email
         })
 
         response = self.client.get(activate_url)
