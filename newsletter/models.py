@@ -715,7 +715,8 @@ def get_address(name, email):
         name = name.encode('ascii', 'ignore').decode('ascii').strip()
     if name:
         name = name.replace('@', '')\
-                   .replace(',', '')
+                   .replace(',', '')\
+                   .replace(';', '')
         return u'%s <%s>' % (name, email)
     else:
         return u'%s' % email
