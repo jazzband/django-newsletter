@@ -714,6 +714,9 @@ def get_address(name, email):
     if LooseVersion(django.get_version()) < LooseVersion('1.9'):
         name = name.encode('ascii', 'ignore').decode('ascii').strip()
     if name:
+        name = name.replace('@', '') \
+                   .replace(',', '') \
+                   .replace(';', '')
         return u'%s <%s>' % (name, email)
     else:
         return u'%s' % email
