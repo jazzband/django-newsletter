@@ -7,7 +7,7 @@
 </title>
 </head>
 <body>
-{% blocktrans with name=subscription.name title=newsletter.title domain=site.domain url=subscription.subscribe_activate_url %}Dear {{ name }},
+{% blocktrans with name=subscription.name title=newsletter.title domain=site.domain url=subscription.subscribe_activate_url %}Dear {{ name|default:"Sir/Madam" }},
 
 you, or someone in your name requested a subscription to {{ title }}.
 

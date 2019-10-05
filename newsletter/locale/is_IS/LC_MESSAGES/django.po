@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # ebergmundur <einar@nature.is>, 2014
 # dokterbob <mathijs@mathijsfietst.nl>, 2016
@@ -9,14 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-05 17:58+0100\n"
+"POT-Creation-Date: 2019-10-05 19:58+0300\n"
 "PO-Revision-Date: 2016-02-02 13:35+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
-"Language-Team: Icelandic (Iceland) (http://www.transifex.com/dokterbob/django-newsletter/language/is_IS/)\n"
+"Language-Team: Icelandic (Iceland) (http://www.transifex.com/dokterbob/"
+"django-newsletter/language/is_IS/)\n"
+"Language: is_IS\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: is_IS\n"
 "Plural-Forms: nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);\n"
 
 #: addressimport/parsers.py:40
@@ -46,7 +47,7 @@ msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
 msgstr "Nafn %(name)s of langt, hámark %(name_length)s bókstafir."
 
 #: addressimport/parsers.py:196 addressimport/parsers.py:208
-#: addressimport/parsers.py:243 models.py:162
+#: addressimport/parsers.py:243 models.py:147
 msgid "name"
 msgstr "nafn"
 
@@ -62,7 +63,8 @@ msgid ""
 msgstr "Nafnadálkur finnst ekki. Heiti dálksins ætti að vera 'name' eða '%s'."
 
 #: addressimport/parsers.py:219 addressimport/parsers.py:231
-#: addressimport/parsers.py:244 models.py:37 models.py:176
+#: addressimport/parsers.py:244 forms.py:44 forms.py:79 forms.py:134
+#: models.py:41 models.py:161
 msgid "e-mail"
 msgstr "netfang"
 
@@ -71,7 +73,9 @@ msgstr "netfang"
 msgid ""
 "E-mail column not found. The name of this column should be either 'email', "
 "'e-mail' or '%(email)s'."
-msgstr "Netfangadálkur fannst ekki. Dálkurinn ætti að heita 'email', 'e-mail' eða '%(email)s'."
+msgstr ""
+"Netfangadálkur fannst ekki. Dálkurinn ætti að heita 'email', 'e-mail' eða "
+"'%(email)s'."
 
 #: addressimport/parsers.py:239
 #, python-format
@@ -79,165 +83,173 @@ msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
 "'%(e-mail)s'."
-msgstr "Gat ekki skilgreint dálka CVS skjalsins með vissu. Það ætti að vera dálkur sem heitir 'name' eða '%(name)s' og annar kallaður 'e-mail' eða '%(e-mail)s'."
+msgstr ""
+"Gat ekki skilgreint dálka CVS skjalsins með vissu. Það ætti að vera dálkur "
+"sem heitir 'name' eða '%(name)s' og annar kallaður 'e-mail' eða '%(e-mail)s'."
 
-#: addressimport/parsers.py:262
+#: addressimport/parsers.py:264
 #, python-format
 msgid "Row with content '%(row)s' does not contain a name and email field."
 msgstr "Færsla með '%(row)s' inniheldur ekki nafn né netfang."
 
-#: addressimport/parsers.py:288
+#: addressimport/parsers.py:290
 #, python-format
 msgid "Error reading vCard file: %s"
 msgstr "Villa við lestur vCars skrár: %s"
 
-#: addressimport/parsers.py:307
+#: addressimport/parsers.py:309
 #, python-format
 msgid "Entry '%s' contains no email address."
 msgstr "Færsla '%s' inniheldur ekki netfang."
 
-#: addressimport/parsers.py:343
+#: addressimport/parsers.py:345
 msgid "Some entries have no e-mail address."
 msgstr "Sumar færslur hafa engin netföng."
 
-#: admin.py:63
+#: admin.py:79
 msgid "Messages"
 msgstr "Skilaboð"
 
-#: admin.py:71
+#: admin.py:83
 #: templates/admin/newsletter/subscription/confirmimportform.html:16
 #: templates/admin/newsletter/subscription/importform.html:16
 msgid "Subscriptions"
 msgstr "Áskriftir"
 
-#: admin.py:77
+#: admin.py:87
 msgid "Submissions"
 msgstr "Sendingar"
 
-#: admin.py:97 models.py:537
-msgid "submission"
-msgstr "sendingar"
-
-#: admin.py:104 admin.py:247 admin.py:365 models.py:100 models.py:296
-#: models.py:487 models.py:665
+#: admin.py:99 models.py:104 models.py:281 models.py:458 models.py:673
 msgid "newsletter"
 msgstr "fréttabréf"
 
-#: admin.py:112
+#: admin.py:117 models.py:528
+msgid "submission"
+msgstr "sendingar"
+
+#: admin.py:124
 msgid "publish date"
 msgstr "dagsetning birtingar"
 
-#: admin.py:138
+#: admin.py:154
 msgid "Sent."
 msgstr "Sent."
 
-#: admin.py:141
+#: admin.py:157
 msgid "Delayed submission."
 msgstr "Sendingar í bið."
 
-#: admin.py:143
+#: admin.py:159
 msgid "Submitting."
 msgstr "Sendi."
 
-#: admin.py:145
+#: admin.py:161
 msgid "Not sent."
 msgstr "Ekki sent."
 
-#: admin.py:146 admin.py:390 admin_forms.py:113
+#: admin.py:162 admin.py:389 admin_forms.py:115
 msgid "Status"
 msgstr "Staða"
 
-#: admin.py:153
+#: admin.py:169
 msgid "Submission already sent."
 msgstr "Sending þegar send."
 
-#: admin.py:162
+#: admin.py:178
 msgid "Your submission is being sent."
 msgstr "Sending í gagni."
 
-#: admin.py:208
+#: admin.py:225
 msgid "Optional"
 msgstr "Valkvæmt"
 
-#: admin.py:235 models.py:460 models.py:512 models.py:668
+#: admin.py:253 models.py:425 models.py:469 models.py:677
 msgid "message"
 msgstr "skilaboð"
 
-#: admin.py:239 templates/admin/newsletter/message/change_form.html.py:9
+#: admin.py:258 templates/admin/newsletter/message/change_form.html:8
 #: templates/admin/newsletter/message/preview.html:13
 msgid "Preview"
 msgstr "Forskoða"
 
-#: admin.py:267 views.py:606
+#: admin.py:275 views.py:611
 msgid ""
 "No HTML template associated with the newsletter this message belongs to."
 msgstr "Ekkert HMTL sniðmát tengt því fréttabréfi sem þessi skilaboð tilheyra."
 
-#: admin.py:385 admin_forms.py:101
+#: admin.py:384 admin_forms.py:103
 msgid "Subscribed"
 msgstr "Í áskrift"
 
-#: admin.py:387 admin_forms.py:102
+#: admin.py:386 admin_forms.py:104
 msgid "Unsubscribed"
 msgstr "Ekki í áskrift"
 
-#: admin.py:389
+#: admin.py:388
 msgid "Unactivated"
 msgstr "Ekki virkjað"
 
-#: admin.py:397 models.py:309
+#: admin.py:396 models.py:295
 msgid "subscribe date"
 msgstr "dagsetning áskriftar"
 
-#: admin.py:404 models.py:317
+#: admin.py:403 models.py:303
 msgid "unsubscribe date"
 msgstr "áskrift lokið"
 
-#: admin.py:412
-#, python-format
-msgid "%s user has been successfully subscribed."
-msgid_plural "%s users have been successfully subscribed."
+#: admin.py:411
+#, fuzzy, python-format
+#| msgid "%s user has been successfully subscribed."
+#| msgid_plural "%s users have been successfully subscribed."
+msgid "%d user has been successfully subscribed."
+msgid_plural "%d users have been successfully subscribed."
 msgstr[0] "%s notendur hafa verið aftengdir áskrift."
 msgstr[1] "%s notendur hafa verið aftengdir áskrift."
 
-#: admin.py:417
+#: admin.py:416
 msgid "Subscribe selected users"
 msgstr "Gerðu þessa notendur að áskrifendum."
 
-#: admin.py:424
-#, python-format
-msgid "%s user has been successfully unsubscribed."
-msgid_plural "%s users have been successfully unsubscribed."
+#: admin.py:423
+#, fuzzy, python-format
+#| msgid "%s user has been successfully unsubscribed."
+#| msgid_plural "%s users have been successfully unsubscribed."
+msgid "%d user has been successfully unsubscribed."
+msgid_plural "%d users have been successfully unsubscribed."
 msgstr[0] "%s notendur hafa verið aftengdir áskrift."
 msgstr[1] "%s notendur hafa verið aftengdir áskrift."
 
-#: admin.py:429
+#: admin.py:428
 msgid "Unsubscribe selected users"
 msgstr "Aftengja valda notendur"
 
 #: admin.py:484
-#, python-format
-msgid "%s subscriptions have been successfully added."
-msgstr "%s áskriftum giftusamlega bætt við."
+#, fuzzy, python-format
+#| msgid "%s subscriptions have been successfully added."
+msgid "%d subscription has been successfully added."
+msgid_plural "%d subscriptions have been successfully added."
+msgstr[0] "%s áskriftum giftusamlega bætt við."
+msgstr[1] "%s áskriftum giftusamlega bætt við."
 
-#: admin_forms.py:41
+#: admin_forms.py:43
 #, python-format
 msgid "File type '%s' was not recognized."
 msgstr "Skráargerð '%s' er óþekkt."
 
-#: admin_forms.py:58
+#: admin_forms.py:60
 #, python-format
 msgid "File extension '%s' was not recognized."
 msgstr "Skráarending '%s' er óþekkt."
 
-#: admin_forms.py:62
+#: admin_forms.py:64
 msgid "No entries could found in this file."
 msgstr "Engar færslur fundust í þessu skjali."
 
-#: admin_forms.py:70
+#: admin_forms.py:72
 #: templates/admin/newsletter/subscription/confirmimportform.html:12
 #: templates/admin/newsletter/subscription/importform.html:12
-#: templates/newsletter/common.html:7
+#: templates/newsletter/common.html:6
 #: templates/newsletter/newsletter_detail.html:10
 #: templates/newsletter/newsletter_list.html:14
 #: templates/newsletter/newsletter_list.html:32
@@ -252,305 +264,282 @@ msgstr "Engar færslur fundust í þessu skjali."
 msgid "Newsletter"
 msgstr "Fréttabréf"
 
-#: admin_forms.py:73
+#: admin_forms.py:75
 msgid "Address file"
 msgstr "Netfangaskrá"
 
-#: admin_forms.py:75
+#: admin_forms.py:77
 msgid "Ignore non-fatal errors"
 msgstr "Láta ómerkilegar villur sem vind um eyru þjóta"
 
-#: admin_forms.py:86
+#: admin_forms.py:88
 msgid "You should confirm in order to continue."
 msgstr "Þú þarft að staðfesta til að halda áfram."
 
-#: admin_forms.py:89
+#: admin_forms.py:91
 #: templates/admin/newsletter/subscription/confirmimportform.html:23
 #: templates/admin/newsletter/subscription/confirmimportform.html:28
 msgid "Confirm import"
 msgstr "Staðfesta innlestur"
 
-#: admin_forms.py:119 admin_forms.py:127
+#: admin_forms.py:121 admin_forms.py:129
 msgid "If a user has been selected this field should remain empty."
 msgstr "Ef notandi hefur verið valinn ætti þessi reitur að vera tómur."
 
-#: admin_forms.py:137
+#: admin_forms.py:139
 msgid "Either a user must be selected or an email address must be specified."
 msgstr "Annað hvort notandi eða netfang verður að vera valið."
 
-#: admin_forms.py:162
+#: admin_forms.py:164
 msgid ""
 "This message has already been published in some other submission. Messages "
 "can only be published once."
-msgstr "Þessi skilaboð hafa þegar verið send í annari sendingu.\nSkilaboð er einungid hægt að senda einu sinni."
+msgstr ""
+"Þessi skilaboð hafa þegar verið send í annari sendingu.\n"
+"Skilaboð er einungid hægt að senda einu sinni."
 
 #: admin_utils.py:25
 #, python-format
 msgid "%(name)s object with primary key %(key)r does not exist."
 msgstr "%(name)s hlutiur með lykli %(key)r finnst ekki."
 
-#: forms.py:47 forms.py:106
-msgid "An e-mail address is required."
-msgstr "Netfang er nauðsynlegt."
-
-#: forms.py:55
-#, python-format
-msgid ""
-"The e-mail address '%(email)s' belongs to a user with an account on this "
-"site. Please log in as that user and try again."
-msgstr "Netfangið '%(email)s' tilheyrir skráðum notenda. Skráðu þig inn og reyndu aftur."
-
-#: forms.py:72
+#: forms.py:59
 msgid "Your e-mail address has already been subscribed to."
 msgstr "Netfang þitt er þegar á skrá."
 
-#: forms.py:97
+#: forms.py:88
 msgid "This subscription has not yet been activated."
 msgstr "Þessi áskrift er ekki virkjuð."
 
-#: forms.py:114
-#, python-format
-msgid ""
-"This e-mail address belongs to the user '%(username)s'. Please log in as "
-"that user and try again."
-msgstr "Þetta netfang tilheyrir notanda '%(username)s'. Skráðu þig inn og reyndu aftur."
-
-#: forms.py:132
+#: forms.py:106
 msgid "This e-mail address has not been subscribed to."
 msgstr "Þetta nefagn er ekki í áskrift."
 
-#: forms.py:147
+#: forms.py:121
 msgid "This subscription has already been unsubscribed from."
 msgstr "Þessari áskrift hefur þegar verið sagt upp."
 
-#: forms.py:163
+#: forms.py:142
 msgid "The validation code supplied by you does not match."
 msgstr "Staðfestingarkóði passar ekki."
 
-#: forms.py:169
+#: forms.py:148
 msgid "Activation code"
 msgstr "Virkjunarkóði"
 
-#: jobs/hourly/submit.py:15
+#: management/commands/submit_newsletter.py:14
+#, fuzzy
+#| msgid "Submitting message to: %s."
+msgid "Submit pending messages."
+msgstr "Sendi boð til: %s."
+
+#: management/commands/submit_newsletter.py:30
 msgid "Submitting queued newsletter mailings"
 msgstr "Sendi fréttabréf í biðröð"
 
-#: models.py:32
+#: models.py:36
 msgid "newsletter title"
 msgstr "yfirskirft fréttabréfs"
 
-#: models.py:37
+#: models.py:41
 msgid "Sender e-mail"
 msgstr "Netfang sendanda"
 
-#: models.py:40
+#: models.py:44
 msgid "sender"
 msgstr "sendandi"
 
-#: models.py:40
+#: models.py:44
 msgid "Sender name"
 msgstr "Nafn sendanda"
 
-#: models.py:44
+#: models.py:48
 msgid "visible"
 msgstr "sýnilegt"
 
-#: models.py:48
+#: models.py:52
 msgid "send html"
 msgstr "senda HTML"
 
-#: models.py:49
+#: models.py:53
 msgid "Whether or not to send HTML versions of e-mails."
 msgstr "Val um HTML eður ei í póstum."
 
-#: models.py:101
+#: models.py:105
 msgid "newsletters"
 msgstr "fréttabréf"
 
-#: models.py:157
+#: models.py:141
 msgid "user"
 msgstr "notandi"
 
-#: models.py:162
+#: models.py:147
 msgid "optional"
 msgstr "valkvæmt"
 
-#: models.py:206
+#: models.py:191
 #, python-format
 msgid "Updated subscription %(subscription)s to %(action)s."
 msgstr "Uppfærði áskriftir %(subscription)s sem %(action)s."
 
-#: models.py:248
+#: models.py:232
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
 msgstr "Hvorki netfang né notendanafn eru skráð. Það kallar á ósamræmi."
 
-#: models.py:252
+#: models.py:236
 msgid "If user is set, email must be null and vice versa."
 msgstr "Ef notandi er valinn, verður netfang að vera tómt eða öfugt."
 
-#: models.py:294
+#: models.py:278
 msgid "IP address"
 msgstr "IP tala"
 
-#: models.py:301
+#: models.py:287
 msgid "activation code"
 msgstr "staðfestingarkóði"
 
-#: models.py:306
+#: models.py:292
 msgid "subscribed"
 msgstr "í áskrift"
 
-#: models.py:314
+#: models.py:300
 msgid "unsubscribed"
 msgstr "ekki í áskrift"
 
-#: models.py:322
+#: models.py:308
 #, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
 msgstr "%(name)s <%(email)s> til %(newsletter)s"
 
-#: models.py:329
+#: models.py:315
 #, python-format
 msgid "%(email)s to %(newsletter)s"
 msgstr "%(email)s til %(newsletter)s"
 
-#: models.py:335
+#: models.py:321
 msgid "subscription"
 msgstr "áskrift"
 
-#: models.py:336
+#: models.py:322
 msgid "subscriptions"
 msgstr "áskriftir"
 
-#: models.py:439
+#: models.py:404
 msgid ""
-"Sort order determines the order in which articles are concatenated in a "
-"post."
+"Sort order determines the order in which articles are concatenated in a post."
 msgstr "Röðun stýrir röð greina í sendingu"
 
-#: models.py:441
+#: models.py:406
 msgid "sort order"
 msgstr "röðun"
 
-#: models.py:444 models.py:483
+#: models.py:409 models.py:454
 msgid "title"
 msgstr "fyrirsögn"
 
-#: models.py:445
+#: models.py:410
 msgid "text"
 msgstr "text"
 
-#: models.py:448
+#: models.py:413
 msgid "link"
 msgstr "tengill"
 
-#: models.py:454
+#: models.py:419
 msgid "image"
 msgstr "mynd"
 
-#: models.py:465
+#: models.py:431
 msgid "article"
 msgstr "grein"
 
-#: models.py:466
+#: models.py:432
 msgid "articles"
 msgstr "greinar"
 
-#: models.py:484
+#: models.py:455
 msgid "slug"
 msgstr "slóðarkóði [slug}"
 
-#: models.py:491
+#: models.py:462
 msgid "created"
 msgstr "stofnað"
 
-#: models.py:494
+#: models.py:465
 msgid "modified"
 msgstr "breytt"
 
-#: models.py:499
+#: models.py:470
+msgid "messages"
+msgstr "skilaboð"
+
+#: models.py:475
 #, python-format
 msgid "%(title)s in %(newsletter)s"
 msgstr "%(title)s í %(newsletter)s"
 
-#: models.py:513
-msgid "messages"
-msgstr "skilaboð"
-
-#: models.py:538
+#: models.py:529
 msgid "submissions"
 msgstr "sendingar"
 
-#: models.py:541
+#: models.py:532
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
 msgstr "%(newsletter)s á %(publish_date)s"
 
-#: models.py:550
+#: models.py:551
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
 msgstr "Sendi %(submission)s til %(count)d fólks"
 
-#: models.py:597
+#: models.py:610
 #, python-format
 msgid "Submitting message to: %s."
 msgstr "Sendi boð til: %s."
 
-#: models.py:606
+#: models.py:619
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
 msgstr "Skilaboð %(subscription)s brugðust með villu: %(error)s"
 
-#: models.py:630
+#: models.py:637
 #, python-format
 msgid "Submission of message %s"
 msgstr "Sending skilaboða %s"
 
-#: models.py:673
+#: models.py:683
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
 msgstr "Ef þú velur ekkert mun kerfið velja áskrifendur."
 
-#: models.py:675
+#: models.py:685
 msgid "recipients"
 msgstr "viðtakendur"
 
-#: models.py:680
+#: models.py:690
 msgid "publication date"
 msgstr "dagsetning birtignar"
 
-#: models.py:684
+#: models.py:694
 msgid "publish"
 msgstr "birta"
 
-#: models.py:685
+#: models.py:695
 msgid "Publish in archive."
 msgstr "Birta í safni"
 
-#: models.py:689
+#: models.py:699
 msgid "prepared"
 msgstr "tilbúið"
 
-#: models.py:693
+#: models.py:703
 msgid "sent"
 msgstr "sent"
 
-#: models.py:697
+#: models.py:707
 msgid "sending"
 msgstr "sendi"
-
-#: templates/admin/newsletter/message/change_form.html:7
-#: templates/admin/newsletter/newsletter/change_form.html:7
-#: templates/admin/newsletter/submission/change_form.html:14
-msgid "History"
-msgstr "Saga"
-
-#: templates/admin/newsletter/message/change_form.html:8
-#: templates/admin/newsletter/newsletter/change_form.html:8
-#: templates/admin/newsletter/submission/change_form.html:15
-msgid "View on site"
-msgstr "Sjá á vef"
 
 #: templates/admin/newsletter/message/preview.html:5
 #: templates/admin/newsletter/message/preview.html:19
@@ -589,14 +578,11 @@ msgstr "Texti"
 msgid "Submit"
 msgstr "Senda"
 
-#: templates/admin/newsletter/subscription/change_list.html:8
-msgid "import"
+#: templates/admin/newsletter/subscription/change_list.html:5
+#, fuzzy
+#| msgid "import"
+msgid "Import"
 msgstr "sækja"
-
-#: templates/admin/newsletter/subscription/change_list.html:12
-#, python-format
-msgid "Add %(name)s"
-msgstr "Bæta við %(name)s"
 
 #: templates/admin/newsletter/subscription/confirmimportform.html:3
 #: templates/admin/newsletter/subscription/confirmimportform.html:20
@@ -614,19 +600,136 @@ msgstr "Staðfesta"
 msgid "Upload"
 msgstr "Sækja"
 
+#: templates/newsletter/message/message.html:21
+msgid "Read more"
+msgstr ""
+
+#: templates/newsletter/message/message.html:27
+msgid "Read message online"
+msgstr ""
+
+#: templates/newsletter/message/message.html:29
+#: templates/newsletter/newsletter_detail.html:21
+#: templates/newsletter/subscription_unsubscribe.html:23
+#: templates/newsletter/subscription_unsubscribe_user.html:23
+msgid "Unsubscribe"
+msgstr "Hætta áskrift"
+
+#: templates/newsletter/message/message.txt:15
+#, fuzzy
+#| msgid "Unsubscribe"
+msgid "Unsubscribe:"
+msgstr "Hætta áskrift"
+
+#: templates/newsletter/message/subscribe.html:6
+#, fuzzy, python-format
+#| msgid "Subscriptions"
+msgid "Subscription to %(title)s"
+msgstr "Áskriftir"
+
+#: templates/newsletter/message/subscribe.html:10
+#: templates/newsletter/message/subscribe.txt:1
+#, python-format
+msgid ""
+"Dear %(name|default:\"Sir/Madam\")s,\n"
+"\n"
+"you, or someone in your name requested a subscription to %(title)s.\n"
+"\n"
+"If you would like to confirm your subscription, please follow this "
+"activation link:\n"
+"http://%(domain)s%(url)s\n"
+"\n"
+"Kind regards,"
+msgstr ""
+
+#: templates/newsletter/message/subscribe_subject.txt:1
+#, fuzzy
+#| msgid "subscription"
+msgid "Confirm subscription"
+msgstr "áskrift"
+
+#: templates/newsletter/message/unsubscribe.html:6
+#, fuzzy, python-format
+#| msgid "subscriptions"
+msgid "Unsubscription from %(title)s"
+msgstr "áskriftir"
+
+#: templates/newsletter/message/unsubscribe.html:9
+#: templates/newsletter/message/unsubscribe.txt:1
+#, python-format
+msgid ""
+"Dear %(name|default:\"Sir/Madam\")s,\n"
+"\n"
+"you, or someone in your name requested unsubscription from %(title)s.\n"
+"\n"
+"If you would like to confirm your unsubscription, please follow this "
+"activation link:\n"
+"http://%(domain)s%(url)s\n"
+"\n"
+"Kind regards,"
+msgstr ""
+
+#: templates/newsletter/message/unsubscribe_subject.txt:1
+#, fuzzy
+#| msgid "subscription"
+msgid "Confirm unsubscription"
+msgstr "áskrift"
+
+#: templates/newsletter/message/update.html:6
+#, fuzzy, python-format
+#| msgid "Update subscriptions"
+msgid "Update of subscription to %(title)s"
+msgstr "Uppfæra áskriftir"
+
+#: templates/newsletter/message/update.html:9
+#: templates/newsletter/message/update.txt:1
+#, python-format
+msgid ""
+"Dear %(name|default:\"Sir/Madam\")s,\n"
+"\n"
+"you, or someone in your name requested updating your personal information "
+"for %(title)s.\n"
+"\n"
+"To make changes to your information in our database, please follow this "
+"activation link:\n"
+"http://%(domain)s%(url)s\n"
+"\n"
+"Kind regards,"
+msgstr ""
+
+#: templates/newsletter/message/update_subject.txt:1
+#, fuzzy
+#| msgid "Update subscription"
+msgid "Update information"
+msgstr "Uppfæra áskrift"
+
 #: templates/newsletter/newsletter_detail.html:5
 msgid "Newsletter detail"
 msgstr "Upplýsingar um fréttabréf"
 
-#: templates/newsletter/newsletter_list.html:5
-msgid "Newsletter list"
-msgstr "Fréttabréf, listi"
-
+#: templates/newsletter/newsletter_detail.html:13
 #: templates/newsletter/newsletter_list.html:16
 #: templates/newsletter/subscription_subscribe.html:23
 #: templates/newsletter/subscription_subscribe_user.html:22
 msgid "Subscribe"
 msgstr "Áskrift"
+
+#: templates/newsletter/newsletter_detail.html:17
+msgid "Update"
+msgstr ""
+
+#: templates/newsletter/newsletter_detail.html:24
+msgid "Archive"
+msgstr ""
+
+#: templates/newsletter/newsletter_detail.html:27
+#: templates/newsletter/submission_archive.html:18
+msgid "Back to list"
+msgstr ""
+
+#: templates/newsletter/newsletter_list.html:5
+msgid "Newsletter list"
+msgstr "Fréttabréf, listi"
 
 #: templates/newsletter/newsletter_list.html:27
 msgid "Update subscriptions"
@@ -665,9 +768,11 @@ msgstr "Áskrift fréttabréfa"
 #: templates/newsletter/subscription_unsubscribe.html:11
 #: templates/newsletter/subscription_update.html:11
 msgid ""
-"Due to a technical error we were not able to submit your confirmation email."
-" This could be because your email address is invalid."
-msgstr "Vegna villu hefur ekki tekist að senda þér staðfestingarpóst.\nGæti stafað af villu í netfangi."
+"Due to a technical error we were not able to submit your confirmation email. "
+"This could be because your email address is invalid."
+msgstr ""
+"Vegna villu hefur ekki tekist að senda þér staðfestingarpóst.\n"
+"Gæti stafað af villu í netfangi."
 
 #: templates/newsletter/subscription_subscribe_activated.html:10
 msgid "Your subscription has successfully been activated."
@@ -678,7 +783,9 @@ msgid ""
 "Your subscription request was successfully received and an activation email "
 "has been sent to you. In that email you will find a link which you need to "
 "follow in order to activate your subscription."
-msgstr "Áskriftarbeiðni þín er móttekin og póstur sendur á netfangið með tengli sem smella þarf á til að virkja áskriftina."
+msgstr ""
+"Áskriftarbeiðni þín er móttekin og póstur sendur á netfangið með tengli sem "
+"smella þarf á til að virkja áskriftina."
 
 #: templates/newsletter/subscription_subscribe_user.html:19
 msgid "Do you want to subscribe to this newsletter?"
@@ -693,11 +800,6 @@ msgstr "Vilt þú gerast áskrifandi að þessu fréttabréfi?"
 msgid "Newsletter unsubscribe"
 msgstr "Afþökkun fréttabréfa"
 
-#: templates/newsletter/subscription_unsubscribe.html:23
-#: templates/newsletter/subscription_unsubscribe_user.html:23
-msgid "Unsubscribe"
-msgstr "Hætta áskrift"
-
 #: templates/newsletter/subscription_unsubscribe_activated.html:10
 msgid "You have successfully been unsubscribed."
 msgstr "Áskift þinni er sagt upp."
@@ -707,7 +809,9 @@ msgid ""
 "Your unsubscription request has successfully been received. An email has "
 "been sent to you with a link you need to follow in order to confirm your "
 "unsubscription."
-msgstr "Beiðni um uppsögn hefur verið móttekin. Tölvupóstur með tengli til stafestingar hefur verið sendur."
+msgstr ""
+"Beiðni um uppsögn hefur verið móttekin. Tölvupóstur með tengli til "
+"stafestingar hefur verið sendur."
 
 #: templates/newsletter/subscription_unsubscribe_user.html:20
 msgid "Do you want to unsubscribe from this newsletter?"
@@ -733,7 +837,10 @@ msgid ""
 "Your update request was successfully received and an activation email has "
 "been sent to you. In that email you will find a link which you need to "
 "follow in order to update your subscription."
-msgstr "Uppfærslubeiðni þín hefur verið móttekin. Póstur með tengli til virkjunar hefur verið sendur á netfang þitt. Þú verður að staðfesta með því að smella á þann tengil."
+msgstr ""
+"Uppfærslubeiðni þín hefur verið móttekin. Póstur með tengli til virkjunar "
+"hefur verið sendur á netfang þitt. Þú verður að staðfesta með því að smella "
+"á þann tengil."
 
 #: templates/widget/image.html:2
 msgid "Currently:"
@@ -743,36 +850,64 @@ msgstr "Núna:"
 msgid "Change:"
 msgstr "Breyta:"
 
-#: views.py:114
+#: validators.py:15
+#, python-format
+msgid ""
+"The e-mail address '%(email)s' belongs to a user with an account on this "
+"site. Please log in as that user and try again."
+msgstr ""
+"Netfangið '%(email)s' tilheyrir skráðum notenda. Skráðu þig inn og reyndu "
+"aftur."
+
+#: views.py:120
 msgid "Your changes have been saved."
 msgstr "Breytingar eru vistaðar."
 
-#: views.py:305
+#: views.py:311
 #, python-format
 msgid "You have been subscribed to %s."
 msgstr "Þú hefur gerst áskrifandi að %s."
 
-#: views.py:309
+#: views.py:315
 #, python-format
 msgid "User %(rs)s subscribed to %(my_newsletter)s."
 msgstr "Notandi %(rs)s gerðist áskrifandi að %(my_newsletter)s."
 
-#: views.py:319
+#: views.py:325
 #, python-format
 msgid "You are already subscribed to %s."
 msgstr "Þú ert þegar áskrifandi að %s."
 
-#: views.py:344
+#: views.py:350
 #, python-format
 msgid "You have been unsubscribed from %s."
 msgstr "Þú hefur sagt upp áskrift að %s."
 
-#: views.py:348
+#: views.py:354
 #, python-format
 msgid "User %(rs)s unsubscribed from %(my_newsletter)s."
 msgstr "Notandi %(rs)s sagði upp áskrift að %(my_newsletter)s."
 
-#: views.py:361
+#: views.py:367
 #, python-format
 msgid "You are not subscribed to %s."
 msgstr "Þú ert ekki áskrifandi að %s."
+
+#~ msgid "An e-mail address is required."
+#~ msgstr "Netfang er nauðsynlegt."
+
+#~ msgid ""
+#~ "This e-mail address belongs to the user '%(username)s'. Please log in as "
+#~ "that user and try again."
+#~ msgstr ""
+#~ "Þetta netfang tilheyrir notanda '%(username)s'. Skráðu þig inn og reyndu "
+#~ "aftur."
+
+#~ msgid "History"
+#~ msgstr "Saga"
+
+#~ msgid "View on site"
+#~ msgstr "Sjá á vef"
+
+#~ msgid "Add %(name)s"
+#~ msgstr "Bæta við %(name)s"
