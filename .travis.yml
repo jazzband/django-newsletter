@@ -7,11 +7,13 @@ python:
   - 3.4
   - 3.5
   - 3.6
+  - 3.7
+  - 3.8
 
 env:
-  - DJANGO="Django<1.12"    # Django 1.11.x
-  - DJANGO="Django<2.1"     # Django 2.0.x
-  - DJANGO="Django<2.2"     # Django 2.1.x LTS
+  - DJANGO="Django<1.12"    # Django 1.11.x LTS
+  - DJANGO="Django<2.3"     # Django 2.2.x LTS
+  - DJANGO="Django<3.1"     # Django 3.0.x
 
 cache:
   directories:
@@ -19,26 +21,23 @@ cache:
 
 matrix:
   exclude:
-    # Only supported Python/Django combinations
+    # Django 1.11 doesn't support Python 3.8
     - env: DJANGO="Django<1.12"
-      python: 3.7
-    - env: DJANGO="Django<2.1"
+      python: 3.8
+
+    # Django 2.2 doesn't support Python 2.7 and 3.4
+    - env: DJANGO="Django<2.3"
       python: 2.7
-    - env: DJANGO="Django<2.2"
-      python: 2.7
-    - env: DJANGO="Django<2.2"
+    - env: DJANGO="Django<2.3"
       python: 3.4
-  include:
-    # Travis workaround for Python 3.7 support.
-    # https://github.com/travis-ci/travis-ci/issues/9069#issuecomment-425720905
-    - python: 3.7
-      sudo: required
-      dist: xenial
-      env: DJANGO="Django<2.1"
-    - python: 3.7
-      sudo: required
-      dist: xenial
-      env: DJANGO="Django<2.2"
+
+    # Django 3.0 doesn't support Python 2.7, 3.4 and 3.5
+    - env: DJANGO="Django<3.1"
+      python: 2.7
+    - env: DJANGO="Django<3.1"
+      python: 3.4
+    - env: DJANGO="Django<3.1"
+      python: 3.5
 
 # command to install dependencies
 install:
