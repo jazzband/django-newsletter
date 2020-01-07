@@ -39,6 +39,10 @@ matrix:
     - env: DJANGO="Django<3.1"
       python: 3.5
 
+  allow_failures:
+    # Allow 3.0.x to fail, for now
+    - env: DJANGO="Django<3.1"
+
 # command to install dependencies
 install:
   # Latest PIP uses wheel by default
