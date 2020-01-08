@@ -137,7 +137,7 @@ class UpdateForm(NewsletterForm):
     def clean_user_activation_code(self):
         data = self.cleaned_data['user_activation_code']
 
-        if data != self.instance.activation_code:
+        if not self.instance.valid_activation(data):
             raise ValidationError(
                 _('The validation code supplied by you does not match.')
             )
