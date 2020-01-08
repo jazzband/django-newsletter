@@ -46,6 +46,7 @@ install:
   - pip install $DJANGO
   - pip install -r requirements.txt
   - pip install -r requirements_test.txt
+  - pip install -e git://github.com/jazzband/sorl-thumbnail@4fe1854#egg=sorl-thumbnail
   - pip install coveralls
 
 # Command to run tests
