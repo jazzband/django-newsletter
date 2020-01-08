@@ -55,6 +55,7 @@ TEMPLATES = [
 
 # Enable time-zone support
 USE_TZ = True
+TIME_ZONE = 'UTC'
 
 # Required for django-webtest to work
 STATIC_URL = '/static/'
