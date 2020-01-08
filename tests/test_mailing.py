@@ -10,8 +10,6 @@ from datetime import timedelta
 
 from django.core import mail
 
-from django.test.utils import patch_logger
-from django.utils.six.moves import range
 from django.utils.timezone import now
 
 from newsletter.models import (
@@ -105,9 +103,7 @@ class ArticleTestCase(MailingTestCase):
 class MessageTestCase(MailingTestCase):
     def test_message_str(self):
         m1 = Message(title='Test message', slug='test-message')
-        with patch_logger('newsletter.models', 'warning') as warnings:
-            self.assertEqual(six.text_type(m1), "Test message in Test newsletter")
-        self.assertEqual(len(warnings), 0)
+        self.assertEqual(six.text_type(m1), "Test message in Test newsletter")
 
         m2 = Message.objects.create(
             title='Test message str',
