@@ -1,5 +1,6 @@
 import logging
 import time
+from six import python_2_unicode_compatible
 import django
 
 from django.conf import settings
@@ -8,7 +9,6 @@ from django.contrib.sites.managers import CurrentSiteManager
 from django.core.mail import EmailMultiAlternatives
 from django.db import models
 from django.template.loader import select_template
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
@@ -653,7 +653,7 @@ class Submission(models.Model):
 
         return super(Submission, self).save()
 
-    
+
 
     def get_absolute_url(self):
         assert self.newsletter.slug
