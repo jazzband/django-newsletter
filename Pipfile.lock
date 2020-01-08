@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9e830e11405b6ea297d06a24046ee96220d7cf0574350048bb9ac8f36b57d55a"
+            "sha256": "b1b295248710b119a2c6f5c2af45e00f4ac9bb11fb094488f7603c2894e3ca6e"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -135,12 +135,9 @@
             "version": "==1.13.0"
         },
         "sorl-thumbnail": {
-            "hashes": [
-                "sha256:8dfe5fda91a5047d1d35a0b9effe7b000764a01d648e15ca076f44e9c34b6dbd",
-                "sha256:d9e3f018d19293824803e4ffead96b19dfcd44fa7987cea392f50436817bef34"
-            ],
-            "index": "pypi",
-            "version": "==12.5.0"
+            "editable": true,
+            "git": "git://github.com/jazzband/sorl-thumbnail",
+            "ref": "4fe1854ee30e24adfc57884342517bbf506d0cd9"
         },
         "soupsieve": {
             "hashes": [
@@ -193,5 +190,43 @@
             "version": "==2.0.33"
         }
     },
-    "develop": {}
+    "develop": {
+        "coverage": {
+            "hashes": [
+                "sha256:189aac76d6e0d7af15572c51892e7326ee451c076c5a50a9d266406cd6c49708",
+                "sha256:1bf7ba2af1d373a1750888724f84cffdfc697738f29a353c98195f98fc011509",
+                "sha256:1f4ee8e2e4243971618bc16fcc4478317405205f135e95226c2496e2a3b8dbbf",
+                "sha256:225e79a5d485bc1642cb7ba02281419c633c216cdc6b26c26494ba959f09e69f",
+                "sha256:23688ff75adfa8bfa2a67254d889f9bdf9302c27241d746e17547c42c732d3f4",
+                "sha256:28f7f73b34a05e23758e860a89a7f649b85c6749e252eff60ebb05532d180e86",
+                "sha256:2d0cb9b1fe6ad0d915d45ad3d87f03a38e979093a98597e755930db1f897afae",
+                "sha256:47874b4711c5aeb295c31b228a758ce3d096be83dc37bd56da48ed99efb8813b",
+                "sha256:511ec0c00840e12fb4e852e4db58fa6a01ca4da72f36a9766fae344c3d502033",
+                "sha256:53e7438fef0c97bc248f88ba1edd10268cd94d5609970aaf87abbe493691af87",
+                "sha256:569f9ee3025682afda6e9b0f5bb14897c0db03f1a1dc088b083dd36e743f92bb",
+                "sha256:593853aa1ac6dcc6405324d877544c596c9d948ef20d2e9512a0f5d2d3202356",
+                "sha256:5b0a07158360d22492f9abd02a0f2ee7981b33f0646bf796598b7673f6bbab14",
+                "sha256:7ca3db38a61f3655a2613ee2c190d63639215a7a736d3c64cc7bbdb002ce6310",
+                "sha256:7d1cc7acc9ce55179616cf72154f9e648136ea55987edf84addbcd9886ffeba2",
+                "sha256:88b51153657612aea68fa684a5b88037597925260392b7bb4509d4f9b0bdd889",
+                "sha256:955ec084f549128fa2702f0b2dc696392001d986b71acd8fd47424f28289a9c3",
+                "sha256:b251c7092cbb6d789d62dc9c9e7c4fb448c9138b51285c36aeb72462cad3600e",
+                "sha256:bd82b684bb498c60ef47bb1541a50e6d006dde8579934dcbdbc61d67d1ea70d9",
+                "sha256:bfe102659e2ec13b86c7f3b1db6c9a4e7beea4255058d006351339e6b342d5d2",
+                "sha256:c1e4e39e43057396a5e9d069bfbb6ffeee892e40c5d2effbd8cd71f34ee66c4d",
+                "sha256:cb2b74c123f65e8166f7e1265829a6c8ed755c3cd16d7f50e75a83456a5f3fd7",
+                "sha256:cca38ded59105f7705ef6ffe1e960b8db6c7d8279c1e71654a4775ab4454ca15",
+                "sha256:cf908840896f7aa62d0ec693beb53264b154f972eb8226fb864ac38975590c4f",
+                "sha256:d095a7b473f8a95f7efe821f92058c8a2ecfb18f8db6677ae3819e15dc11aaae",
+                "sha256:d22b4297e7e4225ccf01f1aa55e7a96412ea0796b532dd614c3fcbafa341128e",
+                "sha256:d4a2b578a7a70e0c71f662705262f87a456f1e6c1e40ada7ea699abaf070a76d",
+                "sha256:ddeb42a3d5419434742bf4cc71c9eaa22df3b76808e23a82bd0b0bd360f1a9f1",
+                "sha256:e65a5aa1670db6263f19fdc03daee1d7dbbadb5cb67fd0a1f16033659db13c1d",
+                "sha256:eaad65bd20955131bcdb3967a4dea66b4e4d4ca488efed7c00d91ee0173387e8",
+                "sha256:f45fba420b94165c17896861bb0e8b27fb7abdcedfeb154895d8553df90b7b00"
+            ],
+            "index": "pypi",
+            "version": "==5.0.2"
+        }
+    }
 }
