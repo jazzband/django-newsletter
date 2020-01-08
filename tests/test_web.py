@@ -17,7 +17,7 @@ from django.core import mail
 from django.utils import timezone
 from django.utils.encoding import force_text
 
-from django.test.utils import override_settings, patch_logger
+from django.test.utils import override_settings
 
 from newsletter.models import (
     Newsletter, Subscription, Submission, Message, get_default_sites
@@ -253,10 +253,10 @@ class UserNewsletterListTestCase(UserTestCase,
         Subscription.objects.all().delete()
 
         # A post without any form elements should fail, horribly
-        with patch_logger('newsletter.views', 'warning') as messages:
+        with self.assertLogs('newsletter.views', 'WARNING') as messages:
             self.client.post(self.list_url)
-        self.assertEqual(len(messages), 1)
-        self.assertIn("Invalid form post received", messages[0])
+        self.assertEqual(len(messages.output), 1)
+        self.assertIn("Invalid form post received", messages.output[0])
 
         # A post with correct management data with weird values
         # should cause the formset not to validate.
@@ -281,10 +281,10 @@ class UserNewsletterListTestCase(UserTestCase,
             count += 1
 
         # Post the form
-        with patch_logger('newsletter.views', 'warning') as messages:
+        with self.assertLogs('newsletter.views', 'WARNING') as messages:
             self.client.post(self.list_url, params)
-        self.assertEqual(len(messages), 1)
-        self.assertIn("Invalid form post received", messages[0])
+        self.assertEqual(len(messages.output), 1)
+        self.assertIn("Invalid form post received", messages.output[0])
 
         # Assert no subscriptions have been created
         self.assertFalse(
@@ -650,15 +650,15 @@ class AnonymousSubscribeTestCase(
         with override_settings(
             EMAIL_BACKEND='tests.utils.FailingEmailBackend'
         ):
-            with patch_logger('newsletter.views', 'error') as messages:
+            with self.assertLogs('newsletter.views', 'ERROR') as messages:
                 response = self.client.post(
                     self.subscribe_url, {
                         'name_field': self.testname,
                         'email_field': 'test@ifjoidjsufhdsidhsuufihs.dfs'
                     }
                 )
-            self.assertEqual(len(messages), 1)
-            self.assertIn("Connection refused", messages[0])
+            self.assertEqual(len(messages.output), 1)
+            self.assertIn("Connection refused", messages.output[0])
 
         self.assertTrue(response.context['error'])
 
@@ -958,12 +958,12 @@ class AnonymousSubscribeTestCase(
         with override_settings(
             EMAIL_BACKEND='tests.utils.FailingEmailBackend'
         ):
-            with patch_logger('newsletter.views', 'error') as messages:
+            with self.assertLogs('newsletter.views', 'ERROR') as messages:
                 response = self.client.post(
                     self.unsubscribe_url, {'email_field': self.testemail}
                 )
-            self.assertEqual(len(messages), 1)
-            self.assertIn("Connection refused", messages[0])
+            self.assertEqual(len(messages.output), 1)
+            self.assertIn("Connection refused", messages.output[0])
 
         self.assertTrue(response.context['error'])
 
@@ -1120,12 +1120,12 @@ class AnonymousSubscribeTestCase(
             EMAIL_BACKEND='tests.utils.FailingEmailBackend'
         ):
 
-            with patch_logger('newsletter.views', 'error') as messages:
+            with self.assertLogs('newsletter.views', 'ERROR') as messages:
                 response = self.client.post(
                     self.update_url, {'email_field': self.testemail}
                 )
-            self.assertEqual(len(messages), 1)
-            self.assertIn("Connection refused", messages[0])
+            self.assertEqual(len(messages.output), 1)
+            self.assertIn("Connection refused", messages.output[0])
 
         self.assertTrue(response.context['error'])
 
