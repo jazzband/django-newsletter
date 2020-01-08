@@ -1,6 +1,6 @@
-language: python
+os: linux
 
-sudo: false
+language: python
 
 python:
   - 2.7
@@ -39,11 +39,7 @@ matrix:
     - env: DJANGO="Django<3.1"
       python: 3.5
 
-  allow_failures:
-    # Allow 3.0.x to fail, for now
-    - env: DJANGO="Django<3.1"
-
-# command to install dependencies
+# Command to install dependencies
 install:
   # Latest PIP uses wheel by default
   - pip install --upgrade pip
@@ -52,7 +48,7 @@ install:
   - pip install -r requirements_test.txt
   - pip install coveralls
 
-# command to run tests
+# Command to run tests
 script: coverage run setup.py test
 
 after_success:
