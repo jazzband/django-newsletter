@@ -3,12 +3,13 @@ import os
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
-from django.test.utils import patch_logger
 
 from newsletter import admin  # Triggers model admin registration
 from newsletter.admin_utils import make_subscription
 from newsletter.compat import reverse
 from newsletter.models import Message, Newsletter, Submission, Subscription
+
+from .utils import AssertLogsMixin
 
 test_files_dir = os.path.join(os.path.dirname(__file__), 'files')
 
@@ -32,7 +33,7 @@ class AdminTestMixin(object):
         )
 
 
-class AdminTestCase(AdminTestMixin, TestCase):
+class AdminTestCase(AdminTestMixin, AssertLogsMixin, TestCase):
     def admin_import_file(self, source_file, ignore_errors=''):
         """ Upload an address file for import to admin. """
 
@@ -168,7 +169,7 @@ class AdminTestCase(AdminTestMixin, TestCase):
     def test_admin_import_subscribers_duplicates(self):
         """ Test importing a file with duplicate addresses. """
 
-        with patch_logger('newsletter.addressimport.parsers', 'warning') as messages:
+        with self.assertLogs('newsletter.addressimport.parsers', 'WARNING') as messages:
             response = self.admin_import_subscribers(
                 'addresses_duplicates.csv', ignore_errors='true'
             )
@@ -177,7 +178,7 @@ class AdminTestCase(AdminTestMixin, TestCase):
             response,
             "2 subscriptions have been successfully added."
         )
-        self.assertEqual(len(messages), 2)
+        self.assertEqual(len(messages.output), 2)
         self.assertEqual(self.newsletter.subscription_set.count(), 2)
 
     def test_admin_import_subscribers_existing(self):
@@ -186,7 +187,7 @@ class AdminTestCase(AdminTestMixin, TestCase):
         subscription = make_subscription(self.newsletter, 'john@example.org')
         subscription.save()
 
-        with patch_logger('newsletter.addressimport.parsers', 'warning') as messages:
+        with self.assertLogs('newsletter.addressimport.parsers', 'WARNING') as messages:
             response = self.admin_import_subscribers(
                 'addresses.csv', ignore_errors='true'
             )
@@ -195,17 +196,17 @@ class AdminTestCase(AdminTestMixin, TestCase):
             response,
             "1 subscription has been successfully added."
         )
-        self.assertEqual(len(messages), 1)
+        self.assertEqual(len(messages.output), 1)
         self.assertEqual(self.newsletter.subscription_set.count(), 2)
 
-        with patch_logger('newsletter.addressimport.parsers', 'warning') as messages:
+        with self.assertLogs('newsletter.addressimport.parsers', 'WARNING') as messages:
             response = self.admin_import_file('addresses.csv')
 
         self.assertContains(
             response,
             "Some entries are already subscribed to."
         )
-        self.assertEqual(len(messages), 1)
+        self.assertEqual(len(messages.output), 1)
         self.assertEqual(self.newsletter.subscription_set.count(), 2)
 
     def test_admin_import_subscribers_permission(self):
