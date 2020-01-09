@@ -42,6 +42,14 @@ except:
     warnings.warn('Could not read requirements_test.txt')
     TEST_REQUIREMENTS = None
 
+# TODO: remove this once sorl-thumbnail 12.6.0 released
+# Update requirements to accommodate pinning sorl-thumbnail to git repo
+# This section handles the issue of install_requires not support "-e" syntax
+REQUIREMENTS = REQUIREMENTS[:-134]
+REQUIREMENTS += 'sorl-thumbnail'
+DEPENDENCY_LINKS = [
+    'https://github.com/jazzband/sorl-thumbnail/tarball/master#egg=sorl-thumbnail'
+]
 
 setup(
     name='django-newsletter',
@@ -54,6 +62,8 @@ setup(
     ),
     long_description=README,
     install_requires=REQUIREMENTS,
+    # TODO: remove this once sorl-thumbnail 12.6.0 released
+    dependency_links=DEPENDENCY_LINKS,
     license='AGPL',
     author='Mathijs de Bruin',
     author_email='mathijs@mathijsfietst.nl',
