@@ -14,7 +14,7 @@ python-card-me = "<1.0"
 ldif3 = "<3.2"
 chardet = "*"
 surlex = ">=0.2.0"
-sorl-thumbnail = {editable = true,git = "git://github.com/jazzband/sorl-thumbnail",ref = "4fe1854"}
+sorl-thumbnail = {editable = true,git = "git://github.com/jazzband/sorl-thumbnail",ref = "13bedfb7d2970809eda597e3ef79318a6fa80ac2"}
 six = "*"
 unicodecsv = "<0.15"
 Django = ">=1.11.27"

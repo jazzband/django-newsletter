@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e446ae94c2c41b2118738a0f4e5cafae06c4fd1f165f951d65d044de8f3dcf2d"
+            "sha256": "801cb2ddb141e5ce48d651ba878bc939c4cbc0cb07f50a5b6bf9d80040f76636"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -144,7 +144,7 @@
         "sorl-thumbnail": {
             "editable": true,
             "git": "git://github.com/jazzband/sorl-thumbnail",
-            "ref": "4fe1854ee30e24adfc57884342517bbf506d0cd9"
+            "ref": "13bedfb7d2970809eda597e3ef79318a6fa80ac2"
         },
         "soupsieve": {
             "hashes": [
