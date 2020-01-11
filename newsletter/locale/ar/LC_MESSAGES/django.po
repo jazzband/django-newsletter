@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-16 11:31+0000\n"
-"PO-Revision-Date: 2018-04-04 14:42+0000\n"
-"Last-Translator: Bashar Al-Abdulhadi\n"
+"POT-Creation-Date: 2018-11-17 19:25+0000\n"
+"PO-Revision-Date: 2020-01-11 19:18+0000\n"
+"Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: Arabic (http://www.transifex.com/dokterbob/django-newsletter/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -48,7 +48,7 @@ msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
 msgstr "الإسم %(name)s طويل جدا, الحد الأقصى هو %(name_length)s حرف."
 
 #: addressimport/parsers.py:196 addressimport/parsers.py:208
-#: addressimport/parsers.py:243 models.py:165
+#: addressimport/parsers.py:243 models.py:147
 msgid "name"
 msgstr "الاسم"
 
@@ -64,8 +64,8 @@ msgid ""
 msgstr "لم يتم العثور على اسم العمود. يجب أن يكون اسم هذا العمود إما 'اسم' أو '%s'."
 
 #: addressimport/parsers.py:219 addressimport/parsers.py:231
-#: addressimport/parsers.py:244 forms.py:43 forms.py:76 models.py:39
-#: models.py:179
+#: addressimport/parsers.py:244 forms.py:44 forms.py:79 forms.py:134
+#: models.py:41 models.py:161
 msgid "e-mail"
 msgstr "البريد الإلكتروني"
 
@@ -117,11 +117,11 @@ msgstr "الاشتراكات"
 msgid "Submissions"
 msgstr "الإرساليات"
 
-#: admin.py:99 models.py:102 models.py:300 models.py:480 models.py:699
+#: admin.py:99 models.py:104 models.py:281 models.py:458 models.py:673
 msgid "newsletter"
 msgstr "قائمة التراسل"
 
-#: admin.py:117 models.py:555
+#: admin.py:117 models.py:528
 msgid "submission"
 msgstr "الإرسالية"
 
@@ -161,7 +161,7 @@ msgstr "جاري تنفيذ عملية الإرسال."
 msgid "Optional"
 msgstr "اختياري"
 
-#: admin.py:253 models.py:450 models.py:491 models.py:703
+#: admin.py:253 models.py:425 models.py:469 models.py:677
 msgid "message"
 msgstr "الرسالة"
 
@@ -187,11 +187,11 @@ msgstr "إلغاء الإشتراك"
 msgid "Unactivated"
 msgstr "غير فعّال"
 
-#: admin.py:396 models.py:314
+#: admin.py:396 models.py:295
 msgid "subscribe date"
 msgstr "تاريخ الإشتراك"
 
-#: admin.py:403 models.py:322
+#: admin.py:403 models.py:303
 msgid "unsubscribe date"
 msgstr "تاريخ إلغاء الإشتراك"
 
@@ -305,236 +305,240 @@ msgstr "وقد تم بالفعل نشر هذه الرسالة في بعض تقد
 msgid "%(name)s object with primary key %(key)r does not exist."
 msgstr "الكائن %(name)s مع المفتاح الأساسي %(key)r غير موجود."
 
-#: forms.py:57
+#: forms.py:59
 msgid "Your e-mail address has already been subscribed to."
 msgstr " عنوان البريد الإلكتروني الخاص بك مسجل سلفا في."
 
-#: forms.py:84
+#: forms.py:88
 msgid "This subscription has not yet been activated."
 msgstr "هذا الإشتراك لم يتم تفعيله حتى الآن."
 
-#: forms.py:102
+#: forms.py:106
 msgid "This e-mail address has not been subscribed to."
 msgstr "هذا البريد الإلكتروني غير مسجّل في."
 
-#: forms.py:117
+#: forms.py:121
 msgid "This subscription has already been unsubscribed from."
 msgstr "هذا الإشتراك تم إلغاء اشتراكه سلفا من."
 
-#: forms.py:133
+#: forms.py:142
 msgid "The validation code supplied by you does not match."
 msgstr "رمز التحقق المُقدم من قبلكم غير مطابقة."
 
-#: forms.py:139
+#: forms.py:148
 msgid "Activation code"
 msgstr "رمز التفعيل"
 
-#: jobs/hourly/submit.py:15
+#: management/commands/submit_newsletter.py:14
+msgid "Submit pending messages."
+msgstr ""
+
+#: management/commands/submit_newsletter.py:30
 msgid "Submitting queued newsletter mailings"
 msgstr "إرسال قوائم التراسل التي في قائمة الإنتظار"
 
-#: models.py:34
+#: models.py:36
 msgid "newsletter title"
 msgstr "عنوان قائمة التراسل"
 
-#: models.py:39
+#: models.py:41
 msgid "Sender e-mail"
 msgstr "بريد المُرسِل"
 
-#: models.py:42
+#: models.py:44
 msgid "sender"
 msgstr "المرسل"
 
-#: models.py:42
+#: models.py:44
 msgid "Sender name"
 msgstr "إسم المرسل"
 
-#: models.py:46
+#: models.py:48
 msgid "visible"
 msgstr "مرئي"
 
-#: models.py:50
+#: models.py:52
 msgid "send html"
 msgstr "أرسل HTML"
 
-#: models.py:51
+#: models.py:53
 msgid "Whether or not to send HTML versions of e-mails."
 msgstr "نعم ام لا لإرسال إصدارات HTML من رسائل البريد الإلكتروني."
 
-#: models.py:103
+#: models.py:105
 msgid "newsletters"
 msgstr "قوائم التراسل"
 
-#: models.py:159
+#: models.py:141
 msgid "user"
 msgstr "مستخدم"
 
-#: models.py:165
+#: models.py:147
 msgid "optional"
 msgstr "اختياري"
 
-#: models.py:209
+#: models.py:191
 #, python-format
 msgid "Updated subscription %(subscription)s to %(action)s."
 msgstr "تحديث الإشتراكات  %(subscription)s لـ %(action)s."
 
-#: models.py:251
+#: models.py:232
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
 msgstr "لم يتم تعيين بريد إلكتروني او إسم مستخدم. هذا يسبب تناقض!"
 
-#: models.py:255
+#: models.py:236
 msgid "If user is set, email must be null and vice versa."
 msgstr "إذا تم تعيين المستخدم، يجب أن يكون البريد الإلكتروني لاغيا والعكس صحيح."
 
-#: models.py:297
+#: models.py:278
 msgid "IP address"
 msgstr "عنوان IP"
 
-#: models.py:306
+#: models.py:287
 msgid "activation code"
 msgstr "تاريخ التفعيل"
 
-#: models.py:311
+#: models.py:292
 msgid "subscribed"
 msgstr "مشترك"
 
-#: models.py:319
+#: models.py:300
 msgid "unsubscribed"
 msgstr "تم إلغاء الإشتراك"
 
-#: models.py:327
+#: models.py:308
 #, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
 msgstr "%(name)s <%(email)s> لـ %(newsletter)s"
 
-#: models.py:334
+#: models.py:315
 #, python-format
 msgid "%(email)s to %(newsletter)s"
 msgstr "%(email)s لـ %(newsletter)s"
 
-#: models.py:340
+#: models.py:321
 msgid "subscription"
 msgstr "الإشتراك"
 
-#: models.py:341
+#: models.py:322
 msgid "subscriptions"
 msgstr "الإشتراكات"
 
-#: models.py:429
+#: models.py:404
 msgid ""
 "Sort order determines the order in which articles are concatenated in a "
 "post."
 msgstr "أمر الترتيب يُحدد وضعية تسلسل المقالات في الإرسالية."
 
-#: models.py:431
+#: models.py:406
 msgid "sort order"
 msgstr "أمر الترتيب"
 
-#: models.py:434 models.py:476
+#: models.py:409 models.py:454
 msgid "title"
 msgstr "العنوان"
 
-#: models.py:435
+#: models.py:410
 msgid "text"
 msgstr "النص"
 
-#: models.py:438
+#: models.py:413
 msgid "link"
 msgstr "رابط"
 
-#: models.py:444
+#: models.py:419
 msgid "image"
 msgstr "صورة"
 
-#: models.py:456
+#: models.py:431
 msgid "article"
 msgstr "مقالة"
 
-#: models.py:457
+#: models.py:432
 msgid "articles"
 msgstr "مقالات"
 
-#: models.py:477
+#: models.py:455
 msgid "slug"
 msgstr "slug"
 
-#: models.py:484
+#: models.py:462
 msgid "created"
 msgstr "أنشئ"
 
-#: models.py:487
+#: models.py:465
 msgid "modified"
 msgstr "تم التعديل"
 
-#: models.py:492
+#: models.py:470
 msgid "messages"
 msgstr "الرسائل"
 
-#: models.py:497
+#: models.py:475
 #, python-format
 msgid "%(title)s in %(newsletter)s"
 msgstr "%(title)s في %(newsletter)s"
 
-#: models.py:556
+#: models.py:529
 msgid "submissions"
 msgstr "الإرساليات"
 
-#: models.py:559
+#: models.py:532
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
 msgstr "%(newsletter)s في %(publish_date)s"
 
-#: models.py:578
+#: models.py:551
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
 msgstr "إرسال %(submission)s إلى %(count)d شخص"
 
-#: models.py:637
+#: models.py:610
 #, python-format
 msgid "Submitting message to: %s."
 msgstr "إرسال الرسالى إلى: %s."
 
-#: models.py:646
+#: models.py:619
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
 msgstr "الرسالة %(subscription)s فشلت بسبب: %(error)s"
 
-#: models.py:664
+#: models.py:637
 #, python-format
 msgid "Submission of message %s"
 msgstr "إرساليات من الرسائل %s"
 
-#: models.py:709
+#: models.py:683
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
 msgstr "إن لم تختار أي مشترك, النظام سوف يختار مشتركين لك بشكل تلقائي."
 
-#: models.py:711
+#: models.py:685
 msgid "recipients"
 msgstr "المستلمين"
 
-#: models.py:716
+#: models.py:690
 msgid "publication date"
 msgstr "تاريخ النشر"
 
-#: models.py:720
+#: models.py:694
 msgid "publish"
 msgstr "انشر"
 
-#: models.py:721
+#: models.py:695
 msgid "Publish in archive."
 msgstr "انشر في الأرشيف."
 
-#: models.py:725
+#: models.py:699
 msgid "prepared"
 msgstr "مجهّز"
 
-#: models.py:729
+#: models.py:703
 msgid "sent"
 msgstr "تم الإرسال"
 
-#: models.py:733
+#: models.py:707
 msgid "sending"
 msgstr "جاري الإرسال"
 
@@ -623,7 +627,7 @@ msgstr "التسجيل في %(title)s"
 #: templates/newsletter/message/subscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name)s,\n"
+"Dear %(name|default:\"Sir/Madam\")s,\n"
 "\n"
 "you, or someone in your name requested a subscription to %(title)s.\n"
 "\n"
@@ -646,7 +650,7 @@ msgstr "إلغاء الإشتراك من %(title)s"
 #: templates/newsletter/message/unsubscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name)s,\n"
+"Dear %(name|default:\"Sir/Madam\")s,\n"
 "\n"
 "you, or someone in your name requested unsubscription from %(title)s.\n"
 "\n"
@@ -669,7 +673,7 @@ msgstr "تحديث الإشتراك في %(title)s"
 #: templates/newsletter/message/update.txt:1
 #, python-format
 msgid ""
-"Dear %(name)s,\n"
+"Dear %(name|default:\"Sir/Madam\")s,\n"
 "\n"
 "you, or someone in your name requested updating your personal information for %(title)s.\n"
 "\n"

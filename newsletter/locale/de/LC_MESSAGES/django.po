@@ -4,6 +4,7 @@
 # 
 # Translators:
 # Alexander Hartmann <ah@prexma.com>, 2018
+# Emeny Nagel <emenynagel@gmail.com>, 2019
 # Jannis Vajen, 2013
 # Jannis Vajen, 2012
 # Marc Richter <marc.richter.1982@gmail.com>, 2016
@@ -12,9 +13,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-16 11:31+0000\n"
-"PO-Revision-Date: 2018-06-22 10:33+0000\n"
-"Last-Translator: Alexander Hartmann <ah@prexma.com>\n"
+"POT-Creation-Date: 2018-11-17 19:25+0000\n"
+"PO-Revision-Date: 2020-01-11 19:18+0000\n"
+"Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: German (http://www.transifex.com/dokterbob/django-newsletter/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -49,7 +50,7 @@ msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
 msgstr "Der Name %(name)s ist zu lang, die Maximallänge beträgt %(name_length)s Zeichen."
 
 #: addressimport/parsers.py:196 addressimport/parsers.py:208
-#: addressimport/parsers.py:243 models.py:165
+#: addressimport/parsers.py:243 models.py:147
 msgid "name"
 msgstr "Name"
 
@@ -65,8 +66,8 @@ msgid ""
 msgstr "Namensspalte nicht gefunden. Die Spaltenbezeichnung sollte entwerder 'name' oder '%s' lauten."
 
 #: addressimport/parsers.py:219 addressimport/parsers.py:231
-#: addressimport/parsers.py:244 forms.py:43 forms.py:76 models.py:39
-#: models.py:179
+#: addressimport/parsers.py:244 forms.py:44 forms.py:79 forms.py:134
+#: models.py:41 models.py:161
 msgid "e-mail"
 msgstr "E-Mail"
 
@@ -118,11 +119,11 @@ msgstr "Abonnenten"
 msgid "Submissions"
 msgstr "Ausgaben"
 
-#: admin.py:99 models.py:102 models.py:300 models.py:480 models.py:699
+#: admin.py:99 models.py:104 models.py:281 models.py:458 models.py:673
 msgid "newsletter"
 msgstr "Newsletter"
 
-#: admin.py:117 models.py:555
+#: admin.py:117 models.py:528
 msgid "submission"
 msgstr "Ausgabe"
 
@@ -162,7 +163,7 @@ msgstr "Die Ausgabe wird versandt."
 msgid "Optional"
 msgstr "Optional"
 
-#: admin.py:253 models.py:450 models.py:491 models.py:703
+#: admin.py:253 models.py:425 models.py:469 models.py:677
 msgid "message"
 msgstr "Nachricht"
 
@@ -188,11 +189,11 @@ msgstr "Ausgetragen"
 msgid "Unactivated"
 msgstr "noch nicht aktiviert"
 
-#: admin.py:396 models.py:314
+#: admin.py:396 models.py:295
 msgid "subscribe date"
 msgstr "Abonnierungsdatum"
 
-#: admin.py:403 models.py:322
+#: admin.py:403 models.py:303
 msgid "unsubscribe date"
 msgstr "Austragungsdatum"
 
@@ -294,236 +295,240 @@ msgstr "Diese Nachricht wurde bereits durch eine andere Ausgabe im Archiv veröf
 msgid "%(name)s object with primary key %(key)r does not exist."
 msgstr "Objekt %(name)s mit Primärschlüssel %(key)r existiert nicht. "
 
-#: forms.py:57
+#: forms.py:59
 msgid "Your e-mail address has already been subscribed to."
 msgstr "Ihre E-Mail-Adresse ist bereits eingetragen."
 
-#: forms.py:84
+#: forms.py:88
 msgid "This subscription has not yet been activated."
 msgstr "Dieses Abonnement wurde noch nicht aktiviert."
 
-#: forms.py:102
+#: forms.py:106
 msgid "This e-mail address has not been subscribed to."
 msgstr "Diese E-Mail-Adresse ist nicht eingetragen."
 
-#: forms.py:117
+#: forms.py:121
 msgid "This subscription has already been unsubscribed from."
 msgstr "Dieses Abonnement wurde bereits gekündigt."
 
-#: forms.py:133
+#: forms.py:142
 msgid "The validation code supplied by you does not match."
 msgstr "Der Bestätigungsschlüssel stimmt nicht."
 
-#: forms.py:139
+#: forms.py:148
 msgid "Activation code"
 msgstr "Aktivierungsschlüssel"
 
-#: jobs/hourly/submit.py:15
+#: management/commands/submit_newsletter.py:14
+msgid "Submit pending messages."
+msgstr "Sende ausstehende Nachricht an %s"
+
+#: management/commands/submit_newsletter.py:30
 msgid "Submitting queued newsletter mailings"
 msgstr "Verschicke Newsletter in Warteliste"
 
-#: models.py:34
+#: models.py:36
 msgid "newsletter title"
 msgstr "Newslettertitel"
 
-#: models.py:39
+#: models.py:41
 msgid "Sender e-mail"
 msgstr "Absenderadresse"
 
-#: models.py:42
+#: models.py:44
 msgid "sender"
 msgstr "Absender"
 
-#: models.py:42
+#: models.py:44
 msgid "Sender name"
 msgstr "Absendername"
 
-#: models.py:46
+#: models.py:48
 msgid "visible"
 msgstr "sichtbar"
 
-#: models.py:50
+#: models.py:52
 msgid "send html"
 msgstr "HTML verschicken"
 
-#: models.py:51
+#: models.py:53
 msgid "Whether or not to send HTML versions of e-mails."
 msgstr "Ob HTML-Versionen der E-Mails verschickt werden sollen."
 
-#: models.py:103
+#: models.py:105
 msgid "newsletters"
 msgstr "Newsletter"
 
-#: models.py:159
+#: models.py:141
 msgid "user"
 msgstr "Benutzer"
 
-#: models.py:165
+#: models.py:147
 msgid "optional"
 msgstr "optional"
 
-#: models.py:209
+#: models.py:191
 #, python-format
 msgid "Updated subscription %(subscription)s to %(action)s."
 msgstr "Abonnement %(subscription)s wurde aktualisiert durch \"%(action)s\"."
 
-#: models.py:251
+#: models.py:232
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
 msgstr "Es ist weder eine E-Mail-Adresse noch ein Benutzername angegeben. Das schreit nach Inkonsistenz!"
 
-#: models.py:255
+#: models.py:236
 msgid "If user is set, email must be null and vice versa."
 msgstr "Wenn ein Benutzer angegeben ist, muss das Adressfeld leer bleiben (und umgekehrt)."
 
-#: models.py:297
+#: models.py:278
 msgid "IP address"
 msgstr "IP-Adresse"
 
-#: models.py:306
+#: models.py:287
 msgid "activation code"
 msgstr "Aktivierungsschlüssel"
 
-#: models.py:311
+#: models.py:292
 msgid "subscribed"
 msgstr "abonniert"
 
-#: models.py:319
+#: models.py:300
 msgid "unsubscribed"
 msgstr "ausgetragen"
 
-#: models.py:327
+#: models.py:308
 #, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
 msgstr "%(name)s <%(email)s> bei %(newsletter)s"
 
-#: models.py:334
+#: models.py:315
 #, python-format
 msgid "%(email)s to %(newsletter)s"
 msgstr "%(email)s bei %(newsletter)s"
 
-#: models.py:340
+#: models.py:321
 msgid "subscription"
 msgstr "Abonnement"
 
-#: models.py:341
+#: models.py:322
 msgid "subscriptions"
 msgstr "Abonnements"
 
-#: models.py:429
+#: models.py:404
 msgid ""
 "Sort order determines the order in which articles are concatenated in a "
 "post."
 msgstr "Sortierung legt fest, in welcher Reihenfolge die Artikel in der Nachricht zusammengefasst werden."
 
-#: models.py:431
+#: models.py:406
 msgid "sort order"
 msgstr "Sortierung"
 
-#: models.py:434 models.py:476
+#: models.py:409 models.py:454
 msgid "title"
 msgstr "Titel"
 
-#: models.py:435
+#: models.py:410
 msgid "text"
 msgstr "Text"
 
-#: models.py:438
+#: models.py:413
 msgid "link"
 msgstr "Link"
 
-#: models.py:444
+#: models.py:419
 msgid "image"
 msgstr "Bild"
 
-#: models.py:456
+#: models.py:431
 msgid "article"
 msgstr "Artikel"
 
-#: models.py:457
+#: models.py:432
 msgid "articles"
 msgstr "Artikel"
 
-#: models.py:477
+#: models.py:455
 msgid "slug"
 msgstr "Kurzform"
 
-#: models.py:484
+#: models.py:462
 msgid "created"
 msgstr "Erstellt"
 
-#: models.py:487
+#: models.py:465
 msgid "modified"
 msgstr "verändert"
 
-#: models.py:492
+#: models.py:470
 msgid "messages"
 msgstr "Nachrichten"
 
-#: models.py:497
+#: models.py:475
 #, python-format
 msgid "%(title)s in %(newsletter)s"
 msgstr "%(title)s in %(newsletter)s"
 
-#: models.py:556
+#: models.py:529
 msgid "submissions"
 msgstr "Ausgaben"
 
-#: models.py:559
+#: models.py:532
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
 msgstr "%(newsletter)s vom %(publish_date)s"
 
-#: models.py:578
+#: models.py:551
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
 msgstr "Verschicke %(submission)s an %(count)d Personen"
 
-#: models.py:637
+#: models.py:610
 #, python-format
 msgid "Submitting message to: %s."
 msgstr "Verschicke Nachricht an: %s."
 
-#: models.py:646
+#: models.py:619
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
 msgstr "Nachricht %(subscription)s schlug fehl: %(error)s"
 
-#: models.py:664
+#: models.py:637
 #, python-format
 msgid "Submission of message %s"
 msgstr "Ausgabe der Nachricht %s"
 
-#: models.py:709
+#: models.py:683
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
 msgstr "Falls Sie keine auswählen, wird das System automatisch Abonnenten auswählen."
 
-#: models.py:711
+#: models.py:685
 msgid "recipients"
 msgstr "Empfänger"
 
-#: models.py:716
+#: models.py:690
 msgid "publication date"
 msgstr "Veröffentlichungsdatum"
 
-#: models.py:720
+#: models.py:694
 msgid "publish"
 msgstr "veröffentlichen"
 
-#: models.py:721
+#: models.py:695
 msgid "Publish in archive."
 msgstr "Im Archiv einsehbar."
 
-#: models.py:725
+#: models.py:699
 msgid "prepared"
 msgstr "vorbereitet"
 
-#: models.py:729
+#: models.py:703
 msgid "sent"
 msgstr "Versendet"
 
-#: models.py:733
+#: models.py:707
 msgid "sending"
 msgstr "Sende"
 
@@ -612,7 +617,7 @@ msgstr "Angemeldet in %(title)s"
 #: templates/newsletter/message/subscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name)s,\n"
+"Dear %(name|default:\"Sir/Madam\")s,\n"
 "\n"
 "you, or someone in your name requested a subscription to %(title)s.\n"
 "\n"
@@ -620,7 +625,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr "Guten Tag %(name)s,\n\nSie, oder eine andere Person in Ihrem Namen hat die Anmeldung in %(title)s vorgenommen.\n\nWenn Sie die Anmeldung bestätigen möchten klicken Sie bitte auf folgenden Link:\nhttps://%(domain)s%(url)s\n\nMit freundlichen Grüßen"
+msgstr ""
 
 #: templates/newsletter/message/subscribe_subject.txt:1
 msgid "Confirm subscription"
@@ -635,7 +640,7 @@ msgstr "Abmelden von %(title)s"
 #: templates/newsletter/message/unsubscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name)s,\n"
+"Dear %(name|default:\"Sir/Madam\")s,\n"
 "\n"
 "you, or someone in your name requested unsubscription from %(title)s.\n"
 "\n"
@@ -643,7 +648,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr "Guten Tag %(name)s,\n\nSie, oder eine andere Person in Ihrem Namen hat die Abmeldung von %(title)s vorgenommen .\n\nWenn Sie die Abmeldung bestätigen möchten klicken Sie bitte auf folgenden Link:\nhttps://%(domain)s%(url)s\n\nMit freundlichen Grüßen"
+msgstr ""
 
 #: templates/newsletter/message/unsubscribe_subject.txt:1
 msgid "Confirm unsubscription"
@@ -658,7 +663,7 @@ msgstr "Aktualisierung der Anmeldung in %(title)s"
 #: templates/newsletter/message/update.txt:1
 #, python-format
 msgid ""
-"Dear %(name)s,\n"
+"Dear %(name|default:\"Sir/Madam\")s,\n"
 "\n"
 "you, or someone in your name requested updating your personal information for %(title)s.\n"
 "\n"
@@ -666,7 +671,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr "Guten Tag %(name)s,\n\nSie, oder eine andere Person in Ihrem Namen hat die Aktualisierung von %(title)s vorgenommen .\n\nWenn Sie die Aktualisierung bestätigen möchten klicken Sie bitte auf folgenden Link::\nhttps://%(domain)s%(url)s\n\nMit freundlichen Grüßen"
+msgstr ""
 
 #: templates/newsletter/message/update_subject.txt:1
 msgid "Update information"

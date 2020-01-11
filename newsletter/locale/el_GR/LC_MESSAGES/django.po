@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # dokterbob <mathijs@mathijsfietst.nl>, 2018
 # Sophocles Tsivides <sophocles.tsivides@gmail.com>, 2017
@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-16 11:31+0000\n"
-"PO-Revision-Date: 2018-03-25 19:06+0000\n"
+"POT-Creation-Date: 2018-11-17 19:25+0000\n"
+"PO-Revision-Date: 2020-01-11 19:18+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: Greek (Greece) (http://www.transifex.com/dokterbob/django-newsletter/language/el_GR/)\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
 msgstr "Το όνομα %(name)s είναι πολύ μεγάλο, το μέγιστος μήκος είναι %(name_length)s χαρακτήρες."
 
 #: addressimport/parsers.py:196 addressimport/parsers.py:208
-#: addressimport/parsers.py:243 models.py:165
+#: addressimport/parsers.py:243 models.py:147
 msgid "name"
 msgstr "όνομα"
 
@@ -62,8 +62,8 @@ msgid ""
 msgstr "Δεν βρέθηκε στήλη ονόματος. Το όνομα αυτής της στήλης πρέπει να είναι είτε 'όνομα' είτε '%s'."
 
 #: addressimport/parsers.py:219 addressimport/parsers.py:231
-#: addressimport/parsers.py:244 forms.py:43 forms.py:76 models.py:39
-#: models.py:179
+#: addressimport/parsers.py:244 forms.py:44 forms.py:79 forms.py:134
+#: models.py:41 models.py:161
 msgid "e-mail"
 msgstr "e-mail"
 
@@ -115,11 +115,11 @@ msgstr "Συνδρομές"
 msgid "Submissions"
 msgstr "Υποβολές"
 
-#: admin.py:99 models.py:102 models.py:300 models.py:480 models.py:699
+#: admin.py:99 models.py:104 models.py:281 models.py:458 models.py:673
 msgid "newsletter"
 msgstr "ενημερωτικό δελτίο"
 
-#: admin.py:117 models.py:555
+#: admin.py:117 models.py:528
 msgid "submission"
 msgstr "υποβολή"
 
@@ -159,7 +159,7 @@ msgstr "Η υποβολή σας αποστέλλεται."
 msgid "Optional"
 msgstr "Προαιρετικό"
 
-#: admin.py:253 models.py:450 models.py:491 models.py:703
+#: admin.py:253 models.py:425 models.py:469 models.py:677
 msgid "message"
 msgstr "μήνυμα"
 
@@ -185,11 +185,11 @@ msgstr "Έχει διαγραφεί"
 msgid "Unactivated"
 msgstr "Μη ενεργοποιημένος"
 
-#: admin.py:396 models.py:314
+#: admin.py:396 models.py:295
 msgid "subscribe date"
 msgstr "ημερομηνία εγγραφής"
 
-#: admin.py:403 models.py:322
+#: admin.py:403 models.py:303
 msgid "unsubscribe date"
 msgstr "ημερομηνία διαγραφής"
 
@@ -291,236 +291,240 @@ msgstr "Αυτό το μήνυμα έχει ήδη δημοσιευθεί σε �
 msgid "%(name)s object with primary key %(key)r does not exist."
 msgstr "%(name)s αντικείμενο με πρωτεύον κλειδί %(key)r δεν υπάρχει."
 
-#: forms.py:57
+#: forms.py:59
 msgid "Your e-mail address has already been subscribed to."
 msgstr "Η διεύθυνση e-mail σας έχει ήδη εγγραφεί."
 
-#: forms.py:84
+#: forms.py:88
 msgid "This subscription has not yet been activated."
 msgstr "Αυτή η συνδρομή δεν έχει ενεργοποιηθεί ακόμα."
 
-#: forms.py:102
+#: forms.py:106
 msgid "This e-mail address has not been subscribed to."
 msgstr "Αυτή η διεύθυνση e-mail δεν έχει εγγραφεί."
 
-#: forms.py:117
+#: forms.py:121
 msgid "This subscription has already been unsubscribed from."
 msgstr "Αυτή η συνδρομή έχει ήδη διαγραφεί."
 
-#: forms.py:133
+#: forms.py:142
 msgid "The validation code supplied by you does not match."
 msgstr "Ο κωδικός επικύρωσης που εισήχθη από εσάς δεν ταιριάζει."
 
-#: forms.py:139
+#: forms.py:148
 msgid "Activation code"
 msgstr "Κωδικός ενεργοποίησης"
 
-#: jobs/hourly/submit.py:15
+#: management/commands/submit_newsletter.py:14
+msgid "Submit pending messages."
+msgstr ""
+
+#: management/commands/submit_newsletter.py:30
 msgid "Submitting queued newsletter mailings"
 msgstr "Υποβολή ουράς αναμονής αποστολής newsletter"
 
-#: models.py:34
+#: models.py:36
 msgid "newsletter title"
 msgstr "τίτλος newsletter"
 
-#: models.py:39
+#: models.py:41
 msgid "Sender e-mail"
 msgstr "E-mail αποστολέα"
 
-#: models.py:42
+#: models.py:44
 msgid "sender"
 msgstr "αποστολέας"
 
-#: models.py:42
+#: models.py:44
 msgid "Sender name"
 msgstr "Όνομα αποστολέα"
 
-#: models.py:46
+#: models.py:48
 msgid "visible"
 msgstr "ορατό"
 
-#: models.py:50
+#: models.py:52
 msgid "send html"
 msgstr "αποστολή html"
 
-#: models.py:51
+#: models.py:53
 msgid "Whether or not to send HTML versions of e-mails."
 msgstr "Να αποστέλλονται ή όχι e-mails σε έκδοση HTML."
 
-#: models.py:103
+#: models.py:105
 msgid "newsletters"
 msgstr "newsletters"
 
-#: models.py:159
+#: models.py:141
 msgid "user"
 msgstr "χρήστης"
 
-#: models.py:165
+#: models.py:147
 msgid "optional"
 msgstr "προαιρετικό"
 
-#: models.py:209
+#: models.py:191
 #, python-format
 msgid "Updated subscription %(subscription)s to %(action)s."
 msgstr "Ενημερώθηκε η συνδρομή %(subscription)s σε %(action)s."
 
-#: models.py:251
+#: models.py:232
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
 msgstr "Δεν έχει οριστεί ούτε e-mail ούτε ένα όνομα χρήστη. Αυτό είναι ασυνέπεια!"
 
-#: models.py:255
+#: models.py:236
 msgid "If user is set, email must be null and vice versa."
 msgstr "Εάν έχει οριστεί χρήστης, το e-mail πρέπει να είναι κενό και αντίστροφα."
 
-#: models.py:297
+#: models.py:278
 msgid "IP address"
 msgstr "Διεύθυνση IP"
 
-#: models.py:306
+#: models.py:287
 msgid "activation code"
 msgstr "κωδικός ενεργοποίησης"
 
-#: models.py:311
+#: models.py:292
 msgid "subscribed"
 msgstr "εγγεγραμμένος"
 
-#: models.py:319
+#: models.py:300
 msgid "unsubscribed"
 msgstr "διαγραμμένος"
 
-#: models.py:327
+#: models.py:308
 #, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
 msgstr "%(name)s<%(email)s σε %(newsletter)s"
 
-#: models.py:334
+#: models.py:315
 #, python-format
 msgid "%(email)s to %(newsletter)s"
 msgstr "%(email)s σε %(newsletter)s"
 
-#: models.py:340
+#: models.py:321
 msgid "subscription"
 msgstr "συνδρομή"
 
-#: models.py:341
+#: models.py:322
 msgid "subscriptions"
 msgstr "συνδρομές"
 
-#: models.py:429
+#: models.py:404
 msgid ""
 "Sort order determines the order in which articles are concatenated in a "
 "post."
 msgstr "Η σειρά ταξινόμησης καθορίζει τη σειρά με την οποία τα άρθρα συνδέονται σε μια δημοσίευση."
 
-#: models.py:431
+#: models.py:406
 msgid "sort order"
 msgstr "σειρά ταξινόμησης"
 
-#: models.py:434 models.py:476
+#: models.py:409 models.py:454
 msgid "title"
 msgstr "τίτλος"
 
-#: models.py:435
+#: models.py:410
 msgid "text"
 msgstr "κείμενο"
 
-#: models.py:438
+#: models.py:413
 msgid "link"
 msgstr "σύνδεσμος"
 
-#: models.py:444
+#: models.py:419
 msgid "image"
 msgstr "εικόνα"
 
-#: models.py:456
+#: models.py:431
 msgid "article"
 msgstr "άρθρο"
 
-#: models.py:457
+#: models.py:432
 msgid "articles"
 msgstr "άρθρα"
 
-#: models.py:477
+#: models.py:455
 msgid "slug"
 msgstr "τίτλος"
 
-#: models.py:484
+#: models.py:462
 msgid "created"
 msgstr "δημιουργήθηκε"
 
-#: models.py:487
+#: models.py:465
 msgid "modified"
 msgstr "τροποποιήθηκε"
 
-#: models.py:492
+#: models.py:470
 msgid "messages"
 msgstr "μηνύματα"
 
-#: models.py:497
+#: models.py:475
 #, python-format
 msgid "%(title)s in %(newsletter)s"
 msgstr "%(title)s σε %(newsletter)s"
 
-#: models.py:556
+#: models.py:529
 msgid "submissions"
 msgstr "υποβολές"
 
-#: models.py:559
+#: models.py:532
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
 msgstr "%(newsletter)s σε %(publish_date)s"
 
-#: models.py:578
+#: models.py:551
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
 msgstr "Υποβάλλονται %(submission)s σε %(count)d άτομα"
 
-#: models.py:637
+#: models.py:610
 #, python-format
 msgid "Submitting message to: %s."
 msgstr "Υποβολή μηνύματος σε: %s."
 
-#: models.py:646
+#: models.py:619
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
 msgstr "Το μήνυμα %(subscription)sαπέτυχε με σφάλμα: %(error)s"
 
-#: models.py:664
+#: models.py:637
 #, python-format
 msgid "Submission of message %s"
 msgstr "Υποβολή μηνύματος %s"
 
-#: models.py:709
+#: models.py:683
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
 msgstr "Εάν δεν επιλέξετε κανένα, το σύστημα θα εντοπίσει αυτόματα τους συνδρομητές για εσάς."
 
-#: models.py:711
+#: models.py:685
 msgid "recipients"
 msgstr "παραλήπτες"
 
-#: models.py:716
+#: models.py:690
 msgid "publication date"
 msgstr "ημερομηνία δημοσίευσης"
 
-#: models.py:720
+#: models.py:694
 msgid "publish"
 msgstr "δημοσίευση"
 
-#: models.py:721
+#: models.py:695
 msgid "Publish in archive."
 msgstr "Δημοσίευση στο αρχείο."
 
-#: models.py:725
+#: models.py:699
 msgid "prepared"
 msgstr "ετοιμάστηκε"
 
-#: models.py:729
+#: models.py:703
 msgid "sent"
 msgstr "απεστάλη"
 
-#: models.py:733
+#: models.py:707
 msgid "sending"
 msgstr "αποστέλλεται"
 
@@ -609,7 +613,7 @@ msgstr ""
 #: templates/newsletter/message/subscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name)s,\n"
+"Dear %(name|default:\"Sir/Madam\")s,\n"
 "\n"
 "you, or someone in your name requested a subscription to %(title)s.\n"
 "\n"
@@ -632,7 +636,7 @@ msgstr ""
 #: templates/newsletter/message/unsubscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name)s,\n"
+"Dear %(name|default:\"Sir/Madam\")s,\n"
 "\n"
 "you, or someone in your name requested unsubscription from %(title)s.\n"
 "\n"
@@ -655,7 +659,7 @@ msgstr ""
 #: templates/newsletter/message/update.txt:1
 #, python-format
 msgid ""
-"Dear %(name)s,\n"
+"Dear %(name|default:\"Sir/Madam\")s,\n"
 "\n"
 "you, or someone in your name requested updating your personal information for %(title)s.\n"
 "\n"
