@@ -35,13 +35,13 @@ Extended documentation is available on
 
 Translations
 ============
-All strings have been translated to German, French, English, Russian, Polish, Dutch, Italian, Arabic, Brazilian Portuguese, Icelandic and Czech with more languages on their way.
-
-Contributions to translations are welcome through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_. Strings will be included as
-soon as near-full coverage is reached.
+Strings have been fully translated to a lot of languages with many more on their way.
 
 .. image:: https://www.transifex.com/projects/p/django-newsletter/resource/django/chart/image_png
     :target: http://www.transifex.net/projects/p/django-newsletter/
+
+Contributions to translations are welcome through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_. Strings will be included as
+soon as near-full coverage is reached.
 
 Compatibility
 =============
