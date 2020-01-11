@@ -1,6 +1,14 @@
 Changes
 =======
 
+0.9b1 (11-01-2019)
+------------------
+
+- Support for Django Django 1.11.x (#294), 2.2.x (#295) and 3.0.x (#296).
+- Added missing migration (#282).
+- Update several dependencies due to security issues.
+- Python 3.8 support.
+
 0.8b1 (17-11-2018)
 ------------------
 
