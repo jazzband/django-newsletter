@@ -73,7 +73,6 @@ setup(
     install_requires=REQUIREMENTS,
     # TODO: remove this once sorl-thumbnail 12.6.0 released
     dependency_links=DEPENDENCY_LINKS,
-    license='AGPL',
     author='Mathijs de Bruin',
     author_email='mathijs@mathijsfietst.nl',
     url='http://github.com/dokterbob/django-newsletter/',
