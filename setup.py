@@ -42,14 +42,18 @@ except:
     warnings.warn('Could not read requirements_test.txt')
     TEST_REQUIREMENTS = None
 
-# TODO: remove this once sorl-thumbnail 12.6.0 released
-# Update requirements to accommodate pinning sorl-thumbnail to git repo
-# This section handles the issue of install_requires not support "-e" syntax
-REQUIREMENTS = REQUIREMENTS[:-134]
-REQUIREMENTS += 'sorl-thumbnail'
-DEPENDENCY_LINKS = [
-    'https://github.com/jazzband/sorl-thumbnail/tarball/master#egg=sorl-thumbnail'
-]
+# TODO: remove this once sorl-thumbnail 12.6.0 released to PyPI
+# setuptools cannot handle the syntax for an editable dependency as provided
+# by requirements.txt. This parses those lines to create an appropriate list
+# for install_requires and populates the needed dependency_links.
+REQUIREMENTS = REQUIREMENTS.splitlines()
+DEPENDENCY_LINKS = []
+
+for index, line in enumerate(REQUIREMENTS):
+    if line.startswith('-e git'):
+        link, requirement = line.split('#egg=')
+        REQUIREMENTS[index] = requirement
+        DEPENDENCY_LINKS.append(link)
 
 setup(
     name='django-newsletter',
