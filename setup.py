@@ -44,14 +44,19 @@ except:
 
 # TODO: remove this once sorl-thumbnail 12.6.0 released to PyPI
 # setuptools cannot handle the syntax for an editable dependency as provided
-# by requirements.txt. This parses those lines to create an appropriate list
-# for install_requires and populates the needed dependency_links.
+# by requirements.txt (specifically the "-e" portion). This parses those
+# lines to create an appropriate list for install_requires and populates the
+# needed dependency_links.
 REQUIREMENTS = REQUIREMENTS.splitlines()
 DEPENDENCY_LINKS = []
 
 for index, line in enumerate(REQUIREMENTS):
     if line.startswith('-e git'):
-        link, requirement = line.split('#egg=')
+        # Splits into the link and the package name
+        editable_link, requirement = line.split('#egg=')
+        # Removes "-e " from link (always the first 3 characters)
+        link = editable_link[3:]
+
         REQUIREMENTS[index] = requirement
         DEPENDENCY_LINKS.append(link)
 
