@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans with name=subscription.name title=newsletter.title domain=site.domain url=subscription.update_activate_url %}Dear {{ name }},
+{% load i18n %}{% blocktrans with name=subscription.name title=newsletter.title domain=site.domain url=subscription.update_activate_url %}Dear {{ name|default:"Sir/Madam" }},
 
 you, or someone in your name requested updating your personal information for {{ title }}.
 
