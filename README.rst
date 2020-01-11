@@ -65,8 +65,8 @@ Contributing
 =============
 Want to contribute, great!
 
-Please refer to the `issues <https://github.com/dokterbob/django-newsletter/issues>` on
-GitHub and read `CONTRIBUTING.rst <https://github.com/dokterbob/django-newsletter/blob/master/CONTRIBUTING.rst>`.
+Please refer to the `issues <https://github.com/dokterbob/django-newsletter/issues>`_ on
+GitHub and read `CONTRIBUTING.rst <https://github.com/dokterbob/django-newsletter/blob/master/CONTRIBUTING.rst>`_ .
 
 Feedback
 ========
