@@ -24,3 +24,4 @@ pip = "==18.0"
 [dev-packages]
 coverage = "*"
 transifex-client = "*"
+twine = "*"
