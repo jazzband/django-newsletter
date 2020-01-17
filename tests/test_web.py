@@ -4,6 +4,12 @@ import time
 
 import unittest
 
+# Conditional import for Python 2.7
+try:
+    from unittest.mock import patch, PropertyMock
+except ImportError:
+    from mock import patch, PropertyMock
+
 # Conditionally import pytz
 try:
     import pytz
@@ -1345,6 +1351,57 @@ class ArchiveTestcase(NewsletterListTestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, self.submission.message.title)
+
+    @patch(
+        'newsletter.settings.NewsletterSettings.THUMBNAIL',
+        new_callable=PropertyMock,
+    )
+    def test_archive_detail_sorl_thumbnail_template(self, THUMBNAIL):
+        """Tests that sorl-thumbnail template works."""
+        THUMBNAIL.return_value = 'sorl-thumbnail'
+
+        detail_url = self.submission.get_absolute_url()
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertTemplateUsed(
+            'newsletter/message/thumbnail/sorl_thumbnail.html'
+        )
+
+    @patch(
+        'newsletter.settings.NewsletterSettings.THUMBNAIL',
+        new_callable=PropertyMock,
+    )
+    def test_archive_detail_easy_thumbnails_template(self, THUMBNAIL):
+        """Tests that easy-thumbnails template works."""
+        THUMBNAIL.return_value = 'easy-thumbnails'
+
+        detail_url = self.submission.get_absolute_url()
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertTemplateUsed(
+            'newsletter/message/thumbnail/easy_thumbnails.html'
+        )
+
+    @patch(
+        'newsletter.settings.NewsletterSettings.THUMBNAIL',
+        new_callable=PropertyMock,
+    )
+    def test_archive_detail_default_thumbnail_template(self, THUMBNAIL):
+        """Tests that default thumbnail template works."""
+        THUMBNAIL.return_value = None
+
+        detail_url = self.submission.get_absolute_url()
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertTemplateUsed(
+            'newsletter/message/thumbnail/django_newsletter.html'
+        )
 
     def test_archive_unpublished_detail(self):
         """ Assert that an unpublished submission is truly inaccessible. """
