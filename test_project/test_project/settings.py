@@ -17,7 +17,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.sites',
     'django.contrib.staticfiles',
-    'sorl.thumbnail',
     'imperavi',
     'tinymce',
     'newsletter'

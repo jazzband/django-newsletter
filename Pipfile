@@ -19,7 +19,6 @@ six = "*"
 unicodecsv = "<0.15"
 Django = ">=2.2.16"
 Pillow = ">=6.2.2"
-pip = "==18.0"
 
 [dev-packages]
 coverage = "*"

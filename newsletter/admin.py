@@ -34,7 +34,16 @@ except ImportError:  # Django < 1.10
     from django.views.i18n import javascript_catalog
     HAS_CBV_JSCAT = False
 
-from sorl.thumbnail.admin import AdminImageMixin
+# Conditional imports as only one Thumbnail app is required
+try:
+    from sorl.thumbnail.admin import AdminImageMixin
+except ImportError:
+    pass
+
+try:
+    from easy_thumbnails.widgets import ImageClearableFileInput
+except (ImportError, RuntimeError):
+    pass
 
 from .models import (
     Newsletter, Subscription, Attachment, Article, Message, Submission
@@ -47,9 +56,8 @@ from .admin_forms import (
     ArticleFormSet
 )
 from .admin_utils import ExtendibleModelAdminMixin, make_subscription
-
 from .compat import get_context, reverse
-
+from .fields import DynamicImageField
 from .settings import newsletter_settings
 
 # Construct URL's for icons
@@ -197,6 +205,15 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         return my_urls + urls
 
 
+class AttachmentInline(admin.TabularInline):
+    model = Attachment
+    extra = 1
+
+    def has_change_permission(self, request, obj=None):
+        """ Prevent change of the file (instead needs to be deleted) """
+        return False
+
+
 StackedInline = admin.StackedInline
 if (
         newsletter_settings.RICHTEXT_WIDGET
@@ -215,17 +232,17 @@ if (
             'Imperavi WYSIWYG text editor might not work.'
         )
 
+# Creates a base class for the ArticleInline to inherit depending on
+# if the user has decided to use sorl-thumbnail or not
+# https://sorl-thumbnail.readthedocs.io/en/latest/examples.html#admin-examples
+if newsletter_settings.THUMBNAIL == 'sorl-thumbnail':
+    ArticleInlineClassTuple = (AdminImageMixin, StackedInline)
+else:
+    ArticleInlineClassTuple = (StackedInline,)
 
-class AttachmentInline(admin.TabularInline):
-    model = Attachment
-    extra = 1
+BaseArticleInline = type(str('BaseArticleInline'), ArticleInlineClassTuple, {})
 
-    def has_change_permission(self, request, obj=None):
-        """ Prevent change of the file (instead needs to be deleted) """
-        return False
-
-
-class ArticleInline(AdminImageMixin, StackedInline):
+class ArticleInline(BaseArticleInline):
     model = Article
     extra = 2
     formset = ArticleFormSet
@@ -239,9 +256,18 @@ class ArticleInline(AdminImageMixin, StackedInline):
         }),
     )
 
+    # Perform any formfield overrides depending on specified settings
+    formfield_overrides = {}
+
     if newsletter_settings.RICHTEXT_WIDGET:
-        formfield_overrides = {
-            models.TextField: {'widget': newsletter_settings.RICHTEXT_WIDGET},
+        formfield_overrides[models.TextField] = {
+            'widget': newsletter_settings.RICHTEXT_WIDGET
+        }
+
+    # https://easy-thumbnails.readthedocs.io/en/latest/usage/#forms
+    if newsletter_settings.THUMBNAIL == 'easy-thumbnails':
+        formfield_overrides[DynamicImageField] = {
+            'widget': ImageClearableFileInput
         }
 
 

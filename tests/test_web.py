@@ -1,28 +1,20 @@
-from datetime import datetime, timedelta
-
 import time
+import pytz
 
 import unittest
+from unittest.mock import patch, PropertyMock
 
-# Conditionally import pytz
-try:
-    import pytz
-except ImportError:
-    pytz = None
-
-from django.contrib.auth import get_user_model
+from datetime import datetime, timedelta
 
 from django.core import mail
-
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.utils.encoding import force_text
-
 from django.test.utils import override_settings
 
 from newsletter.models import (
     Newsletter, Subscription, Submission, Message, get_default_sites
 )
-
 from newsletter.compat import reverse
 from newsletter.forms import UpdateForm
 
@@ -1345,6 +1337,40 @@ class ArchiveTestcase(NewsletterListTestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, self.submission.message.title)
+
+    @patch(
+        'newsletter.settings.NewsletterSettings.THUMBNAIL',
+        new_callable=PropertyMock,
+    )
+    def test_archive_detail_sorl_thumbnail_template(self, THUMBNAIL):
+        """Tests that sorl-thumbnail template works."""
+        THUMBNAIL.return_value = 'sorl-thumbnail'
+
+        detail_url = self.submission.get_absolute_url()
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertTemplateUsed(
+            'newsletter/message/thumbnail/sorl_thumbnail.html'
+        )
+
+    @patch(
+        'newsletter.settings.NewsletterSettings.THUMBNAIL',
+        new_callable=PropertyMock,
+    )
+    def test_archive_detail_easy_thumbnails_template(self, THUMBNAIL):
+        """Tests that easy-thumbnails template works."""
+        THUMBNAIL.return_value = 'easy-thumbnails'
+
+        detail_url = self.submission.get_absolute_url()
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertTemplateUsed(
+            'newsletter/message/thumbnail/easy_thumbnails.html'
+        )
 
     def test_archive_unpublished_detail(self):
         """ Assert that an unpublished submission is truly inaccessible. """

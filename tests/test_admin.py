@@ -1,5 +1,9 @@
 import os
+import sys
+from importlib import reload
+from unittest.mock import patch, MagicMock, PropertyMock
 
+from django.contrib import admin as django_admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
@@ -392,3 +396,114 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
         submission = Submission.objects.all()[0]
 
         self.assertEqual(submission.message, self.message)
+
+class ArticleInlineTests(TestCase):
+    class MockSorlAdminImageMixin(object):
+        def __init__(self):
+            self.parent_class = 'sorl-thumbnail'
+
+    def clear_imports(self):
+        """Removes imported modules to ensure proper test environment.
+
+            Need to set import to None because otherwise Python will
+            automatically re-import them when called during testing.
+        """
+        sys.modules['sorl'] = None
+        sys.modules['sorl.thumbnail'] = None
+        sys.modules['sorl.thumbnail.admin'] = None
+        sys.modules['sorl.thumbnail.admin.AdminImageMixin'] = None
+        sys.modules['easy_thumbnails'] = None
+        sys.modules['easy_thumbnails.widgets'] = None
+        sys.modules['easy_thumbnails.widgets.ImageClearableFileInput'] = None
+
+    def mock_sorl_import(self):
+        """Mocks import of sorl-thumbnail AdminImageMixin."""
+        sys.modules['sorl'] = MagicMock()
+        sys.modules['sorl.thumbnail'] = MagicMock()
+        sys.modules['sorl.thumbnail.admin'] = MagicMock()
+        sys.modules['sorl.thumbnail.admin.AdminImageMixin'] = (
+            self.MockSorlAdminImageMixin
+        )
+
+        # Have to set attributes to get around metaclass conflicts when
+        # setting up ArticleInlineClassTuple
+        # https://stackoverflow.com/a/52460876/4521808
+        setattr(
+            sys.modules['sorl.thumbnail.admin'],
+            'AdminImageMixin',
+            self.MockSorlAdminImageMixin
+        )
+
+    def mock_easy_thumbnails_import(self):
+        """Mocks import of easy-thumbnails ImageClearableFileInput."""
+        sys.modules['easy_thumbnails'] = MagicMock()
+        sys.modules['easy_thumbnails.widgets'] = MagicMock()
+        sys.modules['easy_thumbnails.widgets.ImageClearableFileInput'] = MagicMock()
+
+    def setUp(self):
+        # Unregister models first to avoid an AlreadyRegistered error when
+        # reloading the admin for tests
+        django_admin.site.unregister(Newsletter)
+        django_admin.site.unregister(Submission)
+        django_admin.site.unregister(Message)
+        django_admin.site.unregister(Subscription)
+
+    def tearDown(self):
+        self.clear_imports()
+
+    @patch(
+        'newsletter.settings.NewsletterSettings.THUMBNAIL',
+        new_callable=PropertyMock,
+    )
+    def test_sorl_thumbails_admin_added(self, THUMBNAIL):
+        """Tests that sorl-thumbnail admin mixin loads as expected."""
+        THUMBNAIL.return_value = 'sorl-thumbnail'
+
+        # Reset imported sys modules
+        self.clear_imports()
+        self.mock_sorl_import()
+
+        # Reload fields to re-declare ArticleInlineClassTuple
+        reload(admin)
+
+        # Confirm sorl-thumbnail admin details added (tests for the
+        # patched class as sorl-thumbnail is not installed)
+        self.assertEqual(
+            admin.ArticleInlineClassTuple[0], self.MockSorlAdminImageMixin
+        )
+
+        # Get key names from formfield_overrides for easier testing
+        key_names = [
+            key.__name__ for key in admin.ArticleInline.formfield_overrides
+        ]
+
+        # Confirm easy-thumbnails details not added
+        self.assertNotIn('DynamicImageField', key_names)
+
+    @patch(
+        'newsletter.settings.NewsletterSettings.THUMBNAIL',
+        new_callable=PropertyMock,
+    )
+    def test_easy_thumbails_admin_added(self, THUMBNAIL):
+        """Tests that easy-thumbnials Admin widget loads as expected."""
+        THUMBNAIL.return_value = 'easy-thumbnails'
+
+        # Reset imported sys modules
+        self.clear_imports()
+        self.mock_easy_thumbnails_import()
+
+        # Reload fields to re-declare ArticleInline
+        reload(admin)
+
+        # Get key names from formfield_overrides for easier testing
+        key_names = [
+            key.__name__ for key in admin.ArticleInline.formfield_overrides
+        ]
+
+        # Confirm easy-thumbnails details are added=
+        self.assertIn('DynamicImageField', key_names)
+
+        # Confirm sorl-thumbnail admin details not added
+        self.assertEqual(
+            admin.ArticleInlineClassTuple[0].__name__, 'StackedInline'
+        )
