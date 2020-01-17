@@ -15,20 +15,28 @@ Installation
     `VirtualEnv <http://pypi.python.org/pypi/virtualenv>`_ in order to
     keep your Python environment somewhat clean.)
 
-#)  Add newsletter to ``INSTALLED_APPS`` in settings.py and make sure that
-    your favourite rich text widget (optional), some Django contrib dependencies
-    and `sorl-thumbnail <http://sorl-thumbnail.readthedocs.org/en/latest/installation.html>`_
-    are in there as well::
+#)  Add ``newsletter`` and the Django ``contrib`` dependencies noted below to
+    ``INSTALLED_APPS`` in your settings file. You may also add *optional*
+    modules, such as your preferred rich text widget (
+    `Django Imperavi <https://github.com/vasyabigi/django-imperavi>`_
+    or `Django TinyMCE <https://django-tinymce.readthedocs.io/en/latest/>`_)
+    and thumbnail application (
+    `sorl-thumbnail <http://sorl-thumbnail.readthedocs.org/en/latest/installation.html>`_
+    or `easy-thumbnails <https://easy-thumbnails.readthedocs.io/en/latest/>`_).::
 
         INSTALLED_APPS = (
+            # Required Contrib Apps
             'django.contrib.contenttypes',
             'django.contrib.sessions',
             'django.contrib.auth',
             'django.contrib.sites',
             ...
-            # Imperavi (or tinymce) rich text editor is optional
-            # 'imperavi',
+            # Optional Rich Text Editors
+            'imperavi',
+            'tinymce',
+            # Optional Thumbnail Applications
             'sorl.thumbnail',
+            'easy_thumbnails',
             ...
             'newsletter',
             ...
@@ -37,7 +45,7 @@ Installation
 #)  Configure any of the optional :doc:`settings`.
 
 #)  Import subscription, unsubscription and archive URL's somewhere in your
-    `urls.py`::
+    ``urls.py``::
 
         urlpatterns = [
             ...
