@@ -39,6 +39,32 @@ installation, the widgets can be selected as follows::
 If not set, django-newsletter will fall back to Django's default TextField
 widget.
 
+Configure thumbnailing applications
+-----------------------------------
+To improve the user experience and performance of django-newsletter,
+you may use various thumbnailing applications to automatically thumbnail
+article images in newsletter messages.
+
+Currently two applications are supported by default:
+`easy-thumbnails <https://pypi.org/project/easy-thumbnails/>`_ and
+`sorl-thumbnail <https://pypi.org/project/sorl-thumbnail/>`_.
+
+First you will need to install the thumbnailing application (as per the
+applications instructions). Afterwards the thumbnailing application can be
+selected as follows::
+
+    # Using sorl-thumbnail
+    NEWSLETTER_THUMBNAIL = 'sorl-thumbnail'
+
+    # Using easy-thumbnails
+    NEWSLETTER_THUMBNAIL = 'easy-thumbnails'
+
+This configures django-newletter to use these applications for relevant
+model fields, admin fields, and template thumbnails.
+
+If not set, django-newsletter will fall back to Django's default ImageField
+and implement rudimentary thumbnailing with Pillow.
+
 Delay and batch size
 --------------------
 The delay between each email, batches en batch size can be specified with e.g.::
