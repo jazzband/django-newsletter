@@ -1,4 +1,4 @@
-{% load thumbnail i18n %}<!DOCTYPE html>
+{% load i18n %}<!DOCTYPE html>
 
 <html>
 <head>
@@ -10,18 +10,16 @@
     <h2>{{ message.title }}</h2>
     {% for article in message.articles.all %}
         <h3>{{ article.title }}</h3>
-        
-        {% thumbnail article.image "200x200" as image %}
-            <img src="http://{{ site.domain }}{{ image.url }}" width="{{ image.width }}" height="{{ image.height }}">
-        {% endthumbnail %}
+
+        {% include thumbnail_template %}
 
         <div>{{ article.text|safe }}</div>
-        
+
         {% if article.url %}
             <div><a href="{{ article.url }}">{% trans "Read more" %}</a></div>
         {% endif %}
     {% endfor %}
-    
+
     <ul>
         {% if submission.publish %}
         <li><a href="http://{{ site.domain }}{{ submission.get_absolute_url }}">{% trans "Read message online" %}</a></li>

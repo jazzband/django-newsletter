@@ -102,4 +102,28 @@ class NewsletterSettings(Settings):
 
         return None
 
+    @property
+    def THUMBNAIL(self):
+        """Validates and returns the set thumbnail application."""
+        SUPPORTED_THUMBNAILERS = [
+            'sorl-thumbnail',
+            'easy-thumbnails',
+        ]
+        THUMBNAIL = getattr(
+            django_settings, "NEWSLETTER_THUMBNAIL", None
+        )
+
+        # Checks that the user entered a value
+        if THUMBNAIL is None:
+            return None
+
+        # Checks for a supported thumbnailer
+        if THUMBNAIL in SUPPORTED_THUMBNAILERS:
+            return THUMBNAIL
+
+        # Otherwise user has not set thumbnailer correctly
+        raise ImproperlyConfigured(
+            "'%s' is not a supported thumbnail application." % THUMBNAIL
+        )
+
 newsletter_settings = NewsletterSettings()

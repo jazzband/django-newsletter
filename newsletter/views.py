@@ -590,12 +590,27 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
 
         message = self.object.message
 
+        # Determines the appropriate template to display a thumbnail
+        if newsletter_settings.THUMBNAIL == 'sorl-thumbnail':
+            thumbnail_template = (
+                'newsletter/message/thumbnail/sorl_thumbnail.html'
+            )
+        elif newsletter_settings.THUMBNAIL == 'easy-thumbnails':
+            thumbnail_template = (
+                'newsletter/message/thumbnail/easy_thumbnails.html'
+            )
+        else:
+            thumbnail_template = (
+                'newsletter/message/thumbnail/django_newsletter.html'
+            )
+
         context.update({
             'message': message,
             'site': Site.objects.get_current(),
             'date': self.object.publish_date,
             'STATIC_URL': settings.STATIC_URL,
-            'MEDIA_URL': settings.MEDIA_URL
+            'MEDIA_URL': settings.MEDIA_URL,
+            'thumbnail_template': thumbnail_template,
         })
 
         return context
