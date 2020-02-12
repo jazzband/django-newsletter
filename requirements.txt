@@ -4,8 +4,6 @@ ldif3<3.2
 chardet
 surlex>=0.2.0
 six
-# TODO: replace this with sorl-thumbnail>=12.6.0 when released
-# Pinning to specific commit (the 12.6.0 release), which is not yet on PyPI
--e git://github.com/jazzband/sorl-thumbnail@13bedfb7d2970809eda597e3ef79318a6fa80ac2#egg=sorl-thumbnail
+sorl-thumbnail>=12.6.2
 unicodecsv<0.15
 Pillow
