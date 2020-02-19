@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "73317b077c428c2aa46448e022360cd6eaa894cb0d2bd0fa0d522681d01c744b"
+            "sha256": "75c9515e9ef86dc95a5ab686895159dded24ff123d46752176e223f8b913972d"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -143,11 +143,11 @@
         },
         "sorl-thumbnail": {
             "hashes": [
-                "sha256:838e1b7907eec6039471f3604ac1ac9cdb9e8cabecde17330599bca61c28d48c",
-                "sha256:ab42da28892f5aa4d95fb84f1a9f498af3a0535fd27d5cc501b11f87903fe8c4"
+                "sha256:66771521f3c0ed771e1ce8e1aaf1639ebff18f7f5a40cfd3083da8f0fe6c7c99",
+                "sha256:7162639057dff222a651bacbdb6bd6f558fc32946531d541fc71e10c0167ebdf"
             ],
             "index": "pypi",
-            "version": "==12.6.2"
+            "version": "==12.6.3"
         },
         "soupsieve": {
             "hashes": [
@@ -383,10 +383,10 @@
         },
         "zipp": {
             "hashes": [
-                "sha256:5c56e330306215cd3553342cfafc73dda2c60792384117893f3a83f8a1209f50",
-                "sha256:d65287feb793213ffe11c0f31b81602be31448f38aeb8ffc2eb286c4f6f6657e"
+                "sha256:12248a63bbdf7548f89cb4c7cda4681e537031eda29c02ea29674bc6854460c2",
+                "sha256:7c0f8e91abc0dc07a5068f315c52cb30c66bfbc581e5b50704c8a2f6ebae794a"
             ],
-            "version": "==2.2.0"
+            "version": "==3.0.0"
         }
     }
 }
