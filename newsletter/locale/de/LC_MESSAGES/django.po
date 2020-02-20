@@ -4,17 +4,18 @@
 # 
 # Translators:
 # Alexander Hartmann <ah@prexma.com>, 2018
+# Christian Wiegand, 2020
 # Emeny Nagel <emenynagel@gmail.com>, 2019
 # Jannis Vajen, 2013
 # Jannis Vajen, 2012
 # Marc Richter <marc.richter.1982@gmail.com>, 2016
-# dokterbob <mathijs@mathijsfietst.nl>, 2016
+# dokterbob <mathijs@mathijsfietst.nl>, 2016,2020
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:25+0000\n"
-"PO-Revision-Date: 2020-01-11 19:18+0000\n"
+"POT-Creation-Date: 2020-02-20 11:13+0000\n"
+"PO-Revision-Date: 2020-02-20 11:24+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: German (http://www.transifex.com/dokterbob/django-newsletter/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -615,9 +616,18 @@ msgstr "Angemeldet in %(title)s"
 
 #: templates/newsletter/message/subscribe.html:10
 #: templates/newsletter/message/subscribe.txt:1
+#: templates/newsletter/message/unsubscribe.html:9
+#: templates/newsletter/message/unsubscribe.txt:1
+#: templates/newsletter/message/update.html:9
+#: templates/newsletter/message/update.txt:1
+msgid "Sir/Madam"
+msgstr "Herr/Frau"
+
+#: templates/newsletter/message/subscribe.html:10
+#: templates/newsletter/message/subscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested a subscription to %(title)s.\n"
 "\n"
@@ -625,7 +635,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr ""
+msgstr "Guten Tag %(name)s,\n\nSie, oder eine andere Person in Ihrem Namen hat die Anmeldung in %(title)s vorgenommen.\n\nWenn Sie die Anmeldung bestätigen möchten klicken Sie bitte auf folgenden Link:\nhttps://%(domain)s%(url)s\n\nMit freundlichen Grüßen"
 
 #: templates/newsletter/message/subscribe_subject.txt:1
 msgid "Confirm subscription"
@@ -640,7 +650,7 @@ msgstr "Abmelden von %(title)s"
 #: templates/newsletter/message/unsubscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested unsubscription from %(title)s.\n"
 "\n"
@@ -648,7 +658,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr ""
+msgstr "Guten Tag %(name)s,\n\nSie, oder eine andere Person in Ihrem Namen hat die Abmeldung von %(title)s vorgenommen .\n\nWenn Sie die Abmeldung bestätigen möchten klicken Sie bitte auf folgenden Link:\nhttps://%(domain)s%(url)s\n\nMit freundlichen Grüßen"
 
 #: templates/newsletter/message/unsubscribe_subject.txt:1
 msgid "Confirm unsubscription"
@@ -663,7 +673,7 @@ msgstr "Aktualisierung der Anmeldung in %(title)s"
 #: templates/newsletter/message/update.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested updating your personal information for %(title)s.\n"
 "\n"
@@ -671,7 +681,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr ""
+msgstr "Guten Tag %(name)s,\n\nSie, oder eine andere Person in Ihrem Namen hat die Aktualisierung von %(title)s vorgenommen .\n\nWenn Sie die Aktualisierung bestätigen möchten klicken Sie bitte auf folgenden Link::\nhttps://%(domain)s%(url)s\n\nMit freundlichen Grüßen"
 
 #: templates/newsletter/message/update_subject.txt:1
 msgid "Update information"
