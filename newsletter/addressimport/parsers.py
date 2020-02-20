@@ -238,10 +238,10 @@ def parse_csv(myfile, newsletter, ignore_errors=False):
             _(
                 "Could not properly determine the proper columns in the "
                 "CSV-file. There should be a field called 'name' or "
-                "'%(name)s' and one called 'e-mail' or '%(e-mail)s'."
+                "'%(name)s' and one called 'e-mail' or '%(email)s'."
             ) % {
                 "name": _("name"),
-                "e-mail": _("e-mail")
+                "email": _("e-mail")
             }
         )
 

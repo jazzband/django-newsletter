@@ -1,21 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # dokterbob <mathijs@mathijsfietst.nl>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-20 11:13+0000\n"
+"POT-Creation-Date: 2020-02-20 12:07+0000\n"
 "PO-Revision-Date: 2020-02-20 11:13+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
-"Language-Team: English (http://www.transifex.com/dokterbob/django-newsletter/language/en/)\n"
+"Language-Team: English (http://www.transifex.com/dokterbob/django-newsletter/"
+"language/en/)\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: addressimport/parsers.py:40
@@ -37,7 +38,9 @@ msgstr "Some entries are already subscribed to."
 msgid ""
 "E-mail address %(email)s too long, maximum length is %(email_length)s "
 "characters."
-msgstr "E-mail address %(email)s too long, maximum length is %(email_length)s characters."
+msgstr ""
+"E-mail address %(email)s too long, maximum length is %(email_length)s "
+"characters."
 
 #: addressimport/parsers.py:135
 #, python-format
@@ -58,7 +61,9 @@ msgstr "display"
 msgid ""
 "Name column not found. The name of this column should be either 'name' or "
 "'%s'."
-msgstr "Name column not found. The name of this column should be either 'name' or '%s'."
+msgstr ""
+"Name column not found. The name of this column should be either 'name' or "
+"'%s'."
 
 #: addressimport/parsers.py:219 addressimport/parsers.py:231
 #: addressimport/parsers.py:244 forms.py:44 forms.py:79 forms.py:134
@@ -71,15 +76,24 @@ msgstr "e-mail"
 msgid ""
 "E-mail column not found. The name of this column should be either 'email', "
 "'e-mail' or '%(email)s'."
-msgstr "E-mail column not found. The name of this column should be either 'email', 'e-mail' or '%(email)s'."
+msgstr ""
+"E-mail column not found. The name of this column should be either 'email', "
+"'e-mail' or '%(email)s'."
 
 #: addressimport/parsers.py:239
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Could not properly determine the proper columns in the CSV-file. There "
+#| "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
+#| "'%(e-mail)s'."
 msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
+"'%(email)s'."
+msgstr ""
+"Could not properly determine the proper columns in the CSV-file. There "
+"should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
 "'%(e-mail)s'."
-msgstr "Could not properly determine the proper columns in the CSV-file. There should be a field called 'name' or '%(name)s' and one called 'e-mail' or '%(e-mail)s'."
 
 #: addressimport/parsers.py:264
 #, python-format
@@ -170,7 +184,8 @@ msgstr "Preview"
 #: admin.py:275 views.py:611
 msgid ""
 "No HTML template associated with the newsletter this message belongs to."
-msgstr "No HTML template associated with the newsletter this message belongs to."
+msgstr ""
+"No HTML template associated with the newsletter this message belongs to."
 
 #: admin.py:384 admin_forms.py:103
 msgid "Subscribed"
@@ -283,11 +298,14 @@ msgstr "Either a user must be selected or an email address must be specified."
 msgid ""
 "This message has already been published in some other submission. Messages "
 "can only be published once."
-msgstr "This message has already been published in some other submission. Messages can only be published once."
+msgstr ""
+"This message has already been published in some other submission. Messages "
+"can only be published once."
 
 #: admin_utils.py:25
-#, python-format
-msgid "%(name)s object with primary key %(key)r does not exist."
+#, fuzzy, python-format
+#| msgid "%(name)s object with primary key %(key)r does not exist."
+msgid "%(name)s object with primary key '%(key)s' does not exist."
 msgstr "%(name)s object with primary key %(key)r does not exist."
 
 #: forms.py:59
@@ -411,9 +429,9 @@ msgstr "subscriptions"
 
 #: models.py:404
 msgid ""
-"Sort order determines the order in which articles are concatenated in a "
-"post."
-msgstr "Sort order determines the order in which articles are concatenated in a post."
+"Sort order determines the order in which articles are concatenated in a post."
+msgstr ""
+"Sort order determines the order in which articles are concatenated in a post."
 
 #: models.py:406
 msgid "sort order"
@@ -497,7 +515,9 @@ msgstr "Submission of message %s"
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
-msgstr "If you select none, the system will automatically find the subscribers for you."
+msgstr ""
+"If you select none, the system will automatically find the subscribers for "
+"you."
 
 #: models.py:685
 msgid "recipients"
@@ -625,11 +645,21 @@ msgid ""
 "\n"
 "you, or someone in your name requested a subscription to %(title)s.\n"
 "\n"
-"If you would like to confirm your subscription, please follow this activation link:\n"
+"If you would like to confirm your subscription, please follow this "
+"activation link:\n"
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr "Dear %(name)s,\n\nyou, or someone in your name requested a subscription to %(title)s.\n\nIf you would like to confirm your subscription, please follow this activation link:\nhttp://%(domain)s%(url)s\n\nKind regards,"
+msgstr ""
+"Dear %(name)s,\n"
+"\n"
+"you, or someone in your name requested a subscription to %(title)s.\n"
+"\n"
+"If you would like to confirm your subscription, please follow this "
+"activation link:\n"
+"http://%(domain)s%(url)s\n"
+"\n"
+"Kind regards,"
 
 #: templates/newsletter/message/subscribe_subject.txt:1
 msgid "Confirm subscription"
@@ -648,11 +678,21 @@ msgid ""
 "\n"
 "you, or someone in your name requested unsubscription from %(title)s.\n"
 "\n"
-"If you would like to confirm your unsubscription, please follow this activation link:\n"
+"If you would like to confirm your unsubscription, please follow this "
+"activation link:\n"
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr "Dear %(name)s,\n\nyou, or someone in your name requested unsubscription from %(title)s.\n\nIf you would like to confirm your unsubscription, please follow this activation link:\nhttp://%(domain)s%(url)s\n\nKind regards,"
+msgstr ""
+"Dear %(name)s,\n"
+"\n"
+"you, or someone in your name requested unsubscription from %(title)s.\n"
+"\n"
+"If you would like to confirm your unsubscription, please follow this "
+"activation link:\n"
+"http://%(domain)s%(url)s\n"
+"\n"
+"Kind regards,"
 
 #: templates/newsletter/message/unsubscribe_subject.txt:1
 msgid "Confirm unsubscription"
@@ -669,13 +709,25 @@ msgstr "Update of subscription to %(title)s"
 msgid ""
 "Dear %(name)s,\n"
 "\n"
-"you, or someone in your name requested updating your personal information for %(title)s.\n"
+"you, or someone in your name requested updating your personal information "
+"for %(title)s.\n"
 "\n"
-"To make changes to your information in our database, please follow this activation link:\n"
+"To make changes to your information in our database, please follow this "
+"activation link:\n"
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr "Dear %(name)s,\n\nyou, or someone in your name requested updating your personal information for %(title)s.\n\nTo make changes to your information in our database, please follow this activation link:\nhttp://%(domain)s%(url)s\n\nKind regards,"
+msgstr ""
+"Dear %(name)s,\n"
+"\n"
+"you, or someone in your name requested updating your personal information "
+"for %(title)s.\n"
+"\n"
+"To make changes to your information in our database, please follow this "
+"activation link:\n"
+"http://%(domain)s%(url)s\n"
+"\n"
+"Kind regards,"
 
 #: templates/newsletter/message/update_subject.txt:1
 msgid "Update information"
@@ -746,9 +798,11 @@ msgstr "Newsletter subscribe"
 #: templates/newsletter/subscription_unsubscribe.html:11
 #: templates/newsletter/subscription_update.html:11
 msgid ""
-"Due to a technical error we were not able to submit your confirmation email."
-" This could be because your email address is invalid."
-msgstr "Due to a technical error we were not able to submit your confirmation email. This could be because your email address is invalid."
+"Due to a technical error we were not able to submit your confirmation email. "
+"This could be because your email address is invalid."
+msgstr ""
+"Due to a technical error we were not able to submit your confirmation email. "
+"This could be because your email address is invalid."
 
 #: templates/newsletter/subscription_subscribe_activated.html:10
 msgid "Your subscription has successfully been activated."
@@ -759,7 +813,10 @@ msgid ""
 "Your subscription request was successfully received and an activation email "
 "has been sent to you. In that email you will find a link which you need to "
 "follow in order to activate your subscription."
-msgstr "Your subscription request was successfully received and an activation email has been sent to you. In that email you will find a link which you need to follow in order to activate your subscription."
+msgstr ""
+"Your subscription request was successfully received and an activation email "
+"has been sent to you. In that email you will find a link which you need to "
+"follow in order to activate your subscription."
 
 #: templates/newsletter/subscription_subscribe_user.html:19
 msgid "Do you want to subscribe to this newsletter?"
@@ -783,7 +840,10 @@ msgid ""
 "Your unsubscription request has successfully been received. An email has "
 "been sent to you with a link you need to follow in order to confirm your "
 "unsubscription."
-msgstr "Your unsubscription request has successfully been received. An email has been sent to you with a link you need to follow in order to confirm your unsubscription."
+msgstr ""
+"Your unsubscription request has successfully been received. An email has "
+"been sent to you with a link you need to follow in order to confirm your "
+"unsubscription."
 
 #: templates/newsletter/subscription_unsubscribe_user.html:20
 msgid "Do you want to unsubscribe from this newsletter?"
@@ -809,7 +869,10 @@ msgid ""
 "Your update request was successfully received and an activation email has "
 "been sent to you. In that email you will find a link which you need to "
 "follow in order to update your subscription."
-msgstr "Your update request was successfully received and an activation email has been sent to you. In that email you will find a link which you need to follow in order to update your subscription."
+msgstr ""
+"Your update request was successfully received and an activation email has "
+"been sent to you. In that email you will find a link which you need to "
+"follow in order to update your subscription."
 
 #: templates/widget/image.html:2
 msgid "Currently:"
@@ -824,7 +887,9 @@ msgstr "Change:"
 msgid ""
 "The e-mail address '%(email)s' belongs to a user with an account on this "
 "site. Please log in as that user and try again."
-msgstr "The e-mail address '%(email)s' belongs to a user with an account on this site. Please log in as that user and try again."
+msgstr ""
+"The e-mail address '%(email)s' belongs to a user with an account on this "
+"site. Please log in as that user and try again."
 
 #: views.py:120
 msgid "Your changes have been saved."
