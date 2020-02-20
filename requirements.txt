@@ -4,6 +4,6 @@ ldif3<3.2
 chardet
 surlex>=0.2.0
 six
-sorl-thumbnail>=12.6.2
+sorl-thumbnail>=12.6.3
 unicodecsv<0.15
 Pillow
