@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Eugene Akentyev <ak3ntev@gmail.com>, 2013
+# bc111a39b0444b4a5e1cdaf6ca54cd6d, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-11-19 21:55+0100\n"
-"PO-Revision-Date: 2013-11-20 12:25+0000\n"
-"Last-Translator: Eugene Akentyev <ak3ntev@gmail.com>\n"
+"PO-Revision-Date: 2017-09-19 16:37+0000\n"
+"Last-Translator: bc111a39b0444b4a5e1cdaf6ca54cd6d\n"
 "Language-Team: Russian (http://www.transifex.com/dokterbob/django-newsletter/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

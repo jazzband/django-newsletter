@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:25+0000\n"
-"PO-Revision-Date: 2020-01-11 19:34+0000\n"
+"POT-Creation-Date: 2020-02-20 11:13+0000\n"
+"PO-Revision-Date: 2020-02-20 11:18+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: Dutch (http://www.transifex.com/dokterbob/django-newsletter/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -613,9 +613,18 @@ msgstr "Aanmelden voor %(title)s"
 
 #: templates/newsletter/message/subscribe.html:10
 #: templates/newsletter/message/subscribe.txt:1
+#: templates/newsletter/message/unsubscribe.html:9
+#: templates/newsletter/message/unsubscribe.txt:1
+#: templates/newsletter/message/update.html:9
+#: templates/newsletter/message/update.txt:1
+msgid "Sir/Madam"
+msgstr "Heer/Mevrouw"
+
+#: templates/newsletter/message/subscribe.html:10
+#: templates/newsletter/message/subscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested a subscription to %(title)s.\n"
 "\n"
@@ -623,7 +632,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr "Beste %(name|default:\"Heer/Mevrouw\")s,\n\nWij hebben een verzoek ontvangen om je aan te melden voor %(title)s.\n\nAls je je aanmelding wilt bevestigen, open dan onderstaande bevestigingslink:\nhttp://%(domain)s%(url)s\n\nMet vriendelijke groet,"
+msgstr "Beste %(name)s,\n\nWij hebben een verzoek ontvangen om je aan te melden voor %(title)s.\n\nAls je je aanmelding wilt bevestigen, open dan onderstaande bevestigingslink:\nhttp://%(domain)s%(url)s\n\nMet vriendelijke groet,"
 
 #: templates/newsletter/message/subscribe_subject.txt:1
 msgid "Confirm subscription"
@@ -638,7 +647,7 @@ msgstr "Afmelden van %(title)s"
 #: templates/newsletter/message/unsubscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested unsubscription from %(title)s.\n"
 "\n"
@@ -646,7 +655,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr "Beste %(name|default:\"Heer/Mevrouw\")s,\n\nWij hebben een verzoek ontvangen om je af te melden van %(title)s.\n\nAls je je afmelding wilt bevestigen, open dan onderstaande bevstigingslink:\nhttp://%(domain)s%(url)s\n\nMet vriendelijke groet,"
+msgstr "Beste %(name)s,\n\nWij hebben een verzoek ontvangen om je af te melden van %(title)s.\n\nAls je je afmelding wilt bevestigen, open dan onderstaande bevstigingslink:\nhttp://%(domain)s%(url)s\n\nMet vriendelijke groet,"
 
 #: templates/newsletter/message/unsubscribe_subject.txt:1
 msgid "Confirm unsubscription"
@@ -661,7 +670,7 @@ msgstr "Aanpassen inschrijving op %(title)s"
 #: templates/newsletter/message/update.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested updating your personal information for %(title)s.\n"
 "\n"
@@ -669,7 +678,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr "Beste %(name|default:\"Heer/Mevrouw\")s,\n\nWij hebben een verzoek ontvangen voor het aanpassen van je persoonlijke informatie voor %(title)s.\n\nOm je gegevens aan te passen in onze database volg je de onderstaande bevestigingslink:\nhttp://%(domain)s%(url)s\n\nMet vriendelijke groet,"
+msgstr "Beste %(name)s,\n\nWij hebben een verzoek ontvangen voor het aanpassen van je persoonlijke informatie voor %(title)s.\n\nOm je gegevens aan te passen in onze database volg je de onderstaande bevestigingslink:\nhttp://%(domain)s%(url)s\n\nMet vriendelijke groet,"
 
 #: templates/newsletter/message/update_subject.txt:1
 msgid "Update information"

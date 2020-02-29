@@ -35,18 +35,18 @@ Extended documentation is available on
 
 Translations
 ============
-All strings have been translated to German, French, English, Russian, Polish, Dutch, Italian, Arabic, Brazilian Portuguese, Icelandic and Czech with more languages on their way.
-
-Contributions to translations are welcome through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_. Strings will be included as
-soon as near-full coverage is reached.
+Strings have been fully translated to a lot of languages with many more on their way.
 
 .. image:: https://www.transifex.com/projects/p/django-newsletter/resource/django/chart/image_png
     :target: http://www.transifex.net/projects/p/django-newsletter/
 
+Contributions to translations are welcome through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_. Strings will be included as
+soon as near-full coverage is reached.
+
 Compatibility
 =============
 Currently, django-newsletter is officially supported for Django 1.11.x, 2.2.x and 3.0.x support pending. We support Python
-2.7 through 3.8.
+3.4 through 3.8.
 
 Requirements
 ============
@@ -65,8 +65,8 @@ Contributing
 =============
 Want to contribute, great!
 
-Please refer to the `issues <https://github.com/dokterbob/django-newsletter/issues>` on
-GitHub and read `CONTRIBUTING.rst <https://github.com/dokterbob/django-newsletter/blob/master/CONTRIBUTING.rst>`.
+Please refer to the `issues <https://github.com/dokterbob/django-newsletter/issues>`_ on
+GitHub and read `CONTRIBUTING.rst <https://github.com/dokterbob/django-newsletter/blob/master/CONTRIBUTING.rst>`_ .
 
 Feedback
 ========

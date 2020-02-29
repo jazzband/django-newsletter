@@ -15,7 +15,7 @@ Steps
 #. Send out announcement to translators on Transifex.
 #. Bump version in :code:`setup.py`.
 #. Update supported Django/Python releases to match Django's.
-#. Pull in latest translations.
+#. Pull in latest translations: `tx pull -f && pipenv run django-admin compilemessages`
 #. Update CHANGELOG based on :code:`git diff HEAD..<last_release_tag>`.
 #. Create signed tag: :code:`git tag -s vx.y`.
 #. Create release on GitHub with CHANGELOG as release notes.

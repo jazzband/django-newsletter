@@ -23,7 +23,7 @@ class ExtendibleModelAdminMixin(object):
                 raise Http404(
                     _(
                         '%(name)s object with primary key '
-                        '%(key)r does not exist.'
+                        '\'%(key)s\' does not exist.'
                     ) % {
                         'name': force_text(opts.verbose_name),
                         'key': force_text(object_id)

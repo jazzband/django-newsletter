@@ -44,7 +44,7 @@ except:
 
 setup(
     name='django-newsletter',
-    version="0.9b1",
+    version="0.9",
     description=(
         'Django app for managing multiple mass-mailing lists with both '
         'plaintext as well as HTML templates (and pluggable WYSIWYG editors '
@@ -53,7 +53,6 @@ setup(
     ),
     long_description=README,
     install_requires=REQUIREMENTS,
-    license='AGPL',
     author='Mathijs de Bruin',
     author_email='mathijs@mathijsfietst.nl',
     url='http://github.com/dokterbob/django-newsletter/',
@@ -67,11 +66,11 @@ setup(
         'License :: OSI Approved :: GNU Affero General Public License v3',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Utilities'
     ],
     test_suite='runtests.run_tests',

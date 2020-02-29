@@ -1,6 +1,13 @@
 Changes
 =======
 
+0.9 (19-02-2019)
+----------------
+
+- Upgrade to sorl-thumbnail 12.6.2, remove install workaround.
+- Update several dependencies (waitress, Django) due to security issues.
+
+
 0.9b1 (11-01-2019)
 ------------------
 
