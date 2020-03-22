@@ -6,6 +6,12 @@ the module directory to your project's `templates` dir::
 
     cp -rv `python -c 'import newsletter; from os import path; print(path.dirname(newsletter.__file__))'`/templates/newsletter <project_dir>/templates/
 
+for windows user you can get the command to execute from command prompt
+
+python -c "import newsletter; from os import path; print('xcopy /s '+  path.dirname(newsletter.__file__)+r'\templates\newsletter' + r' <project_dir>\Templates')"
+which get you something similar to 
+xcopy /s C:\Users\<user name>\.virtualenvs\<your env>\lib\site-packages\newsletter\templates\newsletter <project_dir>\Templates
+
 Web view templates
 ^^^^^^^^^^^^^^^^^^
 `newsletter_list.html`
