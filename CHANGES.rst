@@ -1,6 +1,12 @@
 Changes
 =======
 
+0.9.1 (18-05-2020)
+------------------
+
+- Drop support for Django 1.11 LTS and Python 3.4 and 2.7.
+- Updated translations.
+
 0.9 (19-02-2019)
 ----------------
 

@@ -10,8 +10,7 @@ Steps
 #. Pick release date.
 #. Create milestone on GitHub, organise open tickets.
 #. Push source translations to Transifex::
-    $ django-admin makemessages -l en
-    $ tx push -s
+    $ pipenv run django-admin makemessages -l en && tx push -s
 #. Send out announcement to translators on Transifex.
 #. Bump version in :code:`setup.py`.
 #. Update supported Django/Python releases to match Django's.
