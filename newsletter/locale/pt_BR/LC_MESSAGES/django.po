@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Translators:
 # brunojm <inactive+brunojm@transifex.com>, 2013
 # brunojm <inactive+brunojm@transifex.com>, 2013-2015
 # Fábio <fabio@laborautonomo.org>, 2014
@@ -10,15 +11,16 @@
 # Luan Fonseca de Farias <luanfonceca@gmail.com>, 2013
 # Marcelo Zenaide <marcelo.zenaide@gmail.com>, 2013
 # dokterbob <mathijs@mathijsfietst.nl>, 2016
+# Natanael dos Santos <natansantosapps@gmail.com>, 2020
 # Partec <suzane@tangerinalab.com>, 2014
 # Ronaldo Bahia <bahiamartins@hotmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:25+0000\n"
-"PO-Revision-Date: 2020-01-11 19:18+0000\n"
-"Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
+"POT-Creation-Date: 2020-02-20 12:07+0000\n"
+"PO-Revision-Date: 2020-03-12 18:05+0000\n"
+"Last-Translator: Natanael dos Santos <natansantosapps@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/dokterbob/django-newsletter/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -83,11 +85,14 @@ msgstr "Coluna Email não encontrada. O nome desta coluna deveria ser 'email', '
 
 #: addressimport/parsers.py:239
 #, python-format
+#| msgid ""
+#| "not properly determine the proper columns in the CSV-file. There uld be aeld"
+#| " called 'name' or '%(name)s' and one called 'e-mail' or e-mail)s'."
 msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
-"'%(e-mail)s'."
-msgstr "Não foi possível determinar as colunas corretas no arquivo CSV. Deveria existir um campo chamado 'nome' ou '%(name)s' e um campo chamado 'e-mail' ou '%(e-mail)s'."
+"'%(email)s'."
+msgstr ""
 
 #: addressimport/parsers.py:264
 #, python-format
@@ -295,8 +300,9 @@ msgstr "Essa mensagem já foi publicada em alguma outra submissão. Mensagens s�
 
 #: admin_utils.py:25
 #, python-format
-msgid "%(name)s object with primary key %(key)r does not exist."
-msgstr "O objeto %(name)s com chave primária %(key)r não existe."
+#| msgid "%(name)s object with primary key %(key)r does not exist."
+msgid "%(name)s object with primary key '%(key)s' does not exist."
+msgstr " %(name)sobjeto com chave primária '%(key)s' não existe."
 
 #: forms.py:59
 msgid "Your e-mail address has already been subscribed to."
@@ -324,7 +330,7 @@ msgstr "Código de ativação"
 
 #: management/commands/submit_newsletter.py:14
 msgid "Submit pending messages."
-msgstr ""
+msgstr "Enviar mensagens pendentes."
 
 #: management/commands/submit_newsletter.py:30
 msgid "Submitting queued newsletter mailings"
@@ -594,11 +600,11 @@ msgstr "Upload"
 
 #: templates/newsletter/message/message.html:21
 msgid "Read more"
-msgstr ""
+msgstr "Leia mais"
 
 #: templates/newsletter/message/message.html:27
 msgid "Read message online"
-msgstr ""
+msgstr "Ler mensagem online"
 
 #: templates/newsletter/message/message.html:29
 #: templates/newsletter/newsletter_detail.html:21
@@ -609,18 +615,27 @@ msgstr "Cancelar assinatura"
 
 #: templates/newsletter/message/message.txt:15
 msgid "Unsubscribe:"
-msgstr ""
+msgstr "Cancelar inscrição: "
 
 #: templates/newsletter/message/subscribe.html:6
 #, python-format
 msgid "Subscription to %(title)s"
+msgstr "Inscrição para %(title)s"
+
+#: templates/newsletter/message/subscribe.html:10
+#: templates/newsletter/message/subscribe.txt:1
+#: templates/newsletter/message/unsubscribe.html:9
+#: templates/newsletter/message/unsubscribe.txt:1
+#: templates/newsletter/message/update.html:9
+#: templates/newsletter/message/update.txt:1
+msgid "Sir/Madam"
 msgstr ""
 
 #: templates/newsletter/message/subscribe.html:10
 #: templates/newsletter/message/subscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested a subscription to %(title)s.\n"
 "\n"
@@ -632,18 +647,18 @@ msgstr ""
 
 #: templates/newsletter/message/subscribe_subject.txt:1
 msgid "Confirm subscription"
-msgstr ""
+msgstr "Confirmar inscrição "
 
 #: templates/newsletter/message/unsubscribe.html:6
 #, python-format
 msgid "Unsubscription from %(title)s"
-msgstr ""
+msgstr "Cancelar inscrição para %(title)s"
 
 #: templates/newsletter/message/unsubscribe.html:9
 #: templates/newsletter/message/unsubscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested unsubscription from %(title)s.\n"
 "\n"
@@ -655,18 +670,18 @@ msgstr ""
 
 #: templates/newsletter/message/unsubscribe_subject.txt:1
 msgid "Confirm unsubscription"
-msgstr ""
+msgstr "Confirmar cancelamento de inscrição "
 
 #: templates/newsletter/message/update.html:6
 #, python-format
 msgid "Update of subscription to %(title)s"
-msgstr ""
+msgstr "Atualização de inscrição para %(title)s"
 
 #: templates/newsletter/message/update.html:9
 #: templates/newsletter/message/update.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested updating your personal information for %(title)s.\n"
 "\n"
@@ -678,7 +693,7 @@ msgstr ""
 
 #: templates/newsletter/message/update_subject.txt:1
 msgid "Update information"
-msgstr ""
+msgstr "Atualizar informação "
 
 #: templates/newsletter/newsletter_detail.html:5
 msgid "Newsletter detail"
@@ -693,16 +708,16 @@ msgstr "Assinar"
 
 #: templates/newsletter/newsletter_detail.html:17
 msgid "Update"
-msgstr ""
+msgstr "Atualizar"
 
 #: templates/newsletter/newsletter_detail.html:24
 msgid "Archive"
-msgstr ""
+msgstr "Arquivo"
 
 #: templates/newsletter/newsletter_detail.html:27
 #: templates/newsletter/submission_archive.html:18
 msgid "Back to list"
-msgstr ""
+msgstr "Voltar à lista"
 
 #: templates/newsletter/newsletter_list.html:5
 msgid "Newsletter list"

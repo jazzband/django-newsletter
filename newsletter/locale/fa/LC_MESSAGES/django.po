@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Translators:
 # Ali Javadi <rohamn@hotmail.com>, 2013
 # arian hedayati far <arian.hedayatifar@gmail.com>, 2016
 # hooman zabeti <hoomanzabeti@gmail.com>, 2013
@@ -13,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:25+0000\n"
-"PO-Revision-Date: 2020-01-11 19:18+0000\n"
+"POT-Creation-Date: 2020-02-20 12:07+0000\n"
+"PO-Revision-Date: 2020-02-20 12:07+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: Persian (http://www.transifex.com/dokterbob/django-newsletter/language/fa/)\n"
 "MIME-Version: 1.0\n"
@@ -80,11 +81,14 @@ msgstr "ستون ایمیل پیدا نشد.نام این ستون می بایس
 
 #: addressimport/parsers.py:239
 #, python-format
+#| msgid ""
+#| "not properly determine the proper columns in the CSV-file. There uld be aeld"
+#| " called 'name' or '%(name)s' and one called 'e-mail' or e-mail)s'."
 msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
-"'%(e-mail)s'."
-msgstr "سیستم به‌درستی نمی‌تواند ستون‌های فایل سی‌اس‌وی را تشخیص دهد. در فایل باید یک ستون به نام 'name' یا '%(name)s' و ستونی به نام 'e-mail' یا '%(e-mail)s' وجود داشته باشند."
+"'%(email)s'."
+msgstr ""
 
 #: addressimport/parsers.py:264
 #, python-format
@@ -292,8 +296,9 @@ msgstr "این پیام در یکی از ارسال های گذشته استفا
 
 #: admin_utils.py:25
 #, python-format
-msgid "%(name)s object with primary key %(key)r does not exist."
-msgstr "%(name)s شی با کلید اساسی  %(key)r وجود ندارد."
+#| msgid "%(name)s object with primary key %(key)r does not exist."
+msgid "%(name)s object with primary key '%(key)s' does not exist."
+msgstr ""
 
 #: forms.py:59
 msgid "Your e-mail address has already been subscribed to."
@@ -615,9 +620,18 @@ msgstr ""
 
 #: templates/newsletter/message/subscribe.html:10
 #: templates/newsletter/message/subscribe.txt:1
+#: templates/newsletter/message/unsubscribe.html:9
+#: templates/newsletter/message/unsubscribe.txt:1
+#: templates/newsletter/message/update.html:9
+#: templates/newsletter/message/update.txt:1
+msgid "Sir/Madam"
+msgstr ""
+
+#: templates/newsletter/message/subscribe.html:10
+#: templates/newsletter/message/subscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested a subscription to %(title)s.\n"
 "\n"
@@ -640,7 +654,7 @@ msgstr ""
 #: templates/newsletter/message/unsubscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested unsubscription from %(title)s.\n"
 "\n"
@@ -663,7 +677,7 @@ msgstr ""
 #: templates/newsletter/message/update.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested updating your personal information for %(title)s.\n"
 "\n"

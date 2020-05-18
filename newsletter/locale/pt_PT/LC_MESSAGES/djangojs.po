@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Translators:
 # jumpifzero <jumpifzero@gmail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-11-19 21:55+0100\n"
-"PO-Revision-Date: 2013-11-20 12:25+0000\n"
+"PO-Revision-Date: 2017-09-19 09:10+0000\n"
 "Last-Translator: jumpifzero <jumpifzero@gmail.com>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/dokterbob/django-newsletter/language/pt_PT/)\n"
 "MIME-Version: 1.0\n"

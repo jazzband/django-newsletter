@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Translators:
 # David Viktora <viktora.david@gmail.com>, 2018
 # dokterbob <mathijs@mathijsfietst.nl>, 2016
 # tomaasch <tomas@labs.cz>, 2014
@@ -10,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:25+0000\n"
-"PO-Revision-Date: 2020-01-11 19:18+0000\n"
+"POT-Creation-Date: 2020-02-20 12:07+0000\n"
+"PO-Revision-Date: 2020-02-20 12:07+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/dokterbob/django-newsletter/language/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
@@ -77,11 +78,14 @@ msgstr "Sloupec s e-mailem nebyl nalezen. Název tohoto sloupce by měly být bu
 
 #: addressimport/parsers.py:239
 #, python-format
+#| msgid ""
+#| "not properly determine the proper columns in the CSV-file. There uld be aeld"
+#| " called 'name' or '%(name)s' and one called 'e-mail' or e-mail)s'."
 msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
-"'%(e-mail)s'."
-msgstr "Nelze správně určit správné jména sloupců v CSV souboru. Tam by mělo být pole s názvem 'name' nebo '%(name)s' a jeden s názvem 'e-mail' nebo '%(e-mail)s'."
+"'%(email)s'."
+msgstr ""
 
 #: addressimport/parsers.py:264
 #, python-format
@@ -295,8 +299,9 @@ msgstr "Tato zpráva byla již zveřejněna v jiném zaslání newsletteru. Zpr�
 
 #: admin_utils.py:25
 #, python-format
-msgid "%(name)s object with primary key %(key)r does not exist."
-msgstr "Objekt %(name)s s primárním klíčem %(key)r neexistuje."
+#| msgid "%(name)s object with primary key %(key)r does not exist."
+msgid "%(name)s object with primary key '%(key)s' does not exist."
+msgstr ""
 
 #: forms.py:59
 msgid "Your e-mail address has already been subscribed to."
@@ -618,9 +623,18 @@ msgstr "Přihlášení k odběru %(title)s"
 
 #: templates/newsletter/message/subscribe.html:10
 #: templates/newsletter/message/subscribe.txt:1
+#: templates/newsletter/message/unsubscribe.html:9
+#: templates/newsletter/message/unsubscribe.txt:1
+#: templates/newsletter/message/update.html:9
+#: templates/newsletter/message/update.txt:1
+msgid "Sir/Madam"
+msgstr ""
+
+#: templates/newsletter/message/subscribe.html:10
+#: templates/newsletter/message/subscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested a subscription to %(title)s.\n"
 "\n"
@@ -628,7 +642,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr ""
+msgstr "Milý %(name)s,\n\nbylo zažádáno o přihlášení k odběru%(title)s.\n\nPro potvrzení přihlášení k odběru pokračujte na následující odkaz:\nhttp://%(domain)s%(url)s\n\nS pozdravem,"
 
 #: templates/newsletter/message/subscribe_subject.txt:1
 msgid "Confirm subscription"
@@ -643,7 +657,7 @@ msgstr "Odhlásit se z odběru %(title)s"
 #: templates/newsletter/message/unsubscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested unsubscription from %(title)s.\n"
 "\n"
@@ -666,7 +680,7 @@ msgstr "Aktualize odběru %(title)s"
 #: templates/newsletter/message/update.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested updating your personal information for %(title)s.\n"
 "\n"

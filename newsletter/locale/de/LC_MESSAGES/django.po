@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Translators:
 # Alexander Hartmann <ah@prexma.com>, 2018
 # Christian Wiegand, 2020
 # Emeny Nagel <emenynagel@gmail.com>, 2019
@@ -14,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-20 11:13+0000\n"
-"PO-Revision-Date: 2020-02-20 11:24+0000\n"
+"POT-Creation-Date: 2020-02-20 12:07+0000\n"
+"PO-Revision-Date: 2020-02-20 12:07+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: German (http://www.transifex.com/dokterbob/django-newsletter/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -81,11 +82,14 @@ msgstr "Feld für E-Mail-Adresse nicht gefunden. Der Name der Spalte sollte entw
 
 #: addressimport/parsers.py:239
 #, python-format
+#| msgid ""
+#| "not properly determine the proper columns in the CSV-file. There uld be aeld"
+#| " called 'name' or '%(name)s' and one called 'e-mail' or e-mail)s'."
 msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
-"'%(e-mail)s'."
-msgstr "Die Felder der CSV-Datei konnten nicht korrekt bestimmt werden. Es sollte ein Feld 'name' oder '%(name)s' und ein Feld 'e-mail' oder '%(e-mail)s' geben."
+"'%(email)s'."
+msgstr ""
 
 #: addressimport/parsers.py:264
 #, python-format
@@ -293,8 +297,9 @@ msgstr "Diese Nachricht wurde bereits durch eine andere Ausgabe im Archiv veröf
 
 #: admin_utils.py:25
 #, python-format
-msgid "%(name)s object with primary key %(key)r does not exist."
-msgstr "Objekt %(name)s mit Primärschlüssel %(key)r existiert nicht. "
+#| msgid "%(name)s object with primary key %(key)r does not exist."
+msgid "%(name)s object with primary key '%(key)s' does not exist."
+msgstr ""
 
 #: forms.py:59
 msgid "Your e-mail address has already been subscribed to."

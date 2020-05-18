@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Translators:
 # dokterbob <mathijs@mathijsfietst.nl>, 2011
 # G M <gerben_m88@hotmail.com>, 2016
 # dokterbob <mathijs@mathijsfietst.nl>, 2013,2016,2018,2020
@@ -11,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-20 11:13+0000\n"
-"PO-Revision-Date: 2020-02-20 11:18+0000\n"
+"POT-Creation-Date: 2020-02-20 12:07+0000\n"
+"PO-Revision-Date: 2020-02-20 12:09+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: Dutch (http://www.transifex.com/dokterbob/django-newsletter/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -78,11 +79,14 @@ msgstr "Email-kolom niet gevonden. De naam van deze kolom moet 'email', 'e-mail'
 
 #: addressimport/parsers.py:239
 #, python-format
+#| msgid ""
+#| "not properly determine the proper columns in the CSV-file. There uld be aeld"
+#| " called 'name' or '%(name)s' and one called 'e-mail' or e-mail)s'."
 msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
-"'%(e-mail)s'."
-msgstr "Het is niet gelukt om de juiste kolommon in het CSV-betand te bepalen. Er zou een veld 'name' of '%(name)s' en een veld 'e-mail' of '%(e-mail)s' in moeten staan.'"
+"'%(email)s'."
+msgstr "Het is niet gelukt om de juiste kolommon in het CSV-betand te bepalen. Er zou een veld 'name' of '%(name)s' en een veld 'e-mail' of '%(email)s' in moeten staan.'"
 
 #: addressimport/parsers.py:264
 #, python-format
@@ -290,8 +294,9 @@ msgstr "Dit bericht is al gepubliceerd in een andere zending. Berichten kunnen m
 
 #: admin_utils.py:25
 #, python-format
-msgid "%(name)s object with primary key %(key)r does not exist."
-msgstr "%(name)s-object met primaire sleutel %(key)r bestaat niet."
+#| msgid "%(name)s object with primary key %(key)r does not exist."
+msgid "%(name)s object with primary key '%(key)s' does not exist."
+msgstr "%(name)s-object met primaire sleutel '%(key)s' bestaat niet."
 
 #: forms.py:59
 msgid "Your e-mail address has already been subscribed to."

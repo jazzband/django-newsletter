@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Translators:
 # Andrea <andrea.zanibellato@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-11-19 21:55+0100\n"
-"PO-Revision-Date: 2013-11-20 12:25+0000\n"
+"PO-Revision-Date: 2017-09-19 21:04+0000\n"
 "Last-Translator: Andrea <andrea.zanibellato@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/dokterbob/django-newsletter/language/it/)\n"
 "MIME-Version: 1.0\n"

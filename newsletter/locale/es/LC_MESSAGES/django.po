@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Translators:
 # Alex Santos <alexsnavas@gmail.com>, 2013
 # Dehivis Perez <dperez@unerg.edu.ve>, 2015
 # Diamo Rafaela <contacto@diamo.com.ar>, 2016
@@ -10,12 +11,13 @@
 # Javi Palanca <jpalanca@dsic.upv.es>, 2017-2018
 # Jorge Cuaron <kerloom@yahoo.com>, 2016
 # jpalanca <jpalanca@gmail.com>, 2018
+# dokterbob <mathijs@mathijsfietst.nl>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:25+0000\n"
-"PO-Revision-Date: 2020-01-11 19:18+0000\n"
+"POT-Creation-Date: 2020-02-20 12:07+0000\n"
+"PO-Revision-Date: 2020-02-20 12:07+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: Spanish (http://www.transifex.com/dokterbob/django-newsletter/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -81,11 +83,14 @@ msgstr "La columna e-mail no se encuentra. El nombre de esta columna debe ser 'e
 
 #: addressimport/parsers.py:239
 #, python-format
+#| msgid ""
+#| "not properly determine the proper columns in the CSV-file. There uld be aeld"
+#| " called 'name' or '%(name)s' and one called 'e-mail' or e-mail)s'."
 msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
-"'%(e-mail)s'."
-msgstr "No se pudo determinar adecuadamente las columnas apropiadas en el archivo CSV. Debe haber un campo llamado 'nombre' o '%(name)s' y uno llamado \"e-mail\" o \"%(e-mail)s '."
+"'%(email)s'."
+msgstr ""
 
 #: addressimport/parsers.py:264
 #, python-format
@@ -293,8 +298,9 @@ msgstr "Este  mensaje ya ha sido publicado en otra publicación. Los mensajes so
 
 #: admin_utils.py:25
 #, python-format
-msgid "%(name)s object with primary key %(key)r does not exist."
-msgstr "El objeto %(name)s con clave primaria %(key)r no existe."
+#| msgid "%(name)s object with primary key %(key)r does not exist."
+msgid "%(name)s object with primary key '%(key)s' does not exist."
+msgstr ""
 
 #: forms.py:59
 msgid "Your e-mail address has already been subscribed to."
@@ -616,9 +622,18 @@ msgstr "Suscripción a %(title)s"
 
 #: templates/newsletter/message/subscribe.html:10
 #: templates/newsletter/message/subscribe.txt:1
+#: templates/newsletter/message/unsubscribe.html:9
+#: templates/newsletter/message/unsubscribe.txt:1
+#: templates/newsletter/message/update.html:9
+#: templates/newsletter/message/update.txt:1
+msgid "Sir/Madam"
+msgstr "Señor(a)"
+
+#: templates/newsletter/message/subscribe.html:10
+#: templates/newsletter/message/subscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested a subscription to %(title)s.\n"
 "\n"
@@ -626,7 +641,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr ""
+msgstr "Estimado %(name)s,\n\nusted o alguien en su nombre solicitó una suscripción a %(title)s.\n\nSi desea confirmar su suscripción, siga este enlace de activación: \nhttp://%(domain)s%(url)s\n\nSaludos cordiales,"
 
 #: templates/newsletter/message/subscribe_subject.txt:1
 msgid "Confirm subscription"
@@ -641,7 +656,7 @@ msgstr "Baja de la suscripción de %(title)s"
 #: templates/newsletter/message/unsubscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested unsubscription from %(title)s.\n"
 "\n"
@@ -649,7 +664,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr ""
+msgstr "Estimado %(name)s,\n\nusted, o alguien en su nombre, ha solicitado darse de baja de %(title)s.\n\nSi desea confirmar su baja, siga este enlace de activación: \nhttp://%(domain)s%(url)s\n\nSaludos cordiales,"
 
 #: templates/newsletter/message/unsubscribe_subject.txt:1
 msgid "Confirm unsubscription"
@@ -664,7 +679,7 @@ msgstr "Actualización de la suscripción a %(title)s"
 #: templates/newsletter/message/update.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested updating your personal information for %(title)s.\n"
 "\n"
@@ -672,7 +687,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr ""
+msgstr "Estimado %(name)s,\n\nusted, o alguien en su nombre solicitó actualizar su información personal para %(title)s.\n\nPara hacer cambios a su información en nuestra base de datos, por favor siga este enlace de activación: \nhttp://%(domain)s%(url)s\n\nSaludos cordiales,"
 
 #: templates/newsletter/message/update_subject.txt:1
 msgid "Update information"

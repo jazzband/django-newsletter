@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Translators:
 # Sophocles Tsivides <sophocles.tsivides@gmail.com>, 2017
 msgid ""
 msgstr ""

@@ -3,16 +3,18 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Translators:
 # Claude Paroz <claude@2xlibre.net>, 2016
 # Marc Belmont <contact@marcbelmont.com>, 2014
+# dokterbob <mathijs@mathijsfietst.nl>, 2020
 # Santiago Malter-Terrada <s@yop.li>, 2013
 # Spout <spoutnik@gmail.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:25+0000\n"
-"PO-Revision-Date: 2020-01-11 19:18+0000\n"
+"POT-Creation-Date: 2020-02-20 12:07+0000\n"
+"PO-Revision-Date: 2020-02-20 12:07+0000\n"
 "Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
 "Language-Team: French (http://www.transifex.com/dokterbob/django-newsletter/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -78,11 +80,14 @@ msgstr "La colonne de l'adresse électronique n'a pas été trouvée. Le nom de 
 
 #: addressimport/parsers.py:239
 #, python-format
+#| msgid ""
+#| "not properly determine the proper columns in the CSV-file. There uld be aeld"
+#| " called 'name' or '%(name)s' and one called 'e-mail' or e-mail)s'."
 msgid ""
 "Could not properly determine the proper columns in the CSV-file. There "
 "should be a field called 'name' or '%(name)s' and one called 'e-mail' or "
-"'%(e-mail)s'."
-msgstr "Impossible de déterminer les colonnes dans ce fichier CSV. Il doit y avoir un champ nommé « name » ou « %(name)s » et un nommé « e-mail » ou « %(e-mail)s »."
+"'%(email)s'."
+msgstr ""
 
 #: addressimport/parsers.py:264
 #, python-format
@@ -290,8 +295,9 @@ msgstr "Ce message a déjà été publié dans un autre envoi. Les messages ne p
 
 #: admin_utils.py:25
 #, python-format
-msgid "%(name)s object with primary key %(key)r does not exist."
-msgstr "L'objet %(name)s  avec la clé %(key)r n'existe pas."
+#| msgid "%(name)s object with primary key %(key)r does not exist."
+msgid "%(name)s object with primary key '%(key)s' does not exist."
+msgstr ""
 
 #: forms.py:59
 msgid "Your e-mail address has already been subscribed to."
@@ -613,9 +619,18 @@ msgstr "Inscription à %(title)s"
 
 #: templates/newsletter/message/subscribe.html:10
 #: templates/newsletter/message/subscribe.txt:1
+#: templates/newsletter/message/unsubscribe.html:9
+#: templates/newsletter/message/unsubscribe.txt:1
+#: templates/newsletter/message/update.html:9
+#: templates/newsletter/message/update.txt:1
+msgid "Sir/Madam"
+msgstr "Monsieur/Madame"
+
+#: templates/newsletter/message/subscribe.html:10
+#: templates/newsletter/message/subscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested a subscription to %(title)s.\n"
 "\n"
@@ -623,7 +638,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr ""
+msgstr "Cher %(name)s,\n\nvous, ou quelqu'un en votre nom a demandé une inscription à %(title)s.\n\nSi vous voulez confirmer votre inscription, veuillez suivre ce lien d'activation :\nhttp://%(domain)s%(url)s\n\nCordialement,"
 
 #: templates/newsletter/message/subscribe_subject.txt:1
 msgid "Confirm subscription"
@@ -638,7 +653,7 @@ msgstr "Désinscription de %(title)s"
 #: templates/newsletter/message/unsubscribe.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested unsubscription from %(title)s.\n"
 "\n"
@@ -646,7 +661,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr ""
+msgstr "Cher %(name)s,\n\nvous, ou quelqu'un en votre nom a demandé une désinscription à %(title)s.\n\nSi vous voulez confirmer votre désinscription, veuillez suivre ce lien d'activation :\nhttp://%(domain)s%(url)s\n\nCordialement,"
 
 #: templates/newsletter/message/unsubscribe_subject.txt:1
 msgid "Confirm unsubscription"
@@ -661,7 +676,7 @@ msgstr "Modifier l'inscription à %(title)s"
 #: templates/newsletter/message/update.txt:1
 #, python-format
 msgid ""
-"Dear %(name|default:\"Sir/Madam\")s,\n"
+"Dear %(name)s,\n"
 "\n"
 "you, or someone in your name requested updating your personal information for %(title)s.\n"
 "\n"
@@ -669,7 +684,7 @@ msgid ""
 "http://%(domain)s%(url)s\n"
 "\n"
 "Kind regards,"
-msgstr ""
+msgstr "Cher %(name)s,\n\nvous, ou quelqu'un en votre nom a demandé la modification de vos données personnelles pour %(title)s.\n\nPour valider les modifications de vos informations dans notre base de données, veuillez suivre ce lien d'activation :\nhttp://%(domain)s%(url)s\n\nCordialement,"
 
 #: templates/newsletter/message/update_subject.txt:1
 msgid "Update information"

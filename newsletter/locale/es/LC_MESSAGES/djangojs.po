@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Translators:
 # Diamo Rafaela <contacto@diamo.com.ar>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-11-19 21:55+0100\n"
-"PO-Revision-Date: 2016-05-07 13:56+0000\n"
+"PO-Revision-Date: 2017-09-19 19:07+0000\n"
 "Last-Translator: Diamo Rafaela <contacto@diamo.com.ar>\n"
 "Language-Team: Spanish (http://www.transifex.com/dokterbob/django-newsletter/language/es/)\n"
 "MIME-Version: 1.0\n"
