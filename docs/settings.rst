@@ -39,6 +39,9 @@ installation, the widgets can be selected as follows::
 If not set, django-newsletter will fall back to Django's default TextField
 widget.
 
+.. note::
+    django-tinymce 3 and higher do not support Python 3.5.
+
 Delay and batch size
 --------------------
 The delay between each email, batches en batch size can be specified with e.g.::
