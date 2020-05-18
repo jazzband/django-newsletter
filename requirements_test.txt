@@ -1,5 +1,7 @@
 django-imperavi
-django-tinymce
+# TinyMCE above 3 doesn't support Python 3.5 anymore.
+# TODO: Remove version freeze when Django 2.2 LTS support is dropped, early 2022.
+django-tinymce<3
 pytz
 webtest
 django-webtest
