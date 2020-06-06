@@ -1,16 +1,7 @@
 """Tests for the fields module."""
 import sys
-
-# Conditional imports for Python 2.7
-try:
-    from importlib import reload
-except ImportError:
-    pass
-
-try:
-    from unittest.mock import patch, MagicMock, PropertyMock
-except ImportError:
-    from mock import patch, MagicMock, PropertyMock
+from importlib import reload
+from unittest.mock import patch, MagicMock, PropertyMock
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import ImageField
@@ -72,7 +63,7 @@ class FieldsTestCase(TestCase):
         """Tests that sorl-thumbnail image field loads as expected."""
         THUMBNAIL.return_value = 'sorl-thumbnail'
 
-        # Reload fields to redeclare the DynamicImageField=
+        # Reload fields to re-declare the DynamicImageField
         reload(fields)
 
         # Confirm inheritance from sorl-thubmnail ImageField
@@ -87,7 +78,7 @@ class FieldsTestCase(TestCase):
         """Tests that easy-thumbnails image field loads as expected."""
         THUMBNAIL.return_value = 'easy-thumbnails'
 
-        # Reload fields to redeclare the DynamicImageField
+        # Reload fields to re-declare the DynamicImageField
         reload(fields)
 
         # Confirm inheritance from easy-thumbnails ThumbnailerImageField
