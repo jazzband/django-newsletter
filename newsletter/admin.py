@@ -32,7 +32,7 @@ except ImportError:  # Django < 1.10
     from django.views.i18n import javascript_catalog
     HAS_CBV_JSCAT = False
 
-# Conditional imports as Thumbnail apps are optional and may not be installed
+# Conditional imports as only one Thumbnail app is required
 try:
     from sorl.thumbnail.admin import AdminImageMixin
 except ImportError:
@@ -58,7 +58,7 @@ from .compat import get_context, reverse
 from .fields import DynamicImageField
 from .settings import newsletter_settings
 
-# Contsruct URL's for icons
+# Construct URL's for icons
 ICON_URLS = {
     'yes': '%snewsletter/admin/img/icon-yes.gif' % settings.STATIC_URL,
     'wait': '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL,
