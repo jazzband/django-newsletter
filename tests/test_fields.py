@@ -12,6 +12,7 @@ try:
 except ImportError:
     from mock import patch, MagicMock, PropertyMock
 
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models import ImageField
 from django.test import TestCase
 
@@ -62,17 +63,6 @@ class FieldsTestCase(TestCase):
         del sys.modules['easy_thumbnails']
         del sys.modules['easy_thumbnails.fields']
         del sys.modules['easy_thumbnails.fields.ThumbnailerImageField']
-
-    def test_default_image_field(self):
-        """Tests that default behaviour is the Django ImageField."""
-        with patch('newsletter.settings.NewsletterSettings') as MockThumbnail:
-            MockThumbnail.return_value.THUMBNAIL = None
-
-            # Reload fields to redeclare the DynamicImageField
-            reload(fields)
-
-        # Confirm inheritance from Django ImageField
-        self.assertTrue(issubclass(fields.DynamicImageField, ImageField))
 
     @patch(
         'newsletter.settings.NewsletterSettings.THUMBNAIL',
