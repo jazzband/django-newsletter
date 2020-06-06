@@ -381,17 +381,14 @@ class ArticleInlineTests(TestCase):
         def __init__(self):
             self.parent_class = 'sorl-thumbnail'
 
-    def setUp(self):
-        # Mocks imports for testing
+    def mock_sorl_import(self):
+        """Mocks import of sorl-thumbnail AdminImageMixin."""
         sys.modules['sorl'] = MagicMock()
         sys.modules['sorl.thumbnail'] = MagicMock()
         sys.modules['sorl.thumbnail.admin'] = MagicMock()
         sys.modules['sorl.thumbnail.admin.AdminImageMixin'] = (
             self.MockSorlAdminImageMixin
         )
-        sys.modules['easy_thumbnails'] = MagicMock()
-        sys.modules['easy_thumbnails.widgets'] = MagicMock()
-        sys.modules['easy_thumbnails.widgets.ImageClearableFileInput'] = MagicMock()
 
         # Have to set attributes to get around metaclass conflicts when
         # setting up ArticleInlineClassTuple
@@ -401,6 +398,14 @@ class ArticleInlineTests(TestCase):
             'AdminImageMixin',
             self.MockSorlAdminImageMixin
         )
+
+    def mock_easy_thumbnails_import(self):
+        """Mocks import of easy-thumbnails ImageClearableFileInput."""
+        sys.modules['easy_thumbnails'] = MagicMock()
+        sys.modules['easy_thumbnails.widgets'] = MagicMock()
+        sys.modules['easy_thumbnails.widgets.ImageClearableFileInput'] = MagicMock()
+
+    def setUp(self):
         # Unregister models first to avoid an AlreadyRegistered error when
         # reloading the admin for tests
         django_admin.site.unregister(Newsletter)
@@ -408,21 +413,22 @@ class ArticleInlineTests(TestCase):
         django_admin.site.unregister(Message)
         django_admin.site.unregister(Subscription)
 
-        # setattr(
-        #     sys.modules['easy_thumbnails.fields'],
-        #     'ThumbnailerImageField',
-        #     self.MockEasyThumbnailsImageField
-        # )
-
     def tearDown(self):
-        # Remove mocked imports to ensure no future test conflicts
-        del sys.modules['sorl']
-        del sys.modules['sorl.thumbnail']
-        del sys.modules['sorl.thumbnail.admin']
-        del sys.modules['sorl.thumbnail.admin.AdminImageMixin']
-        del sys.modules['easy_thumbnails']
-        del sys.modules['easy_thumbnails.widgets']
-        del sys.modules['easy_thumbnails.widgets.ImageClearableFileInput']
+        # Remove any mocked imports to ensure no future test conflicts
+        try:
+            del sys.modules['sorl']
+            del sys.modules['sorl.thumbnail']
+            del sys.modules['sorl.thumbnail.admin']
+            del sys.modules['sorl.thumbnail.admin.AdminImageMixin']
+        except KeyError:
+            pass
+
+        try:
+            del sys.modules['easy_thumbnails']
+            del sys.modules['easy_thumbnails.widgets']
+            del sys.modules['easy_thumbnails.widgets.ImageClearableFileInput']
+        except KeyError:
+            pass
 
     @patch(
         'newsletter.settings.NewsletterSettings.THUMBNAIL',
@@ -433,6 +439,7 @@ class ArticleInlineTests(TestCase):
         THUMBNAIL.return_value = 'sorl-thumbnail'
 
         # Reload fields to re-declare ArticleInlineClassTuple
+        self.mock_sorl_import()
         reload(admin)
 
         # Confirm sorl-thumbnail admin details added (tests for the
@@ -458,6 +465,7 @@ class ArticleInlineTests(TestCase):
         THUMBNAIL.return_value = 'easy-thumbnails'
 
         # Reload fields to re-declare ArticleInline
+        self.mock_easy_thumbnails_import()
         reload(admin)
 
         # Get key names from formfield_overrides for easier testing
