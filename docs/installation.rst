@@ -16,13 +16,14 @@ Installation
     keep your Python environment somewhat clean.)
 
 #)  Add ``newsletter`` and the Django ``contrib`` dependencies noted below to
-    ``INSTALLED_APPS`` in your settings file. You may also add *optional*
-    modules, such as your preferred rich text widget (
+    ``INSTALLED_APPS`` in your settings file. You will need one of the
+    supported thumbnail applications (
+    `sorl-thumbnail <http://sorl-thumbnail.readthedocs.org/en/latest/installation.html>`_
+    or `easy-thumbnails <https://easy-thumbnails.readthedocs.io/en/latest/>`_).
+    You may also add an *optional* rich text widget (
     `Django Imperavi <https://github.com/vasyabigi/django-imperavi>`_
     or `Django TinyMCE <https://django-tinymce.readthedocs.io/en/latest/>`_)
-    and thumbnail application (
-    `sorl-thumbnail <http://sorl-thumbnail.readthedocs.org/en/latest/installation.html>`_
-    or `easy-thumbnails <https://easy-thumbnails.readthedocs.io/en/latest/>`_).::
+    and ::
 
         INSTALLED_APPS = (
             # Required Contrib Apps
@@ -31,16 +32,25 @@ Installation
             'django.contrib.auth',
             'django.contrib.sites',
             ...
+            # Thumbnail Applications
+            'sorl.thumbnail',
+            'easy_thumbnails',
+            ...
             # Optional Rich Text Editors
             'imperavi',
             'tinymce',
-            # Optional Thumbnail Applications
-            'sorl.thumbnail',
-            'easy_thumbnails',
             ...
             'newsletter',
             ...
         )
+
+#)  Specify your thumbnail application in your settings file::
+
+        # Using sorl-thumbnail
+        NEWSLETTER_THUMBNAIL = 'sorl-thumbnail'
+
+        # Using easy-thumbnails
+        NEWSLETTER_THUMBNAIL = 'easy-thumbnails'
 
 #)  Configure any of the optional :doc:`settings`.
 
