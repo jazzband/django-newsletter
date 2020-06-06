@@ -1386,23 +1386,6 @@ class ArchiveTestcase(NewsletterListTestCase):
             'newsletter/message/thumbnail/easy_thumbnails.html'
         )
 
-    @patch(
-        'newsletter.settings.NewsletterSettings.THUMBNAIL',
-        new_callable=PropertyMock,
-    )
-    def test_archive_detail_default_thumbnail_template(self, THUMBNAIL):
-        """Tests that default thumbnail template works."""
-        THUMBNAIL.return_value = None
-
-        detail_url = self.submission.get_absolute_url()
-
-        response = self.client.get(detail_url)
-        self.assertEqual(response.status_code, 200)
-
-        self.assertTemplateUsed(
-            'newsletter/message/thumbnail/django_newsletter.html'
-        )
-
     def test_archive_unpublished_detail(self):
         """ Assert that an unpublished submission is truly inaccessible. """
 
