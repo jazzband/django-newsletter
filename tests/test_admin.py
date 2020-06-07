@@ -381,6 +381,20 @@ class ArticleInlineTests(TestCase):
         def __init__(self):
             self.parent_class = 'sorl-thumbnail'
 
+    def clear_imports(self):
+        """Removes imported modules to ensure proper test environment.
+
+            Need to set import to None because otherwise Python will
+            automatically re-import them when called during testing.
+        """
+        sys.modules['sorl'] = None
+        sys.modules['sorl.thumbnail'] = None
+        sys.modules['sorl.thumbnail.admin'] = None
+        sys.modules['sorl.thumbnail.admin.AdminImageMixin'] = None
+        sys.modules['easy_thumbnails'] = None
+        sys.modules['easy_thumbnails.widgets'] = None
+        sys.modules['easy_thumbnails.widgets.ImageClearableFileInput'] = None
+
     def mock_sorl_import(self):
         """Mocks import of sorl-thumbnail AdminImageMixin."""
         sys.modules['sorl'] = MagicMock()
@@ -414,21 +428,7 @@ class ArticleInlineTests(TestCase):
         django_admin.site.unregister(Subscription)
 
     def tearDown(self):
-        # Remove any mocked imports to ensure no future test conflicts
-        try:
-            del sys.modules['sorl']
-            del sys.modules['sorl.thumbnail']
-            del sys.modules['sorl.thumbnail.admin']
-            del sys.modules['sorl.thumbnail.admin.AdminImageMixin']
-        except KeyError:
-            pass
-
-        try:
-            del sys.modules['easy_thumbnails']
-            del sys.modules['easy_thumbnails.widgets']
-            del sys.modules['easy_thumbnails.widgets.ImageClearableFileInput']
-        except KeyError:
-            pass
+        self.clear_imports()
 
     @patch(
         'newsletter.settings.NewsletterSettings.THUMBNAIL',
@@ -438,8 +438,11 @@ class ArticleInlineTests(TestCase):
         """Tests that sorl-thumbnail admin mixin loads as expected."""
         THUMBNAIL.return_value = 'sorl-thumbnail'
 
-        # Reload fields to re-declare ArticleInlineClassTuple
+        # Reset imported sys modules
+        self.clear_imports()
         self.mock_sorl_import()
+
+        # Reload fields to re-declare ArticleInlineClassTuple
         reload(admin)
 
         # Confirm sorl-thumbnail admin details added (tests for the
@@ -464,8 +467,11 @@ class ArticleInlineTests(TestCase):
         """Tests that easy-thumbnials Admin widget loads as expected."""
         THUMBNAIL.return_value = 'easy-thumbnails'
 
-        # Reload fields to re-declare ArticleInline
+        # Reset imported sys modules
+        self.clear_imports()
         self.mock_easy_thumbnails_import()
+
+        # Reload fields to re-declare ArticleInline
         reload(admin)
 
         # Get key names from formfield_overrides for easier testing
