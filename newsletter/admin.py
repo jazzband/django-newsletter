@@ -246,20 +246,18 @@ class ArticleInline(BaseArticleInline):
     )
 
     # Perform any formfield overrides depending on specified settings
-    _formfield_overrides = {}
+    formfield_overrides = {}
 
     if newsletter_settings.RICHTEXT_WIDGET:
-        _formfield_overrides = {
-            models.TextField: {'widget': newsletter_settings.RICHTEXT_WIDGET},
+        formfield_overrides[models.TextField] = {
+            'widget': newsletter_settings.RICHTEXT_WIDGET
         }
 
     # https://easy-thumbnails.readthedocs.io/en/latest/usage/#forms
     if newsletter_settings.THUMBNAIL == 'easy-thumbnails':
-        _formfield_overrides = {
-            DynamicImageField: {'widget': ImageClearableFileInput}
+        formfield_overrides[DynamicImageField] = {
+            'widget': ImageClearableFileInput
         }
-
-    formfield_overrides = _formfield_overrides
 
 
 class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
