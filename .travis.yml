@@ -29,6 +29,8 @@ install:
   # Latest PIP uses wheel by default
   - pip install --upgrade pip
   - pip install $DJANGO
+  - pip install -r requirements.txt
+  - pip install -r requirements_test.txt
   - pip install coveralls
 
 # Command to run tests
