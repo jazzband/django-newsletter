@@ -148,6 +148,17 @@ class SubmissionAdminForm(forms.ModelForm):
         model = Submission
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(SubmissionAdminForm, self).__init__(*args, **kwargs)
+        if not self.current_user.is_superuser:
+            newsqs = Newsletter.objects.filter(
+                groups__name__in=self.current_user.groups.values_list(
+                    'name', flat=True)
+            )
+            nogroupsqs = Newsletter.objects.filter(groups__isnull=True)
+            self.fields['subscriptions'].queryset = Subscription.objects.filter(
+                newsletter__in=(newsqs | nogroupsqs))
+
     def clean_publish(self):
         """
         Make sure only one submission can be published for each message.
