@@ -90,7 +90,7 @@ class NewsletterAdmin(admin.ModelAdmin):
 
 class NewsletterAdminLinkMixin(object):
     def admin_newsletter(self, obj):
-        opts = Newsletter._meta
+        opts = obj._meta
         newsletter = obj.newsletter
         url = reverse('admin:%s_%s_change' % (opts.app_label, opts.model_name),
                       args=(newsletter.id,), current_app=self.admin_site.name)
