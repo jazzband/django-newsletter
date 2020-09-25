@@ -216,6 +216,11 @@ if (
 
 class AttachmentInline(admin.TabularInline):
     model = Attachment
+    extra = 1
+
+    def has_change_permission(self, request, obj=None):
+        """ Prevent change of the file (instead needs to be deleted) """
+        return False
 
 
 class ArticleInline(AdminImageMixin, StackedInline):
@@ -268,7 +273,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
             request,
             "admin/newsletter/message/preview.html",
             {'message': self._getobj(request, object_id),
-             'attachments': Attachment.objects.filter(post_id=object_id)},
+             'attachments': Attachment.objects.filter(message_id=object_id)},
         )
 
     @xframe_options_sameorigin

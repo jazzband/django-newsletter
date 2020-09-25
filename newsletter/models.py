@@ -1,5 +1,8 @@
 import logging
+import os
 import time
+from datetime import datetime
+
 from six import python_2_unicode_compatible
 import django
 
@@ -95,7 +98,7 @@ class Newsletter(models.Model):
             # HTML templates are not required
             html_template = None
 
-        return (subject_template, text_template, html_template)
+        return subject_template, text_template, html_template
 
     def __str__(self):
         return self.title
@@ -444,27 +447,42 @@ class Article(models.Model):
         super(Article, self).save()
 
 
+def attachment_upload_to(instance, filename):
+    return os.path.join(
+        'newsletter', 'attachments',
+        datetime.utcnow().strftime('%Y-%m-%d'),
+        str(instance.message.id),
+        filename
+    )
+
+
 class Attachment(models.Model):
-    """
-    Attachment for a Message .
-    """
+    """ Attachment for a Message. """
     class Meta:
         verbose_name = _('attachment')
         verbose_name_plural = _('attachments')
 
+    def __str__(self):
+        file_name = os.path.split(self.file.name)[1]
+        return _(u"%(file_name)s on %(message)s") % {
+            'file_name': file_name,
+            'message': self.message
+        }
+
     file = models.FileField(
-        upload_to='newsletter/attachments/%Y/%m/%d', blank=False, null=False,
+        upload_to=attachment_upload_to,
+        blank=False, null=False,
         verbose_name=_('attachment')
     )
 
-    # Attachment is associated with
     message = models.ForeignKey(
-        'Message', verbose_name=_('message'), related_name='attachments'
+        'Message', verbose_name=_('message'), on_delete=models.CASCADE, related_name='attachments',
     )
 
 
 def get_default_newsletter():
     return Newsletter.get_default()
+
 
 @python_2_unicode_compatible
 class Message(models.Model):
@@ -616,7 +634,7 @@ class Submission(models.Model):
             headers=self.extra_headers,
         )
 
-        attachments = Attachment.objects.filter(post_id=self.message.id)
+        attachments = Attachment.objects.filter(message_id=self.message.id)
 
         for attachment in attachments:
             message.attach_file(attachment.file.path)
@@ -677,8 +695,6 @@ class Submission(models.Model):
 
         return super(Submission, self).save()
 
-
-
     def get_absolute_url(self):
         assert self.newsletter.slug
         assert self.message.slug
@@ -731,6 +747,7 @@ class Submission(models.Model):
         default=False, verbose_name=_('sending'),
         db_index=True, editable=False
     )
+
 
 def get_address(name, email):
     # Converting name to ascii for compatibility with django < 1.9.
