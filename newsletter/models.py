@@ -444,6 +444,25 @@ class Article(models.Model):
         super(Article, self).save()
 
 
+class Attachment(models.Model):
+    """
+    Attachment for a Message .
+    """
+    class Meta:
+        verbose_name = _('attachment')
+        verbose_name_plural = _('attachments')
+
+    file = models.FileField(
+        upload_to='newsletter/attachments/%Y/%m/%d', blank=False, null=False,
+        verbose_name=_('attachment')
+    )
+
+    # Attachment is associated with
+    message = models.ForeignKey(
+        'Message', verbose_name=_('message'), related_name='attachments'
+    )
+
+
 def get_default_newsletter():
     return Newsletter.get_default()
 
@@ -596,6 +615,11 @@ class Submission(models.Model):
             to=[subscription.get_recipient()],
             headers=self.extra_headers,
         )
+
+        attachments = Attachment.objects.filter(post_id=self.message.id)
+
+        for attachment in attachments:
+            message.attach_file(attachment.file.path)
 
         if self.message.html_template:
             escaped_context = get_context(variable_dict)
