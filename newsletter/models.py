@@ -463,9 +463,8 @@ class Attachment(models.Model):
         verbose_name_plural = _('attachments')
 
     def __str__(self):
-        file_name = os.path.split(self.file.name)[1]
         return _(u"%(file_name)s on %(message)s") % {
-            'file_name': file_name,
+            'file_name': self.file_name,
             'message': self.message
         }
 
@@ -478,6 +477,10 @@ class Attachment(models.Model):
     message = models.ForeignKey(
         'Message', verbose_name=_('message'), on_delete=models.CASCADE, related_name='attachments',
     )
+
+    @property
+    def file_name(self):
+        return os.path.split(self.file.name)[1]
 
 
 def get_default_newsletter():
