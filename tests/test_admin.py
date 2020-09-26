@@ -7,7 +7,7 @@ from django.test import TestCase
 from newsletter import admin  # Triggers model admin registration
 from newsletter.admin_utils import make_subscription
 from newsletter.compat import reverse
-from newsletter.models import Message, Newsletter, Submission, Subscription, Attachment
+from newsletter.models import Message, Newsletter, Submission, Subscription, Attachment, attachment_upload_to
 
 from .utils import AssertLogsMixin
 
@@ -306,6 +306,9 @@ Unsubscribe: http://example.com/newsletter/test-newsletter/unsubscribe/
 
         message_with_a = Message.objects.last()
         self.assertEqual(message_with_a.attachments.count(), 1)
+
+        upload_to = attachment_upload_to(self.attachment, 'sample1.txt')
+        self.assertEqual(os.path.split(upload_to)[1], 'sample1.txt')
 
         change_url = reverse('admin:newsletter_message_change', args=(self.message_with_attachment.pk,))
         response = self.client.get(change_url)
