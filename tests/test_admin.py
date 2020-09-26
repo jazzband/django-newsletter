@@ -34,7 +34,8 @@ class AdminTestMixin(object):
         self.message_with_attachment = Message.objects.create(
             newsletter=self.newsletter, title='Test message with attachment', slug='test-message-with-attachment'
         )
-        self.attachment = Attachment.objects.create(file='sample1.txt', message=self.message_with_attachment)
+        self.attachment = Attachment.objects.create(file=os.path.join('tests', 'files', 'sample.txt'),
+                                                    message=self.message_with_attachment)
 
 
 class AdminTestCase(AdminTestMixin, AssertLogsMixin, TestCase):
@@ -307,8 +308,8 @@ Unsubscribe: http://example.com/newsletter/test-newsletter/unsubscribe/
         message_with_a = Message.objects.last()
         self.assertEqual(message_with_a.attachments.count(), 1)
 
-        upload_to = attachment_upload_to(self.attachment, 'sample1.txt')
-        self.assertEqual(os.path.split(upload_to)[1], 'sample1.txt')
+        upload_to = attachment_upload_to(self.attachment, 'sample.txt')
+        self.assertEqual(os.path.split(upload_to)[1], 'sample.txt')
 
         change_url = reverse('admin:newsletter_message_change', args=(self.message_with_attachment.pk,))
         response = self.client.get(change_url)
