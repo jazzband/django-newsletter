@@ -52,7 +52,7 @@ from .compat import get_context, reverse
 
 from .settings import newsletter_settings
 
-# Contsruct URL's for icons
+# Construct URL's for icons
 ICON_URLS = {
     'yes': '%snewsletter/admin/img/icon-yes.gif' % settings.STATIC_URL,
     'wait': '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL,
