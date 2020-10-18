@@ -287,7 +287,7 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
         myvcards = card_me.readComponents(encodedfile)
     except card_me.VObjectError as e:
         raise forms.ValidationError(
-            _(u"Error reading vCard file: %s" % e)
+            _("Error reading vCard file: %s" % e)
         )
 
     address_list = AddressList(newsletter, ignore_errors)
