@@ -1,6 +1,5 @@
 import logging
 import time
-from six import python_2_unicode_compatible
 import django
 
 from django.conf import settings
@@ -28,7 +27,6 @@ logger = logging.getLogger(__name__)
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
-@python_2_unicode_compatible
 class Newsletter(models.Model):
     site = models.ManyToManyField(Site, default=get_default_sites)
 
@@ -135,7 +133,6 @@ class Newsletter(models.Model):
             return None
 
 
-@python_2_unicode_compatible
 class Subscription(models.Model):
     user = models.ForeignKey(
         AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('user'),
@@ -394,7 +391,6 @@ class Subscription(models.Model):
         })
 
 
-@python_2_unicode_compatible
 class Article(models.Model):
     """
     An Article within a Message which will be send through a Submission.
@@ -447,7 +443,6 @@ class Article(models.Model):
 def get_default_newsletter():
     return Newsletter.get_default()
 
-@python_2_unicode_compatible
 class Message(models.Model):
     """ Message as sent through a Submission. """
 
@@ -517,7 +512,6 @@ class Message(models.Model):
             return None
 
 
-@python_2_unicode_compatible
 class Submission(models.Model):
     """
     Submission represents a particular Message as it is being submitted
