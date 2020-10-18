@@ -13,8 +13,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.db import models
 from django.template.loader import select_template
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext
 from django.utils.timezone import now
 
 from sorl.thumbnail import ImageField
@@ -588,7 +588,7 @@ class Submission(models.Model):
         subscriptions = self.subscriptions.filter(subscribed=True)
 
         logger.info(
-            ugettext(u"Submitting %(submission)s to %(count)d people"),
+            gettext(u"Submitting %(submission)s to %(count)d people"),
             {'submission': self, 'count': subscriptions.count()}
         )
 
@@ -652,7 +652,7 @@ class Submission(models.Model):
 
         try:
             logger.debug(
-                ugettext(u'Submitting message to: %s.'),
+                gettext(u'Submitting message to: %s.'),
                 subscription
             )
 
@@ -661,8 +661,8 @@ class Submission(models.Model):
         except Exception as e:
             # TODO: Test coverage for this branch.
             logger.error(
-                ugettext(u'Message %(subscription)s failed '
-                         u'with error: %(error)s'),
+                gettext(u'Message %(subscription)s failed '
+                        u'with error: %(error)s'),
                 {'subscription': subscription,
                  'error': e}
             )
@@ -679,7 +679,7 @@ class Submission(models.Model):
 
     @classmethod
     def from_message(cls, message):
-        logger.debug(ugettext('Submission of message %s'), message)
+        logger.debug(gettext('Submission of message %s'), message)
         submission = cls()
         submission.message = message
         submission.newsletter = message.newsletter
