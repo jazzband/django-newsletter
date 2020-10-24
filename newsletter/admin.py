@@ -527,7 +527,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         # Translated JS strings - these should be app-wide but are
         # only used in this part of the admin. For now, leave them here.
         if HAS_CBV_JSCAT:
-\            my_urls.append(path('jsi18n/',
+            my_urls.append(path('jsi18n/',
                            JavaScriptCatalog.as_view(packages=('newsletter',)),
                            name='newsletter_js18n'))
         else:
