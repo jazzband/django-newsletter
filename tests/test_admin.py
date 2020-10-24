@@ -7,7 +7,7 @@ from django.test import TestCase
 from newsletter import admin  # Triggers model admin registration
 from newsletter.admin_utils import make_subscription
 from newsletter.compat import reverse
-from newsletter.models import Message, Newsletter, Submission, Subscription
+from newsletter.models import Message, Newsletter, Submission, Subscription, Attachment, attachment_upload_to
 
 from .utils import AssertLogsMixin
 
@@ -31,6 +31,11 @@ class AdminTestMixin(object):
         self.message = Message.objects.create(
             newsletter=self.newsletter, title='Test message', slug='test-message'
         )
+        self.message_with_attachment = Message.objects.create(
+            newsletter=self.newsletter, title='Test message with attachment', slug='test-message-with-attachment'
+        )
+        self.attachment = Attachment.objects.create(file=os.path.join('tests', 'files', 'sample.txt'),
+                                                    message=self.message_with_attachment)
 
 
 class AdminTestCase(AdminTestMixin, AssertLogsMixin, TestCase):
@@ -293,6 +298,22 @@ Unsubscribe: http://example.com/newsletter/test-newsletter/unsubscribe/
         self.newsletter.save()
         response = self.client.get(preview_html_url)
         self.assertEqual(response.status_code, 404)
+
+    def test_message_with_attachment_admin(self):
+        """
+        Testing message with attachment admin change list display.
+        """
+        self.assertEqual(Message.objects.count(), 2)
+
+        message_with_a = Message.objects.last()
+        self.assertEqual(message_with_a.attachments.count(), 1)
+
+        upload_to = attachment_upload_to(self.attachment, 'sample.txt')
+        self.assertEqual(os.path.split(upload_to)[1], 'sample.txt')
+
+        change_url = reverse('admin:newsletter_message_change', args=(self.message_with_attachment.pk,))
+        response = self.client.get(change_url)
+        self.assertContains(response, '<h2>Attachments</h2>', html=True)
 
 
 class SubmissionAdminTests(AdminTestMixin, TestCase):
