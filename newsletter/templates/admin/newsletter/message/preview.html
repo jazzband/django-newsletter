@@ -22,6 +22,16 @@
     <li><a href="{% url "admin:newsletter_message_change" message.id %}">{% trans "Change" %}</a></li>
     <li><a href="{% url "admin:newsletter_message_submit" message.id %}">{% trans "Create submission" %}</a></li>
   </ul>
+    
+    <h4>{% trans "Attachments" %}</h4>
+    <ul>
+    {% for att in attachments %}
+    <li>{{ att.file.name }} ({{ att.file.size|filesizeformat }})</li>
+    {% empty %}
+    <li>{% trans "No Attachments"%}</li>
+    {% endfor %}
+    </ul>
+    
     {% if message.newsletter.send_html %}
     <h4>{% trans "HTML" %}</h4>
     <iframe src ="{% url "admin:newsletter_message_preview_html" message.id %}" width="960px" height="720px"></iframe>

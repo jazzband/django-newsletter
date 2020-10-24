@@ -592,6 +592,7 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
 
         context.update({
             'message': message,
+            'attachment_links': True,
             'site': Site.objects.get_current(),
             'date': self.object.publish_date,
             'STATIC_URL': settings.STATIC_URL,
