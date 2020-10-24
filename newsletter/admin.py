@@ -1,6 +1,9 @@
 from __future__ import unicode_literals
 
 import logging
+
+from django.urls import path
+
 logger = logging.getLogger(__name__)
 
 import six
@@ -8,7 +11,6 @@ import six
 from django.db import models
 
 from django.conf import settings
-from django.conf.urls import url
 
 from django.contrib import admin, messages
 from django.contrib.sites.models import Site
@@ -185,8 +187,8 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         urls = super(SubmissionAdmin, self).get_urls()
 
         my_urls = [
-            url(
-                r'^(.+)/submit/$',
+            path(
+                '<object_id>/submit/',
                 self._wrap(self.submit),
                 name=self._view_name('submit')
             )
@@ -334,21 +336,21 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         urls = super(MessageAdmin, self).get_urls()
 
         my_urls = [
-            url(r'^(.+)/preview/$',
-                self._wrap(self.preview),
-                name=self._view_name('preview')),
-            url(r'^(.+)/preview/html/$',
-                self._wrap(self.preview_html),
-                name=self._view_name('preview_html')),
-            url(r'^(.+)/preview/text/$',
-                self._wrap(self.preview_text),
-                name=self._view_name('preview_text')),
-            url(r'^(.+)/submit/$',
-                self._wrap(self.submit),
-                name=self._view_name('submit')),
-            url(r'^(.+)/subscribers/json/$',
-                self._wrap(self.subscribers_json),
-                name=self._view_name('subscribers_json')),
+            path('<object_id>/preview/',
+                 self._wrap(self.preview),
+                 name=self._view_name('preview')),
+            path('<object_id>/preview/html/',
+                 self._wrap(self.preview_html),
+                 name=self._view_name('preview_html')),
+            path('<object_id>/preview/text/',
+                 self._wrap(self.preview_text),
+                 name=self._view_name('preview_text')),
+            path('<object_id>/submit/',
+                 self._wrap(self.submit),
+                 name=self._view_name('submit')),
+            path('<object_id>/subscribers/json/',
+                 self._wrap(self.subscribers_json),
+                 name=self._view_name('subscribers_json')),
         ]
 
         return my_urls + urls
@@ -515,24 +517,24 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         urls = super(SubscriptionAdmin, self).get_urls()
 
         my_urls = [
-            url(r'^import/$',
-                self._wrap(self.subscribers_import),
-                name=self._view_name('import')),
-            url(r'^import/confirm/$',
-                self._wrap(self.subscribers_import_confirm),
-                name=self._view_name('import_confirm')),
+            path('import/',
+                 self._wrap(self.subscribers_import),
+                 name=self._view_name('import')),
+            path('import/confirm/',
+                 self._wrap(self.subscribers_import_confirm),
+                 name=self._view_name('import_confirm')),
         ]
         # Translated JS strings - these should be app-wide but are
         # only used in this part of the admin. For now, leave them here.
         if HAS_CBV_JSCAT:
-            my_urls.append(url(r'^jsi18n/$',
-                               JavaScriptCatalog.as_view(packages=('newsletter',)),
-                               name='newsletter_js18n'))
+            my_urls.append(path('jsi18n/',
+                           JavaScriptCatalog.as_view(packages=('newsletter',)),
+                           name='newsletter_js18n'))
         else:
-            my_urls.append(url(r'^jsi18n/$',
-                               javascript_catalog,
-                               {'packages': ('newsletter',)},
-                               name='newsletter_js18n'))
+            my_urls.append(path('jsi18n/',
+                                javascript_catalog,
+                                {'packages': ('newsletter',)},
+                                name='newsletter_js18n'))
 
         return my_urls + urls
 
