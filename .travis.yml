@@ -11,6 +11,7 @@ python:
 env:
   - DJANGO="Django<2.3"     # Django 2.2.x LTS
   - DJANGO="Django<3.1"     # Django 3.0.x
+  - DJANGO="Django<3.2"     # Django 3.1.x
 
 cache:
   directories:
@@ -18,10 +19,10 @@ cache:
 
 matrix:
   exclude:
-    # Django 3.0 doesn't support Python 3.5
+    # Django 3.0 and 3.1 don't support Python 3.5
     - env: DJANGO="Django<3.1"
-      python: 3.4
-    - env: DJANGO="Django<3.1"
+      python: 3.5
+    - env: DJANGO="Django<3.2"
       python: 3.5
 
 # Command to install dependencies
