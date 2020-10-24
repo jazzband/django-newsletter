@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 import itertools
+import os
+
 import mock
 import six
 import unittest
@@ -13,7 +15,7 @@ from django.core import mail
 from django.utils.timezone import now
 
 from newsletter.models import (
-    Newsletter, Subscription, Submission, Message, Article, get_default_sites
+    Newsletter, Subscription, Submission, Message, Article, get_default_sites, Attachment
 )
 from newsletter.utils import ACTIONS
 
@@ -46,6 +48,11 @@ class MailingTestCase(MailTestCase):
                          newsletter=self.n,
                          slug='test-message')
         self.m.save()
+
+        self.a = Attachment.objects.create(
+            file=os.path.join('tests', 'files', 'sample.pdf'),
+            message=self.m
+        )
 
         self.s = Subscription.objects.create(
             name='Test Name', email='test@test.com',

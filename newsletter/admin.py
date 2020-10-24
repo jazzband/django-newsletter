@@ -35,7 +35,7 @@ except ImportError:  # Django < 1.10
 from sorl.thumbnail.admin import AdminImageMixin
 
 from .models import (
-    Newsletter, Subscription, Article, Message, Submission
+    Newsletter, Subscription, Attachment, Article, Message, Submission
 )
 
 from django.utils.timezone import now
@@ -214,6 +214,15 @@ if (
         )
 
 
+class AttachmentInline(admin.TabularInline):
+    model = Attachment
+    extra = 1
+
+    def has_change_permission(self, request, obj=None):
+        """ Prevent change of the file (instead needs to be deleted) """
+        return False
+
+
 class ArticleInline(AdminImageMixin, StackedInline):
     model = Article
     extra = 2
@@ -245,7 +254,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     date_hierarchy = 'date_create'
     prepopulated_fields = {'slug': ('title',)}
 
-    inlines = [ArticleInline, ]
+    inlines = [ArticleInline, AttachmentInline, ]
 
     """ List extensions """
     def admin_title(self, obj):
@@ -263,7 +272,8 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         return render(
             request,
             "admin/newsletter/message/preview.html",
-            {'message': self._getobj(request, object_id)},
+            {'message': self._getobj(request, object_id),
+             'attachments': Attachment.objects.filter(message_id=object_id)},
         )
 
     @xframe_options_sameorigin
@@ -516,13 +526,13 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         # only used in this part of the admin. For now, leave them here.
         if HAS_CBV_JSCAT:
             my_urls.append(url(r'^jsi18n/$',
-                JavaScriptCatalog.as_view(packages=('newsletter',)),
-                name='newsletter_js18n'))
+                               JavaScriptCatalog.as_view(packages=('newsletter',)),
+                               name='newsletter_js18n'))
         else:
             my_urls.append(url(r'^jsi18n/$',
-                javascript_catalog,
-                {'packages': ('newsletter',)},
-                name='newsletter_js18n'))
+                               javascript_catalog,
+                               {'packages': ('newsletter',)},
+                               name='newsletter_js18n'))
 
         return my_urls + urls
 
