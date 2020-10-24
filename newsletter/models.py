@@ -3,7 +3,6 @@ import os
 import time
 from datetime import datetime
 
-from six import python_2_unicode_compatible
 import django
 
 from django.conf import settings
@@ -13,8 +12,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.db import models
 from django.template.loader import select_template
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext
 from django.utils.timezone import now
 
 from sorl.thumbnail import ImageField
@@ -31,7 +30,6 @@ logger = logging.getLogger(__name__)
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
-@python_2_unicode_compatible
 class Newsletter(models.Model):
     site = models.ManyToManyField(Site, default=get_default_sites)
 
@@ -126,7 +124,7 @@ class Newsletter(models.Model):
         return get_address(self.sender, self.email)
 
     def get_subscriptions(self):
-        logger.debug(u'Looking up subscribers for %s', self)
+        logger.debug('Looking up subscribers for %s', self)
 
         return Subscription.objects.filter(newsletter=self, subscribed=True)
 
@@ -138,7 +136,6 @@ class Newsletter(models.Model):
             return None
 
 
-@python_2_unicode_compatible
 class Subscription(models.Model):
     user = models.ForeignKey(
         AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('user'),
@@ -191,7 +188,7 @@ class Subscription(models.Model):
             self.unsubscribed = True
 
         logger.debug(
-            _(u'Updated subscription %(subscription)s to %(action)s.'),
+            _('Updated subscription %(subscription)s to %(action)s.'),
             {
                 'subscription': self,
                 'action': action
@@ -207,7 +204,7 @@ class Subscription(models.Model):
         Internal helper method for managing subscription state
         during subscription.
         """
-        logger.debug(u'Subscribing subscription %s.', self)
+        logger.debug('Subscribing subscription %s.', self)
 
         self.subscribe_date = now()
         self.subscribed = True
@@ -218,7 +215,7 @@ class Subscription(models.Model):
         Internal helper method for managing subscription state
         during unsubscription.
         """
-        logger.debug(u'Unsubscribing subscription %s.', self)
+        logger.debug('Unsubscribing subscription %s.', self)
 
         self.subscribed = False
         self.unsubscribed = True
@@ -308,14 +305,14 @@ class Subscription(models.Model):
 
     def __str__(self):
         if self.name:
-            return _(u"%(name)s <%(email)s> to %(newsletter)s") % {
+            return _("%(name)s <%(email)s> to %(newsletter)s") % {
                 'name': self.name,
                 'email': self.email,
                 'newsletter': self.newsletter
             }
 
         else:
-            return _(u"%(email)s to %(newsletter)s") % {
+            return _("%(email)s to %(newsletter)s") % {
                 'email': self.email,
                 'newsletter': self.newsletter
             }
@@ -364,8 +361,8 @@ class Subscription(models.Model):
         message.send()
 
         logger.debug(
-            u'Activation email sent for action "%(action)s" to %(subscriber)s '
-            u'with activation code "%(action_code)s".', {
+            'Activation email sent for action "%(action)s" to %(subscriber)s '
+            'with activation code "%(action_code)s".', {
                 'action_code': self.activation_code,
                 'action': action,
                 'subscriber': self
@@ -397,7 +394,6 @@ class Subscription(models.Model):
         })
 
 
-@python_2_unicode_compatible
 class Article(models.Model):
     """
     An Article within a Message which will be send through a Submission.
@@ -487,7 +483,6 @@ def get_default_newsletter():
     return Newsletter.get_default()
 
 
-@python_2_unicode_compatible
 class Message(models.Model):
     """ Message as sent through a Submission. """
 
@@ -512,7 +507,7 @@ class Message(models.Model):
 
     def __str__(self):
         try:
-            return _(u"%(title)s in %(newsletter)s") % {
+            return _("%(title)s in %(newsletter)s") % {
                 'title': self.title,
                 'newsletter': self.newsletter
             }
@@ -557,7 +552,6 @@ class Message(models.Model):
             return None
 
 
-@python_2_unicode_compatible
 class Submission(models.Model):
     """
     Submission represents a particular Message as it is being submitted
@@ -569,7 +563,7 @@ class Submission(models.Model):
         verbose_name_plural = _('submissions')
 
     def __str__(self):
-        return _(u"%(newsletter)s on %(publish_date)s") % {
+        return _("%(newsletter)s on %(publish_date)s") % {
             'newsletter': self.message,
             'publish_date': self.publish_date
         }
@@ -588,7 +582,7 @@ class Submission(models.Model):
         subscriptions = self.subscriptions.filter(subscribed=True)
 
         logger.info(
-            ugettext(u"Submitting %(submission)s to %(count)d people"),
+            gettext("Submitting %(submission)s to %(count)d people"),
             {'submission': self, 'count': subscriptions.count()}
         )
 
@@ -652,7 +646,7 @@ class Submission(models.Model):
 
         try:
             logger.debug(
-                ugettext(u'Submitting message to: %s.'),
+                gettext('Submitting message to: %s.'),
                 subscription
             )
 
@@ -661,8 +655,8 @@ class Submission(models.Model):
         except Exception as e:
             # TODO: Test coverage for this branch.
             logger.error(
-                ugettext(u'Message %(subscription)s failed '
-                         u'with error: %(error)s'),
+                gettext('Message %(subscription)s failed '
+                        'with error: %(error)s'),
                 {'subscription': subscription,
                  'error': e}
             )
@@ -679,7 +673,7 @@ class Submission(models.Model):
 
     @classmethod
     def from_message(cls, message):
-        logger.debug(ugettext('Submission of message %s'), message)
+        logger.debug(gettext('Submission of message %s'), message)
         submission = cls()
         submission.message = message
         submission.newsletter = message.newsletter
@@ -758,6 +752,6 @@ def get_address(name, email):
     if LooseVersion(django.get_version()) < LooseVersion('1.9'):
         name = name.encode('ascii', 'ignore').decode('ascii').strip()
     if name:
-        return u'%s <%s>' % (name, email)
+        return '%s <%s>' % (name, email)
     else:
-        return u'%s' % email
+        return '%s' % email

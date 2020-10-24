@@ -21,7 +21,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
 
 from django.utils.html import format_html
-from django.utils.translation import ugettext as _, ungettext
+from django.utils.translation import gettext as _, ngettext
 from django.utils.formats import date_format
 
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -417,7 +417,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         rows_updated = queryset.update(subscribed=True)
         self.message_user(
             request,
-            ungettext(
+            ngettext(
                 "%d user has been successfully subscribed.",
                 "%d users have been successfully subscribed.",
                 rows_updated
@@ -429,7 +429,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         rows_updated = queryset.update(subscribed=False)
         self.message_user(
             request,
-            ungettext(
+            ngettext(
                 "%d user has been successfully unsubscribed.",
                 "%d users have been successfully unsubscribed.",
                 rows_updated
@@ -490,7 +490,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
                 messages.success(
                     request,
-                    ungettext(
+                    ngettext(
                         "%d subscription has been successfully added.",
                         "%d subscriptions have been successfully added.",
                         len(addresses)
