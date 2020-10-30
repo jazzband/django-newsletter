@@ -38,7 +38,7 @@ Translations
 Strings have been fully translated to a lot of languages with many more on their way.
 
 .. image:: https://www.transifex.com/projects/p/django-newsletter/resource/django/chart/image_png
-    :target: http://www.transifex.net/projects/p/django-newsletter/
+    :target: http://www.transifex.com/projects/p/django-newsletter/
 
 Contributions to translations are welcome through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_. Strings will be included as
 soon as near-full coverage is reached.
