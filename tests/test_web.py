@@ -1401,7 +1401,7 @@ class ArchiveTestcase(NewsletterListTestCase):
 
         Ref:
             * https://docs.djangoproject.com/en/1.5/topics/i18n/timezones/#troubleshooting
-            * https://github.com/dokterbob/django-newsletter/issues/74
+            * https://github.com/jazzband/django-newsletter/issues/74
         """
         problematic_date = datetime(2012, 3, 3, 1, 30)
 

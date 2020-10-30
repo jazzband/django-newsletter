@@ -49,7 +49,7 @@ Currently, django-newsletter officially supports Django 2.2.x LTS, 3.0.x and 3.1
 
 Requirements
 ============
-Please refer to `requirements.txt <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_
+Please refer to `requirements.txt <http://github.com/jazzband/django-newsletter/blob/master/requirements.txt>`_
 for an updated list of required packages.
 
 Tests
@@ -64,13 +64,13 @@ Contributing
 =============
 Want to contribute, great!
 
-Please refer to the `issues <https://github.com/dokterbob/django-newsletter/issues>`_ on
-GitHub and read `CONTRIBUTING.rst <https://github.com/dokterbob/django-newsletter/blob/master/CONTRIBUTING.rst>`_ .
+Please refer to the `issues <https://github.com/jazzband/django-newsletter/issues>`_ on
+GitHub and read `CONTRIBUTING.rst <https://github.com/jazzband/django-newsletter/blob/master/CONTRIBUTING.rst>`_ .
 
 Feedback
 ========
 If you find any bugs or have feature request for django-newsletter, don't hesitate to
-open up an issue on `GitHub <https://github.com/dokterbob/django-newsletter/issues>`_
+open up an issue on `GitHub <https://github.com/jazzband/django-newsletter/issues>`_
 (but please make sure your issue hasn't been noticed before, finding duplicates is a
 waste of time). When modifying or adding features to django-newsletter in a fork, be
 sure to let me know what you're building and how you're building it. That way we can
