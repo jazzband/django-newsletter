@@ -6,7 +6,7 @@ import io
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from newsletter.models import Subscription
 
@@ -287,7 +287,7 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
         myvcards = card_me.readComponents(encodedfile)
     except card_me.VObjectError as e:
         raise forms.ValidationError(
-            _(u"Error reading vCard file: %s" % e)
+            _("Error reading vCard file: %s" % e)
         )
 
     address_list = AddressList(newsletter, ignore_errors)

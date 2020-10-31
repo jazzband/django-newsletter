@@ -1,9 +1,11 @@
 import os
+
 test_dir = os.path.dirname(__file__)
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(test_dir, 'db.sqlite3'),
     }
 }
 
@@ -15,7 +17,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.sites',
     'django.contrib.staticfiles',
-    'sorl.thumbnail',
     'imperavi',
     'tinymce',
     'newsletter'
@@ -34,7 +35,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'test_project.urls'
 
-FIXTURE_DIRS = [os.path.join(test_dir, 'fixtures'),]
+FIXTURE_DIRS = [os.path.join(test_dir, 'fixtures'), ]
 
 SITE_ID = 1
 

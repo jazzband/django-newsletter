@@ -4,7 +4,7 @@ from django import forms
 
 from django.contrib.admin import widgets, options
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from .models import Subscription, Newsletter, Submission
 from .addressimport.parsers import parse_csv, parse_vcard, parse_ldif

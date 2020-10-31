@@ -24,7 +24,7 @@ from django.contrib.sites.models import Site
 from django.contrib.auth.decorators import login_required
 
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import gettext, gettext_lazy as _
 from django.utils import timezone
 
 from django.forms.models import modelformset_factory
@@ -117,7 +117,7 @@ class NewsletterListView(NewsletterViewBase, ListView):
 
                 messages.info(
                     request,
-                    ugettext("Your changes have been saved.")
+                    gettext("Your changes have been saved.")
                 )
 
             except ValidationError:
@@ -590,12 +590,24 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
 
         message = self.object.message
 
+        # Determines the appropriate template to display a thumbnail
+        if newsletter_settings.THUMBNAIL == 'sorl-thumbnail':
+            thumbnail_template = (
+                'newsletter/message/thumbnail/sorl_thumbnail.html'
+            )
+        elif newsletter_settings.THUMBNAIL == 'easy-thumbnails':
+            thumbnail_template = (
+                'newsletter/message/thumbnail/easy_thumbnails.html'
+            )
+
         context.update({
             'message': message,
+            'attachment_links': True,
             'site': Site.objects.get_current(),
             'date': self.object.publish_date,
             'STATIC_URL': settings.STATIC_URL,
-            'MEDIA_URL': settings.MEDIA_URL
+            'MEDIA_URL': settings.MEDIA_URL,
+            'thumbnail_template': thumbnail_template,
         })
 
         return context
@@ -607,7 +619,7 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
 
         # No HTML -> no party!
         if not html_template:
-            raise Http404(ugettext(
+            raise Http404(gettext(
                 'No HTML template associated with the newsletter this '
                 'message belongs to.'
             ))

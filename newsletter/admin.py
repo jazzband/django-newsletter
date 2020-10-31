@@ -1,6 +1,9 @@
 from __future__ import unicode_literals
 
 import logging
+
+from django.urls import path
+
 logger = logging.getLogger(__name__)
 
 import six
@@ -8,7 +11,6 @@ import six
 from django.db import models
 
 from django.conf import settings
-from django.conf.urls import url
 
 from django.contrib import admin, messages
 from django.contrib.sites.models import Site
@@ -21,7 +23,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
 
 from django.utils.html import format_html
-from django.utils.translation import ugettext as _, ungettext
+from django.utils.translation import gettext as _, ngettext
 from django.utils.formats import date_format
 
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -32,10 +34,19 @@ except ImportError:  # Django < 1.10
     from django.views.i18n import javascript_catalog
     HAS_CBV_JSCAT = False
 
-from sorl.thumbnail.admin import AdminImageMixin
+# Conditional imports as only one Thumbnail app is required
+try:
+    from sorl.thumbnail.admin import AdminImageMixin
+except ImportError:
+    pass
+
+try:
+    from easy_thumbnails.widgets import ImageClearableFileInput
+except (ImportError, RuntimeError):
+    pass
 
 from .models import (
-    Newsletter, Subscription, Article, Message, Submission
+    Newsletter, Subscription, Attachment, Article, Message, Submission
 )
 
 from django.utils.timezone import now
@@ -45,12 +56,11 @@ from .admin_forms import (
     ArticleFormSet
 )
 from .admin_utils import ExtendibleModelAdminMixin, make_subscription
-
 from .compat import get_context, reverse
-
+from .fields import DynamicImageField
 from .settings import newsletter_settings
 
-# Contsruct URL's for icons
+# Construct URL's for icons
 ICON_URLS = {
     'yes': '%snewsletter/admin/img/icon-yes.gif' % settings.STATIC_URL,
     'wait': '%snewsletter/admin/img/waiting.gif' % settings.STATIC_URL,
@@ -185,14 +195,23 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         urls = super(SubmissionAdmin, self).get_urls()
 
         my_urls = [
-            url(
-                r'^(.+)/submit/$',
+            path(
+                '<object_id>/submit/',
                 self._wrap(self.submit),
                 name=self._view_name('submit')
             )
         ]
 
         return my_urls + urls
+
+
+class AttachmentInline(admin.TabularInline):
+    model = Attachment
+    extra = 1
+
+    def has_change_permission(self, request, obj=None):
+        """ Prevent change of the file (instead needs to be deleted) """
+        return False
 
 
 StackedInline = admin.StackedInline
@@ -213,8 +232,17 @@ if (
             'Imperavi WYSIWYG text editor might not work.'
         )
 
+# Creates a base class for the ArticleInline to inherit depending on
+# if the user has decided to use sorl-thumbnail or not
+# https://sorl-thumbnail.readthedocs.io/en/latest/examples.html#admin-examples
+if newsletter_settings.THUMBNAIL == 'sorl-thumbnail':
+    ArticleInlineClassTuple = (AdminImageMixin, StackedInline)
+else:
+    ArticleInlineClassTuple = (StackedInline,)
 
-class ArticleInline(AdminImageMixin, StackedInline):
+BaseArticleInline = type(str('BaseArticleInline'), ArticleInlineClassTuple, {})
+
+class ArticleInline(BaseArticleInline):
     model = Article
     extra = 2
     formset = ArticleFormSet
@@ -228,9 +256,18 @@ class ArticleInline(AdminImageMixin, StackedInline):
         }),
     )
 
+    # Perform any formfield overrides depending on specified settings
+    formfield_overrides = {}
+
     if newsletter_settings.RICHTEXT_WIDGET:
-        formfield_overrides = {
-            models.TextField: {'widget': newsletter_settings.RICHTEXT_WIDGET},
+        formfield_overrides[models.TextField] = {
+            'widget': newsletter_settings.RICHTEXT_WIDGET
+        }
+
+    # https://easy-thumbnails.readthedocs.io/en/latest/usage/#forms
+    if newsletter_settings.THUMBNAIL == 'easy-thumbnails':
+        formfield_overrides[DynamicImageField] = {
+            'widget': ImageClearableFileInput
         }
 
 
@@ -245,7 +282,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     date_hierarchy = 'date_create'
     prepopulated_fields = {'slug': ('title',)}
 
-    inlines = [ArticleInline, ]
+    inlines = [ArticleInline, AttachmentInline, ]
 
     """ List extensions """
     def admin_title(self, obj):
@@ -263,7 +300,8 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         return render(
             request,
             "admin/newsletter/message/preview.html",
-            {'message': self._getobj(request, object_id)},
+            {'message': self._getobj(request, object_id),
+             'attachments': Attachment.objects.filter(message_id=object_id)},
         )
 
     @xframe_options_sameorigin
@@ -324,21 +362,21 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         urls = super(MessageAdmin, self).get_urls()
 
         my_urls = [
-            url(r'^(.+)/preview/$',
-                self._wrap(self.preview),
-                name=self._view_name('preview')),
-            url(r'^(.+)/preview/html/$',
-                self._wrap(self.preview_html),
-                name=self._view_name('preview_html')),
-            url(r'^(.+)/preview/text/$',
-                self._wrap(self.preview_text),
-                name=self._view_name('preview_text')),
-            url(r'^(.+)/submit/$',
-                self._wrap(self.submit),
-                name=self._view_name('submit')),
-            url(r'^(.+)/subscribers/json/$',
-                self._wrap(self.subscribers_json),
-                name=self._view_name('subscribers_json')),
+            path('<object_id>/preview/',
+                 self._wrap(self.preview),
+                 name=self._view_name('preview')),
+            path('<object_id>/preview/html/',
+                 self._wrap(self.preview_html),
+                 name=self._view_name('preview_html')),
+            path('<object_id>/preview/text/',
+                 self._wrap(self.preview_text),
+                 name=self._view_name('preview_text')),
+            path('<object_id>/submit/',
+                 self._wrap(self.submit),
+                 name=self._view_name('submit')),
+            path('<object_id>/subscribers/json/',
+                 self._wrap(self.subscribers_json),
+                 name=self._view_name('subscribers_json')),
         ]
 
         return my_urls + urls
@@ -407,7 +445,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         rows_updated = queryset.update(subscribed=True)
         self.message_user(
             request,
-            ungettext(
+            ngettext(
                 "%d user has been successfully subscribed.",
                 "%d users have been successfully subscribed.",
                 rows_updated
@@ -419,7 +457,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         rows_updated = queryset.update(subscribed=False)
         self.message_user(
             request,
-            ungettext(
+            ngettext(
                 "%d user has been successfully unsubscribed.",
                 "%d users have been successfully unsubscribed.",
                 rows_updated
@@ -480,7 +518,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
                 messages.success(
                     request,
-                    ungettext(
+                    ngettext(
                         "%d subscription has been successfully added.",
                         "%d subscriptions have been successfully added.",
                         len(addresses)
@@ -505,24 +543,24 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         urls = super(SubscriptionAdmin, self).get_urls()
 
         my_urls = [
-            url(r'^import/$',
-                self._wrap(self.subscribers_import),
-                name=self._view_name('import')),
-            url(r'^import/confirm/$',
-                self._wrap(self.subscribers_import_confirm),
-                name=self._view_name('import_confirm')),
+            path('import/',
+                 self._wrap(self.subscribers_import),
+                 name=self._view_name('import')),
+            path('import/confirm/',
+                 self._wrap(self.subscribers_import_confirm),
+                 name=self._view_name('import_confirm')),
         ]
         # Translated JS strings - these should be app-wide but are
         # only used in this part of the admin. For now, leave them here.
         if HAS_CBV_JSCAT:
-            my_urls.append(url(r'^jsi18n/$',
-                JavaScriptCatalog.as_view(packages=('newsletter',)),
-                name='newsletter_js18n'))
+            my_urls.append(path('jsi18n/',
+                           JavaScriptCatalog.as_view(packages=('newsletter',)),
+                           name='newsletter_js18n'))
         else:
-            my_urls.append(url(r'^jsi18n/$',
-                javascript_catalog,
-                {'packages': ('newsletter',)},
-                name='newsletter_js18n'))
+            my_urls.append(path('jsi18n/',
+                                javascript_catalog,
+                                {'packages': ('newsletter',)},
+                                name='newsletter_js18n'))
 
         return my_urls + urls
 

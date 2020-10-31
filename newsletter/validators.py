@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.forms.utils import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 def validate_email_nouser(email):

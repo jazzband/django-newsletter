@@ -1,20 +1,20 @@
 digraph model_graph {
   // Dotfile by Django-Extensions graph_models
-  // Created: 2016-02-02 15:19
-  // Cli Options: newsletter
+  // Created: 2020-09-25 19:11
+  // Cli Options: --dot --output graph_models.dot newsletter
 
-  fontname = "Helvetica"
+  fontname = "Roboto"
   fontsize = 8
   splines  = true
 
   node [
-    fontname = "Helvetica"
+    fontname = "Roboto"
     fontsize = 8
     shape = "plaintext"
   ]
 
   edge [
-    fontname = "Helvetica"
+    fontname = "Roboto"
     fontsize = 8
   ]
 
@@ -22,291 +22,405 @@ digraph model_graph {
 
 
   newsletter_models_Newsletter [label=<
-    <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-    <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4">
-    <FONT FACE="Helvetica Bold" COLOR="white">
+    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
+    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
     Newsletter
-    </FONT></TD></TR>
+    </B></FONT></TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">id</FONT>
+    <FONT FACE="Roboto"><B>id</B></FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">AutoField</FONT>
+    <FONT FACE="Roboto"><B>AutoField</B></FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica ">email</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica ">EmailField</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">send_html</FONT>
+    <FONT FACE="Roboto">email</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">BooleanField</FONT>
+    <FONT FACE="Roboto">EmailField</FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica ">sender</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica ">CharField</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica ">slug</FONT>
+    <FONT FACE="Roboto">send_html</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica ">SlugField</FONT>
+    <FONT FACE="Roboto">BooleanField</FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica ">title</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica ">CharField</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">visible</FONT>
+    <FONT FACE="Roboto">sender</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">BooleanField</FONT>
+    <FONT FACE="Roboto">CharField</FONT>
     </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">slug</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">SlugField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">title</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">CharField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">visible</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">BooleanField</FONT>
+    </TD></TR>
+  
   
     </TABLE>
     >]
 
   newsletter_models_Subscription [label=<
-    <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-    <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4">
-    <FONT FACE="Helvetica Bold" COLOR="white">
+    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
+    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
     Subscription
-    </FONT></TD></TR>
+    </B></FONT></TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">id</FONT>
+    <FONT FACE="Roboto"><B>id</B></FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">AutoField</FONT>
+    <FONT FACE="Roboto"><B>AutoField</B></FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">newsletter</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">ForeignKey (id)</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica Bold">user</FONT>
+    <FONT FACE="Roboto"><B>newsletter</B></FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica Bold">ForeignKey (id)</FONT>
+    <FONT FACE="Roboto"><B>ForeignKey (id)</B></FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica ">activation_code</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica ">CharField</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica ">create_date</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto"><B>user</B></FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica ">DateTimeField</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto"><B>ForeignKey (id)</B></FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">email_field</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">EmailField</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">ip</FONT>
+    <FONT FACE="Roboto">activation_code</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">GenericIPAddressField</FONT>
+    <FONT FACE="Roboto">CharField</FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">name_field</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">CharField</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">subscribe_date</FONT>
+    <FONT FACE="Roboto">create_date</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">DateTimeField</FONT>
+    <FONT FACE="Roboto">DateTimeField</FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">subscribed</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">BooleanField</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">unsubscribe_date</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto">email_field</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">DateTimeField</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto">EmailField</FONT>
     </TD></TR>
   
+  
+  
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">unsubscribed</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto">ip</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">BooleanField</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto">GenericIPAddressField</FONT>
     </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT COLOR="#7B7B7B" FACE="Roboto">name_field</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT COLOR="#7B7B7B" FACE="Roboto">CharField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT COLOR="#7B7B7B" FACE="Roboto">subscribe_date</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT COLOR="#7B7B7B" FACE="Roboto">DateTimeField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">subscribed</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">BooleanField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT COLOR="#7B7B7B" FACE="Roboto">unsubscribe_date</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT COLOR="#7B7B7B" FACE="Roboto">DateTimeField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">unsubscribed</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">BooleanField</FONT>
+    </TD></TR>
+  
   
     </TABLE>
     >]
 
   newsletter_models_Article [label=<
-    <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-    <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4">
-    <FONT FACE="Helvetica Bold" COLOR="white">
+    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
+    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
     Article
-    </FONT></TD></TR>
+    </B></FONT></TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">id</FONT>
+    <FONT FACE="Roboto"><B>id</B></FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">AutoField</FONT>
+    <FONT FACE="Roboto"><B>AutoField</B></FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">post</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">ForeignKey (id)</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">image</FONT>
+    <FONT FACE="Roboto"><B>post</B></FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">ImageField</FONT>
+    <FONT FACE="Roboto"><B>ForeignKey (id)</B></FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica ">sortorder</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica ">PositiveIntegerField</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica ">text</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto">image</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica ">TextField</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto">ImageField</FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica ">title</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica ">CharField</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">url</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto">sortorder</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">URLField</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto">PositiveIntegerField</FONT>
     </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">text</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">TextField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">title</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">CharField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT COLOR="#7B7B7B" FACE="Roboto">url</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT COLOR="#7B7B7B" FACE="Roboto">URLField</FONT>
+    </TD></TR>
+  
+  
+    </TABLE>
+    >]
+
+  newsletter_models_Attachment [label=<
+    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
+    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
+    Attachment
+    </B></FONT></TD></TR>
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto"><B>id</B></FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto"><B>AutoField</B></FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto"><B>message</B></FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto"><B>ForeignKey (id)</B></FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">file</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">FileField</FONT>
+    </TD></TR>
+  
   
     </TABLE>
     >]
 
   newsletter_models_Message [label=<
-    <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-    <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4">
-    <FONT FACE="Helvetica Bold" COLOR="white">
+    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
+    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
     Message
-    </FONT></TD></TR>
+    </B></FONT></TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">id</FONT>
+    <FONT FACE="Roboto"><B>id</B></FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">AutoField</FONT>
+    <FONT FACE="Roboto"><B>AutoField</B></FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">newsletter</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">ForeignKey (id)</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">date_create</FONT>
+    <FONT FACE="Roboto"><B>newsletter</B></FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">DateTimeField</FONT>
+    <FONT FACE="Roboto"><B>ForeignKey (id)</B></FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">date_modify</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">DateTimeField</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica ">slug</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto">date_create</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica ">SlugField</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto">DateTimeField</FONT>
     </TD></TR>
   
+  
+  
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica ">title</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto">date_modify</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica ">CharField</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Roboto">DateTimeField</FONT>
     </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">slug</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">SlugField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">title</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">CharField</FONT>
+    </TD></TR>
+  
   
     </TABLE>
     >]
 
   newsletter_models_Submission [label=<
-    <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-    <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4">
-    <FONT FACE="Helvetica Bold" COLOR="white">
+    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
+    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
     Submission
-    </FONT></TD></TR>
+    </B></FONT></TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">id</FONT>
+    <FONT FACE="Roboto"><B>id</B></FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">AutoField</FONT>
+    <FONT FACE="Roboto"><B>AutoField</B></FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">message</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">ForeignKey (id)</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">newsletter</FONT>
+    <FONT FACE="Roboto"><B>message</B></FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">ForeignKey (id)</FONT>
+    <FONT FACE="Roboto"><B>ForeignKey (id)</B></FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">prepared</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">BooleanField</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">publish</FONT>
+    <FONT FACE="Roboto"><B>newsletter</B></FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">BooleanField</FONT>
+    <FONT FACE="Roboto"><B>ForeignKey (id)</B></FONT>
     </TD></TR>
   
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">publish_date</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">DateTimeField</FONT>
-    </TD></TR>
+  
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">sending</FONT>
+    <FONT FACE="Roboto">prepared</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">BooleanField</FONT>
+    <FONT FACE="Roboto">BooleanField</FONT>
     </TD></TR>
   
+  
+  
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">sent</FONT>
+    <FONT FACE="Roboto">publish</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">BooleanField</FONT>
+    <FONT FACE="Roboto">BooleanField</FONT>
     </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT COLOR="#7B7B7B" FACE="Roboto">publish_date</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT COLOR="#7B7B7B" FACE="Roboto">DateTimeField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">sending</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">BooleanField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">sent</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">BooleanField</FONT>
+    </TD></TR>
+  
   
     </TABLE>
     >]
@@ -316,41 +430,44 @@ digraph model_graph {
 
   // Relations
   django_contrib_sites_models_Site [label=<
-  <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-  <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4">
-  <FONT FACE="Helvetica Bold" COLOR="white">Site</FONT>
+  <TABLE BGCOLOR="white" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+  <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="#1b563f">
+  <FONT FACE="Roboto" POINT-SIZE="12" COLOR="white">Site</FONT>
   </TD></TR>
   </TABLE>
   >]
   newsletter_models_Newsletter -> django_contrib_sites_models_Site
-  [label="site (newsletter)"] [arrowhead=dot arrowtail=dot, dir=both];
+  [label=" site (newsletter)"] [arrowhead=dot arrowtail=dot, dir=both];
   django_contrib_auth_models_User [label=<
-  <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-  <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4">
-  <FONT FACE="Helvetica Bold" COLOR="white">User</FONT>
+  <TABLE BGCOLOR="white" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+  <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="#1b563f">
+  <FONT FACE="Roboto" POINT-SIZE="12" COLOR="white">User</FONT>
   </TD></TR>
   </TABLE>
   >]
   newsletter_models_Subscription -> django_contrib_auth_models_User
-  [label="user (subscription)"] [arrowhead=none, arrowtail=dot, dir=both];
+  [label=" user (subscription)"] [arrowhead=none, arrowtail=dot, dir=both];
 
   newsletter_models_Subscription -> newsletter_models_Newsletter
-  [label="newsletter (subscription)"] [arrowhead=none, arrowtail=dot, dir=both];
+  [label=" newsletter (subscription)"] [arrowhead=none, arrowtail=dot, dir=both];
 
   newsletter_models_Article -> newsletter_models_Message
-  [label="post (articles)"] [arrowhead=none, arrowtail=dot, dir=both];
+  [label=" post (articles)"] [arrowhead=none, arrowtail=dot, dir=both];
+
+  newsletter_models_Attachment -> newsletter_models_Message
+  [label=" message (attachments)"] [arrowhead=none, arrowtail=dot, dir=both];
 
   newsletter_models_Message -> newsletter_models_Newsletter
-  [label="newsletter (message)"] [arrowhead=none, arrowtail=dot, dir=both];
+  [label=" newsletter (message)"] [arrowhead=none, arrowtail=dot, dir=both];
 
   newsletter_models_Submission -> newsletter_models_Newsletter
-  [label="newsletter (submission)"] [arrowhead=none, arrowtail=dot, dir=both];
+  [label=" newsletter (submission)"] [arrowhead=none, arrowtail=dot, dir=both];
 
   newsletter_models_Submission -> newsletter_models_Message
-  [label="message (submission)"] [arrowhead=none, arrowtail=dot, dir=both];
+  [label=" message (submission)"] [arrowhead=none, arrowtail=dot, dir=both];
 
   newsletter_models_Submission -> newsletter_models_Subscription
-  [label="subscriptions (submission)"] [arrowhead=dot arrowtail=dot, dir=both];
+  [label=" subscriptions (submission)"] [arrowhead=dot arrowtail=dot, dir=both];
+
 
 }
-

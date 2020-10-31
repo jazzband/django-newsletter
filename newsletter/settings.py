@@ -1,4 +1,5 @@
 from importlib import import_module
+import warnings
 
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
@@ -101,5 +102,39 @@ class NewsletterSettings(Settings):
                 )
 
         return None
+
+    @property
+    def THUMBNAIL(self):
+        """Validates and returns the set thumbnail application."""
+        SUPPORTED_THUMBNAILERS = [
+            'sorl-thumbnail',
+            'easy-thumbnails',
+        ]
+        THUMBNAIL = getattr(
+            django_settings, 'NEWSLETTER_THUMBNAIL', None
+        )
+
+        # Checks that the user entered a value
+        if THUMBNAIL is None:
+            warnings.warn(
+                (
+                    'No NEWSLETTER_THUMBNAIL setting specified - '
+                    'sorl-thumbnail will be used by default. '
+                    'django-newsletter version 0.11.0 will require an '
+                    'explicit declaration of the preferred thumbnailer.'
+                ),
+                DeprecationWarning
+            )
+
+            return 'sorl-thumbnail'
+
+        # Checks for a supported thumbnailer
+        if THUMBNAIL in SUPPORTED_THUMBNAILERS:
+            return THUMBNAIL
+
+        # Otherwise user has not set thumbnailer correctly
+        raise ImproperlyConfigured(
+            "'%s' is not a supported thumbnail application." % THUMBNAIL
+        )
 
 newsletter_settings = NewsletterSettings()

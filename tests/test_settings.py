@@ -101,3 +101,47 @@ class SettingsTestCase(TestCase):
         Test whether e-mail confirmation overrides come through.
         """
         self.assertFalse(newsletter_settings.CONFIRM_EMAIL_UPDATE)
+
+    @override_settings(NEWSLETTER_THUMBNAIL='sorl-thumbnail')
+    def test_thumbnail_sorl_thumbnail(self):
+        """
+        Test that ``sorl-thumbnail`` is accepted thumbnail value.
+        """
+
+        self.assertEqual(newsletter_settings.THUMBNAIL, 'sorl-thumbnail')
+
+    @override_settings(NEWSLETTER_THUMBNAIL='easy-thumbnails')
+    def test_thumbnail_easy_thumbnails(self):
+        """
+        Test that ``easy-thumbnails`` is accepted thumbnail value.
+        """
+
+        self.assertEqual(newsletter_settings.THUMBNAIL, 'easy-thumbnails')
+
+    @override_settings(NEWSLETTER_THUMBNAIL=None)
+    def test_thumbnail_none(self):
+        """
+        Test that ``None`` raises warning and defaults to sorl-thubmanil.
+        """
+
+        with self.assertWarns(DeprecationWarning) as context_manager:
+            self.assertEqual(newsletter_settings.THUMBNAIL, 'sorl-thumbnail')
+
+        self.assertIn(
+            'No NEWSLETTER_THUMBNAIL setting specified',
+            str(context_manager.warning)
+        )
+        self.assertIn(
+            'django-newsletter version 0.11.0',
+            str(context_manager.warning)
+        )
+
+    @override_settings(NEWSLETTER_THUMBNAIL='banana.nowaythisexists')
+    def test_thumbnail_nonexistant(self):
+        """
+        Setting nonexistant thumbnailer yields ImproperlyConfigured.
+        """
+
+        self.assertRaises(
+            ImproperlyConfigured, lambda: newsletter_settings.THUMBNAIL
+        )

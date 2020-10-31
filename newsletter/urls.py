@@ -1,5 +1,6 @@
-from surlex.dj import surl
+from django.urls import path, register_converter
 
+from .converters import NewsletterActionsConverter
 from .views import (
     NewsletterListView, NewsletterDetailView,
     SubmissionArchiveIndexView, SubmissionArchiveDetailView,
@@ -7,78 +8,76 @@ from .views import (
     ActionTemplateView, UpdateSubscriptionView,
 )
 
+register_converter(NewsletterActionsConverter, 'actions')
+
 urlpatterns = [
     # Newsletter list and detail view
-    surl('^$', NewsletterListView.as_view(), name='newsletter_list'),
-    surl(
-        '^<newsletter_slug:s>/$',
+    path('', NewsletterListView.as_view(), name='newsletter_list'),
+    path(
+        '<newsletter_slug>/',
         NewsletterDetailView.as_view(), name='newsletter_detail'
     ),
 
     # Action request views
-    surl(
-        '^<newsletter_slug:s>/subscribe/$',
+    path(
+        '<newsletter_slug>/subscribe/',
         SubscribeRequestView.as_view(),
         name='newsletter_subscribe_request'
     ),
-    surl(
-        '^<newsletter_slug:s>/subscribe/confirm/$',
+    path(
+        '<newsletter_slug>/subscribe/confirm/',
         SubscribeRequestView.as_view(confirm=True),
         name='newsletter_subscribe_confirm'
     ),
-    surl(
-        '^<newsletter_slug:s>/update/$',
+    path(
+        '<newsletter_slug>/update/',
         UpdateRequestView.as_view(),
         name='newsletter_update_request'
     ),
-    surl(
-        '^<newsletter_slug:s>/unsubscribe/$',
+    path(
+        '<newsletter_slug>/unsubscribe/',
         UnsubscribeRequestView.as_view(),
         name='newsletter_unsubscribe_request'
     ),
-    surl(
-        '^<newsletter_slug:s>/unsubscribe/confirm/$',
+    path(
+        '<newsletter_slug>/unsubscribe/confirm/',
         UnsubscribeRequestView.as_view(confirm=True),
         name='newsletter_unsubscribe_confirm'
     ),
 
     # Activation email sent view
-    surl(
-        '^<newsletter_slug:s>/<action=subscribe|update|unsubscribe>/'
-        'email-sent/$',
+    path(
+        '<newsletter_slug>/<actions:action>/email-sent/',
         ActionTemplateView.as_view(
             template_name='newsletter/subscription_%(action)s_email_sent.html'
         ),
         name='newsletter_activation_email_sent'),
 
     # Action confirmation views
-    surl(
-        '^<newsletter_slug:s>/subscription/<email=[-_a-zA-Z0-9@\.\+~]+>/'
-        '<action=subscribe|update|unsubscribe>/activate/<activation_code:s>/$',
+    path(
+        '<newsletter_slug>/subscription/<email>/<actions:action>/activate/<activation_code>/',
         UpdateSubscriptionView.as_view(), name='newsletter_update_activate'
     ),
-    surl(
-        '^<newsletter_slug:s>/subscription/<email=[-_a-zA-Z0-9@\.\+~]+>/'
-        '<action=subscribe|update|unsubscribe>/activate/$',
+    path(
+        '<newsletter_slug>/subscription/<email>/<actions:action>/activate/',
         UpdateSubscriptionView.as_view(), name='newsletter_update'
     ),
 
     # Action activation completed view
-    surl(
-        '^<newsletter_slug:s>/<action=subscribe|update|unsubscribe>/'
-        'activation-completed/$',
+    path(
+        '<newsletter_slug>/<actions:action>/activation-completed/',
         ActionTemplateView.as_view(
             template_name='newsletter/subscription_%(action)s_activated.html'
         ),
         name='newsletter_action_activated'),
 
     # Archive views
-    surl(
-        '^<newsletter_slug:s>/archive/<year:Y>/<month:m>/<day:d>/<slug:s>/$',
+    path(
+        '<newsletter_slug>/archive/<year>/<month>/<day>/<slug>/',
         SubmissionArchiveDetailView.as_view(), name='newsletter_archive_detail'
     ),
-    surl(
-        '^<newsletter_slug:s>/archive/$',
+    path(
+        '<newsletter_slug>/archive/',
         SubmissionArchiveIndexView.as_view(), name='newsletter_archive'
     ),
 ]
