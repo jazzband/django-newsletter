@@ -20,5 +20,5 @@ the admin interface.
    reference
    upgrading
 
-* `Changes <https://github.com/dokterbob/django-newsletter/blob/master/CHANGES.rst>`_ (GitHub)
-* `Contributors <https://github.com/dokterbob/django-newsletter/blob/master/AUTHORS.rst>`_ (GitHub)
+* `Changes <https://github.com/jazzband/django-newsletter/blob/master/CHANGES.rst>`_ (GitHub)
+* `Contributors <https://github.com/jazzband/django-newsletter/blob/master/AUTHORS.rst>`_ (GitHub)

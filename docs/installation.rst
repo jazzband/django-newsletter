@@ -9,7 +9,7 @@ Installation
     **Or** get the latest & greatest from Github and link it to your
     application tree::
 
-        pip install -e git://github.com/dokterbob/django-newsletter.git#egg=django-newsletter
+        pip install -e git://github.com/jazzband/django-newsletter.git#egg=django-newsletter
 
     (In either case it is recommended that you use
     `VirtualEnv <http://pypi.python.org/pypi/virtualenv>`_ in order to

@@ -4,7 +4,7 @@ This package is maintained by Mathijs de Bruin [dokterbob] but would not have be
 
 An overview of the great people that helped and are helping to keep this project alive is maintained by GitHub at:
 
-https://github.com/dokterbob/django-newsletter/graphs/contributors
+https://github.com/jazzband/django-newsletter/graphs/contributors
 
 Translators
 -----------
