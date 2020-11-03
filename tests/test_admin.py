@@ -320,6 +320,31 @@ Unsubscribe: http://example.com/newsletter/test-newsletter/unsubscribe/
         self.assertContains(response, '<h2>Attachments</h2>', html=True)
 
 
+class MessageAdminTests(AdminTestMixin, TestCase):
+    """ Tests for Message admin. """
+
+    def test_add_existing_message_regression(self):
+        """ Regression test for #322. """
+
+        # ToDo(frennkie) is there a more elegant way to handle the inlines?!
+        response = self.client.post(reverse('admin:newsletter_message_add'), data={
+            'title': self.message.title,
+            'slug': self.message.slug,
+            'newsletter': self.message.newsletter.id,
+            'articles-TOTAL_FORMS': 3,
+            'articles-INITIAL_FORMS': 1,
+            'articles-MIN_NUM_FORMS': 0,
+            'articles-MAX_NUM_FORMS': 1000,
+            'attachments-TOTAL_FORMS': 3,
+            'attachments-INITIAL_FORMS': 1,
+            'attachments-MIN_NUM_FORMS': 0,
+            'attachments-MAX_NUM_FORMS': 1000,
+            '_saveasnew': 'Save as new'
+        }, follow=True)
+
+        self.assertContains(response, "Message with this Slug and Newsletter already exists.")
+
+
 class SubmissionAdminTests(AdminTestMixin, TestCase):
     """ Tests for Submission admin. """
 
@@ -396,6 +421,39 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
         submission = Submission.objects.all()[0]
 
         self.assertEqual(submission.message, self.message)
+
+    def test_add_existing_submission_regression(self):
+        """ Regression test for #322. """
+
+        # create a third message
+        message = Message.objects.create(
+            newsletter=self.newsletter, title='3nd message', slug='test-message-3'
+        )
+
+        # create submission for third message and add it
+        response = self.client.post(self.add_url, data={
+            'message': message.pk,
+            'publish_date_0': '2020-10-30',
+            'publish_date_1': '07:24',
+            'publish': 'on',
+        }, follow=True)
+
+        self.assertContains(response, "added")
+
+        # try to add a submission for third message again
+        # -> this will cause a validation error and print a warning
+        response = self.client.post(
+            reverse('admin:newsletter_submission_change', kwargs={'object_id': 3}), data={
+                'message': message.pk,
+                'publish_date_0': '2020-10-30',
+                'publish_date_1': '07:24',
+                'publish': 'on',
+                '_saveasnew': 'Save as new'
+            }, follow=True)
+
+        self.assertContains(response, "This message has already been published in some other submission. "
+                                      "Messages can only be published once.")
+
 
 class ArticleInlineTests(TestCase):
     class MockSorlAdminImageMixin(object):
