@@ -15,6 +15,10 @@ django-newsletter
    :target: https://landscape.io/github/dokterbob/django-newsletter/master
    :alt: Code Health
 
+.. image:: https://jazzband.co/static/img/badge.svg
+    :target: https://jazzband.co/
+    :alt: Jazzband
+
 Newsletter application for the Django web framework.
 
 What is it?
