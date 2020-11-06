@@ -568,7 +568,7 @@ class SubmissionViewBase(NewsletterMixin):
         default time zone, so that displayed items are consistent with the URL.
 
         Related discussion:
-        https://github.com/dokterbob/django-newsletter/issues/74
+        https://github.com/jazzband/django-newsletter/issues/74
         """
         value = datetime.datetime.combine(value, datetime.time.min)
         if settings.USE_TZ:

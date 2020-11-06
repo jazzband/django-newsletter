@@ -15,6 +15,10 @@ django-newsletter
    :target: https://landscape.io/github/dokterbob/django-newsletter/master
    :alt: Code Health
 
+.. image:: https://jazzband.co/static/img/badge.svg
+    :target: https://jazzband.co/
+    :alt: Jazzband
+
 Newsletter application for the Django web framework.
 
 What is it?
@@ -38,7 +42,7 @@ Translations
 Strings have been fully translated to a lot of languages with many more on their way.
 
 .. image:: https://www.transifex.com/projects/p/django-newsletter/resource/django/chart/image_png
-    :target: http://www.transifex.net/projects/p/django-newsletter/
+    :target: http://www.transifex.com/projects/p/django-newsletter/
 
 Contributions to translations are welcome through `Transifex <http://www.transifex.net/projects/p/django-newsletter/>`_. Strings will be included as
 soon as near-full coverage is reached.
@@ -49,7 +53,7 @@ Currently, django-newsletter officially supports Django 2.2.x LTS, 3.0.x and 3.1
 
 Requirements
 ============
-Please refer to `requirements.txt <http://github.com/dokterbob/django-newsletter/blob/master/requirements.txt>`_
+Please refer to `requirements.txt <http://github.com/jazzband/django-newsletter/blob/master/requirements.txt>`_
 for an updated list of required packages.
 
 Tests
@@ -64,13 +68,13 @@ Contributing
 =============
 Want to contribute, great!
 
-Please refer to the `issues <https://github.com/dokterbob/django-newsletter/issues>`_ on
-GitHub and read `CONTRIBUTING.rst <https://github.com/dokterbob/django-newsletter/blob/master/CONTRIBUTING.rst>`_ .
+Please refer to the `issues <https://github.com/jazzband/django-newsletter/issues>`_ on
+GitHub and read `CONTRIBUTING.rst <https://github.com/jazzband/django-newsletter/blob/master/CONTRIBUTING.rst>`_ .
 
 Feedback
 ========
 If you find any bugs or have feature request for django-newsletter, don't hesitate to
-open up an issue on `GitHub <https://github.com/dokterbob/django-newsletter/issues>`_
+open up an issue on `GitHub <https://github.com/jazzband/django-newsletter/issues>`_
 (but please make sure your issue hasn't been noticed before, finding duplicates is a
 waste of time). When modifying or adding features to django-newsletter in a fork, be
 sure to let me know what you're building and how you're building it. That way we can

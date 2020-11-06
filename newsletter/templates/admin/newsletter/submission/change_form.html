@@ -13,7 +13,9 @@
 {% block object-tools-items %}
   {{ block.super }}
 
-  <li><a href="{% url opts|admin_urlname:'submit' original.pk %}" id="submitlink">{% trans "Submit" %}</a></li>
+  {% if original %}
+    <li><a href="{% url opts|admin_urlname:'submit' original.pk %}" id="submitlink">{% trans "Submit" %}</a></li>
+  {% endif %}
 {% endblock %}
 
 {% block after_related_objects %}{{ block.super }}<script type="text/javascript">

@@ -55,7 +55,7 @@ setup(
     install_requires=REQUIREMENTS,
     author='Mathijs de Bruin',
     author_email='mathijs@mathijsfietst.nl',
-    url='http://github.com/dokterbob/django-newsletter/',
+    url='http://github.com/jazzband/django-newsletter/',
     packages=find_packages(exclude=("tests", "test_project")),
     include_package_data=True,
     classifiers=[

@@ -5,6 +5,8 @@
 {% block object-tools-items %}
   {{ block.super }}
 
-  <li><a href="{% url opts|admin_urlname:'preview' original.pk %}">{% trans "Preview" %}</a></li>
+  {% if original %}
+    <li><a href="{% url opts|admin_urlname:'preview' original.pk %}">{% trans "Preview" %}</a></li>
+  {% endif %}
   {% comment <li><a href="../../../submission/add/?message_id={{ message.id }}">{% trans "Prepare submission" %}</a></li>{% endcomment %}
 {% endblock %}
