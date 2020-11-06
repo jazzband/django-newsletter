@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('newsletter', '0006_switch_from_sorl_imagefield'),
+        ('newsletter', '0007_switch_from_sorl_imagefield'),
     ]
 
     operations = [
