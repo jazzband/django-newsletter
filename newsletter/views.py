@@ -26,10 +26,10 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext, gettext_lazy as _
 from django.utils import timezone
+from django.urls import reverse
 
 from django.forms.models import modelformset_factory
 
-from .compat import reverse
 from .models import Newsletter, Subscription, Submission
 from .forms import (
     SubscribeRequestForm, UserUpdateForm, UpdateRequestForm,

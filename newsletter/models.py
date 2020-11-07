@@ -15,10 +15,11 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext
 from django.utils.timezone import now
+from django.urls import reverse
 
 from distutils.version import LooseVersion
 
-from .compat import get_context, reverse
+from .compat import get_context
 from .fields import DynamicImageField
 from .utils import (
     make_activation_code, get_default_sites, ACTIONS
