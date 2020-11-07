@@ -61,7 +61,7 @@ Installation
 
         urlpatterns = [
             ...
-            url(r'^newsletter/', include('newsletter.urls')),
+            path('newsletter/', include('newsletter.urls')),
             ...
         ]
 
