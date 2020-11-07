@@ -47,7 +47,7 @@ def is_authenticated(user):
     return user.is_authenticated if isinstance(user.is_authenticated, bool) else user.is_authenticated()
 
 
-class NewsletterViewBase(object):
+class NewsletterViewBase:
     """ Base class for newsletter views. """
     queryset = Newsletter.on_site.filter(visible=True)
     allow_empty = False
@@ -68,10 +68,10 @@ class NewsletterListView(NewsletterViewBase, ListView):
         """ Allow post requests. """
 
         # All logic (for now) occurs in the form logic
-        return super(NewsletterListView, self).get(request, **kwargs)
+        return super().get(request, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(NewsletterListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         if is_authenticated(self.request.user):
             # Add a formset for logged in users.
@@ -139,7 +139,7 @@ class NewsletterListView(NewsletterViewBase, ListView):
         return formset
 
 
-class ProcessUrlDataMixin(object):
+class ProcessUrlDataMixin:
     """
     Mixin providing the ability to process args and kwargs from url
     before dispatching request.
@@ -152,7 +152,7 @@ class ProcessUrlDataMixin(object):
     def dispatch(self, *args, **kwargs):
         self.process_url_data(*args, **kwargs)
 
-        return super(ProcessUrlDataMixin, self).dispatch(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
 
 class NewsletterMixin(ProcessUrlDataMixin):
@@ -169,7 +169,7 @@ class NewsletterMixin(ProcessUrlDataMixin):
 
         assert 'newsletter_slug' in kwargs
 
-        super(NewsletterMixin, self).process_url_data(*args, **kwargs)
+        super().process_url_data(*args, **kwargs)
 
         newsletter_queryset = kwargs.get(
             'newsletter_queryset',
@@ -183,7 +183,7 @@ class NewsletterMixin(ProcessUrlDataMixin):
 
     def get_form_kwargs(self):
         """ Add newsletter to form kwargs. """
-        kwargs = super(NewsletterMixin, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
 
         kwargs['newsletter'] = self.newsletter
 
@@ -191,7 +191,7 @@ class NewsletterMixin(ProcessUrlDataMixin):
 
     def get_context_data(self, **kwargs):
         """ Add newsletter to context. """
-        context = super(NewsletterMixin, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         context['newsletter'] = self.newsletter
 
@@ -205,7 +205,7 @@ class ActionMixin(ProcessUrlDataMixin):
 
     def process_url_data(self, *args, **kwargs):
         """ Add action from url to instance attributes if not already set. """
-        super(ActionMixin, self).process_url_data(*args, **kwargs)
+        super().process_url_data(*args, **kwargs)
 
         if self.action is None:
             assert 'action' in kwargs
@@ -215,7 +215,7 @@ class ActionMixin(ProcessUrlDataMixin):
 
     def get_context_data(self, **kwargs):
         """ Add action to context. """
-        context = super(ActionMixin, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         context['action'] = self.action
 
@@ -278,7 +278,7 @@ class ActionUserView(ActionTemplateView):
 
     def process_url_data(self, *args, **kwargs):
         """ Add confirm to instance attributes. """
-        super(ActionUserView, self).process_url_data(*args, **kwargs)
+        super().process_url_data(*args, **kwargs)
 
         # confirm is optional kwarg defaulting to False
         self.confirm = kwargs.get('confirm', False)
@@ -288,7 +288,7 @@ class ActionUserView(ActionTemplateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        return super(ActionUserView, self).dispatch(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
 
 class SubscribeUserView(ActionUserView):
@@ -325,7 +325,7 @@ class SubscribeUserView(ActionUserView):
                 _('You are already subscribed to %s.') % self.newsletter
             )
 
-        return super(SubscribeUserView, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
 
 class UnsubscribeUserView(ActionUserView):
@@ -367,7 +367,7 @@ class UnsubscribeUserView(ActionUserView):
                 _('You are not subscribed to %s.') % self.newsletter
             )
 
-        return super(UnsubscribeUserView, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
 
 class ActionRequestView(ActionFormView):
@@ -376,13 +376,13 @@ class ActionRequestView(ActionFormView):
 
     def process_url_data(self, *args, **kwargs):
         """ Add error to instance attributes. """
-        super(ActionRequestView, self).process_url_data(*args, **kwargs)
+        super().process_url_data(*args, **kwargs)
 
         self.error = None
 
     def get_context_data(self, **kwargs):
         """ Add error to context. """
-        context = super(ActionRequestView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         context.update({
             'error': self.error,
@@ -429,9 +429,9 @@ class ActionRequestView(ActionFormView):
 
             # Although form was valid there was error while sending email,
             # so stay at the same url.
-            return super(ActionRequestView, self).form_invalid(form)
+            return super().form_invalid(form)
 
-        return super(ActionRequestView, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class SubscribeRequestView(ActionRequestView):
@@ -441,7 +441,7 @@ class SubscribeRequestView(ActionRequestView):
 
     def get_form_kwargs(self):
         """ Add ip to form kwargs for submitted forms. """
-        kwargs = super(SubscribeRequestView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
 
         if self.request.method in ('POST', 'PUT'):
             kwargs['ip'] = self.request.META.get('REMOTE_ADDR')
@@ -456,7 +456,7 @@ class SubscribeRequestView(ActionRequestView):
             kwargs['confirm'] = self.confirm
             return SubscribeUserView.as_view()(request, *args, **kwargs)
 
-        return super(SubscribeRequestView, self).dispatch(
+        return super().dispatch(
             request, *args, **kwargs
         )
 
@@ -471,7 +471,7 @@ class UnsubscribeRequestView(ActionRequestView):
             kwargs['confirm'] = self.confirm
             return UnsubscribeUserView.as_view()(request, *args, **kwargs)
 
-        return super(UnsubscribeRequestView, self).dispatch(
+        return super().dispatch(
             request, *args, **kwargs
         )
 
@@ -496,7 +496,7 @@ class UpdateSubscriptionView(ActionFormView):
         """
         assert 'email' in kwargs
 
-        super(UpdateSubscriptionView, self).process_url_data(*args, **kwargs)
+        super().process_url_data(*args, **kwargs)
 
         self.subscription = get_object_or_404(
             Subscription, newsletter=self.newsletter,
@@ -515,7 +515,7 @@ class UpdateSubscriptionView(ActionFormView):
 
     def get_form_kwargs(self):
         """ Add instance to form kwargs. """
-        kwargs = super(UpdateSubscriptionView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
 
         kwargs['instance'] = self.subscription
 
@@ -530,7 +530,7 @@ class UpdateSubscriptionView(ActionFormView):
 
         subscription.update(self.action)
 
-        return super(UpdateSubscriptionView, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class SubmissionViewBase(NewsletterMixin):
@@ -549,12 +549,11 @@ class SubmissionViewBase(NewsletterMixin):
         """ Use only visible newsletters. """
 
         kwargs['newsletter_queryset'] = NewsletterListView().get_queryset()
-        return super(
-            SubmissionViewBase, self).process_url_data(*args, **kwargs)
+        return super().process_url_data(*args, **kwargs)
 
     def get_queryset(self):
         """ Filter out submissions for current newsletter. """
-        qs = super(SubmissionViewBase, self).get_queryset()
+        qs = super().get_queryset()
 
         qs = qs.filter(newsletter=self.newsletter)
 
@@ -586,7 +585,7 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
         Make sure the actual message is available.
         """
         context = \
-            super(SubmissionArchiveDetailView, self).get_context_data(**kwargs)
+            super().get_context_data(**kwargs)
 
         message = self.object.message
 

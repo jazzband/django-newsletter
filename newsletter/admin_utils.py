@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 from .models import Subscription
 
 
-class ExtendibleModelAdminMixin(object):
+class ExtendibleModelAdminMixin:
     def _getobj(self, request, object_id):
             opts = self.model._meta
 

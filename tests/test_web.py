@@ -338,7 +338,7 @@ class SubscribeTestCase(WebTestCase, MailTestCase):
                     kwargs={'newsletter_slug': self.n.slug,
                             'action': 'unsubscribe'})
 
-        super(SubscribeTestCase, self).setUp()
+        super().setUp()
 
     def test_urls(self):
         # TODO: is performing this test in each subclass
@@ -1250,7 +1250,7 @@ class InvisibleAnonymousSubscribeTestCase(AnonymousSubscribeTestCase):
     """
 
     def setUp(self):
-        super_obj = super(InvisibleAnonymousSubscribeTestCase, self)
+        super_obj = super()
         super_obj.setUp()
 
         # Make newsletter invisible
@@ -1268,7 +1268,7 @@ class InvisibleUserSubscribeTestCase(UserSubscribeTestCase):
     """
 
     def setUp(self):
-        super_obj = super(InvisibleUserSubscribeTestCase, self)
+        super_obj = super()
         super_obj.setUp()
 
         # Make newsletter invisible
@@ -1420,7 +1420,7 @@ class ArchiveTestcase(NewsletterListTestCase):
         self.test_archive_detail()
 
 
-class ActionTemplateViewMixin(object):
+class ActionTemplateViewMixin:
     """ Mixin for testing requests to urls for all three actions. """
 
     def get_action_url(self, action):

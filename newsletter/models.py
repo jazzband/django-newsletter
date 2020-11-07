@@ -272,7 +272,7 @@ class Subscription(models.Model):
             elif self.unsubscribed:
                 self._unsubscribe()
 
-        super(Subscription, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     ip = models.GenericIPAddressField(_("IP address"), blank=True, null=True)
 
@@ -439,7 +439,7 @@ class Article(models.Model):
             # as to assure uniqueness.
             self.sortorder = self.post.get_next_article_sortorder()
 
-        super(Article, self).save()
+        super().save()
 
 
 def attachment_upload_to(instance, filename):
@@ -458,7 +458,7 @@ class Attachment(models.Model):
         verbose_name_plural = _('attachments')
 
     def __str__(self):
-        return _(u"%(file_name)s on %(message)s") % {
+        return _("%(file_name)s on %(message)s") % {
             'file_name': self.file_name,
             'message': self.message
         }
@@ -689,7 +689,7 @@ class Submission(models.Model):
 
         self.newsletter = self.message.newsletter
 
-        return super(Submission, self).save()
+        return super().save()
 
     def get_absolute_url(self):
         assert self.newsletter.slug
