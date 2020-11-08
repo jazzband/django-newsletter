@@ -1,5 +1,6 @@
 import itertools
 import os
+import sys
 
 from unittest import mock
 import unittest
@@ -258,6 +259,8 @@ class SubmitSubmissionTestCase(MailingTestCase):
 
         sleep_mock.assert_called_with(0.02)
 
+    @unittest.skipIf(sys.version_info < (3,6), 
+                        reason="assert_called_once added in Python 3.6")
     def test_management_command(self):
         """ Test submission through management command. """
 
