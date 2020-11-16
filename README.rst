@@ -8,12 +8,8 @@ django-newsletter
 .. image:: https://img.shields.io/travis/jazzband/django-newsletter/master.svg
     :target: http://travis-ci.org/jazzband/django-newsletter
 
-.. image:: https://coveralls.io/repos/jazzband/django-newsletter/badge.svg?branch=master&service=github
-    :target: https://coveralls.io/github/jazzband/django-newsletter?branch=master
-
-.. image:: https://landscape.io/github/jazzband/django-newsletter/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/jazzband/django-newsletter/master
-   :alt: Code Health
+.. image:: https://coveralls.io/repos/github/jazzband/django-newsletter/badge.svg?branch=master
+	:target: https://coveralls.io/github/jazzband/django-newsletter?branch=master
 
 .. image:: https://jazzband.co/static/img/badge.svg
     :target: https://jazzband.co/
