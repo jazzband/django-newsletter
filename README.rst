@@ -5,14 +5,14 @@ django-newsletter
 .. image:: https://img.shields.io/pypi/v/django-newsletter.svg
     :target: https://pypi.python.org/pypi/django-newsletter
 
-.. image:: https://img.shields.io/travis/dokterbob/django-newsletter/master.svg
-    :target: http://travis-ci.org/dokterbob/django-newsletter
+.. image:: https://img.shields.io/travis/jazzband/django-newsletter/master.svg
+    :target: http://travis-ci.org/jazzband/django-newsletter
 
-.. image:: https://coveralls.io/repos/dokterbob/django-newsletter/badge.svg?branch=master&service=github
-    :target: https://coveralls.io/github/dokterbob/django-newsletter?branch=master
+.. image:: https://coveralls.io/repos/jazzband/django-newsletter/badge.svg?branch=master&service=github
+    :target: https://coveralls.io/github/jazzband/django-newsletter?branch=master
 
-.. image:: https://landscape.io/github/dokterbob/django-newsletter/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/dokterbob/django-newsletter/master
+.. image:: https://landscape.io/github/jazzband/django-newsletter/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/jazzband/django-newsletter/master
    :alt: Code Health
 
 .. image:: https://jazzband.co/static/img/badge.svg
@@ -62,7 +62,7 @@ Fairly extensive tests are available for internal frameworks, web
 (un)subscription and mail sending. Sending a newsletter to large groups of recipients
 (+15k) has been confirmed to work in multiple production environments. Tests
 for pull req's and the master branch are automatically run through
-`Travis CI <http://travis-ci.org/dokterbob/django-newsletter>`_.
+`Travis CI <http://travis-ci.org/jazzband/django-newsletter>`_.
 
 Contributing
 =============
