@@ -6,14 +6,13 @@ from unittest.mock import patch, MagicMock, PropertyMock
 from django.contrib import admin as django_admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
+from django.contrib.sites.models import Site
 from django.test import TestCase
 
 from newsletter import admin  # Triggers model admin registration
 from newsletter.admin_utils import make_subscription
 from newsletter.compat import reverse
 from newsletter.models import Message, Newsletter, Submission, Subscription, Attachment, attachment_upload_to
-
-from .utils import AssertLogsMixin
 
 test_files_dir = os.path.join(os.path.dirname(__file__), 'files')
 
@@ -42,7 +41,7 @@ class AdminTestMixin(object):
                                                     message=self.message_with_attachment)
 
 
-class AdminTestCase(AdminTestMixin, AssertLogsMixin, TestCase):
+class AdminTestCase(AdminTestMixin, TestCase):
     def admin_import_file(self, source_file, ignore_errors=''):
         """ Upload an address file for import to admin. """
 
@@ -358,7 +357,7 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
         """ Testing submission admin change list display. """
 
         # Assure there's a submission
-        Submission.from_message(self.message)
+        Submission.from_message(self.message, Site.objects.get_current())
 
         response = self.client.get(self.changelist_url)
         self.assertContains(
@@ -370,10 +369,11 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
         """ Test that a message cannot be published twice. """
 
         # Assure there's a submission
-        Submission.from_message(self.message)
+        Submission.from_message(self.message, Site.objects.get_current())
 
         response = self.client.post(self.add_url, data={
             'message': self.message.pk,
+            'site': Site.objects.get_current().id,
             'publish_date_0': '2016-01-09',
             'publish_date_1': '07:24',
             'publish': 'on',
@@ -388,6 +388,7 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
 
         response = self.client.post(self.add_url, data={
             'message': self.message.pk,
+            'site': Site.objects.get_current().id,
             'publish_date_0': '2016-01-09',
             'publish_date_1': '07:24',
             'publish': 'on',
@@ -410,6 +411,7 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
 
         response = self.client.post(self.add_url, data={
             'message': self.message.pk,
+            'site': Site.objects.get_current().id,
             'publish_date_0': '2016-01-09',
             'publish_date_1': '07:24',
             'publish': 'on',
@@ -433,6 +435,7 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
         # create submission for third message and add it
         response = self.client.post(self.add_url, data={
             'message': message.pk,
+            'site': Site.objects.get_current().id,
             'publish_date_0': '2020-10-30',
             'publish_date_1': '07:24',
             'publish': 'on',
@@ -445,6 +448,7 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
         response = self.client.post(
             reverse('admin:newsletter_submission_change', kwargs={'object_id': 3}), data={
                 'message': message.pk,
+                'site': Site.objects.get_current().id,
                 'publish_date_0': '2020-10-30',
                 'publish_date_1': '07:24',
                 'publish': 'on',

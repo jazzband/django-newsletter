@@ -6,6 +6,7 @@ from unittest.mock import patch, PropertyMock
 
 from datetime import datetime, timedelta
 
+from django.contrib.sites.models import Site
 from django.core import mail
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -1298,7 +1299,7 @@ class ArchiveTestcase(NewsletterListTestCase):
         self.assertTrue(message.html_template)
 
         # Create a submission
-        self.submission = Submission.from_message(message)
+        self.submission = Submission.from_message(message, Site.objects.get_current())
 
     def test_archive_invisible(self):
         """ Test whether an invisible newsletter is indeed not shown. """
