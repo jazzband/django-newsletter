@@ -14,8 +14,6 @@ from newsletter.admin_utils import make_subscription
 from newsletter.compat import reverse
 from newsletter.models import Message, Newsletter, Submission, Subscription, Attachment, attachment_upload_to
 
-from .utils import AssertLogsMixin
-
 test_files_dir = os.path.join(os.path.dirname(__file__), 'files')
 
 
@@ -43,7 +41,7 @@ class AdminTestMixin(object):
                                                     message=self.message_with_attachment)
 
 
-class AdminTestCase(AdminTestMixin, AssertLogsMixin, TestCase):
+class AdminTestCase(AdminTestMixin, TestCase):
     def admin_import_file(self, source_file, ignore_errors=''):
         """ Upload an address file for import to admin. """
 

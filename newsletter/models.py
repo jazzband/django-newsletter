@@ -7,8 +7,8 @@ import django
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.contrib.sites.managers import CurrentSiteManager
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
 from django.db import models
 from django.template.loader import select_template
@@ -569,11 +569,17 @@ class Submission(models.Model):
             'publish_date': self.publish_date
         }
 
+    def get_site(self) -> Site:
+        if self.site is not None:
+            return self.site
+        else:
+            return Site.objects.get_current()
+
     @cached_property
     def extra_headers(self):
         return {
             'List-Unsubscribe': 'http://%s%s' % (
-                self.site.domain,
+                self.get_site().domain,
                 reverse('newsletter_unsubscribe_request',
                         args=[self.message.newsletter.slug])
             ),
@@ -610,7 +616,7 @@ class Submission(models.Model):
     def send_message(self, subscription):
         variable_dict = {
             'subscription': subscription,
-            'site': self.site,
+            'site': self.get_site(),
             'submission': self,
             'message': self.message,
             'newsletter': self.newsletter,
@@ -678,17 +684,37 @@ class Submission(models.Model):
         submission = cls()
         submission.message = message
         submission.newsletter = message.newsletter
-        if isinstance(request_or_site, Site):
-            site = request_or_site
-        else:
-            site = get_current_site(request_or_site)
-        submission.site = site
+        if request_or_site is not None:
+            if isinstance(request_or_site, Site):
+                site = request_or_site
+            else:
+                site = get_current_site(request_or_site)
+            submission.site = site
         submission.save()
         try:
             submission.subscriptions.set(message.newsletter.get_subscriptions())
         except AttributeError:  # Django < 1.10
             submission.subscriptions = message.newsletter.get_subscriptions()
         return submission
+
+    def clean(self):
+        super().clean()
+
+        newsletter = self.message.newsletter
+        if newsletter is None:
+            newsletter = self.newsletter
+
+        sites = set(newsletter.site.all())
+
+        if len(sites) > 0:
+            if self.site is not None and self.site not in sites:
+                raise ValidationError(
+                    {'site': _("Site must be one of sites associated with the newsletter")}
+                )
+            else:
+                raise ValidationError(
+                    {'site': _("Site cannot be empty when the newsletter has associated sites")}
+                )
 
     def save(self, **kwargs):
         """ Set the newsletter from associated message upon saving. """
@@ -712,10 +738,15 @@ class Submission(models.Model):
             }
         )
 
+    # Since multiple sites might be creating multiple submissions, we must track which one this belongs to
+    # And it must be in the subset for the eligible ones of the newsletter
+    # If not set, then the current site will be used
     site = models.ForeignKey(
         Site,
         verbose_name=_("Site for this submission"),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
 
     newsletter = models.ForeignKey(
