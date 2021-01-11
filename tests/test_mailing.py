@@ -8,6 +8,7 @@ from datetime import timedelta
 
 from django.contrib.sites.models import Site
 from django.core import mail
+from django.core.exceptions import ValidationError
 
 from django.utils.timezone import now
 
@@ -206,6 +207,12 @@ class CreateSubmissionMultiSitesTestCase(CreateSubmissionTestCase):
         self.assertEqual(len(self.sites) + 1, count_sites)
         self.assertGreater(len(self.get_newsletter_sites()), 2)
         self.assertEqual(len(self.get_newsletter_sites()), len(self.n.site.all()))
+
+    def test_submission_site_validation(self):
+        """ Test creating a submission from a message with site provided. """
+
+        callback = lambda: Submission.from_message(self.m, Site.objects.get(domain=self.sites[0]))
+        self.assertRaises(ValidationError, callback)
 
 
 class SubmitSubmissionTestCase(MailingTestCase):
