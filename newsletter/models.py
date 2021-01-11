@@ -690,6 +690,7 @@ class Submission(models.Model):
             else:
                 site = get_current_site(request_or_site)
             submission.site = site
+        submission.full_clean()
         submission.save()
         try:
             submission.subscriptions.set(message.newsletter.get_subscriptions())
@@ -704,14 +705,14 @@ class Submission(models.Model):
         if newsletter is None:
             newsletter = self.newsletter
 
-        sites = set(newsletter.site.all())
+        sites = set([site.id for site in newsletter.site.all()])
 
         if len(sites) > 0:
-            if self.site is not None and self.site not in sites:
+            if self.site is not None and self.site.id not in sites:
                 raise ValidationError(
                     {'site': _("Site must be one of sites associated with the newsletter")}
                 )
-            else:
+            elif self.site is None:
                 raise ValidationError(
                     {'site': _("Site cannot be empty when the newsletter has associated sites")}
                 )
