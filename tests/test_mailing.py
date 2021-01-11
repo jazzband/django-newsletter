@@ -6,6 +6,7 @@ import unittest
 
 from datetime import timedelta
 
+from django.contrib.sites.models import Site
 from django.core import mail
 
 from django.utils.timezone import now
@@ -64,7 +65,7 @@ class MailingTestCase(MailTestCase):
 
         if action == 'message':
             # Create submission
-            sub = Submission.from_message(self.m)
+            sub = Submission.from_message(self.m, Site.objects.get_current())
             sub.prepared = True
             sub.publish_date = now() - timedelta(seconds=1)
             sub.save()
@@ -73,7 +74,7 @@ class MailingTestCase(MailTestCase):
             Submission.submit_queue()
         else:
             for subscriber in self.n.get_subscriptions():
-                subscriber.send_activation_email(action)
+                subscriber.send_activation_email(Site.objects.get_current(), action)
 
 
 class ArticleTestCase(MailingTestCase):
@@ -128,7 +129,7 @@ class CreateSubmissionTestCase(MailingTestCase):
     def test_submission_from_message(self):
         """ Test creating a submission from a message. """
 
-        sub = Submission.from_message(self.m)
+        sub = Submission.from_message(self.m, Site.objects.get_current())
 
         subscriptions = sub.subscriptions.all()
         self.assertEqual(set(subscriptions), {self.s, self.s2})
@@ -143,7 +144,7 @@ class CreateSubmissionTestCase(MailingTestCase):
         self.s.subscribed = False
         self.s.save()
 
-        sub = Submission.from_message(self.m)
+        sub = Submission.from_message(self.m, Site.objects.get_current())
 
         subscriptions = sub.subscriptions.all()
         self.assertEqual(list(subscriptions), [self.s2])
@@ -154,7 +155,7 @@ class CreateSubmissionTestCase(MailingTestCase):
         self.s.unsubscribed = True
         self.s.save()
 
-        sub = Submission.from_message(self.m)
+        sub = Submission.from_message(self.m, Site.objects.get_current())
 
         subscriptions = sub.subscriptions.all()
         self.assertEqual(list(subscriptions), [self.s2])
@@ -166,7 +167,7 @@ class CreateSubmissionTestCase(MailingTestCase):
         self.s.unsubscribed = True
         self.s.save()
 
-        sub = Submission.from_message(self.m)
+        sub = Submission.from_message(self.m, Site.objects.get_current())
 
         subscriptions = sub.subscriptions.all()
         self.assertEqual(list(subscriptions), [self.s2])
@@ -176,7 +177,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
     def setUp(self):
         super().setUp()
 
-        self.sub = Submission.from_message(self.m)
+        self.sub = Submission.from_message(self.m, Site.objects.get_current())
         self.sub.save()
 
     def test_submission(self):
