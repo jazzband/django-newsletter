@@ -432,7 +432,7 @@ class ActionRequestView(ActionFormView):
             return self.no_email_confirm(form)
 
         try:
-            self.subscription.send_activation_email(action=self.action)
+            self.subscription.send_activation_email(self.request, action=self.action)
 
         except (SMTPException, socket.error) as e:
             logger.exception(
@@ -617,7 +617,7 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
         context.update({
             'message': message,
             'attachment_links': True,
-            'site': Site.objects.get_current(),
+            'site': Site.objects.get_current(self.request),
             'date': self.object.publish_date,
             'STATIC_URL': settings.STATIC_URL,
             'MEDIA_URL': settings.MEDIA_URL,

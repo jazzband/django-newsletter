@@ -8,6 +8,7 @@ import django
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives
 from django.db import models
 from django.template.loader import select_template
@@ -54,9 +55,6 @@ class Newsletter(models.Model):
     )
 
     objects = models.Manager()
-
-    # Automatically filter the current site
-    on_site = CurrentSiteManager()
 
     def get_templates(self, action):
         """
@@ -324,15 +322,19 @@ class Subscription(models.Model):
     def get_recipient(self):
         return get_address(self.name, self.email)
 
-    def send_activation_email(self, action):
+    def send_activation_email(self, request_or_site, action):
         assert action in ACTIONS, 'Unknown action: %s' % action
 
         (subject_template, text_template, html_template) = \
             self.newsletter.get_templates(action)
 
+        if isinstance(request_or_site, Site):
+            site = request_or_site
+        else:
+            site = get_current_site(request_or_site)
         variable_dict = {
             'subscription': self,
-            'site': Site.objects.get_current(),
+            'site': site,
             'newsletter': self.newsletter,
             'date': self.subscribe_date,
             'STATIC_URL': settings.STATIC_URL,
@@ -571,7 +573,7 @@ class Submission(models.Model):
     def extra_headers(self):
         return {
             'List-Unsubscribe': 'http://%s%s' % (
-                Site.objects.get_current().domain,
+                self.site.domain,
                 reverse('newsletter_unsubscribe_request',
                         args=[self.message.newsletter.slug])
             ),
@@ -608,7 +610,7 @@ class Submission(models.Model):
     def send_message(self, subscription):
         variable_dict = {
             'subscription': subscription,
-            'site': Site.objects.get_current(),
+            'site': self.site,
             'submission': self,
             'message': self.message,
             'newsletter': self.newsletter,
@@ -671,11 +673,16 @@ class Submission(models.Model):
             submission.submit()
 
     @classmethod
-    def from_message(cls, message):
+    def from_message(cls, message, request_or_site):
         logger.debug(gettext('Submission of message %s'), message)
         submission = cls()
         submission.message = message
         submission.newsletter = message.newsletter
+        if isinstance(request_or_site, Site):
+            site = request_or_site
+        else:
+            site = get_current_site(request_or_site)
+        submission.site = site
         submission.save()
         try:
             submission.subscriptions.set(message.newsletter.get_subscriptions())
@@ -704,6 +711,12 @@ class Submission(models.Model):
                 'slug': self.message.slug
             }
         )
+
+    site = models.ForeignKey(
+        Site,
+        verbose_name=_("Site for this submission"),
+        on_delete=models.CASCADE
+    )
 
     newsletter = models.ForeignKey(
         Newsletter, verbose_name=_('newsletter'), editable=False,
