@@ -217,6 +217,8 @@ class CreateSubmissionMultiSitesTestCase(CreateSubmissionTestCase):
 
         callback = lambda: Submission.from_message(self.m, Site.objects.get(domain=self.sites[0]))
         self.assertRaises(ValidationError, callback)
+        callback = lambda: Submission.from_message(self.m, None)
+        self.assertRaises(ValidationError, callback)
 
 
 class SubmitSubmissionTestCase(MailingTestCase):
