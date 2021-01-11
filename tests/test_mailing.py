@@ -134,6 +134,8 @@ class CreateSubmissionTestCase(MailingTestCase):
         """ Test creating a submission from a message. """
 
         sub = Submission.from_message(self.m, self.get_site())
+        unsubscribe_link = sub.extra_headers['List-Unsubscribe']
+        self.assertIn(self.get_site().domain, unsubscribe_link)
 
         subscriptions = sub.subscriptions.all()
         self.assertEqual(set(subscriptions), {self.s, self.s2})
