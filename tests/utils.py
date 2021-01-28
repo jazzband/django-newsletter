@@ -12,68 +12,10 @@ from django.core.mail.backends.base import BaseEmailBackend
 
 from django.test import TestCase
 
-
 from django.template import loader, TemplateDoesNotExist
 
 from django_webtest import WebTest
 
-
-class AssertLogsMixin:
-    """Mixin to enable assertLogs method in Python 2.7.
-
-        patch_logger has similar functionality for Python 2.7, but is
-        removed in Django 3.0. This mixin reworks patch_logger so that
-        the assertLogs method can be used for any supported Django
-        version.
-    """
-    # TODO: Remove use of mixin when Django 1.11 support dropped
-    def assertLogs(self, logger=None, level=None):
-        # Use assertLogs context manager if present
-        try:
-            from unittest.case import _AssertLogsContext
-
-            return _AssertLogsContext(self, logger, level)
-        except ImportError:
-            # Fallback if Django version does not support assertLogs
-            import logging
-            from django.test.utils import patch_logger
-
-            class PatchLoggerResponse:
-                """Object to mimic AssertLogsContext response."""
-                def __init__(self, messages):
-                    self.output = messages
-
-            @contextmanager
-            def patch_logger(logger_name, log_level, log_kwargs=False):
-                """Replicating patch_logger functionality from Django 1.11.
-
-                    Cannot use original Django patch_logger because of how
-                    it returns its response. Have copied and modified it
-                    to return an object that mimics the assertLogs response.
-                """
-                logger_response = PatchLoggerResponse([])
-
-                def replacement(msg, *args, **kwargs):
-                    call = msg % args
-                    logger_response.output.append((call, kwargs) if log_kwargs else call)
-
-                logger = logging.getLogger(logger_name)
-                orig = getattr(logger, log_level)
-                setattr(logger, log_level, replacement)
-
-                try:
-                    yield logger_response
-                finally:
-                    setattr(logger, log_level, orig)
-
-                    if len(logger_response.output) == 0:
-                        raise self.failureException(
-                            "no logs of level {} or higher triggered on {}".format(
-                                log_level, logger_name
-                            )
-                        )
-
-            return patch_logger(logger, level.lower())
 
 class WebTestCase(WebTest):
     def setUp(self):
@@ -98,7 +40,7 @@ class WebTestCase(WebTest):
             self.assertEqual(instance, value)
 
 
-class MailTestCase(AssertLogsMixin, TestCase):
+class MailTestCase(TestCase):
     def get_email_list(self, email):
         if email:
             return (email,)
@@ -160,7 +102,7 @@ class MailTestCase(AssertLogsMixin, TestCase):
                 self.assertEqual(my_email.extra_headers[header], content)
 
 
-class UserTestCase(AssertLogsMixin, TestCase):
+class UserTestCase(TestCase):
     def setUp(self):
         super().setUp()
 
@@ -185,7 +127,7 @@ class UserTestCase(AssertLogsMixin, TestCase):
         self.user.delete()
 
 
-class ComparingTestCase(AssertLogsMixin, TestCase):
+class ComparingTestCase(TestCase):
     def assertLessThan(self, value1, value2):
         self.assertTrue(value1 < value2)
 
