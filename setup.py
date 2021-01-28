@@ -30,21 +30,11 @@ except:
     warnings.warn('Could not read README.rst and/or CHANGES.rst')
     README = None
 
-try:
-    REQUIREMENTS = open('requirements.txt').read()
-except:
-    warnings.warn('Could not read requirements.txt')
-    REQUIREMENTS = None
-
-try:
-    TEST_REQUIREMENTS = open('requirements_test.txt').read()
-except:
-    warnings.warn('Could not read requirements_test.txt')
-    TEST_REQUIREMENTS = None
 
 setup(
     name='django-newsletter',
-    version="1.0b1",
+    use_scm_version={"version_scheme": "post-release"},
+    setup_requires=["setuptools_scm"],
     description=(
         'Django app for managing multiple mass-mailing lists with both '
         'plaintext as well as HTML templates (and pluggable WYSIWYG editors '
@@ -52,7 +42,14 @@ setup(
         'the admin interface.'
     ),
     long_description=README,
-    install_requires=REQUIREMENTS,
+    install_requires=[
+        "Django>=2.2.16",
+        "python-card-me<1.0",
+        "ldif3<3.2",
+        "chardet",
+        "unicodecsv<0.15",
+        "Pillow",
+    ],
     author='Mathijs de Bruin',
     author_email='mathijs@mathijsfietst.nl',
     url='http://github.com/jazzband/django-newsletter/',
@@ -66,12 +63,10 @@ setup(
         'License :: OSI Approved :: GNU Affero General Public License v3',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Topic :: Utilities'
     ],
-    test_suite='runtests.run_tests',
-    tests_require=TEST_REQUIREMENTS
 )
