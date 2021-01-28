@@ -79,7 +79,7 @@ class WebTestCase(WebTest):
     def setUp(self):
         self.site = Site.objects.get_current()
 
-        super(WebTestCase, self).setUp()
+        super().setUp()
 
     def assertInContext(self, response, variable,
                         instance_of=None, value=None):
@@ -162,7 +162,7 @@ class MailTestCase(AssertLogsMixin, TestCase):
 
 class UserTestCase(AssertLogsMixin, TestCase):
     def setUp(self):
-        super(UserTestCase, self).setUp()
+        super().setUp()
 
         User = get_user_model()
         self.password = 'johnpassword'

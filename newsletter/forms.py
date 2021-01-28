@@ -25,7 +25,7 @@ class NewsletterForm(forms.ModelForm):
         else:
             ip = None
 
-        super(NewsletterForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.instance.newsletter = newsletter
 
@@ -88,7 +88,7 @@ class UpdateRequestForm(NewsletterForm):
                 _("This subscription has not yet been activated.")
             )
 
-        return super(UpdateRequestForm, self).clean()
+        return super().clean()
 
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
@@ -121,7 +121,7 @@ class UnsubscribeRequestForm(UpdateRequestForm):
                 _("This subscription has already been unsubscribed from.")
             )
 
-        return super(UnsubscribeRequestForm, self).clean()
+        return super().clean()
 
 
 class UpdateForm(NewsletterForm):

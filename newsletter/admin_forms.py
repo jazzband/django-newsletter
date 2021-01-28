@@ -110,7 +110,7 @@ class SubscriptionAdminForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(SubscriptionAdminForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.fields['subscribed'].label = _('Status')
 
@@ -131,7 +131,7 @@ class SubscriptionAdminForm(forms.ModelForm):
         return data
 
     def clean(self):
-        cleaned_data = super(SubscriptionAdminForm, self).clean()
+        cleaned_data = super().clean()
         if not (cleaned_data.get('user', None) or
                 cleaned_data.get('email_field', None)):
 
@@ -172,7 +172,7 @@ class ArticleFormSet(forms.BaseInlineFormSet):
     """ Formset for articles yielding default sortoder. """
 
     def __init__(self, *args, **kwargs):
-        super(ArticleFormSet, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         assert self.instance
         next_sortorder = self.instance.get_next_article_sortorder()

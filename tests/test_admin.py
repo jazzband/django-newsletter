@@ -18,9 +18,9 @@ from .utils import AssertLogsMixin
 test_files_dir = os.path.join(os.path.dirname(__file__), 'files')
 
 
-class AdminTestMixin(object):
+class AdminTestMixin:
     def setUp(self):
-        super(AdminTestMixin, self).setUp()
+        super().setUp()
 
         User = get_user_model()
         self.password = 'johnpassword'
@@ -349,7 +349,7 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
     """ Tests for Submission admin. """
 
     def setUp(self):
-        super(SubmissionAdminTests, self).setUp()
+        super().setUp()
 
         self.add_url = reverse('admin:newsletter_submission_add')
         self.changelist_url = reverse('admin:newsletter_submission_changelist')
@@ -456,7 +456,7 @@ class SubmissionAdminTests(AdminTestMixin, TestCase):
 
 
 class ArticleInlineTests(TestCase):
-    class MockSorlAdminImageMixin(object):
+    class MockSorlAdminImageMixin:
         def __init__(self):
             self.parent_class = 'sorl-thumbnail'
 

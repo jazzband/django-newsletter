@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import itertools
 import os
+import sys
 
-import mock
-import six
+from unittest import mock
 import unittest
 
 from datetime import timedelta
@@ -110,7 +107,7 @@ class ArticleTestCase(MailingTestCase):
 class MessageTestCase(MailingTestCase):
     def test_message_str(self):
         m1 = Message(title='Test message', slug='test-message')
-        self.assertEqual(six.text_type(m1), "Test message in Test newsletter")
+        self.assertEqual(str(m1), "Test message in Test newsletter")
 
         m2 = Message.objects.create(
             title='Test message str',
@@ -119,7 +116,7 @@ class MessageTestCase(MailingTestCase):
         )
 
         self.assertEqual(
-            six.text_type(m2), "Test message str in Test newsletter"
+            str(m2), "Test message str in Test newsletter"
         )
 
 
@@ -178,7 +175,7 @@ class CreateSubmissionTestCase(MailingTestCase):
 
 class SubmitSubmissionTestCase(MailingTestCase):
     def setUp(self):
-        super(SubmitSubmissionTestCase, self).setUp()
+        super().setUp()
 
         self.sub = Submission.from_message(self.m)
         self.sub.save()
@@ -262,6 +259,8 @@ class SubmitSubmissionTestCase(MailingTestCase):
 
         sleep_mock.assert_called_with(0.02)
 
+    @unittest.skipIf(sys.version_info < (3,6), 
+                        reason="assert_called_once added in Python 3.6")
     def test_management_command(self):
         """ Test submission through management command. """
 
@@ -276,7 +275,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
 
 class SubscriptionTestCase(UserTestCase, MailingTestCase):
     def setUp(self):
-        super(SubscriptionTestCase, self).setUp()
+        super().setUp()
 
         self.us = Subscription(user=self.user, newsletter=self.n)
         self.us.save()
@@ -325,7 +324,7 @@ class SubscriptionTestCase(UserTestCase, MailingTestCase):
                 self.assertNotEqual(s.subscribe_date, old_subscribe_date)
 
 
-class AllEmailsTestsMixin(object):
+class AllEmailsTestsMixin:
     """ Mixin for testing properties of sent e-mails for all message types. """
 
     def assertSentEmailIsProper(self, action):
@@ -382,7 +381,7 @@ class HtmlEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
         with send_html = True.
         """
 
-        kwargs = super(HtmlEmailsTestCase, self).get_newsletter_kwargs()
+        kwargs = super().get_newsletter_kwargs()
         kwargs.update(send_html=True)
 
         return kwargs
@@ -412,7 +411,7 @@ class TextOnlyEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
         with send_html = False.
         """
 
-        kwargs = super(TextOnlyEmailsTestCase, self).get_newsletter_kwargs()
+        kwargs = super().get_newsletter_kwargs()
         kwargs.update(send_html=False)
 
         return kwargs
@@ -460,7 +459,7 @@ class TemplateOverridesTestCase(MailingTestCase, AllEmailsTestsMixin):
         and make sure e-mails will be sent with text and HTML versions.
         """
 
-        kwargs = super(TemplateOverridesTestCase, self).get_newsletter_kwargs()
+        kwargs = super().get_newsletter_kwargs()
         kwargs.update(slug='test-newsletter-with-overrides',
                       send_html=True)
 

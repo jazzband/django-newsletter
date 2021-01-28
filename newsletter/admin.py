@@ -1,12 +1,8 @@
-from __future__ import unicode_literals
-
 import logging
 
 from django.urls import path
 
 logger = logging.getLogger(__name__)
-
-import six
 
 from django.db import models
 
@@ -98,7 +94,7 @@ class NewsletterAdmin(admin.ModelAdmin):
     admin_submissions.short_description = ''
 
 
-class NewsletterAdminLinkMixin(object):
+class NewsletterAdminLinkMixin:
     def admin_newsletter(self, obj):
         opts = Newsletter._meta
         newsletter = obj.newsletter
@@ -192,7 +188,7 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
     """ URLs """
     def get_urls(self):
-        urls = super(SubmissionAdmin, self).get_urls()
+        urls = super().get_urls()
 
         my_urls = [
             path(
@@ -240,7 +236,7 @@ if newsletter_settings.THUMBNAIL == 'sorl-thumbnail':
 else:
     ArticleInlineClassTuple = (StackedInline,)
 
-BaseArticleInline = type(str('BaseArticleInline'), ArticleInlineClassTuple, {})
+BaseArticleInline = type('BaseArticleInline', ArticleInlineClassTuple, {})
 
 class ArticleInline(BaseArticleInline):
     model = Article
@@ -361,7 +357,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
     """ URLs """
     def get_urls(self):
-        urls = super(MessageAdmin, self).get_urls()
+        urls = super().get_urls()
 
         my_urls = [
             path('<object_id>/preview/',
@@ -509,7 +505,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
             form = ConfirmForm(request.POST)
             if form.is_valid():
                 try:
-                    for email, name in six.iteritems(addresses):
+                    for email, name in addresses.items():
                         address_inst = make_subscription(
                             newsletter, email, name
                         )
@@ -542,7 +538,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
     """ URLs """
     def get_urls(self):
-        urls = super(SubscriptionAdmin, self).get_urls()
+        urls = super().get_urls()
 
         my_urls = [
             path('import/',

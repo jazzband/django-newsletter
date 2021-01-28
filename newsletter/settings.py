@@ -7,7 +7,7 @@ from django.core.exceptions import ImproperlyConfigured
 from .utils import Singleton
 
 
-class Settings(object):
+class Settings:
     """
     A settings object that proxies settings and handles defaults, inspired
     by `django-appconf` and the way it works  in `django-rest-framework`.
