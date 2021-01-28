@@ -11,11 +11,11 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.utils.encoding import force_text
 from django.test.utils import override_settings
+from django.urls import reverse
 
 from newsletter.models import (
     Newsletter, Subscription, Submission, Message, get_default_sites
 )
-from newsletter.compat import reverse
 from newsletter.forms import UpdateForm
 
 from .utils import MailTestCase, UserTestCase, WebTestCase, ComparingTestCase

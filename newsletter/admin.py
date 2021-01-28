@@ -50,13 +50,13 @@ from .models import (
 )
 
 from django.utils.timezone import now
+from django.urls import reverse
 
 from .admin_forms import (
     SubmissionAdminForm, SubscriptionAdminForm, ImportForm, ConfirmForm,
     ArticleFormSet
 )
 from .admin_utils import ExtendibleModelAdminMixin, make_subscription
-from .compat import get_context, reverse
 from .fields import DynamicImageField
 from .settings import newsletter_settings
 
@@ -314,12 +314,14 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
                 'message belongs to.'
             ))
 
-        c = get_context({'message': message,
-                         'site': Site.objects.get_current(),
-                         'newsletter': message.newsletter,
-                         'date': now(),
-                         'STATIC_URL': settings.STATIC_URL,
-                         'MEDIA_URL': settings.MEDIA_URL})
+        c = {
+            'message': message,
+            'site': Site.objects.get_current(),
+            'newsletter': message.newsletter,
+            'date': now(),
+            'STATIC_URL': settings.STATIC_URL,
+            'MEDIA_URL': settings.MEDIA_URL
+        }
 
         return HttpResponse(message.html_template.render(c))
 
@@ -327,14 +329,14 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
 
-        c = get_context({
+        c = {
             'message': message,
             'site': Site.objects.get_current(),
             'newsletter': message.newsletter,
             'date': now(),
             'STATIC_URL': settings.STATIC_URL,
             'MEDIA_URL': settings.MEDIA_URL
-        }, autoescape=False)
+        }
 
         return HttpResponse(
             message.text_template.render(c),

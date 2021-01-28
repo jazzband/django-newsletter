@@ -7,10 +7,10 @@ from django.contrib import admin as django_admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
+from django.urls import reverse
 
 from newsletter import admin  # Triggers model admin registration
 from newsletter.admin_utils import make_subscription
-from newsletter.compat import reverse
 from newsletter.models import Message, Newsletter, Submission, Subscription, Attachment, attachment_upload_to
 
 from .utils import AssertLogsMixin

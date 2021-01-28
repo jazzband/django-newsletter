@@ -15,10 +15,10 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext
 from django.utils.timezone import now
+from django.urls import reverse
 
 from distutils.version import LooseVersion
 
-from .compat import get_context, reverse
 from .fields import DynamicImageField
 from .utils import (
     make_activation_code, get_default_sites, ACTIONS
@@ -339,10 +339,8 @@ class Subscription(models.Model):
             'MEDIA_URL': settings.MEDIA_URL
         }
 
-        unescaped_context = get_context(variable_dict, autoescape=False)
-
-        subject = subject_template.render(unescaped_context).strip()
-        text = text_template.render(unescaped_context)
+        subject = subject_template.render(variable_dict).strip()
+        text = text_template.render(variable_dict)
 
         message = EmailMultiAlternatives(
             subject, text,
@@ -351,10 +349,8 @@ class Subscription(models.Model):
         )
 
         if html_template:
-            escaped_context = get_context(variable_dict)
-
             message.attach_alternative(
-                html_template.render(escaped_context), "text/html"
+                html_template.render(variable_dict), "text/html"
             )
 
         message.send()
@@ -617,11 +613,9 @@ class Submission(models.Model):
             'MEDIA_URL': settings.MEDIA_URL
         }
 
-        unescaped_context = get_context(variable_dict, autoescape=False)
-
         subject = self.message.subject_template.render(
-            unescaped_context).strip()
-        text = self.message.text_template.render(unescaped_context)
+            variable_dict).strip()
+        text = self.message.text_template.render(variable_dict)
 
         message = EmailMultiAlternatives(
             subject, text,
@@ -636,10 +630,8 @@ class Submission(models.Model):
             message.attach_file(attachment.file.path)
 
         if self.message.html_template:
-            escaped_context = get_context(variable_dict)
-
             message.attach_alternative(
-                self.message.html_template.render(escaped_context),
+                self.message.html_template.render(variable_dict),
                 "text/html"
             )
 
