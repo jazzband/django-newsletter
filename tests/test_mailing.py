@@ -16,6 +16,7 @@ from newsletter.models import (
 )
 from newsletter.utils import ACTIONS
 
+from newsletter import signals
 from .utils import MailTestCase, UserTestCase, template_exists
 
 NUM_SUBSCRIBED = 2
@@ -490,3 +491,57 @@ class TemplateOverridesTestCase(MailingTestCase, AllEmailsTestsMixin):
         self.assertEmailAlternativeBodyContains(
             'override for %s.html' % action
         )
+
+
+class SubmitSignalTestCase(MailingTestCase):
+    def test_pre_submit(self):
+        self.called = False
+        def handler(sender, message, **kwargs):
+            self.called = True
+        signals.pre_submit.connect(handler, dispatch_uid='test-pre-submit')
+        sub = Submission.from_message(self.m)
+        sub.submit()
+        self.assertTrue(self.called)
+        signals.post_send.disconnect(dispatch_uid='test-pre-submit')
+
+    def test_post_submit(self):
+        self.called = False
+        def handler(sender, message, **kwargs):
+            self.called = True
+        signals.post_submit.connect(handler, dispatch_uid='test-post-submit')
+        sub = Submission.from_message(self.m)
+        sub.submit()
+        self.assertTrue(self.called)
+        signals.post_send.disconnect(dispatch_uid='test-post-submit')
+
+    def test_pre_send(self):
+        self.called = 0
+        def handler(sender, message, **kwargs):
+            self.called += 1
+        signals.pre_send.connect(handler, dispatch_uid='test-pre-send')
+        sub = Submission.from_message(self.m)
+        sub.submit()
+        self.assertEqual(self.called, 2)
+        signals.post_send.disconnect(dispatch_uid='test-pre-send')
+
+    def test_post_send(self):
+        self.called = 0
+        def handler(sender, message, **kwargs):
+            self.called += 1
+        signals.post_send.connect(handler, dispatch_uid='test-post-send')
+        sub = Submission.from_message(self.m)
+        sub.submit()
+        self.assertEqual(self.called, 2)
+        signals.post_send.disconnect(dispatch_uid='test-post-send')
+
+    @mock.patch('django.core.mail.EmailMultiAlternatives.send', side_effect=Exception())
+    def test_post_send_failed(self, mock_send):
+        self.called = 0
+        def handler(sender, message, error, **kwargs):
+            self.assertIsNotNone(error)
+            self.called += 1
+        signals.post_send.connect(handler, dispatch_uid='test-post-send')
+        sub = Submission.from_message(self.m)
+        sub.submit()
+        self.assertEqual(self.called, 2)
+        signals.post_send.disconnect(dispatch_uid='test-post-send')
