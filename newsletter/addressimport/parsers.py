@@ -322,7 +322,7 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
     Returns a dictionary mapping email addresses into Subscription objects.
     """
 
-    from ldif3 import LDIFParser
+    from ldif import LDIFParser
 
     address_list = AddressList(newsletter, ignore_errors)
 
