@@ -328,8 +328,9 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
 
     try:
         parser = LDIFParser(myfile)
+        parser.parse()
 
-        for dn, entry in parser.parse():
+        for dn, entry in parser.all_records:
             if 'mail' in entry:
                 email = entry['mail'][0]
 
