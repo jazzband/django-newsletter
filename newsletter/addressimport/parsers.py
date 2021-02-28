@@ -322,12 +322,12 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
     Returns a dictionary mapping email addresses into Subscription objects.
     """
 
-    from ldif import LDIFParser
+    from ldif import LDIFRecordList
 
     address_list = AddressList(newsletter, ignore_errors)
 
     try:
-        parser = LDIFParser(myfile)
+        parser = LDIFRecordList(myfile)
         parser.parse()
 
         for dn, entry in parser.all_records:
