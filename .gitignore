@@ -16,3 +16,5 @@ django_setuptest*
 docs/_*
 .idea/
 venv/
+coverage.xml
+.tox

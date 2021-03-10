@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from django.core import mail
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.test.utils import override_settings
 from django.urls import reverse
 
@@ -458,7 +458,7 @@ class UserSubscribeTestCase(
 
         self.assertIn(
             'You are not subscribed to',
-            force_text(list(response.context['messages'])[0])
+            force_str(list(response.context['messages'])[0])
         )
 
     def test_unsubscribe_post(self):

@@ -1,6 +1,0 @@
-Django>=2.2.16
-python-card-me<1.0
-ldif3<3.2
-chardet
-unicodecsv<0.15
-Pillow
