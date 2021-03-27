@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+import importlib
 from datetime import datetime
 
 import django
@@ -43,6 +44,8 @@ class Newsletter(models.Model):
     sender = models.CharField(
         max_length=200, verbose_name=_('sender'), help_text=_('Sender name')
     )
+
+    subscription_generator_class = models.CharField(max_length=200, blank=True, null=True)
 
     visible = models.BooleanField(
         default=True, verbose_name=_('visible'), db_index=True
@@ -96,6 +99,20 @@ class Newsletter(models.Model):
             html_template = None
 
         return subject_template, text_template, html_template
+
+    def get_subscription_generator(self):
+        if self.subscription_generator_class:
+            try:
+                class_data = self.subscription_generator_class.split(".")
+                module_name = ".".join(class_data[:-1])
+                class_name = class_data[-1]
+                module = importlib.import_module(module_name)
+                return getattr(module, class_name)()
+            except (AttributeError, ModuleNotFoundError) as e:
+                logger.error("Could not load subscriber generator class '%s' - %s" % (self.subscription_generator_class, e))
+                return None
+        else:
+            return None
 
     def __str__(self):
         return self.title
@@ -574,11 +591,16 @@ class Submission(models.Model):
         }
 
     def submit(self):
-        subscriptions = self.subscriptions.filter(subscribed=True)
+        subscriptions = self.subscriptions.filter(subscribed=True).all()
+
+        subscription_generator = self.newsletter.get_subscription_generator()
+        if subscription_generator:
+            logger.info('Dynamically generating subscriptions')
+            subscriptions = subscription_generator.generate(self, subscriptions)
 
         logger.info(
             gettext("Submitting %(submission)s to %(count)d people"),
-            {'submission': self, 'count': subscriptions.count()}
+            {'submission': self, 'count': len(subscriptions)}
         )
 
         assert self.publish_date < now(), \
