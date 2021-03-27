@@ -105,10 +105,11 @@ class Newsletter(models.Model):
         if self.subscription_generator_class:
             try:
                 class_data = self.subscription_generator_class.split(".")
-                module_name = ".".join(class_data[:-1])
+                module_name = ".".join(class_data[:-1]) if len(class_data) > 1 else ''
                 class_name = class_data[-1]
                 module = importlib.import_module(module_name)
-                return getattr(module, class_name)()
+                self.subscription_generator = getattr(module, class_name)()
+                return self.subscription_generator
             except (AttributeError, ModuleNotFoundError) as e:
                 logger.error("Could not load subscriber generator class '%s' - %s" % (self.subscription_generator_class, e))
                 raise e

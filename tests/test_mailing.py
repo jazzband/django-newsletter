@@ -12,7 +12,7 @@ from django.core import mail
 from django.utils.timezone import now
 
 from newsletter.models import (
-    Newsletter, Subscription, Submission, Message, Article, get_default_sites, Attachment
+    Newsletter, Subscription, Submission, Message, Article, get_default_sites, Attachment, SubscriptionGenerator
 )
 from newsletter.utils import ACTIONS
 
@@ -171,6 +171,31 @@ class CreateSubmissionTestCase(MailingTestCase):
 
         subscriptions = sub.subscriptions.all()
         self.assertEqual(list(subscriptions), [self.s2])
+
+
+class TestingSubscriptionGenerator(SubscriptionGenerator):
+    def generate_subscriptions(self, submission, subscriptions):
+        return [
+            Subscription(name_field='name1', email_field='test1@test.com'),
+            Subscription(name_field='name2', email_field='test2@test.com'),
+            Subscription(name_field='name3', email_field='test3@test.com')
+        ]
+
+
+class SubscriptionGeneratorTestCase(MailingTestCase):
+    def setUp(self):
+        super().setUp()
+        self.n.subscription_generator_class = 'tests.test_mailing.TestingSubscriptionGenerator'
+        self.n.save()
+        self.sub = Submission.from_message(self.m)
+        self.sub.save()
+
+    def test_subscription_generator(self):
+        self.sub.submit()
+        Submission.submit_queue()
+        submission = Submission.objects.get(pk=self.sub.pk)
+        self.assertTrue(submission.sent)
+        self.assertEqual(len(mail.outbox), 3)
 
 
 class SubmitSubmissionTestCase(MailingTestCase):
