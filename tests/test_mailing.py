@@ -191,6 +191,7 @@ class SubscriptionGeneratorTestCase(MailingTestCase):
         self.sub.save()
 
     def test_subscription_generator(self):
+        """ Test the dynamic generation of subscriptors """
         self.sub.submit()
         Submission.submit_queue()
         submission = Submission.objects.get(pk=self.sub.pk)
