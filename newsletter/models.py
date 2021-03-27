@@ -3,6 +3,7 @@ import os
 import time
 import importlib
 from datetime import datetime
+from abc import abstractmethod
 
 import django
 
@@ -564,6 +565,22 @@ class Message(models.Model):
             return None
 
 
+class SubscriptionGenerator:
+    """
+    Interface for subscription generators.
+    Users must implement the generate_subscriptions method.
+    """
+    @abstractmethod
+    def generate_subscriptions(self, submission, subscriptions):
+        """
+        :param submission: the submission for which we are generating the subscription list
+        :param subscriptions: the original subscriptions for this submission
+        :return: the list of Subscription objects.
+        They may just be in memory Subscription objects, no need to save them to the DB.
+        """
+        raise NotImplementedError()
+
+
 class Submission(models.Model):
     """
     Submission represents a particular Message as it is being submitted
@@ -596,7 +613,7 @@ class Submission(models.Model):
         subscription_generator = self.newsletter.get_subscription_generator()
         if subscription_generator:
             logger.info('Dynamically generating subscriptions')
-            subscriptions = subscription_generator.generate(self, subscriptions)
+            subscriptions = subscription_generator.generate_subscriptions(self, subscriptions)
 
         logger.info(
             gettext("Submitting %(submission)s to %(count)d people"),
