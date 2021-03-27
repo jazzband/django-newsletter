@@ -111,7 +111,7 @@ class Newsletter(models.Model):
                 return getattr(module, class_name)()
             except (AttributeError, ModuleNotFoundError) as e:
                 logger.error("Could not load subscriber generator class '%s' - %s" % (self.subscription_generator_class, e))
-                return None
+                raise e
         else:
             return None
 
