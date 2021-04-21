@@ -66,6 +66,7 @@ class NewsletterSettings(Settings):
     settings_prefix = 'NEWSLETTER'
 
     DEFAULT_CONFIRM_EMAIL = True
+    DEFAULT_VALIDATE_USER = True
 
     @property
     def DEFAULT_CONFIRM_EMAIL_SUBSCRIBE(self):
@@ -136,5 +137,17 @@ class NewsletterSettings(Settings):
         raise ImproperlyConfigured(
             "'%s' is not a supported thumbnail application." % THUMBNAIL
         )
+
+    @property
+    def VALIDATE_USER(self):
+        validate_user = getattr(
+            django_settings, "NEWSLETTER_VALIDATE_USER", ""
+        )
+
+        if validate_user:
+            return validate_user
+        else:
+            return self.DEFAULT_VALIDATE_USER
+
 
 newsletter_settings = NewsletterSettings()
