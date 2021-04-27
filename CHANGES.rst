@@ -8,6 +8,7 @@ Changes
 - File attachments for messages (#334).
 - Drop surlex dependency improved `path()` and `re_path()` (#339).
 - Drop support for Django 3.0
+- Add support for Django 3.2
 - ...
 
 0.9.1 (18-05-2020)
