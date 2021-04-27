@@ -7,6 +7,7 @@ Changes
 - Configurable thumbnailing, dropping hard sorl-thumbnail (#304).
 - File attachments for messages (#334).
 - Drop surlex dependency improved `path()` and `re_path()` (#339).
+- Drop support for Django 3.0
 - ...
 
 0.9.1 (18-05-2020)
