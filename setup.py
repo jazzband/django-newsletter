@@ -59,6 +59,8 @@ setup(
         'Development Status :: 6 - Mature',
         'Environment :: Web Environment',
         'Framework :: Django',
+        'Framework :: Django :: 2.2',
+        'Framework :: Django :: 3.1',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU Affero General Public License v3',
         'Operating System :: OS Independent',
