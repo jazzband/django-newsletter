@@ -5,6 +5,14 @@ django-newsletter
 .. image:: https://img.shields.io/pypi/v/django-newsletter.svg
     :target: https://pypi.python.org/pypi/django-newsletter
 
+.. image:: https://img.shields.io/pypi/pyversions/django-newsletter.svg
+    :target: https://pypi.org/project/django-newsletter/
+    :alt: Supported Python versions
+
+ .. image:: https://img.shields.io/pypi/djversions/django-newsletter.svg
+    :target: https://pypi.org/project/django-newsletter/
+    :alt: Supported Django versions
+
 .. image:: https://github.com/jazzband/django-newsletter/workflows/Test/badge.svg
    :target: https://github.com/jazzband/django-newsletter/actions
    :alt: GitHub Actions
