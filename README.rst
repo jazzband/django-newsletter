@@ -9,7 +9,7 @@ django-newsletter
     :target: https://pypi.org/project/django-newsletter/
     :alt: Supported Python versions
 
- .. image:: https://img.shields.io/pypi/djversions/django-newsletter.svg
+.. image:: https://img.shields.io/pypi/djversions/django-newsletter.svg
     :target: https://pypi.org/project/django-newsletter/
     :alt: Supported Django versions
 
