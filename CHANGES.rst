@@ -9,7 +9,7 @@ Changes
 - Drop surlex dependency improved `path()` and `re_path()` (#339).
 - Drop support for Django 3.0
 - Add support for Django 3.2
-- ...
+- Add support for Python 3.10
 
 0.9.1 (18-05-2020)
 ------------------
