@@ -55,6 +55,7 @@ setup(
     url='http://github.com/jazzband/django-newsletter/',
     packages=find_packages(exclude=("tests", "test_project")),
     include_package_data=True,
+    python_requires='>=3.7',
     classifiers=[
         'Development Status :: 6 - Mature',
         'Environment :: Web Environment',
