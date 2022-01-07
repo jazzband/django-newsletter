@@ -1,6 +1,5 @@
 import itertools
 import os
-import sys
 
 from unittest import mock
 import unittest
@@ -259,8 +258,6 @@ class SubmitSubmissionTestCase(MailingTestCase):
 
         sleep_mock.assert_called_with(0.02)
 
-    @unittest.skipIf(sys.version_info < (3,6), 
-                        reason="assert_called_once added in Python 3.6")
     def test_management_command(self):
         """ Test submission through management command. """
 
@@ -454,7 +451,7 @@ class TemplateOverridesTestCase(MailingTestCase, AllEmailsTestsMixin):
 
     def get_newsletter_kwargs(self):
         """
-        Update keyword arguments for instanciating the newsletter
+        Update keyword arguments for instantiating the newsletter
         so that slug corresponds to one for which template overrides exists
         and make sure e-mails will be sent with text and HTML versions.
         """
