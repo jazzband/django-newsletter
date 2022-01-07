@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import models, migrations
 import sorl.thumbnail.fields
 import newsletter.utils
@@ -108,7 +105,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='subscription',
-            unique_together=set([('user', 'email_field', 'newsletter')]),
+            unique_together={('user', 'email_field', 'newsletter')},
         ),
         migrations.AddField(
             model_name='submission',
@@ -124,7 +121,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='message',
-            unique_together=set([('slug', 'newsletter')]),
+            unique_together={('slug', 'newsletter')},
         ),
         migrations.AddField(
             model_name='article',

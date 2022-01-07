@@ -420,7 +420,7 @@ class ActionRequestView(ActionFormView):
         try:
             self.subscription.send_activation_email(action=self.action)
 
-        except (SMTPException, socket.error) as e:
+        except (SMTPException, OSError) as e:
             logger.exception(
                 'Error %s while submitting email to %s.',
                 e, self.subscription.email
