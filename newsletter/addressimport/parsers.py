@@ -11,7 +11,7 @@ from django.utils.translation import gettext as _
 from newsletter.models import Subscription
 
 
-class AddressList(object):
+class AddressList:
     """ List with unique addresses. """
 
     def __init__(self, newsletter, ignore_errors=False):

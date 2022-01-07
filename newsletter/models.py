@@ -566,7 +566,7 @@ class Submission(models.Model):
     @cached_property
     def extra_headers(self):
         return {
-            'List-Unsubscribe': 'http://%s%s' % (
+            'List-Unsubscribe': 'http://{}{}'.format(
                 Site.objects.get_current().domain,
                 reverse('newsletter_unsubscribe_request',
                         args=[self.message.newsletter.slug])
@@ -743,6 +743,6 @@ def get_address(name, email):
     if LooseVersion(django.get_version()) < LooseVersion('1.9'):
         name = name.encode('ascii', 'ignore').decode('ascii').strip()
     if name:
-        return '%s <%s>' % (name, email)
+        return f'{name} <{email}>'
     else:
         return '%s' % email

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 actual sending of the submissions
 """
