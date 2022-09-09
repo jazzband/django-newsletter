@@ -3,11 +3,10 @@ Changes
 
 1.0b1 (unreleased)
 ------------------
-- Add support for Django 3.1
 - Configurable thumbnailing, dropping hard sorl-thumbnail (#304).
 - File attachments for messages (#334).
 - Drop surlex dependency improved `path()` and `re_path()` (#339).
-- Drop support for Django 3.0
+- Drop support for Django < 3.2
 - Add support for Django 3.2
 - Add support for Python 3.10
 

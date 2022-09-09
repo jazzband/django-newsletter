@@ -3,8 +3,6 @@ import os
 import time
 from datetime import datetime
 
-import django
-
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
@@ -17,7 +15,6 @@ from django.utils.translation import gettext
 from django.utils.timezone import now
 from django.urls import reverse
 
-from distutils.version import LooseVersion
 
 from .fields import DynamicImageField
 from .utils import (
@@ -738,10 +735,6 @@ class Submission(models.Model):
 
 
 def get_address(name, email):
-    # Converting name to ascii for compatibility with django < 1.9.
-    # Remove this when django 1.8 is no longer supported.
-    if LooseVersion(django.get_version()) < LooseVersion('1.9'):
-        name = name.encode('ascii', 'ignore').decode('ascii').strip()
     if name:
         return f'{name} <{email}>'
     else:

@@ -43,7 +43,7 @@ setup(
     ),
     long_description=README,
     install_requires=[
-        "Django>=2.2.16",
+        "Django>=3.2",
         "python-card-me<1.0",
         "ldif3<3.2",
         "chardet",
@@ -60,8 +60,6 @@ setup(
         'Development Status :: 6 - Mature',
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 2.2',
-        'Framework :: Django :: 3.1',
         'Framework :: Django :: 3.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU Affero General Public License v3',
