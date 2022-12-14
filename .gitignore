@@ -16,3 +16,4 @@ django_setuptest*
 docs/_*
 .idea/
 venv/
+.venv/
