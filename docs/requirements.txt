@@ -1,1 +1,8 @@
-sorl-thumbnail
+chardet==5.1.0
+Django==4.2
+django_extensions==3.2.1
+easy_thumbnails==2.8.5
+ldif3==3.2.2
+setuptools==65.5.0
+sorl_thumbnail==12.9.0
+unicodecsv==0.14.1
