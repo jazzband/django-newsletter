@@ -58,7 +58,7 @@ Currently, django-newsletter officially supports Django 2.2.x LTS, 3.1.x and 3.2
 
 Requirements
 ============
-Please refer to `requirements.txt <http://github.com/jazzband/django-newsletter/blob/master/requirements.txt>`_
+Please refer to `requirements.txt <http://github.com/jazzband/django-newsletter/blob/master/docs/requirements.txt>`_
 for an updated list of required packages.
 
 Tests
