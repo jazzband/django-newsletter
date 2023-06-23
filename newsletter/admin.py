@@ -86,7 +86,10 @@ class NewsletterAdmin(admin.ModelAdmin):
     admin_messages.short_description = ''
 
     def admin_subscriptions(self, obj):
-        return self._admin_url(obj, Subscription, _("Subscriptions"))
+        if obj.subscription_generator_class:
+            return obj.subscription_generator_class.split('.')[-1]
+        else:
+            return self._admin_url(obj, Subscription, _("Subscriptions"))
     admin_subscriptions.short_description = ''
 
     def admin_submissions(self, obj):

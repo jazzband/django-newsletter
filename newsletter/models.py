@@ -1,7 +1,9 @@
 import logging
 import os
 import time
+import importlib
 from datetime import datetime
+from abc import abstractmethod
 
 import django
 
@@ -43,6 +45,8 @@ class Newsletter(models.Model):
     sender = models.CharField(
         max_length=200, verbose_name=_('sender'), help_text=_('Sender name')
     )
+
+    subscription_generator_class = models.CharField(max_length=200, blank=True, null=True)
 
     visible = models.BooleanField(
         default=True, verbose_name=_('visible'), db_index=True
@@ -96,6 +100,21 @@ class Newsletter(models.Model):
             html_template = None
 
         return subject_template, text_template, html_template
+
+    def get_subscription_generator(self):
+        if self.subscription_generator_class:
+            try:
+                class_data = self.subscription_generator_class.split(".")
+                module_name = ".".join(class_data[:-1]) if len(class_data) > 1 else ''
+                class_name = class_data[-1]
+                module = importlib.import_module(module_name)
+                self.subscription_generator = getattr(module, class_name)()
+                return self.subscription_generator
+            except (AttributeError, ModuleNotFoundError) as e:
+                logger.error("Could not load subscriber generator class '%s' - %s" % (self.subscription_generator_class, e))
+                raise e
+        else:
+            return None
 
     def __str__(self):
         return self.title
@@ -547,6 +566,22 @@ class Message(models.Model):
             return None
 
 
+class SubscriptionGenerator:
+    """
+    Interface for subscription generators.
+    Users must implement the generate_subscriptions method.
+    """
+    @abstractmethod
+    def generate_subscriptions(self, submission, subscriptions):
+        """
+        :param submission: the submission for which we are generating the subscription list
+        :param subscriptions: the original subscriptions for this submission
+        :return: the list of Subscription objects.
+        They may just be in memory Subscription objects, no need to save them to the DB.
+        """
+        raise NotImplementedError()
+
+
 class Submission(models.Model):
     """
     Submission represents a particular Message as it is being submitted
@@ -574,11 +609,16 @@ class Submission(models.Model):
         }
 
     def submit(self):
-        subscriptions = self.subscriptions.filter(subscribed=True)
+        subscriptions = self.subscriptions.filter(subscribed=True).all()
+
+        subscription_generator = self.newsletter.get_subscription_generator()
+        if subscription_generator:
+            logger.info('Dynamically generating subscriptions')
+            subscriptions = subscription_generator.generate_subscriptions(self, subscriptions)
 
         logger.info(
             gettext("Submitting %(submission)s to %(count)d people"),
-            {'submission': self, 'count': subscriptions.count()}
+            {'submission': self, 'count': len(subscriptions)}
         )
 
         assert self.publish_date < now(), \
