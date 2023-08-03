@@ -19,6 +19,7 @@ from django.urls import reverse
 
 from distutils.version import LooseVersion
 
+from . import signals
 from .fields import DynamicImageField
 from .utils import (
     make_activation_code, get_default_sites, ACTIONS
@@ -584,6 +585,7 @@ class Submission(models.Model):
         assert self.publish_date < now(), \
             'Something smells fishy; submission time in future.'
 
+        signals.pre_submit.send(sender=self.__class__, message=self)
         self.sending = True
         self.save()
 
@@ -600,6 +602,7 @@ class Submission(models.Model):
         finally:
             self.sending = False
             self.save()
+            signals.post_submit.send(sender=self.__class__, message=self)
 
     def send_message(self, subscription):
         variable_dict = {
@@ -635,14 +638,14 @@ class Submission(models.Model):
                 "text/html"
             )
 
+        signals.pre_send.send(sender=self.__class__, message=self, email=message)
+        logger.debug(
+            gettext('Submitting message to: %s.'),
+            subscription
+        )
+        error = None
         try:
-            logger.debug(
-                gettext('Submitting message to: %s.'),
-                subscription
-            )
-
             message.send()
-
         except Exception as e:
             # TODO: Test coverage for this branch.
             logger.error(
@@ -651,6 +654,9 @@ class Submission(models.Model):
                 {'subscription': subscription,
                  'error': e}
             )
+            error = e
+        signals.post_send.send(sender=self.__class__, message=self, email=message,
+                               error=error)
 
     @classmethod
     def submit_queue(cls):
