@@ -197,16 +197,22 @@ class SubscriptionGeneratorTestCase(MailingTestCase):
         self.assertTrue(submission.sent)
         self.assertEqual(len(mail.outbox), 3)
 
-    def test_non_existent_generator_class(self):
+    def test_nonexistent_generator_class(self):
         """ Test failure when generator class does not exist """
-        self.n.subscription_generator_class = 'module.does.not.Exist'
-        self.n.save()
         try:
-            self.sub.submit()
-            self.fail('Should not have been able to send')
-        except (AttributeError, ModuleNotFoundError):
+            self.n.subscription_generator_class = 'nonexistent_module.SomeClass'
+            self.n.save()
+            self.fail('Should not reach this')
+        except ModuleNotFoundError:
             pass
-        
+
+        try:
+            self.n.subscription_generator_class = 'newsletter.models.NonexistentClass'
+            self.n.save()
+            self.fail('Should not reach this')
+        except AttributeError:
+            pass
+
 
 class SubmitSubmissionTestCase(MailingTestCase):
     def setUp(self):
