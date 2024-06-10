@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 import logging
 logger = logging.getLogger(__name__)
 
@@ -34,6 +32,6 @@ class Migration(migrations.Migration):
         migrations.RunPython(renumerate_article_sortorder),
         migrations.AlterUniqueTogether(
             name='article',
-            unique_together=set([('post', 'sortorder')]),
+            unique_together={('post', 'sortorder')},
         ),
     ]

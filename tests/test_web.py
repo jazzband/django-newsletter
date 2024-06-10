@@ -193,7 +193,7 @@ class UserNewsletterListTestCase(UserTestCase,
         for form in formset.forms:
             self.assertTrue(
                 form.instance.newsletter in self.newsletters,
-                "%s not in %s" % (form.instance.newsletter, self.newsletters)
+                f"{form.instance.newsletter} not in {self.newsletters}"
             )
             self.assertContains(response, form['id'])
             self.assertContains(response, form['subscribed'])
@@ -560,7 +560,7 @@ class AnonymousSubscribeTestCase(
         self.assertEqual(len(mail.outbox), 1)
 
         activate_url = subscription.subscribe_activate_url()
-        full_activate_url = 'http://%s%s' % (self.site.domain, activate_url)
+        full_activate_url = f'http://{self.site.domain}{activate_url}'
 
         self.assertEmailContains(full_activate_url)
 
@@ -895,7 +895,7 @@ class AnonymousSubscribeTestCase(
         self.assertEqual(len(mail.outbox), 1)
 
         activate_url = subscription.unsubscribe_activate_url()
-        full_activate_url = 'http://%s%s' % (self.site.domain, activate_url)
+        full_activate_url = f'http://{self.site.domain}{activate_url}'
 
         self.assertEmailContains(full_activate_url)
 
@@ -1034,7 +1034,7 @@ class AnonymousSubscribeTestCase(
         self.assertEqual(len(mail.outbox), 1)
 
         activate_url = subscription.update_activate_url()
-        full_activate_url = 'http://%s%s' % (self.site.domain, activate_url)
+        full_activate_url = f'http://{self.site.domain}{activate_url}'
 
         self.assertEmailContains(full_activate_url)
 

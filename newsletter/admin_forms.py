@@ -175,6 +175,7 @@ class ArticleFormSet(forms.BaseInlineFormSet):
         super().__init__(*args, **kwargs)
 
         assert self.instance
-        next_sortorder = self.instance.get_next_article_sortorder()
-        for index, form in enumerate(self.extra_forms):
-            form.initial['sortorder'] = next_sortorder + index * 10
+        if self.instance.pk:
+            next_sortorder = self.instance.get_next_article_sortorder()
+            for index, form in enumerate(self.extra_forms):
+                form.initial['sortorder'] = next_sortorder + index * 10

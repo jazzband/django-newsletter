@@ -44,7 +44,7 @@ class Settings:
             try:
                 setting = getattr(
                     django_settings,
-                    '%s_%s' % (self.settings_prefix, attr),
+                    f'{self.settings_prefix}_{attr}',
                 )
             except AttributeError:
                 if not attr.startswith('DEFAULT_'):
