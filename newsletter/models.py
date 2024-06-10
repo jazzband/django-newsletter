@@ -576,10 +576,9 @@ class SubscriptionGenerator:
     Users must implement the generate_subscriptions method.
     """
     @abstractmethod
-    def generate_subscriptions(self, submission, subscriptions):
+    def generate_subscriptions(self, submission):
         """
         :param submission: the submission for which we are generating the subscription list
-        :param subscriptions: the original subscriptions for this submission
         :return: the list of Subscription objects.
         They may just be in memory Subscription objects, no need to save them to the DB.
         """
@@ -613,12 +612,15 @@ class Submission(models.Model):
         }
 
     def submit(self):
-        subscriptions = self.subscriptions.filter(subscribed=True).all()
+        subscriptions = list(self.subscriptions.filter(subscribed=True).all())
 
-        subscription_generator = self.newsletter.get_subscription_generator()
-        if subscription_generator:
-            logger.info('Dynamically generating subscriptions')
-            subscriptions = subscription_generator.generate_subscriptions(self, subscriptions)
+        if self.newsletter.subscription_generator_class:
+            logger.info("Dynamically generating subscriptions")
+            subscribed_emails = {s.email for s in subscriptions}
+            unsubscribed_emails = {s.email for s in self.newsletter.subscription_set.filter(unsubscribed=True).all()}
+            dynamic_subscriptions = self.newsletter.get_subscription_generator().generate_subscriptions(self)
+            subscriptions += (s for s in dynamic_subscriptions
+                              if s.email not in subscribed_emails and s.email not in unsubscribed_emails)
 
         logger.info(
             gettext("Submitting %(submission)s to %(count)d people"),

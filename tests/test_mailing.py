@@ -173,11 +173,11 @@ class CreateSubmissionTestCase(MailingTestCase):
 
 
 class TestingSubscriptionGenerator(SubscriptionGenerator):
-    def generate_subscriptions(self, submission, subscriptions):
+    def generate_subscriptions(self, submission):
         return [
-            Subscription(name_field='name1', email_field='test1@test.com'),
-            Subscription(name_field='name2', email_field='test2@test.com'),
-            Subscription(name_field='name3', email_field='test3@test.com')
+            Subscription(newsletter=submission.newsletter, name_field='name 2', email_field='test2@test.com'),
+            Subscription(newsletter=submission.newsletter, name_field='name 3', email_field='test3@test.com'),
+            Subscription(newsletter=submission.newsletter, name_field='name 4', email_field='test4@test.com'),
         ]
 
 
@@ -191,6 +191,15 @@ class SubscriptionGeneratorTestCase(MailingTestCase):
 
     def test_subscription_generator(self):
         """ Test the dynamic generation of subscriptors """
+        # Manually add some subscriptions, including an unsubscription
+        Subscription.objects.filter(newsletter=self.n).delete()
+        sub1 = Subscription.objects.create(name='name 1', email='test1@test.com', newsletter=self.n, subscribed=True)
+        sub2 = Subscription.objects.create(name='name 2', email='test2@test.com', newsletter=self.n, subscribed=True)
+        sub3 = Subscription.objects.create(name='name 3', email='test3@test.com', newsletter=self.n, unsubscribed=True)
+        self.sub.subscriptions.add(sub1)
+        self.sub.subscriptions.add(sub2)
+        self.sub.subscriptions.add(sub3)
+
         self.sub.submit()
         Submission.submit_queue()
         submission = Submission.objects.get(pk=self.sub.pk)
