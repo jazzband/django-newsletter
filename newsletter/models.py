@@ -613,6 +613,16 @@ class Submission(models.Model):
             'MEDIA_URL': settings.MEDIA_URL
         }
 
+        # Determines the appropriate template to display a thumbnail
+        if settings.NEWSLETTER_THUMBNAIL == 'sorl-thumbnail':
+            variable_dict['thumbnail_template'] = (
+                'newsletter/message/thumbnail/sorl_thumbnail.html'
+            )
+        elif settings.NEWSLETTER_THUMBNAIL == 'easy-thumbnails':
+            variable_dict['thumbnail_template'] = (
+                'newsletter/message/thumbnail/easy_thumbnails.html'
+            )
+
         subject = self.message.subject_template.render(
             variable_dict).strip()
         text = self.message.text_template.render(variable_dict)
