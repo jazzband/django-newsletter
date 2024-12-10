@@ -1,6 +1,6 @@
 from django.test import TestCase
 from importlib.metadata import version, PackageNotFoundError
-from . import __version__
+from newsletter import __version__
 
 class TestNewsletterInit(TestCase):
 
