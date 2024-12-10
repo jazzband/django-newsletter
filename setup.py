@@ -43,7 +43,7 @@ setup(
     ),
     long_description=README,
     install_requires=[
-        "Django>=2.2.16",
+        "Django>=4.2",
         "python-card-me<1.0",
         "ldif3<3.2",
         "chardet",
