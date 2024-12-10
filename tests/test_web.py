@@ -582,7 +582,7 @@ class AnonymousSubscribeTestCase(
         """ Post the subscription form without email shoud fail. """
 
         User = get_user_model()
-        password = User.objects.make_random_password()
+        password = 'testpassword123'
         user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', password)
         user.save()
@@ -781,7 +781,7 @@ class AnonymousSubscribeTestCase(
         """
 
         User = get_user_model()
-        password = User.objects.make_random_password()
+        password = 'testpassword123'
         user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', password)
         user.save()
@@ -1055,7 +1055,7 @@ class AnonymousSubscribeTestCase(
         """ Post the update form without email shoud fail. """
 
         User = get_user_model()
-        password = User.objects.make_random_password()
+        password = 'testpassword123'
         user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', password)
         user.save()
