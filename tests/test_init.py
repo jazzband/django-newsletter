@@ -10,3 +10,10 @@ class TestNewsletterInit(TestCase):
         except PackageNotFoundError:
             expected_version = None
         self.assertEqual(__version__, expected_version)
+
+    def test_not_existing_version(self):
+        try:
+            expected_version = version("django-not-existing-newsletter")
+        except PackageNotFoundError:
+            expected_version = None
+        self.assertIsNone(expected_version)
