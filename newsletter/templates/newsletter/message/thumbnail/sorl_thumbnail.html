@@ -1,5 +1,5 @@
 {% load thumbnail %}
 
-{% thumbnail article.image "200x200" as image %}
+{% thumbnail article.image article.image_thumbnail_size as image %}
     <img src="{{ image.url }}" width="{{ image.width }}" height="{{ image.height }}">
 {% endthumbnail %}
