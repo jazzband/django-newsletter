@@ -1,5 +1,6 @@
 import os
 import sys
+import django
 from importlib import reload
 from unittest.mock import patch, MagicMock, PropertyMock
 
@@ -315,7 +316,10 @@ Unsubscribe: http://example.com/newsletter/test-newsletter/unsubscribe/
 
         change_url = reverse('admin:newsletter_message_change', args=(self.message_with_attachment.pk,))
         response = self.client.get(change_url)
-        self.assertContains(response, '<h2>Attachments</h2>', html=True)
+        if django.VERSION[0] >= 5:
+            self.assertContains(response, '<h2 id="attachments-heading" class="inline-heading">Attachments</h2>', html=True)
+        else:
+            self.assertContains(response, '<h2>Attachments</h2>', html=True)
 
 
 class MessageAdminTests(AdminTestMixin, TestCase):
