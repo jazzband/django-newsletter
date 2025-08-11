@@ -10,20 +10,13 @@ jobs:
       fail-fast: false
       max-parallel: 5
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
-        django-version: ['2.2', '3.1', '3.2', 'main']
-        exclude:
-          # No such tox envs:
-          - {python-version: '3.7', django-version: 'main'}
-          - {python-version: '3.10', django-version: '2.2'}
-          - {python-version: '3.10', django-version: '3.1'}
-          - {python-version: '3.10', django-version: '3.2'}
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        django-version: ['4.2', '5.2', 'main']
 
     steps:
-    - uses: actions/checkout@v2
-
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         cache: pip
@@ -37,12 +30,11 @@ jobs:
         python -m pip install --upgrade tox tox-gh-actions
 
     - name: Tox tests
-      run: |
-        tox -v
+      run: tox
       env:
         DJANGO: ${{ matrix.django-version }}
 
     - name: Upload coverage
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v4
       with:
         name: Python ${{ matrix.python-version }}
