@@ -1,7 +1,6 @@
-from pkg_resources import get_distribution, DistributionNotFound
+from importlib.metadata import distribution, PackageNotFoundError
 
 try:
-    __version__ = get_distribution("django-newsletter").version
-except DistributionNotFound:
-    # package is not installed
+    __version__ = distribution("django-newsletter").version
+except PackageNotFoundError:
     __version__ = None
