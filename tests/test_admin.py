@@ -315,7 +315,7 @@ Unsubscribe: http://example.com/newsletter/test-newsletter/unsubscribe/
 
         change_url = reverse('admin:newsletter_message_change', args=(self.message_with_attachment.pk,))
         response = self.client.get(change_url)
-        self.assertContains(response, '<h2>Attachments</h2>', html=True)
+        self.assertContains(response, '<a href="/tests/files/sample.txt">tests/files/sample.txt</a>', html=True)
 
 
 class MessageAdminTests(AdminTestMixin, TestCase):

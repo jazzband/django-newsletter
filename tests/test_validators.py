@@ -15,7 +15,7 @@ class ValidatorTestCase(TestCase):
     def test_validate_email_nouser_error(self):
         """ Test validate_email_nouser where error is raised. """
         User = get_user_model()
-        password = User.objects.make_random_password()
+        password = 'testpassword123'
         user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', password)
         user.save()
