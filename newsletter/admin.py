@@ -312,7 +312,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
         c = {
             'message': message,
-            'site': Site.objects.get_current(),
+            'site': Site.objects.get_current(request),
             'newsletter': message.newsletter,
             'date': now(),
             'STATIC_URL': settings.STATIC_URL,
@@ -327,7 +327,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
         c = {
             'message': message,
-            'site': Site.objects.get_current(),
+            'site': Site.objects.get_current(request),
             'newsletter': message.newsletter,
             'date': now(),
             'STATIC_URL': settings.STATIC_URL,
@@ -340,7 +340,7 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         )
 
     def submit(self, request, object_id):
-        submission = Submission.from_message(self._getobj(request, object_id))
+        submission = Submission.from_message(self._getobj(request, object_id), request)
 
         change_url = reverse(
             'admin:newsletter_submission_change', args=[submission.id])
