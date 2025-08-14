@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.utils.encoding import force_str
 from django.test.utils import override_settings
 from django.urls import reverse
+from django.utils.crypto import get_random_string
 
 from newsletter.models import (
     Newsletter, Subscription, Submission, Message, get_default_sites
@@ -582,7 +583,7 @@ class AnonymousSubscribeTestCase(
         """ Post the subscription form without email shoud fail. """
 
         User = get_user_model()
-        password = 'testpassword123'
+        password = get_random_string(length=16)
         user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', password)
         user.save()
@@ -781,7 +782,7 @@ class AnonymousSubscribeTestCase(
         """
 
         User = get_user_model()
-        password = 'testpassword123'
+        password = get_random_string(length=16)
         user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', password)
         user.save()
@@ -1055,7 +1056,7 @@ class AnonymousSubscribeTestCase(
         """ Post the update form without email shoud fail. """
 
         User = get_user_model()
-        password = 'testpassword123'
+        password = get_random_string(length=16)
         user = User.objects.create_user(
             'john', 'lennon@thebeatles.com', password)
         user.save()

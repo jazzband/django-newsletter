@@ -2,6 +2,7 @@ from django.test import TestCase
 from importlib.metadata import version, PackageNotFoundError
 from newsletter import __version__
 
+
 class TestNewsletterInit(TestCase):
 
     def test_version(self):
