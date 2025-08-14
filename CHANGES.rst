@@ -1,6 +1,15 @@
 Changes
 =======
 
+1.0(unreleased)
+---------------
+- Drop support for Django <4.2
+- Drop support for Python <3.8
+- Add support for Django 4.2, 5.0, 5.1
+- Add support for Python 3.11, 3.12
+- Fix Compatibility issues with Django 5.1
+
+
 1.0b1 (unreleased)
 ------------------
 - Add support for Django 3.1
