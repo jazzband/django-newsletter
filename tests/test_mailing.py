@@ -7,6 +7,7 @@ import unittest
 from datetime import timedelta
 
 from django.core import mail
+from django.core.files import File
 
 from django.utils.timezone import now
 
@@ -83,24 +84,26 @@ class ArticleTestCase(MailingTestCase):
         a.text = 'This should be a very long text with <html> in it as well.'
         a.post = self.m
         a.save()
-
         return a
-
-    def update(self, article):
-        return Article.objects.get(pk=article.pk)
 
     def test_article(self):
         self.make_article()
 
     def test_sortorder_defaults(self):
         total = 3
-
         last = 0
         for current in range(total):
             a = self.make_article()
             if last:
                 self.assertTrue(a.sortorder > last)
             last = a.sortorder
+
+    def test_image_thumbnail_size(self):
+        a = self.make_article()
+        a.image = os.path.join('tests', 'files', 'sample.jpg')
+        self.assertEqual(a.image_thumbnail_size(), '200x200')
+        a.image_thumbnail_width = 400
+        self.assertEqual(a.image_thumbnail_size(), '400x300')
 
 
 class MessageTestCase(MailingTestCase):
