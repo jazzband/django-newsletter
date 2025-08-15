@@ -184,14 +184,14 @@ class TestingSubscriptionGenerator(SubscriptionGenerator):
 class SubscriptionGeneratorTestCase(MailingTestCase):
     def setUp(self):
         super().setUp()
-        self.n.subscription_generator_class = 'tests.test_mailing.TestingSubscriptionGenerator'
-        self.n.save()
         self.sub = Submission.from_message(self.m)
         self.sub.save()
 
     def test_subscription_generator(self):
         """ Test the dynamic generation of subscriptors """
         # Manually add some subscriptions, including an unsubscription
+        self.n.subscription_generator_class = 'tests.test_mailing.TestingSubscriptionGenerator'
+        self.n.save()
         Subscription.objects.filter(newsletter=self.n).delete()
         sub1 = Subscription.objects.create(name='name 1', email='test1@test.com', newsletter=self.n, subscribed=True)
         sub2 = Subscription.objects.create(name='name 2', email='test2@test.com', newsletter=self.n, subscribed=True)
@@ -208,6 +208,13 @@ class SubscriptionGeneratorTestCase(MailingTestCase):
 
     def test_nonexistent_generator_class(self):
         """ Test failure when generator class does not exist """
+        try:
+            self.n.subscription_generator_class = 'ClassWithNoModule'
+            self.n.save()
+            self.fail('Should not reach this')
+        except ModuleNotFoundError:
+            pass
+
         try:
             self.n.subscription_generator_class = 'nonexistent_module.SomeClass'
             self.n.save()
