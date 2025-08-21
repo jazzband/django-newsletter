@@ -10,6 +10,8 @@ from .views import (
 
 register_converter(NewsletterActionsConverter, 'actions')
 
+app_name = 'newsletter'
+
 urlpatterns = [
     # Newsletter list and detail view
     path('', NewsletterListView.as_view(), name='newsletter_list'),
