@@ -6,6 +6,7 @@ Changes
 - Drop support for Python <3.9
 - Add support for Python 3.13
 - Add support for Django 5.2
+- Add setting to configure thumbnail size
 
 1.0 (11-12-2024)
 ---------------
