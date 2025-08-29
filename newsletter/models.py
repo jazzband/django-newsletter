@@ -426,6 +426,13 @@ class Article(models.Model):
     def __str__(self):
         return self.title
 
+    def image_thumbnail_size(self):
+        w, h = 200, 200
+        if self.image and self.image.width > 0 and self.image_thumbnail_width:
+            w = self.image_thumbnail_width
+            h = self.image.height * self.image_thumbnail_width // self.image.width
+        return f'{w}x{h}'
+
     def save(self, **kwargs):
         if self.sortorder is None:
             # If saving a new object get the next available Article ordering
