@@ -7,12 +7,10 @@ import unittest
 from datetime import timedelta
 
 from django.core import mail
-from django.core.files import File
-
 from django.utils.timezone import now
 
 from newsletter.models import (
-    Newsletter, Subscription, Submission, Message, Article, get_default_sites, Attachment
+    Newsletter, Subscription, Submission, Message, Article, get_default_sites, Attachment, SubscriptionGenerator
 )
 from newsletter.utils import ACTIONS
 
@@ -173,6 +171,65 @@ class CreateSubmissionTestCase(MailingTestCase):
 
         subscriptions = sub.subscriptions.all()
         self.assertEqual(list(subscriptions), [self.s2])
+
+
+class TestingSubscriptionGenerator(SubscriptionGenerator):
+    def generate_subscriptions(self, newsletter):
+        return [
+            ('name 2', 'test2@test.com'),
+            ('name 3', 'test3@test.com'),
+            ('name 4', 'test4@test.com'),
+        ]
+
+
+class SubscriptionGeneratorTestCase(MailingTestCase):
+    def setUp(self):
+        super().setUp()
+        self.sub = Submission.from_message(self.m)
+        self.sub.save()
+
+    def test_subscription_generator(self):
+        """ Test the dynamic generation of subscriptors """
+        # Manually add some subscriptions, including an unsubscription
+        self.n.subscription_generator_class = 'tests.test_mailing.TestingSubscriptionGenerator'
+        self.n.save()
+        Subscription.objects.filter(newsletter=self.n).delete()
+        sub1 = Subscription.objects.create(name='name 1', email='test1@test.com', newsletter=self.n, subscribed=True)
+        sub2 = Subscription.objects.create(name='name 2', email='test2@test.com', newsletter=self.n, subscribed=True)
+        sub3 = Subscription.objects.create(name='name 3', email='test3@test.com', newsletter=self.n, unsubscribed=True)
+        self.sub.subscriptions.add(sub1)
+        self.sub.subscriptions.add(sub2)
+        self.sub.subscriptions.add(sub3)
+
+        self.sub.submit()
+        Submission.submit_queue()
+        submission = Submission.objects.get(pk=self.sub.pk)
+        self.assertTrue(submission.sent)
+        self.assertEqual([m.to for m in mail.outbox],
+                         [['name 1 <test1@test.com>'], ['name 2 <test2@test.com>'], ['name 4 <test4@test.com>']])
+
+    def test_nonexistent_generator_class(self):
+        """ Test failure when generator class does not exist """
+        try:
+            self.n.subscription_generator_class = 'ClassWithNoModule'
+            self.n.save()
+            self.fail('Should not reach this')
+        except ModuleNotFoundError:
+            pass
+
+        try:
+            self.n.subscription_generator_class = 'nonexistent_module.SomeClass'
+            self.n.save()
+            self.fail('Should not reach this')
+        except ModuleNotFoundError:
+            pass
+
+        try:
+            self.n.subscription_generator_class = 'newsletter.models.NonexistentClass'
+            self.n.save()
+            self.fail('Should not reach this')
+        except AttributeError:
+            pass
 
 
 class SubmitSubmissionTestCase(MailingTestCase):
