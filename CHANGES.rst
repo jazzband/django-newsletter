@@ -1,24 +1,22 @@
 Changes
 =======
 
-1.0(unreleased)
+1.? (unreleased)
+------------------
+- Drop support for Python <3.9
+- Add support for Python 3.13
+- Add support for Django 5.2
+
+1.0 (11-12-2024)
 ---------------
 - Drop support for Django <4.2
 - Drop support for Python <3.8
 - Add support for Django 4.2, 5.0, 5.1
-- Add support for Python 3.11, 3.12
+- Add support for Python 3.10, 3.11, 3.12
 - Fix Compatibility issues with Django 5.1
-
-
-1.0b1 (unreleased)
-------------------
-- Add support for Django 3.1
 - Configurable thumbnailing, dropping hard sorl-thumbnail (#304).
 - File attachments for messages (#334).
 - Drop surlex dependency improved `path()` and `re_path()` (#339).
-- Drop support for Django 3.0
-- Add support for Django 3.2
-- Add support for Python 3.10
 
 0.9.1 (18-05-2020)
 ------------------
