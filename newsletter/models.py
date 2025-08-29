@@ -40,6 +40,12 @@ class Newsletter(models.Model):
         max_length=200, verbose_name=_('sender'), help_text=_('Sender name')
     )
 
+    subscription_generator_class = models.CharField(
+        max_length=200, blank=True, null=True,
+        verbose_name=_('subscription generator class'),
+        help_text=_('Class for generating subscriptions dynamically')
+    )
+
     visible = models.BooleanField(
         default=True, verbose_name=_('visible'), db_index=True
     )
