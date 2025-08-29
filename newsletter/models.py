@@ -387,7 +387,7 @@ class Subscription(models.Model):
 
 class Article(models.Model):
     """
-    An Article within a Message which will be send through a Submission.
+    An Article within a Message which will be sent through a Submission.
     """
 
     sortorder = models.PositiveIntegerField(
@@ -408,6 +408,7 @@ class Article(models.Model):
         upload_to='newsletter/images/%Y/%m/%d', blank=True, null=True,
         verbose_name=_('image')
     )
+    image_thumbnail_width = models.IntegerField(null=True, blank=True, verbose_name=_('image thumbnail width'))
 
     # Message this article is associated with
     # TODO: Refactor post to message (post is legacy notation).
