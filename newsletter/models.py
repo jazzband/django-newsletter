@@ -1,7 +1,9 @@
 import logging
 import os
 import time
+import importlib
 from datetime import datetime
+from abc import abstractmethod
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -38,6 +40,12 @@ class Newsletter(models.Model):
     )
     sender = models.CharField(
         max_length=200, verbose_name=_('sender'), help_text=_('Sender name')
+    )
+
+    subscription_generator_class = models.CharField(
+        max_length=200, blank=True, null=True,
+        verbose_name=_('subscription generator class'),
+        help_text=_('Class for generating subscriptions dynamically')
     )
 
     visible = models.BooleanField(
@@ -93,6 +101,17 @@ class Newsletter(models.Model):
 
         return subject_template, text_template, html_template
 
+    def get_subscription_generator(self):
+        if self.subscription_generator_class:
+            if "." not in self.subscription_generator_class:
+                raise ModuleNotFoundError("missing module for subscription generator class")
+            module_name, class_name = self.subscription_generator_class.rsplit(".", 1)
+            module = importlib.import_module(module_name)
+            self.subscription_generator = getattr(module, class_name)()
+            return self.subscription_generator
+        else:
+            return None
+
     def __str__(self):
         return self.title
 
@@ -129,6 +148,14 @@ class Newsletter(models.Model):
             return cls.objects.all()[0].pk
         except IndexError:
             return None
+
+
+def newsletter_presave(sender, instance, **kwargs):
+    if instance.subscription_generator_class:
+        instance.get_subscription_generator()
+
+
+models.signals.pre_save.connect(newsletter_presave, Newsletter)
 
 
 class Subscription(models.Model):
@@ -551,6 +578,21 @@ class Message(models.Model):
             return None
 
 
+class SubscriptionGenerator:
+    """
+    Interface for subscription generators.
+    Users must implement the generate_subscriptions method.
+    """
+    @abstractmethod
+    def generate_subscriptions(self, submission):
+        """
+        :param submission: the submission for which we are generating the subscription list
+        :return: the list of Subscription objects.
+        They may just be in memory Subscription objects, no need to save them to the DB.
+        """
+        raise NotImplementedError()
+
+
 class Submission(models.Model):
     """
     Submission represents a particular Message as it is being submitted
@@ -578,11 +620,19 @@ class Submission(models.Model):
         }
 
     def submit(self):
-        subscriptions = self.subscriptions.filter(subscribed=True)
+        subscriptions = list(self.subscriptions.filter(subscribed=True).all())
+
+        if self.newsletter.subscription_generator_class:
+            logger.info("Dynamically generating subscriptions")
+            subscribed_emails = {s.email for s in subscriptions}
+            unsubscribed_emails = {s.email for s in self.newsletter.subscription_set.filter(unsubscribed=True).all()}
+            dynamic_subscriptions = self.newsletter.get_subscription_generator().generate_subscriptions(self)
+            subscriptions += (s for s in dynamic_subscriptions
+                              if s.email not in subscribed_emails and s.email not in unsubscribed_emails)
 
         logger.info(
             gettext("Submitting %(submission)s to %(count)d people"),
-            {'submission': self, 'count': subscriptions.count()}
+            {'submission': self, 'count': len(subscriptions)}
         )
 
         assert self.publish_date < now(), \
