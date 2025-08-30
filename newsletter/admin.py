@@ -310,13 +310,24 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
                 'message belongs to.'
             ))
 
+        # Determines the appropriate template to display a thumbnail
+        if newsletter_settings.THUMBNAIL == 'sorl-thumbnail':
+            thumbnail_template = (
+                'newsletter/message/thumbnail/sorl_thumbnail.html'
+            )
+        elif newsletter_settings.THUMBNAIL == 'easy-thumbnails':
+            thumbnail_template = (
+                'newsletter/message/thumbnail/easy_thumbnails.html'
+            )
+
         c = {
             'message': message,
             'site': Site.objects.get_current(),
             'newsletter': message.newsletter,
             'date': now(),
             'STATIC_URL': settings.STATIC_URL,
-            'MEDIA_URL': settings.MEDIA_URL
+            'MEDIA_URL': settings.MEDIA_URL,
+            'thumbnail_template': thumbnail_template
         }
 
         return HttpResponse(message.html_template.render(c))
