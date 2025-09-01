@@ -3,7 +3,7 @@ import os
 import time
 import importlib
 from datetime import datetime
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -579,17 +579,15 @@ class Message(models.Model):
             return None
 
 
-class SubscriptionGenerator:
+class SubscriptionGenerator(ABC):
     """
     Interface for subscription generators.
-    Users must implement the generate_subscriptions method.
     """
     @abstractmethod
-    def generate_subscriptions(self, submission):
+    def generate_subscriptions(self, newsletter: Newsletter) -> list[tuple[str, str]]:
         """
-        :param submission: the submission for which we are generating the subscription list
-        :return: the list of Subscription objects.
-        They may just be in memory Subscription objects, no need to save them to the DB.
+        :param newsletter: the newsletter for which we are generating the subscription list
+        :return: a list of (name, email)
         """
         raise NotImplementedError()
 
@@ -650,13 +648,19 @@ class Submission(models.Model):
     def submit(self):
         subscriptions = list(self.subscriptions.filter(subscribed=True).all())
 
-        if self.newsletter.subscription_generator_class:
-            logger.info("Dynamically generating subscriptions")
-            subscribed_emails = {s.email for s in subscriptions}
-            unsubscribed_emails = {s.email for s in self.newsletter.subscription_set.filter(unsubscribed=True).all()}
-            dynamic_subscriptions = self.newsletter.get_subscription_generator().generate_subscriptions(self)
-            subscriptions += (s for s in dynamic_subscriptions
-                              if s.email not in subscribed_emails and s.email not in unsubscribed_emails)
+        if subscription_generator := self.newsletter.get_subscription_generator():
+            already_subscribed = {s.email for s in subscriptions}
+            unsubscribed = {s.email for s in self.newsletter.subscription_set.filter(unsubscribed=True).all()}
+            dynamic_subscriptions = subscription_generator.generate_subscriptions(self.newsletter)
+            logger.info(
+                gettext("Dynamically generated %(count)d subscriptions"),
+                {'count': len(dynamic_subscriptions)}
+            )
+            for name, email in dynamic_subscriptions:
+                if email in already_subscribed or email in unsubscribed:
+                    continue
+                subscriptions.append(Subscription(newsletter=self.newsletter, name=name, email=email, subscribed=True))
+                already_subscribed.add(email)
 
         logger.info(
             gettext("Submitting %(submission)s to %(count)d people"),

@@ -176,11 +176,11 @@ class CreateSubmissionTestCase(MailingTestCase):
 
 
 class TestingSubscriptionGenerator(SubscriptionGenerator):
-    def generate_subscriptions(self, submission):
+    def generate_subscriptions(self, newsletter):
         return [
-            Subscription(newsletter=submission.newsletter, name_field='name 2', email_field='test2@test.com'),
-            Subscription(newsletter=submission.newsletter, name_field='name 3', email_field='test3@test.com'),
-            Subscription(newsletter=submission.newsletter, name_field='name 4', email_field='test4@test.com'),
+            ('name 2', 'test2@test.com'),
+            ('name 3', 'test3@test.com'),
+            ('name 4', 'test4@test.com'),
         ]
 
 
@@ -207,7 +207,9 @@ class SubscriptionGeneratorTestCase(MailingTestCase):
         Submission.submit_queue()
         submission = Submission.objects.get(pk=self.sub.pk)
         self.assertTrue(submission.sent)
-        self.assertEqual(len(mail.outbox), 3)
+        self.assertEqual([m.to for m in mail.outbox],
+                         [['name 1 <test1@test.com>'], ['name 2 <test2@test.com>'], ['name 4 <test4@test.com>']])
+
 
     def test_nonexistent_generator_class(self):
         """ Test failure when generator class does not exist """
