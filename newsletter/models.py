@@ -551,6 +551,24 @@ class Message(models.Model):
             return None
 
 
+def render_message(message, submission, subscription, date):
+    variable_dict = {
+        'message': message,
+        'newsletter': message.newsletter,
+        'subscription': subscription,
+        'submission': submission,
+        'site': Site.objects.get_current(),
+        'date': date,
+        'STATIC_URL': settings.STATIC_URL,
+        'MEDIA_URL': settings.MEDIA_URL
+    }
+    subject = message.subject_template.render(variable_dict)
+    text = message.text_template.render(variable_dict)
+    html = message.html_template.render(variable_dict) \
+        if message.html_template else None
+    return subject.strip(), text.strip(), html and html.strip()
+
+
 class Submission(models.Model):
     """
     Submission represents a particular Message as it is being submitted
@@ -606,20 +624,9 @@ class Submission(models.Model):
             self.save()
 
     def send_message(self, subscription):
-        variable_dict = {
-            'subscription': subscription,
-            'site': Site.objects.get_current(),
-            'submission': self,
-            'message': self.message,
-            'newsletter': self.newsletter,
-            'date': self.publish_date,
-            'STATIC_URL': settings.STATIC_URL,
-            'MEDIA_URL': settings.MEDIA_URL
-        }
-
-        subject = self.message.subject_template.render(
-            variable_dict).strip()
-        text = self.message.text_template.render(variable_dict)
+        subject, text, html = render_message(
+            self.message, self, subscription, self.publish_date
+        )
 
         message = EmailMultiAlternatives(
             subject, text,
@@ -633,11 +640,8 @@ class Submission(models.Model):
         for attachment in attachments:
             message.attach_file(attachment.file.path)
 
-        if self.message.html_template:
-            message.attach_alternative(
-                self.message.html_template.render(variable_dict),
-                "text/html"
-            )
+        if html:
+            message.attach_alternative(html, "text/html")
 
         try:
             logger.debug(
