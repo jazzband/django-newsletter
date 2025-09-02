@@ -2,6 +2,7 @@ import logging
 
 import datetime
 import socket
+from doctest import UnexpectedException
 
 from smtplib import SMTPException
 
@@ -584,29 +585,16 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
         """
         Make sure the actual message is available.
         """
-        context = \
-            super().get_context_data(**kwargs)
-
-        message = self.object.message
-
-        # Determines the appropriate template to display a thumbnail
-        if newsletter_settings.THUMBNAIL == 'sorl-thumbnail':
-            thumbnail_template = (
-                'newsletter/message/thumbnail/sorl_thumbnail.html'
-            )
-        elif newsletter_settings.THUMBNAIL == 'easy-thumbnails':
-            thumbnail_template = (
-                'newsletter/message/thumbnail/easy_thumbnails.html'
-            )
+        context = super().get_context_data(**kwargs)
 
         context.update({
-            'message': message,
+            'message': self.object.message,
             'attachment_links': True,
             'site': Site.objects.get_current(),
             'date': self.object.publish_date,
             'STATIC_URL': settings.STATIC_URL,
             'MEDIA_URL': settings.MEDIA_URL,
-            'thumbnail_template': thumbnail_template,
+            'thumbnail_template': newsletter_settings.THUMBNAIL_TEMPLATE,
         })
 
         return context

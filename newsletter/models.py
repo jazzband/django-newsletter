@@ -16,6 +16,7 @@ from django.utils.timezone import now
 from django.urls import reverse
 
 from .fields import DynamicImageField
+from .settings import newsletter_settings
 from .utils import (
     make_activation_code, get_default_sites, ACTIONS
 )
@@ -560,7 +561,8 @@ def render_message(message, submission, subscription, date):
         'site': Site.objects.get_current(),
         'date': date,
         'STATIC_URL': settings.STATIC_URL,
-        'MEDIA_URL': settings.MEDIA_URL
+        'MEDIA_URL': settings.MEDIA_URL,
+        'thumbnail_template': newsletter_settings.THUMBNAIL_TEMPLATE,
     }
     subject = message.subject_template.render(variable_dict)
     text = message.text_template.render(variable_dict)

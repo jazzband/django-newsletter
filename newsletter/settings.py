@@ -137,4 +137,14 @@ class NewsletterSettings(Settings):
             "'%s' is not a supported thumbnail application." % THUMBNAIL
         )
 
+    @property
+    def THUMBNAIL_TEMPLATE(self):
+        if self.THUMBNAIL == 'sorl-thumbnail':
+            return 'newsletter/message/thumbnail/sorl_thumbnail.html'
+        elif newsletter_settings.THUMBNAIL == 'easy-thumbnails':
+            return 'newsletter/message/thumbnail/easy_thumbnails.html'
+        else:
+            return None
+
+
 newsletter_settings = NewsletterSettings()
