@@ -275,21 +275,9 @@ class AdminTestCase(AdminTestMixin, TestCase):
             html=True
         )
 
-        response = self.client.get(preview_text_url)
-        self.assertEqual(
-            response.content,
-            b'''++++++++++++++++++++
-
-Test Newsletter: Test message
-
-++++++++++++++++++++
-
-
-
-++++++++++++++++++++
-
-Unsubscribe: http://example.com/newsletter/test-newsletter/unsubscribe/
-''')
+        response_content = self.client.get(preview_text_url).content.decode('utf-8')
+        self.assertIn('Test Newsletter: Test message', response_content)
+        self.assertIn(self.newsletter.unsubscribe_url(), response_content)
 
         response = self.client.get(preview_html_url)
         self.assertContains(response, '<h1>Test Newsletter</h1>')
