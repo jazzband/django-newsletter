@@ -210,7 +210,6 @@ class SubscriptionGeneratorTestCase(MailingTestCase):
         self.assertEqual([m.to for m in mail.outbox],
                          [['name 1 <test1@test.com>'], ['name 2 <test2@test.com>'], ['name 4 <test4@test.com>']])
 
-
     def test_nonexistent_generator_class(self):
         """ Test failure when generator class does not exist """
         try:
