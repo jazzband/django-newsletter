@@ -31,7 +31,7 @@ from django.urls import reverse
 
 from django.forms.models import modelformset_factory
 
-from .models import Newsletter, Subscription, Submission
+from .models import Newsletter, Subscription, Submission, get_render_context
 from .forms import (
     SubscribeRequestForm, UserUpdateForm, UpdateRequestForm,
     UnsubscribeRequestForm, UpdateForm
@@ -586,17 +586,12 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
         Make sure the actual message is available.
         """
         context = super().get_context_data(**kwargs)
-
-        context.update({
-            'message': self.object.message,
-            'attachment_links': True,
-            'site': Site.objects.get_current(),
-            'date': self.object.publish_date,
-            'STATIC_URL': settings.STATIC_URL,
-            'MEDIA_URL': settings.MEDIA_URL,
-            'thumbnail_template': newsletter_settings.THUMBNAIL_TEMPLATE,
-        })
-
+        context.update(
+            get_render_context(
+                self.object.message, self.object.publish_date,
+                submission=self.object, attachment_links=True
+            )
+        )
         return context
 
     def get_template(self):

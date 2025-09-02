@@ -552,21 +552,29 @@ class Message(models.Model):
             return None
 
 
-def render_message(message, submission, subscription, date):
-    variable_dict = {
+def get_render_context(message, date, submission=None, subscription=None, attachment_links=False):
+    return {
         'message': message,
         'newsletter': message.newsletter,
         'subscription': subscription,
         'submission': submission,
         'site': Site.objects.get_current(),
         'date': date,
+        'attachment_links': attachment_links,
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
         'thumbnail_template': newsletter_settings.THUMBNAIL_TEMPLATE,
     }
-    subject = message.subject_template.render(variable_dict)
-    text = message.text_template.render(variable_dict)
-    html = message.html_template.render(variable_dict) \
+
+
+def render_message(message, date, submission=None, subscription=None, attachment_links=False):
+    context = get_render_context(
+        message, date,
+        submission=submission, subscription=subscription, attachment_links=attachment_links
+    )
+    subject = message.subject_template.render(context)
+    text = message.text_template.render(context)
+    html = message.html_template.render(context) \
         if message.html_template else None
     return subject.strip(), text.strip(), html and html.strip()
 
