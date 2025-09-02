@@ -1,6 +1,10 @@
 Changes
 =======
 
+Unreleased
+----------
+- Add option to enable/disable unsubscribe in Newsletter
+
 1.1 (2025-09-07)
 ----------------
 

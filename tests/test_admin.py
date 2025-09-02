@@ -284,6 +284,19 @@ class AdminTestCase(AdminTestMixin, TestCase):
         self.assertContains(response, '<h2>Test message</h2>')
         self.assertContains(response, self.newsletter.unsubscribe_url())
 
+        # Now unsubscribe should not appear
+        self.newsletter.enable_unsubscribe = False
+        self.newsletter.save()
+
+        response_content = self.client.get(preview_text_url).content.decode('utf-8')
+        self.assertIn('Test Newsletter: Test message', response_content)
+        self.assertNotIn(self.newsletter.unsubscribe_url(), response_content)
+
+        response = self.client.get(preview_html_url)
+        self.assertContains(response, '<h1>Test Newsletter</h1>')
+        self.assertContains(response, '<h2>Test message</h2>')
+        self.assertNotContains(response, self.newsletter.unsubscribe_url())
+
         # HTML preview returns 404 if send_html is False
         self.newsletter.send_html = False
         self.newsletter.save()

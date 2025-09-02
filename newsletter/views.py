@@ -1,13 +1,12 @@
 import logging
 
 import datetime
-import socket
-from doctest import UnexpectedException
 
 from smtplib import SMTPException
 
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.conf import settings
+from django.http.response import HttpResponseForbidden
 
 from django.template.response import SimpleTemplateResponse
 
@@ -21,7 +20,6 @@ from django.views.generic import (
 )
 
 from django.contrib import messages
-from django.contrib.sites.models import Site
 from django.contrib.auth.decorators import login_required
 
 from django.utils.decorators import method_decorator
@@ -333,6 +331,9 @@ class UnsubscribeUserView(ActionUserView):
     action = 'unsubscribe'
 
     def get(self, request, *args, **kwargs):
+        if not self.newsletter.enable_unsubscribe:
+            return HttpResponseForbidden('Unsubscribe not enabled in this newsletter')
+
         not_subscribed = False
 
         try:
