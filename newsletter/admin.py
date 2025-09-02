@@ -440,7 +440,9 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
     """ Actions """
     def make_subscribed(self, request, queryset):
-        rows_updated = queryset.update(subscribed=True)
+        for subscription in queryset.all():
+            subscription.update('subscribe')
+        rows_updated = queryset.count()
         self.message_user(
             request,
             ngettext(
@@ -452,7 +454,9 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     make_subscribed.short_description = _("Subscribe selected users")
 
     def make_unsubscribed(self, request, queryset):
-        rows_updated = queryset.update(subscribed=False)
+        for subscription in queryset.all():
+            subscription.update('unsubscribe')
+        rows_updated = queryset.count()
         self.message_user(
             request,
             ngettext(
