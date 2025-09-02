@@ -42,7 +42,8 @@ except (ImportError, RuntimeError):
     pass
 
 from .models import (
-    Newsletter, Subscription, Attachment, Article, Message, Submission
+    Newsletter, Subscription, Attachment, Article, Message, Submission,
+    render_message
 )
 
 from django.utils.timezone import now
@@ -310,34 +311,15 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
                 'message belongs to.'
             ))
 
-        c = {
-            'message': message,
-            'site': Site.objects.get_current(),
-            'newsletter': message.newsletter,
-            'date': now(),
-            'STATIC_URL': settings.STATIC_URL,
-            'MEDIA_URL': settings.MEDIA_URL
-        }
+        html = render_message(message, now())[2]
 
-        return HttpResponse(message.html_template.render(c))
+        return HttpResponse(html)
 
     @xframe_options_sameorigin
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
-
-        c = {
-            'message': message,
-            'site': Site.objects.get_current(),
-            'newsletter': message.newsletter,
-            'date': now(),
-            'STATIC_URL': settings.STATIC_URL,
-            'MEDIA_URL': settings.MEDIA_URL
-        }
-
-        return HttpResponse(
-            message.text_template.render(c),
-            content_type='text/plain'
-        )
+        text = render_message(message, now())[1]
+        return HttpResponse(text, content_type='text/plain')
 
     def submit(self, request, object_id):
         submission = Submission.from_message(self._getobj(request, object_id))

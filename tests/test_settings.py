@@ -124,15 +124,11 @@ class SettingsTestCase(TestCase):
         Test that ``None`` raises warning and defaults to sorl-thubmanil.
         """
 
-        with self.assertWarns(DeprecationWarning) as context_manager:
+        with self.assertWarns(UserWarning) as context_manager:
             self.assertEqual(newsletter_settings.THUMBNAIL, 'sorl-thumbnail')
 
         self.assertIn(
             'No NEWSLETTER_THUMBNAIL setting specified',
-            str(context_manager.warning)
-        )
-        self.assertIn(
-            'django-newsletter version 0.11.0',
             str(context_manager.warning)
         )
 

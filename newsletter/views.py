@@ -2,6 +2,7 @@ import logging
 
 import datetime
 import socket
+from doctest import UnexpectedException
 
 from smtplib import SMTPException
 
@@ -30,7 +31,7 @@ from django.urls import reverse
 
 from django.forms.models import modelformset_factory
 
-from .models import Newsletter, Subscription, Submission
+from .models import Newsletter, Subscription, Submission, get_render_context
 from .forms import (
     SubscribeRequestForm, UserUpdateForm, UpdateRequestForm,
     UnsubscribeRequestForm, UpdateForm
@@ -584,31 +585,13 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
         """
         Make sure the actual message is available.
         """
-        context = \
-            super().get_context_data(**kwargs)
-
-        message = self.object.message
-
-        # Determines the appropriate template to display a thumbnail
-        if newsletter_settings.THUMBNAIL == 'sorl-thumbnail':
-            thumbnail_template = (
-                'newsletter/message/thumbnail/sorl_thumbnail.html'
+        context = super().get_context_data(**kwargs)
+        context.update(
+            get_render_context(
+                self.object.message, self.object.publish_date,
+                submission=self.object, attachment_links=True
             )
-        elif newsletter_settings.THUMBNAIL == 'easy-thumbnails':
-            thumbnail_template = (
-                'newsletter/message/thumbnail/easy_thumbnails.html'
-            )
-
-        context.update({
-            'message': message,
-            'attachment_links': True,
-            'site': Site.objects.get_current(),
-            'date': self.object.publish_date,
-            'STATIC_URL': settings.STATIC_URL,
-            'MEDIA_URL': settings.MEDIA_URL,
-            'thumbnail_template': thumbnail_template,
-        })
-
+        )
         return context
 
     def get_template(self):

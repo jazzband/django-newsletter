@@ -6,6 +6,11 @@ from django.core.exceptions import ImproperlyConfigured
 
 from .utils import Singleton
 
+SUPPORTED_THUMBNAILERS = {
+    'sorl-thumbnail': 'newsletter/message/thumbnail/sorl_thumbnail.html',
+    'easy-thumbnails': 'newsletter/message/thumbnail/easy_thumbnails.html'
+}
+
 
 class Settings:
     """
@@ -106,35 +111,30 @@ class NewsletterSettings(Settings):
     @property
     def THUMBNAIL(self):
         """Validates and returns the set thumbnail application."""
-        SUPPORTED_THUMBNAILERS = [
-            'sorl-thumbnail',
-            'easy-thumbnails',
-        ]
-        THUMBNAIL = getattr(
+        thumbnail = getattr(
             django_settings, 'NEWSLETTER_THUMBNAIL', None
         )
 
         # Checks that the user entered a value
-        if THUMBNAIL is None:
+        if thumbnail is None:
             warnings.warn(
-                (
-                    'No NEWSLETTER_THUMBNAIL setting specified - '
-                    'sorl-thumbnail will be used by default. '
-                    'django-newsletter version 0.11.0 will require an '
-                    'explicit declaration of the preferred thumbnailer.'
-                ),
-                DeprecationWarning
+                'No NEWSLETTER_THUMBNAIL setting specified - '
+                'sorl-thumbnail will be used by default.'
             )
-
-            return 'sorl-thumbnail'
+            thumbnail = 'sorl-thumbnail'
 
         # Checks for a supported thumbnailer
-        if THUMBNAIL in SUPPORTED_THUMBNAILERS:
-            return THUMBNAIL
+        if thumbnail in SUPPORTED_THUMBNAILERS:
+            return thumbnail
 
         # Otherwise user has not set thumbnailer correctly
         raise ImproperlyConfigured(
-            "'%s' is not a supported thumbnail application." % THUMBNAIL
+            "'%s' is not a supported thumbnail application." % thumbnail
         )
+
+    @property
+    def THUMBNAIL_TEMPLATE(self):
+        return self.THUMBNAIL and SUPPORTED_THUMBNAILERS[self.THUMBNAIL]
+
 
 newsletter_settings = NewsletterSettings()
