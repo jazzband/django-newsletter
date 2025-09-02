@@ -7,6 +7,7 @@ Changes
 - Add support for Python 3.13
 - Add support for Django 5.2
 - Add setting to configure thumbnail size
+- Fix bug in Subscription admin actions
 
 1.0 (11-12-2024)
 ---------------
