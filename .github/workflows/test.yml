@@ -24,7 +24,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      
+
     - name: Install uv
       uses: astral-sh/setup-uv@v6
 
@@ -41,7 +41,7 @@ jobs:
 
     - name: Tox tests
       run: |
-        uvx --with tox-uv --with tox-gh-actions tox
+        uvx --python ${{ matrix.python-version }} --with tox-uv --with tox-gh-actions tox
       env:
         DJANGO: ${{ matrix.django-version }}
 
