@@ -24,15 +24,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: pip
-        cache-dependency-path: |
-          setup.py
-          tox.ini
-
+      
     - name: Install uv
       uses: astral-sh/setup-uv@v6
 
