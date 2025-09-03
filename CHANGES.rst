@@ -6,6 +6,7 @@ Changes
 - Drop support for Python <3.9
 - Add support for Python 3.13
 - Add support for Django 5.2
+- Dynamic subscription generation
 - Add setting to configure thumbnail size
 - Fix thumbnail template not found error
 - Fix bug in Subscription admin actions

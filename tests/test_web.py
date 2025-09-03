@@ -407,7 +407,7 @@ class UserSubscribeTestCase(
         self.assertFalse(subscription.unsubscribed)
 
     def test_subscribe_twice(self):
-        # After subscribing we should not be able to subscribe again
+        # After subscribing, we should not be able to subscribe again
         subscription = Subscription(user=self.user, newsletter=self.n)
         subscription.subscribed = True
         subscription.unsubscribed = False

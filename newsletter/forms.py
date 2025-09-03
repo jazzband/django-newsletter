@@ -92,9 +92,10 @@ class UpdateRequestForm(NewsletterForm):
 
     def clean_email_field(self):
         data = self.cleaned_data['email_field']
+        newsletter = self.instance.newsletter
 
         # Set our instance on the basis of the email field, or raise
-        # a validationerror
+        # a ValidationError
         try:
             self.instance = Subscription.objects.get(
                 newsletter=self.instance.newsletter,
@@ -102,6 +103,16 @@ class UpdateRequestForm(NewsletterForm):
             )
 
         except Subscription.DoesNotExist:
+            instance = None
+            if generator := newsletter.get_subscription_generator():
+                subscriptions = generator.generate_subscriptions(newsletter)
+                subscription = next((s for s in subscriptions if data == s[1]), None)
+                if subscription:
+                    instance = Subscription(newsletter=newsletter, email=data, name=subscription[0], subscribed=True)
+                    instance.save()
+            if instance:
+                self.instance = instance
+            else:
                 raise ValidationError(
                     _("This e-mail address has not been subscribed to.")
                 )
