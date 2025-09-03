@@ -45,7 +45,7 @@ setup(
     install_requires=[
         "Django>=4.2",
         "python-card-me<1.0",
-        "ldif3<3.2",
+        "python-ldap",
         "chardet",
         "unicodecsv<0.15",
         "Pillow",
