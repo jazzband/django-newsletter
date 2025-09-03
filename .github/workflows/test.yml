@@ -27,6 +27,8 @@ jobs:
 
     - name: Install uv
       uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: true
 
     - name: Cache and install system deps for python-ldap
       uses: awalsh128/cache-apt-pkgs-action@latest
