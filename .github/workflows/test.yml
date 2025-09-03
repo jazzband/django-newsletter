@@ -35,13 +35,10 @@ jobs:
         version: 1.0
 
     - name: Ensure system deps installed
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libldap2-dev libsasl2-dev libssl-dev
+      run: sudo apt-get install -y libldap2-dev libsasl2-dev libssl-dev
 
     - name: Tox tests
-      run: |
-        uvx --python ${{ matrix.python-version }} --with tox-uv --with tox-gh-actions tox
+      run: uvx --python ${{ matrix.python-version }} --with tox-uv --with tox-gh-actions tox
       env:
         DJANGO: ${{ matrix.django-version }}
 
