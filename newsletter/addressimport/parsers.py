@@ -293,12 +293,7 @@ def parse_vcard(myfile, newsletter, ignore_errors=False):
     address_list = AddressList(newsletter, ignore_errors)
 
     for myvcard in myvcards:
-        if hasattr(myvcard, 'fn'):
-            name = myvcard.fn.value
-        else:
-
-
-            name = None
+        name = myvcard.fn.value if hasattr(myvcard, 'fn') else None
 
         # Do we have an email address?
         # If not: either continue to the next vcard or raise validation error.
@@ -321,29 +316,23 @@ def parse_ldif(myfile, newsletter, ignore_errors=False):
 
     Returns a dictionary mapping email addresses into Subscription objects.
     """
-
-    from ldif3 import LDIFParser
+    from ldif import LDIFParser
 
     address_list = AddressList(newsletter, ignore_errors)
 
-    try:
-        parser = LDIFParser(myfile)
-
-        for dn, entry in parser.parse():
+    class MyLDIFParser(LDIFParser):
+        def handle(self, dn, entry):
             if 'mail' in entry:
-                email = entry['mail'][0]
-
-                if 'cn' in entry:
-                    name = entry['cn'][0]
-                else:
-                    name = None
-
+                name = entry['cn'][0].decode('utf-8') if 'cn' in entry else None
+                email = entry['mail'][0].decode('utf-8')
                 address_list.add(email, name)
-
             elif not ignore_errors:
                 raise forms.ValidationError(
-                    _("Some entries have no e-mail address."))
+                    _("Some entries have no e-mail address.")
+                )
 
+    try:
+        MyLDIFParser(myfile).parse()
     except ValueError as e:
         if not ignore_errors:
             raise forms.ValidationError(e)
