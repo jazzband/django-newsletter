@@ -9,6 +9,7 @@ Changes
 - Add setting to configure thumbnail size
 - Fix thumbnail template not found error
 - Fix bug in Subscription admin actions
+- Replace deprecated ldif3 library with python-ldap
 
 1.0 (11-12-2024)
 ---------------
