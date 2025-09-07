@@ -54,11 +54,11 @@ soon as near-full coverage is reached.
 
 Compatibility
 =============
-Currently, django-newsletter officially supports Django 4.2.x LTS, 5.0.x and 5.1.x and Python 3.8 through 3.12.
+Currently, django-newsletter officially supports Django 4.2.x LTS, and 5.2.x LTS and Python 3.9 through 3.13.
 
 Requirements
 ============
-Please refer to `setup.py <http://github.com/jazzband/django-newsletter/blob/master/setup.py>`_
+Please refer to `pyproject.toml <http://github.com/jazzband/django-newsletter/blob/master/pyproject.toml>`_
 for an updated list of required packages.
 
 Also, you will need to install one of these to use for 
