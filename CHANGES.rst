@@ -1,8 +1,9 @@
 Changes
 =======
 
-1.? (unreleased)
-------------------
+1.1 (2025-09-07)
+----------------
+
 - Drop support for Python <3.9
 - Add support for Python 3.13
 - Add support for Django 5.2
@@ -13,7 +14,8 @@ Changes
 - Remove optional libraries from requirements (python-ldap, unicodecsv, python-card-me)
 
 1.0 (2024-12-11)
----------------
+----------------
+
 - Drop support for Django <4.2
 - Drop support for Python <3.8
 - Add support for Django 4.2, 5.0, 5.1
@@ -113,7 +115,7 @@ Small fixes
 - HTML5 doctype for default templates.
 
 0.6 (2016-02-02)
---------------
+----------------
 
 - Added support for Django 1.8 and 1.9, and dropped support for older versions.
 - Added support for native Django migrations, replacing South migrations.
@@ -135,7 +137,7 @@ Small fixes
 - Several smaller issues: #107, #121, #123
 
 0.5.2 (2014-05-01)
-----------------
+------------------
 
 - Additional locale support: Arabic, Czech, French and Islandic
 - Run tests on Django 1.7 beta and Python 3.3 (but allow failure)
