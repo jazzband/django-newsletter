@@ -12,7 +12,7 @@ Changes
 - Replace deprecated ldif3 library with python-ldap
 - Remove optional libraries from requirements (python-ldap, unicodecsv, python-card-me)
 
-1.0 (11-12-2024)
+1.0 (2024-12-11)
 ---------------
 - Drop support for Django <4.2
 - Drop support for Python <3.8
@@ -23,20 +23,20 @@ Changes
 - File attachments for messages (#334).
 - Drop surlex dependency improved `path()` and `re_path()` (#339).
 
-0.9.1 (18-05-2020)
+0.9.1 (2020-05-18)
 ------------------
 
 - Drop support for Django 1.11 LTS and Python 3.4 and 2.7.
 - Updated translations.
 
-0.9 (19-02-2019)
+0.9 (2019-02-19)
 ----------------
 
 - Upgrade to sorl-thumbnail 12.6.2, remove install workaround.
 - Update several dependencies (waitress, Django) due to security issues.
 
 
-0.9b1 (11-01-2019)
+0.9b1 (2019-01-11)
 ------------------
 
 - Support for Django Django 1.11.x (#294), 2.2.x (#295) and 3.0.x (#296).
@@ -44,13 +44,13 @@ Changes
 - Update several dependencies due to security issues.
 - Python 3.8 support.
 
-0.8b1 (17-11-2018)
+0.8b1 (2018-11-17)
 ------------------
 
 - Django 2.1 support (#257).
 - Python 3.7 support (#256).
 
-0.7 (13-07-2018)
+0.7 (2018-07-13)
 ------------------
 
 - Fixed security issue allowing subscription without confirmation (#108).
@@ -60,7 +60,7 @@ Changes
 - Migration issue with Django 2.0 (#254).
 - Miscellaneous documentation improvements.
 
-0.7b2 (25-03-2018)
+0.7b2 (2018-03-25)
 ------------------
 
 - Drop support for deprecated Django 1.10.
@@ -70,7 +70,7 @@ Changes
 - Fix for encoding of non-ASCII recipient names for Django < 1.9 (#244).
 - Allow programmatic access Article and Submission save() methods (#246).
 
-0.7b1 (16-11-2017)
+0.7b1 (2017-11-16)
 ------------------
 
 - Support for Django 1.10, 1.11 and tentative support for 2.0.
@@ -112,7 +112,7 @@ Small fixes
 - Require Django 1.8.18 (latest point release).
 - HTML5 doctype for default templates.
 
-0.6 (2-2-2016)
+0.6 (2016-02-02)
 --------------
 
 - Added support for Django 1.8 and 1.9, and dropped support for older versions.
@@ -134,13 +134,13 @@ Small fixes
 - Make the Submissions list display the Publish date and time with respect to the server's timezone (#112).
 - Several smaller issues: #107, #121, #123
 
-0.5.2 (1-5-2014)
+0.5.2 (2014-05-01)
 ----------------
 
 - Additional locale support: Arabic, Czech, French and Islandic
 - Run tests on Django 1.7 beta and Python 3.3 (but allow failure)
 
-0.5.1 (21-11-2013)
+0.5.1 (2013-11-21)
 ------------------
 
 - Added Italian translation, thanks to azanibellato.
@@ -151,7 +151,7 @@ Small fixes
 - Fix database to template file migration for non-ASCII characters (#94).
 - Fix small issues with vCard imports (mainly mimetype-related).
 
-0.5 (03-10-2013)
+0.5 (2013-10-03)
 ----------------
 
 - Added proxy for app-specific settings.
@@ -162,7 +162,7 @@ Small fixes
 - Replacement of remaining function based views with class based equivalents.
 - Move message templates from database to files.
 
-0.4.1 (15-04-2013)
+0.4.1 (2013-04-15)
 ------------------
 
 - Started keeping a decent history file. (Finally...)
@@ -175,7 +175,7 @@ Small fixes
 - Introduced django-webtest for some tests
 - Exempt previews from XFrame protection (fixes #54)
 
-0.4 (20-11-2012)
+0.4 (2012-11-20)
 ----------------
 
 - Major code cleanup; PEP8, imports, restructuring, removal of legacy code
