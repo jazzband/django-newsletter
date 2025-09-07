@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.? (unreleased)
+1.1 (2025-09-07)
 ------------------
 - Drop support for Python <3.9
 - Add support for Python 3.13
