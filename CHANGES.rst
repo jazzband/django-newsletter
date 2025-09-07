@@ -10,6 +10,7 @@ Changes
 - Fix thumbnail template not found error
 - Fix bug in Subscription admin actions
 - Replace deprecated ldif3 library with python-ldap
+- Remove optional libraries from requirements (python-ldap, unicodecsv, python-card-me)
 
 1.0 (11-12-2024)
 ---------------
