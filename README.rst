@@ -61,7 +61,8 @@ Requirements
 Please refer to `setup.py <http://github.com/jazzband/django-newsletter/blob/master/setup.py>`_
 for an updated list of required packages.
 
-Also, you will need to install either one of these to use as a thumbnail engine:
+Also, you will need to install one of these to use for 
+`thumbnails <https://django-newsletter.readthedocs.io/en/latest/settings.html#configure-thumbnailing-applications>`_:
 
 * sorl-thumbnail
 * easy-thumbnails
