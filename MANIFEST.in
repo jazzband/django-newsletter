@@ -1,14 +1,20 @@
 # Text files
 include README.rst
+include CHANGES.rst
 include LICENSE
 include COPYRIGHT
 
 # Sphinx documentation
-recursive-include docs *
+graft docs
 prune docs/_build
+prune docs/_output
 
 # Fixtures, templates, static files, strings and test data
-recursive-include newsletter/fixtures *
-recursive-include newsletter/templates *
-recursive-include newsletter/static *
-recursive-include newsletter/locale *
+graft newsletter/fixtures
+graft newsletter/templates
+graft newsletter/static
+graft newsletter/locale
+
+# Exclusions & hygiene
+global-exclude __pycache__ *.py[cod] *.so *.pyd .DS_Store
+recursive-exclude * *.pyc *.pyo *~
