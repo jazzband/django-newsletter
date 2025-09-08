@@ -23,7 +23,9 @@
         {% if submission.publish %}
         <li><a href="http://{{ site.domain }}{{ submission.get_absolute_url }}">{% trans "Read message online" %}</a></li>
         {% endif %}
-        <li><a href="http://{{ site.domain }}{% url "newsletter_unsubscribe_request" newsletter.slug %}">{% trans "Unsubscribe" %}</a></li>
+        {% if newsletter.enable_unsubscribe %}
+        <li><a href="http://{{ site.domain }}{% url 'newsletter_unsubscribe_request' newsletter.slug %}">{% trans "Unsubscribe" %}</a></li>
+        {% endif %}
     </ul>
     {% if attachment_links %}
         {% for att in message.attachments.all %}

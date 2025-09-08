@@ -9,7 +9,8 @@
 {{ article.text|striptags|safe }}
 
 {% endfor %}
-
+{% if newsletter.enable_unsubscribe %}
 ++++++++++++++++++++
 
 {% trans "Unsubscribe:" %} http://{{ site }}{% url "newsletter_unsubscribe_request" newsletter.slug %}
+{% endif %}

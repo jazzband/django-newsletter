@@ -50,6 +50,11 @@ class Newsletter(models.Model):
         help_text=_('Whether or not to send HTML versions of e-mails.')
     )
 
+    enable_unsubscribe = models.BooleanField(
+        default=True, verbose_name=_('enable unsubscribe'),
+        help_text = _('Enable unsubscribe links in e-mails.')
+    )
+
     objects = models.Manager()
 
     # Automatically filter the current site
