@@ -29,3 +29,11 @@ If you want to include a sign-up form on any page of your site, similar to the c
 Replace [SLUG-OF-NEWSLETTER] with the slug of your newsletter. You do not need to add anything to views, urls, or any other file. This snippet alone should simply work. Take note that the name field is removed from this, since most people only want the user to have to enter an email address to sign up for a newsletter. If you want to include the name field, you'd add this line before the <button> line::
 
   <label for="id_name_field">Name:</label> <input type="text" name="name_field" maxlength="30" id="id_name_field"><span class="helptext">optional</span>
+
+Dynamically generate subscriptions
+^^^^^^^^^^^^^^^^^
+If you want to dynamically generate the recipients of your newsletter at the time of submitting, you can configure the ``subscription_generator_class`` in the newsletter admin.
+
+This must be a full class name with package. It should inherit ``newsletter.models.SubscriptionGenerator`` and implement the method ``generate_subscriptions``, which takes a newsletter and returns a list of ``(name, email)``.
+
+The generated subscriptions will be joined to existing ``Subscription`` objects (both subscribed and unsubscribed) to generate the list of recipients.

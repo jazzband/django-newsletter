@@ -407,7 +407,7 @@ class UserSubscribeTestCase(
         self.assertFalse(subscription.unsubscribed)
 
     def test_subscribe_twice(self):
-        # After subscribing we should not be able to subscribe again
+        # After subscribing, we should not be able to subscribe again
         subscription = Subscription(user=self.user, newsletter=self.n)
         subscription.subscribed = True
         subscription.unsubscribed = False
@@ -899,6 +899,24 @@ class AnonymousSubscribeTestCase(
         full_activate_url = f'http://{self.site.domain}{activate_url}'
 
         self.assertEmailContains(full_activate_url)
+
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_UNSUBSCRIBE=False)
+    def test_unsubscribe_generator(self):
+        # First try to unsubscribe an email that is not subscribed
+        test_email = 'test2@test.com'
+        response = self.client.post(
+            self.unsubscribe_url, {'email_field': test_email}
+        )
+        self.assertContains(response, 'This e-mail address has not been subscribed to')
+        self.assertIsNone(self.n.subscription_set.filter(email_field='test_email').first())
+
+        # Then try to unsubscribe an email that is not subscribed but is generated dynamically
+        self.n.subscription_generator_class = 'tests.test_mailing.TestingSubscriptionGenerator'
+        self.n.save()
+        self.client.post(self.unsubscribe_url, {'email_field': test_email})
+        subscription = self.n.subscription_set.filter(email_field=test_email).first()
+        self.assertIsNotNone(subscription)
+        self.assertTrue(subscription.unsubscribed)
 
     @override_settings(NEWSLETTER_CONFIRM_EMAIL_UNSUBSCRIBE=False)
     def test_unsubscribe_request_post_no_email(self):
