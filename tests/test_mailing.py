@@ -189,7 +189,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.assertFalse(self.sub.sent)
         self.assertFalse(self.sub.sending)
 
-    def test_nosubmit(self):
+    def test_no_submit(self):
         """ Assure nothing happens if not prepared. """
 
         # Assure nothing happens
@@ -199,7 +199,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.assertFalse(self.sub.sent)
         self.assertFalse(self.sub.sending)
 
-    def test_submitsubmission(self):
+    def test_submit_submission(self):
         """ Test queue-based submission. """
 
         # Adding a subscription after the submission has been created, it
@@ -232,7 +232,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
             'http://example.com/newsletter/test-newsletter/unsubscribe/'
         )
 
-    def test_delayedsumbmission(self):
+    def test_delayed_sumbmission(self):
         """ Test delays between emails """
 
         self.sub.prepared = True
@@ -245,7 +245,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
 
         sleep_mock.assert_called_with(0.01)
 
-    def test_delayedbatchsumbmission(self):
+    def test_delayed_batch_sumbmission(self):
         """ Test delays between emails """
 
         self.sub.prepared = True
@@ -288,7 +288,7 @@ class SubscriptionTestCase(UserTestCase, MailingTestCase):
 
         self.ss = [self.us, self.ns]
 
-    def test_usersubscription(self):
+    def test_user_subscription(self):
         self.assertEqual(self.us.name, self.user.get_full_name())
         self.assertEqual(self.us.email, self.user.email)
 
