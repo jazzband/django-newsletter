@@ -9,7 +9,8 @@ from django.db import models
 from django.conf import settings
 
 from django.contrib import admin, messages
-from django.contrib.sites.models import Site
+from django.contrib.sites.shortcuts import get_current_site
+
 
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
@@ -313,18 +314,18 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
                 'message belongs to.'
             ))
 
-        html = render_message(message)[2]
-
+        html = render_message(message, site=get_current_site(request))[2]
         return HttpResponse(html)
 
     @xframe_options_sameorigin
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
-        text = render_message(message)[1]
+        text = render_message(message, site=get_current_site(request))[1]
         return HttpResponse(text, content_type='text/plain')
 
     def submit(self, request, object_id):
-        submission = Submission.from_message(self._getobj(request, object_id))
+        message = self._getobj(request, object_id)
+        submission = Submission.from_message(message, site=get_current_site(request))
 
         change_url = reverse(
             'admin:newsletter_submission_change', args=[submission.id])

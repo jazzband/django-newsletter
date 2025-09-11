@@ -6,7 +6,10 @@ import unittest
 
 from datetime import timedelta
 
+from django.contrib.sites.models import Site
 from django.core import mail
+from django.core.exceptions import ValidationError
+
 from django.utils.timezone import now
 
 from newsletter.models import (
@@ -30,14 +33,17 @@ class MailingTestCase(MailTestCase):
             'sender': 'Test Sender',
             'email': 'test@testsender.com'
         }
+    
+    def get_newsletter_sites(self):
+        return get_default_sites()
+    
+    def get_site(self) -> Site:
+        return Site.objects.get_current()
 
     def setUp(self):
         self.n = Newsletter(**self.get_newsletter_kwargs())
         self.n.save()
-        try:
-            self.n.site.set(get_default_sites())
-        except AttributeError:  # Django < 1.10
-            self.n.site = get_default_sites()
+        self.n.site.set(self.get_newsletter_sites())
 
         self.m = Message(title='Test message',
                          newsletter=self.n,
@@ -72,7 +78,7 @@ class MailingTestCase(MailTestCase):
             Submission.submit_queue()
         else:
             for subscriber in self.n.get_subscriptions():
-                subscriber.send_activation_email(action)
+                subscriber.send_activation_email(Site.objects.get_current(), action)
 
 
 class ArticleTestCase(MailingTestCase):
@@ -129,7 +135,9 @@ class CreateSubmissionTestCase(MailingTestCase):
     def test_submission_from_message(self):
         """ Test creating a submission from a message. """
 
-        sub = Submission.from_message(self.m)
+        sub = Submission.from_message(self.m, site=self.get_site())
+        unsubscribe_link = sub.extra_headers['List-Unsubscribe']
+        self.assertIn(self.get_site().domain, unsubscribe_link)
 
         subscriptions = sub.subscriptions.all()
         self.assertEqual(set(subscriptions), {self.s, self.s2})
@@ -144,7 +152,7 @@ class CreateSubmissionTestCase(MailingTestCase):
         self.s.subscribed = False
         self.s.save()
 
-        sub = Submission.from_message(self.m)
+        sub = Submission.from_message(self.m, site=self.get_site())
 
         subscriptions = sub.subscriptions.all()
         self.assertEqual(list(subscriptions), [self.s2])
@@ -155,7 +163,7 @@ class CreateSubmissionTestCase(MailingTestCase):
         self.s.unsubscribed = True
         self.s.save()
 
-        sub = Submission.from_message(self.m)
+        sub = Submission.from_message(self.m, site=self.get_site())
 
         subscriptions = sub.subscriptions.all()
         self.assertEqual(list(subscriptions), [self.s2])
@@ -167,7 +175,7 @@ class CreateSubmissionTestCase(MailingTestCase):
         self.s.unsubscribed = True
         self.s.save()
 
-        sub = Submission.from_message(self.m)
+        sub = Submission.from_message(self.m, site=self.get_site())
 
         subscriptions = sub.subscriptions.all()
         self.assertEqual(list(subscriptions), [self.s2])
@@ -232,11 +240,51 @@ class SubscriptionGeneratorTestCase(MailingTestCase):
             pass
 
 
+class CreateSubmissionMultiSitesTestCase(CreateSubmissionTestCase):
+    sites = "somerandom.com anotherrandom.net somethingelse.org anotheronegood.dev 1somethingelse.org " \
+            "2anotheronegood.dev 32anotheronegood3.dev".split()
+
+    def add_site(self, domain: str) -> Site:
+        site = Site()
+        site.domain = domain
+        site.name = "Test " + domain
+        site.save()
+        return site
+
+    def setUp(self):
+        for domain in self.sites:
+            self.add_site(domain)
+
+        super().setUp()
+
+    def get_newsletter_sites(self):
+        domains = self.sites[1:-2]
+        return Site.objects.filter(domain__in=domains)
+
+    def get_site(self) -> Site:
+        return Site.objects.get(domain=self.sites[2])
+
+    def test_setup(self):
+        count_sites = Site.objects.all().count()
+        # example.com is created by default
+        self.assertEqual(len(self.sites) + 1, count_sites)
+        self.assertGreater(len(self.get_newsletter_sites()), 2)
+        self.assertEqual(len(self.get_newsletter_sites()), len(self.n.site.all()))
+
+    def test_submission_site_validation(self):
+        """ Test creating a submission from a message with site provided. """
+
+        callback = lambda: Submission.from_message(self.m, site=Site.objects.get(domain=self.sites[0]))
+        self.assertRaises(ValidationError, callback)
+        callback = lambda: Submission.from_message(self.m)
+        self.assertRaises(ValidationError, callback)
+
+
 class SubmitSubmissionTestCase(MailingTestCase):
     def setUp(self):
         super().setUp()
 
-        self.sub = Submission.from_message(self.m)
+        self.sub = Submission.from_message(self.m, site=self.get_site())
         self.sub.save()
 
     def test_submission(self):
