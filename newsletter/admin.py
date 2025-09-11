@@ -9,7 +9,8 @@ from django.db import models
 from django.conf import settings
 
 from django.contrib import admin, messages
-from django.contrib.sites.models import Site
+from django.contrib.sites.shortcuts import get_current_site
+
 
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
@@ -23,12 +24,7 @@ from django.utils.translation import gettext as _, ngettext
 from django.utils.formats import date_format
 
 from django.views.decorators.clickjacking import xframe_options_sameorigin
-try:
-    from django.views.i18n import JavaScriptCatalog
-    HAS_CBV_JSCAT = True
-except ImportError:  # Django < 1.10
-    from django.views.i18n import javascript_catalog
-    HAS_CBV_JSCAT = False
+from django.views.i18n import JavaScriptCatalog
 
 # Conditional imports as only one Thumbnail app is required
 try:
@@ -313,18 +309,18 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
                 'message belongs to.'
             ))
 
-        html = render_message(message)[2]
-
+        html = render_message(message, site=get_current_site(request))[2]
         return HttpResponse(html)
 
     @xframe_options_sameorigin
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
-        text = render_message(message)[1]
+        text = render_message(message, site=get_current_site(request))[1]
         return HttpResponse(text, content_type='text/plain')
 
     def submit(self, request, object_id):
-        submission = Submission.from_message(self._getobj(request, object_id))
+        message = self._getobj(request, object_id)
+        submission = Submission.from_message(message, site=get_current_site(request))
 
         change_url = reverse(
             'admin:newsletter_submission_change', args=[submission.id])
@@ -538,15 +534,9 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         ]
         # Translated JS strings - these should be app-wide but are
         # only used in this part of the admin. For now, leave them here.
-        if HAS_CBV_JSCAT:
-            my_urls.append(path('jsi18n/',
-                           JavaScriptCatalog.as_view(packages=('newsletter',)),
-                           name='newsletter_js18n'))
-        else:
-            my_urls.append(path('jsi18n/',
-                                javascript_catalog,
-                                {'packages': ('newsletter',)},
-                                name='newsletter_js18n'))
+        my_urls.append(path('jsi18n/',
+                       JavaScriptCatalog.as_view(packages=('newsletter',)),
+                       name='newsletter_js18n'))
 
         return my_urls + urls
 

@@ -6,6 +6,7 @@ from unittest.mock import patch, PropertyMock
 
 from datetime import datetime, timedelta
 
+from django.contrib.sites.models import Site
 from django.core import mail
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -292,10 +293,7 @@ class SubscribeTestCase(WebTestCase, MailTestCase):
                             sender='Test Sender',
                             email='test@testsender.com')
         self.n.save()
-        try:
-            self.n.site.set(get_default_sites())
-        except AttributeError:  # Django < 1.10
-            self.n.site = get_default_sites()
+        self.n.site.set(get_default_sites())
 
         self.subscribe_url = \
             reverse('newsletter_subscribe_request',

@@ -1,7 +1,4 @@
-from contextlib import contextmanager
 import logging
-logger = logging.getLogger(__name__)
-
 import smtplib
 
 from django.contrib.auth import get_user_model
@@ -15,6 +12,9 @@ from django.test import TestCase
 from django.template import loader, TemplateDoesNotExist
 
 from django_webtest import WebTest
+
+
+logger = logging.getLogger(__name__)
 
 
 class WebTestCase(WebTest):

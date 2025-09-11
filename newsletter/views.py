@@ -4,6 +4,7 @@ import datetime
 
 from smtplib import SMTPException
 
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.conf import settings
 from django.http.response import HttpResponseForbidden
@@ -11,7 +12,7 @@ from django.http.response import HttpResponseForbidden
 from django.template.response import SimpleTemplateResponse
 
 from django.shortcuts import get_object_or_404, redirect
-from django.http import Http404
+from django.http import Http404, HttpRequest
 
 from django.views.generic import (
     ListView, DetailView,
@@ -41,16 +42,24 @@ from .utils import ACTIONS
 logger = logging.getLogger(__name__)
 
 
-def is_authenticated(user):
-    # Compat method for Django < 1.10
-    return user.is_authenticated if isinstance(user.is_authenticated, bool) else user.is_authenticated()
+class SiteViewBase:
+    def get_site(self, request: HttpRequest = None):
+        if request is None:
+            request = self.request
+        site = getattr(request, "site", None)
+        if site is not None:
+            return site
+        return get_current_site(request)
 
 
-class NewsletterViewBase:
+class NewsletterViewBase(SiteViewBase):
     """ Base class for newsletter views. """
-    queryset = Newsletter.on_site.filter(visible=True)
     allow_empty = False
     slug_url_kwarg = 'newsletter_slug'
+
+    def get_queryset(self):
+        site = self.get_site()
+        return Newsletter.objects.filter(visible=True, site__id=site.id)
 
 
 class NewsletterDetailView(NewsletterViewBase, DetailView):
@@ -72,7 +81,7 @@ class NewsletterListView(NewsletterViewBase, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        if is_authenticated(self.request.user):
+        if self.request.user.is_authenticated:
             # Add a formset for logged in users.
             context['formset'] = self.get_formset()
 
@@ -144,23 +153,23 @@ class ProcessUrlDataMixin:
     before dispatching request.
     """
 
-    def process_url_data(self, *args, **kwargs):
+    def process_url_data(self, request, *args, **kwargs):
         """ Subclasses should put url data processing in this method. """
         pass
 
-    def dispatch(self, *args, **kwargs):
-        self.process_url_data(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        self.process_url_data(request, *args, **kwargs)
 
-        return super().dispatch(*args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
 
-class NewsletterMixin(ProcessUrlDataMixin):
+class NewsletterMixin(SiteViewBase, ProcessUrlDataMixin):
     """
     Mixin retrieving newsletter based on newsletter_slug from url
     and adding it to context and form kwargs.
     """
 
-    def process_url_data(self, *args, **kwargs):
+    def process_url_data(self, request, *args, **kwargs):
         """
         Get newsletter based on `newsletter_slug` from url
         and add it to instance attributes.
@@ -168,11 +177,11 @@ class NewsletterMixin(ProcessUrlDataMixin):
 
         assert 'newsletter_slug' in kwargs
 
-        super().process_url_data(*args, **kwargs)
+        super().process_url_data(request, *args, **kwargs)
 
         newsletter_queryset = kwargs.get(
             'newsletter_queryset',
-            Newsletter.on_site.all()
+            Newsletter.objects.filter(site__id=self.get_site(request).id)
         )
         newsletter_slug = kwargs['newsletter_slug']
 
@@ -202,9 +211,9 @@ class ActionMixin(ProcessUrlDataMixin):
 
     action = None
 
-    def process_url_data(self, *args, **kwargs):
+    def process_url_data(self, request, *args, **kwargs):
         """ Add action from url to instance attributes if not already set. """
-        super().process_url_data(*args, **kwargs)
+        super().process_url_data(request, *args, **kwargs)
 
         if self.action is None:
             assert 'action' in kwargs
@@ -376,9 +385,9 @@ class ActionRequestView(ActionFormView):
     """ Base class for subscribe, unsubscribe and update request views. """
     template_name = "newsletter/subscription_%(action)s.html"
 
-    def process_url_data(self, *args, **kwargs):
+    def process_url_data(self, request, *args, **kwargs):
         """ Add error to instance attributes. """
-        super().process_url_data(*args, **kwargs)
+        super().process_url_data(request, *args, **kwargs)
 
         self.error = None
 
@@ -420,7 +429,7 @@ class ActionRequestView(ActionFormView):
             return self.no_email_confirm(form)
 
         try:
-            self.subscription.send_activation_email(action=self.action)
+            self.subscription.send_activation_email(self.action, site=get_current_site(self.request))
 
         except (SMTPException, OSError) as e:
             logger.exception(
@@ -454,7 +463,7 @@ class SubscribeRequestView(ActionRequestView):
         return form.save()
 
     def dispatch(self, request, *args, **kwargs):
-        if is_authenticated(request.user):
+        if request.user.is_authenticated:
             kwargs['confirm'] = self.confirm
             return SubscribeUserView.as_view()(request, *args, **kwargs)
 
@@ -469,7 +478,7 @@ class UnsubscribeRequestView(ActionRequestView):
     confirm = False
 
     def dispatch(self, request, *args, **kwargs):
-        if is_authenticated(request.user):
+        if request.user.is_authenticated:
             kwargs['confirm'] = self.confirm
             return UnsubscribeUserView.as_view()(request, *args, **kwargs)
 
@@ -547,11 +556,11 @@ class SubmissionViewBase(NewsletterMixin):
     month_format = '%m'
     day_format = '%d'
 
-    def process_url_data(self, *args, **kwargs):
+    def process_url_data(self, request, *args, **kwargs):
         """ Use only visible newsletters. """
 
-        kwargs['newsletter_queryset'] = NewsletterListView().get_queryset()
-        return super().process_url_data(*args, **kwargs)
+        kwargs['newsletter_queryset'] = NewsletterListView(request=request).get_queryset()
+        return super().process_url_data(request, *args, **kwargs)
 
     def get_queryset(self):
         """ Filter out submissions for current newsletter. """
