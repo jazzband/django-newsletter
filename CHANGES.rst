@@ -5,7 +5,7 @@ Unreleased
 ----------
 - Dynamic subscription generation
 - Add option to enable/disable unsubscribe in Newsletter
-- Remove hard dependency on SITE_ID (#266)
+- Add multi-site capability (#266)
 
 1.1 (2025-09-07)
 ----------------
