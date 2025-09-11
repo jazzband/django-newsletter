@@ -313,14 +313,14 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
                 'message belongs to.'
             ))
 
-        html = render_message(message, now())[2]
+        html = render_message(message)[2]
 
         return HttpResponse(html)
 
     @xframe_options_sameorigin
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
-        text = render_message(message, now())[1]
+        text = render_message(message)[1]
         return HttpResponse(text, content_type='text/plain')
 
     def submit(self, request, object_id):

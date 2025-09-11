@@ -597,14 +597,14 @@ class SubscriptionGenerator(ABC):
         raise NotImplementedError()
 
 
-def get_render_context(message, date, submission=None, subscription=None, attachment_links=False):
+def get_render_context(message, date=None, submission=None, subscription=None, attachment_links=False):
     return {
         'message': message,
         'newsletter': message.newsletter,
         'subscription': subscription,
         'submission': submission,
         'site': Site.objects.get_current(),
-        'date': date,
+        'date': date or now(),
         'attachment_links': attachment_links,
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
@@ -612,10 +612,13 @@ def get_render_context(message, date, submission=None, subscription=None, attach
     }
 
 
-def render_message(message, date, submission=None, subscription=None, attachment_links=False):
+def render_message(message, date=None, submission=None, subscription=None, attachment_links=False):
     context = get_render_context(
-        message, date,
-        submission=submission, subscription=subscription, attachment_links=attachment_links
+        message,
+        date=date,
+        submission=submission,
+        subscription=subscription,
+        attachment_links=attachment_links
     )
     subject = message.subject_template.render(context)
     text = message.text_template.render(context)
@@ -696,7 +699,10 @@ class Submission(models.Model):
 
     def send_message(self, subscription):
         subject, text, html = render_message(
-            self.message, self, subscription, self.publish_date
+            self.message,
+            date=self.publish_date,
+            submission=self,
+            subscription=subscription
         )
 
         message = EmailMultiAlternatives(

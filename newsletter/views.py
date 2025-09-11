@@ -589,8 +589,10 @@ class SubmissionArchiveDetailView(SubmissionViewBase, DateDetailView):
         context = super().get_context_data(**kwargs)
         context.update(
             get_render_context(
-                self.object.message, self.object.publish_date,
-                submission=self.object, attachment_links=True
+                self.object.message,
+                date=self.object.publish_date,
+                submission=self.object,
+                attachment_links=True
             )
         )
         return context
