@@ -351,38 +351,29 @@ class Subscription(models.Model):
     def get_recipient(self):
         return get_address(self.name, self.email)
 
-    def send_activation_email(self, request_or_site, action):
+    def send_activation_email(self, action, site=None):
         assert action in ACTIONS, 'Unknown action: %s' % action
 
-        (subject_template, text_template, html_template) = \
-            self.newsletter.get_templates(action)
+        subject_template, text_template, html_template = self.newsletter.get_templates(action)
 
-        if isinstance(request_or_site, Site):
-            site = request_or_site
-        else:
-            site = get_current_site(request_or_site)
-        variable_dict = {
-            'subscription': self,
-            'site': site,
-            'newsletter': self.newsletter,
-            'date': self.subscribe_date,
-            'STATIC_URL': settings.STATIC_URL,
-            'MEDIA_URL': settings.MEDIA_URL
-        }
+        context = get_render_context(
+            date=self.subscribe_date,
+            site=site or Site.objects.get_current(),
+            newsletter=self.newsletter,
+            subscription=self,
+        )
 
-        subject = subject_template.render(variable_dict).strip()
-        text = text_template.render(variable_dict)
+        subject = subject_template.render(context).strip()
+        text = text_template.render(context)
+        html = html_template.render(context) if html_template else None
 
         message = EmailMultiAlternatives(
             subject, text,
             from_email=self.newsletter.get_sender(),
             to=[self.email]
         )
-
-        if html_template:
-            message.attach_alternative(
-                html_template.render(variable_dict), "text/html"
-            )
+        if html:
+            message.attach_alternative(html, "text/html")
 
         message.send()
 
@@ -599,10 +590,11 @@ class SubscriptionGenerator(ABC):
         raise NotImplementedError()
 
 
-def get_render_context(message, date=None, site=None, submission=None, subscription=None, attachment_links=False):
+def get_render_context(message=None, date=None, site=None, newsletter=None, submission=None, subscription=None,
+                       attachment_links=False):
     return {
         'message': message,
-        'newsletter': message.newsletter,
+        'newsletter': newsletter or (message and message.newsletter),
         'subscription': subscription,
         'submission': submission,
         'site': site or (submission and submission.get_site()) or Site.objects.get_current(),
@@ -616,7 +608,7 @@ def get_render_context(message, date=None, site=None, submission=None, subscript
 
 def render_message(message, date=None, site=None, submission=None, subscription=None, attachment_links=False):
     context = get_render_context(
-        message,
+        message=message,
         date=date,
         site=site,
         submission=submission,
@@ -647,10 +639,7 @@ class Submission(models.Model):
         }
 
     def get_site(self) -> Site:
-        if self.site is not None:
-            return self.site
-        else:
-            return Site.objects.get_current()
+        return self.site or Site.objects.get_current()
 
     @cached_property
     def extra_headers(self):

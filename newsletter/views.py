@@ -434,7 +434,7 @@ class ActionRequestView(ActionFormView):
             return self.no_email_confirm(form)
 
         try:
-            self.subscription.send_activation_email(self.request, action=self.action)
+            self.subscription.send_activation_email(self.action, site=get_current_site(self.request))
 
         except (SMTPException, OSError) as e:
             logger.exception(
@@ -505,14 +505,14 @@ class UpdateSubscriptionView(ActionFormView):
     form_class = UpdateForm
     template_name = "newsletter/subscription_activate.html"
 
-    def process_url_data(self, request, *args, **kwargs):
+    def process_url_data(self, *args, **kwargs):
         """
         Add email, subscription and activation_code
         to instance attributes.
         """
         assert 'email' in kwargs
 
-        super().process_url_data(request, *args, **kwargs)
+        super().process_url_data(*args, **kwargs)
 
         self.subscription = get_object_or_404(
             Subscription, newsletter=self.newsletter,

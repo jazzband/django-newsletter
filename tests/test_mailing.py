@@ -78,7 +78,7 @@ class MailingTestCase(MailTestCase):
             Submission.submit_queue()
         else:
             for subscriber in self.n.get_subscriptions():
-                subscriber.send_activation_email(Site.objects.get_current(), action)
+                subscriber.send_activation_email(action)
 
 
 class ArticleTestCase(MailingTestCase):
