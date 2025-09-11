@@ -754,10 +754,7 @@ class Submission(models.Model):
         submission.site = site or Site.objects.get_current()
         submission.full_clean()
         submission.save()
-        try:
-            submission.subscriptions.set(message.newsletter.get_subscriptions())
-        except AttributeError:  # Django < 1.10
-            submission.subscriptions = message.newsletter.get_subscriptions()
+        submission.subscriptions.set(message.newsletter.get_subscriptions())
         return submission
 
     def clean(self):

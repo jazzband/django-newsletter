@@ -24,12 +24,7 @@ from django.utils.translation import gettext as _, ngettext
 from django.utils.formats import date_format
 
 from django.views.decorators.clickjacking import xframe_options_sameorigin
-try:
-    from django.views.i18n import JavaScriptCatalog
-    HAS_CBV_JSCAT = True
-except ImportError:  # Django < 1.10
-    from django.views.i18n import javascript_catalog
-    HAS_CBV_JSCAT = False
+from django.views.i18n import JavaScriptCatalog
 
 # Conditional imports as only one Thumbnail app is required
 try:
@@ -539,15 +534,9 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         ]
         # Translated JS strings - these should be app-wide but are
         # only used in this part of the admin. For now, leave them here.
-        if HAS_CBV_JSCAT:
-            my_urls.append(path('jsi18n/',
-                           JavaScriptCatalog.as_view(packages=('newsletter',)),
-                           name='newsletter_js18n'))
-        else:
-            my_urls.append(path('jsi18n/',
-                                javascript_catalog,
-                                {'packages': ('newsletter',)},
-                                name='newsletter_js18n'))
+        my_urls.append(path('jsi18n/',
+                       JavaScriptCatalog.as_view(packages=('newsletter',)),
+                       name='newsletter_js18n'))
 
         return my_urls + urls
 

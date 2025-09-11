@@ -42,11 +42,6 @@ from .utils import ACTIONS
 logger = logging.getLogger(__name__)
 
 
-def is_authenticated(user):
-    # Compat method for Django < 1.10
-    return user.is_authenticated if isinstance(user.is_authenticated, bool) else user.is_authenticated()
-
-
 class SiteViewBase:
     def get_site(self, request: HttpRequest = None):
         if request is None:
@@ -86,7 +81,7 @@ class NewsletterListView(NewsletterViewBase, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        if is_authenticated(self.request.user):
+        if self.request.user.is_authenticated:
             # Add a formset for logged in users.
             context['formset'] = self.get_formset()
 
@@ -468,7 +463,7 @@ class SubscribeRequestView(ActionRequestView):
         return form.save()
 
     def dispatch(self, request, *args, **kwargs):
-        if is_authenticated(request.user):
+        if request.user.is_authenticated:
             kwargs['confirm'] = self.confirm
             return SubscribeUserView.as_view()(request, *args, **kwargs)
 
@@ -483,7 +478,7 @@ class UnsubscribeRequestView(ActionRequestView):
     confirm = False
 
     def dispatch(self, request, *args, **kwargs):
-        if is_authenticated(request.user):
+        if request.user.is_authenticated:
             kwargs['confirm'] = self.confirm
             return UnsubscribeUserView.as_view()(request, *args, **kwargs)
 

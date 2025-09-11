@@ -293,10 +293,7 @@ class SubscribeTestCase(WebTestCase, MailTestCase):
                             sender='Test Sender',
                             email='test@testsender.com')
         self.n.save()
-        try:
-            self.n.site.set(get_default_sites())
-        except AttributeError:  # Django < 1.10
-            self.n.site = get_default_sites()
+        self.n.site.set(get_default_sites())
 
         self.subscribe_url = \
             reverse('newsletter_subscribe_request',
