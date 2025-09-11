@@ -597,13 +597,13 @@ class SubscriptionGenerator(ABC):
         raise NotImplementedError()
 
 
-def get_render_context(message, date=None, submission=None, subscription=None, attachment_links=False):
+def get_render_context(message, date=None, site=None, submission=None, subscription=None, attachment_links=False):
     return {
         'message': message,
         'newsletter': message.newsletter,
         'subscription': subscription,
         'submission': submission,
-        'site': Site.objects.get_current(),
+        'site': site or Site.objects.get_current(),
         'date': date or now(),
         'attachment_links': attachment_links,
         'STATIC_URL': settings.STATIC_URL,
@@ -612,10 +612,11 @@ def get_render_context(message, date=None, submission=None, subscription=None, a
     }
 
 
-def render_message(message, date=None, submission=None, subscription=None, attachment_links=False):
+def render_message(message, date=None, site=None, submission=None, subscription=None, attachment_links=False):
     context = get_render_context(
         message,
         date=date,
+        site=site,
         submission=submission,
         subscription=subscription,
         attachment_links=attachment_links
