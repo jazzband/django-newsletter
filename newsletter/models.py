@@ -697,7 +697,7 @@ class Submission(models.Model):
             self.sending = False
             self.save()
 
-    def send_message(self, subscription):
+    def get_message(self, subscription):
         subject, text, html = render_message(
             self.message,
             date=self.publish_date,
@@ -719,15 +719,17 @@ class Submission(models.Model):
 
         if html:
             message.attach_alternative(html, "text/html")
+        return message
 
+    def send_message(self, subscription):
+        logger.debug(
+            gettext('Submitting message to: %s.'),
+            subscription
+        )
+
+        message = self.get_message(subscription)
         try:
-            logger.debug(
-                gettext('Submitting message to: %s.'),
-                subscription
-            )
-
             message.send()
-
         except Exception as e:
             # TODO: Test coverage for this branch.
             logger.error(
