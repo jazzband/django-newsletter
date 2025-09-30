@@ -6,6 +6,8 @@ Unreleased
 - Dynamic subscription generation
 - Add option to enable/disable unsubscribe in Newsletter
 - Add multi-site capability (#266)
+- Add option for displaying images below the article text
+- Fix problems with recipient's name by using python's formataddr
 
 1.1 (2025-09-07)
 ----------------

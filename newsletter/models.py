@@ -5,9 +5,9 @@ import importlib
 from datetime import datetime
 from abc import abstractmethod, ABC
 
+from email.utils import formataddr
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives
 from django.db import models
@@ -852,7 +852,4 @@ class Submission(models.Model):
 
 
 def get_address(name, email):
-    if name:
-        return f'{name} <{email}>'
-    else:
-        return '%s' % email
+    return formataddr((name, email)) if name else email
