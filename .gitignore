@@ -19,3 +19,4 @@ venv/
 coverage.xml
 .tox
 .venv/
+cache/

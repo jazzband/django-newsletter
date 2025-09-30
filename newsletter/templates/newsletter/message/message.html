@@ -11,13 +11,14 @@
     {% for article in message.articles.all %}
         <h3>{{ article.title }}</h3>
 
-        {% include thumbnail_template %}
+        {% if article.image and not article.image_below_text %}{% include thumbnail_template %}{% endif %}
 
         <div>{{ article.text|safe }}</div>
-
         {% if article.url %}
             <div><a href="{{ article.url }}">{% trans "Read more" %}</a></div>
         {% endif %}
+
+        {% if article.image and article.image_below_text %}{% include thumbnail_template %}{% endif %}
     {% endfor %}
     <ul>
         {% if submission.publish %}
