@@ -651,9 +651,8 @@ class Submission(models.Model):
             ),
         }
 
-    def submit(self):
+    def get_subscriptions(self) -> list[Subscription]:
         subscriptions = list(self.subscriptions.filter(subscribed=True).all())
-
         if subscription_generator := self.newsletter.get_subscription_generator():
             already_subscribed = {s.email for s in subscriptions}
             unsubscribed = {s.email for s in self.newsletter.subscription_set.filter(unsubscribed=True).all()}
@@ -669,7 +668,10 @@ class Submission(models.Model):
                     Subscription(newsletter=self.newsletter, name=name, email=email, subscribed=True)
                 )
                 already_subscribed.add(email)
+        return subscriptions
 
+    def submit(self):
+        subscriptions = self.get_subscriptions()
         logger.info(
             gettext("Submitting %(submission)s to %(count)d people"),
             {'submission': self, 'count': len(subscriptions)}
