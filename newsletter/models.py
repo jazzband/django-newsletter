@@ -593,12 +593,16 @@ class SubscriptionGenerator(ABC):
 
 def get_render_context(message=None, date=None, site=None, newsletter=None, submission=None, subscription=None,
                        attachment_links=False):
+    site = site or (submission and submission.get_site()) or Site.objects.get_current()
+    site_http = 'https' if newsletter_settings.USE_HTTPS else 'http'
     return {
         'message': message,
         'newsletter': newsletter or (message and message.newsletter),
         'subscription': subscription,
         'submission': submission,
-        'site': site or (submission and submission.get_site()) or Site.objects.get_current(),
+        'site': site,
+        'site_http': site_http,
+        'site_url': f'{site_http}://{site.domain}',
         'date': date or now(),
         'attachment_links': attachment_links,
         'STATIC_URL': settings.STATIC_URL,
@@ -645,7 +649,8 @@ class Submission(models.Model):
     @cached_property
     def extra_headers(self):
         return {
-            'List-Unsubscribe': 'http://{}{}'.format(
+            'List-Unsubscribe': '{}://{}{}'.format(
+                'https' if newsletter_settings.USE_HTTPS else 'http',
                 self.get_site().domain,
                 reverse('newsletter_unsubscribe_request',
                         args=[self.message.newsletter.slug])

@@ -4,10 +4,12 @@ Changes
 Unreleased
 ----------
 - Dynamic subscription generation
-- Add option to enable/disable unsubscribe in Newsletter
 - Add multi-site capability (#266)
+- Add option to enable/disable unsubscribe in Newsletter
 - Add option for displaying images below the article text
+- Add NEWSLETTTER_USE_HTTPS setting to produce https urls (defaults to True)
 - Fix problems with recipient's name by using python's formataddr
+- Fix missing site domain in thumbnail templates
 
 1.1 (2025-09-07)
 ----------------

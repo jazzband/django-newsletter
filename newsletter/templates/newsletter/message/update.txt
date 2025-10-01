@@ -3,7 +3,7 @@
 you, or someone in your name requested updating your personal information for {{ title }}.
 
 To make changes to your information in our database, please follow this activation link:
-http://{{ domain }}{{ url }}
+{{ site_url }}{{ url }}
 
 Kind regards,{% endblocktrans %}
 {{ newsletter.sender }}

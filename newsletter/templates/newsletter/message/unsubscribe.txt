@@ -3,7 +3,7 @@
 you, or someone in your name requested unsubscription from {{ title }}.
 
 If you would like to confirm your unsubscription, please follow this activation link:
-http://{{ domain }}{{ url }}
+{{ site_url }}{{ url }}
 
 Kind regards,{% endblocktrans %}
 {{ newsletter.sender }}

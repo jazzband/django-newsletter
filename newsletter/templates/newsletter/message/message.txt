@@ -12,5 +12,5 @@
 {% if newsletter.enable_unsubscribe %}
 ++++++++++++++++++++
 
-{% trans "Unsubscribe:" %} http://{{ site }}{% url "newsletter_unsubscribe_request" newsletter.slug %}
+{% trans "Unsubscribe:" %} {{ site_url }}{% url "newsletter_unsubscribe_request" newsletter.slug %}
 {% endif %}

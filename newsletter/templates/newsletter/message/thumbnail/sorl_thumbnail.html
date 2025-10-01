@@ -1,5 +1,5 @@
 {% load thumbnail %}
 
 {% thumbnail article.image article.image_thumbnail_size as image %}
-    <img src="http://{{ site.domain }}{{ image.url }}" width="{{ image.width }}" height="{{ image.height }}">
+    <img src="{{ site_url }}{{ image.url }}" width="{{ image.width }}" height="{{ image.height }}">
 {% endthumbnail %}

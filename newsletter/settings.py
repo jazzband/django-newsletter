@@ -136,5 +136,19 @@ class NewsletterSettings(Settings):
     def THUMBNAIL_TEMPLATE(self):
         return self.THUMBNAIL and SUPPORTED_THUMBNAILERS[self.THUMBNAIL]
 
+    @property
+    def USE_HTTPS(self):
+        use_https = getattr(
+            django_settings, 'NEWSLETTER_USE_HTTPS', None
+        )
+        if use_https is None:
+            warnings.warn(
+                'No NEWSLETTER_USE_HTTPS setting specified - '
+                'True will be used by default.'
+            )
+            use_https = True
+
+        return use_https
+
 
 newsletter_settings = NewsletterSettings()

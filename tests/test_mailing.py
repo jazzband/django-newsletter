@@ -11,6 +11,7 @@ from django.contrib.sites.models import Site
 from django.core import mail
 from django.core.exceptions import ValidationError
 from django.utils.timezone import now
+from django.test.utils import override_settings
 
 from newsletter.models import (
     Newsletter, Subscription, Submission, Message, Article, Attachment, SubscriptionGenerator,
@@ -115,7 +116,7 @@ class ArticleTestCase(MailingTestCase):
         a.save()
         self.assertEqual(a.image_thumbnail_size(), '200x200')
         _, _, html = render_message(self.m)
-        self.assertIn('<img src="http://example.com/cache/', html)
+        self.assertIn('<img src="https://example.com/cache/', html)
         self.assertIn('width="200" height="150"', html)
         self.assertRegex(html, image_above_regex)
         self.assertNotRegex(html, image_below_regex)
@@ -125,11 +126,21 @@ class ArticleTestCase(MailingTestCase):
         a.save()
         self.assertEqual(a.image_thumbnail_size(), '400x300')
         _, _, html = render_message(self.m)
-        self.assertIn('<img src="http://example.com/cache/', html)
+        self.assertIn('<img src="https://example.com/cache/', html)
         self.assertIn('width="400" height="300"', html)
         self.assertNotRegex(html, image_above_regex)
         self.assertRegex(html, image_below_regex)
-        print(html)
+
+    @override_settings(NEWSLETTER_USE_HTTPS=False)
+    def test_http(self):
+        a = self.make_article()
+        a.image = os.path.join('tests', 'files', 'sample.jpg')
+        a.save()
+        _, _, html = render_message(self.m)
+        self.assertNotIn('<img src="https://example.com/cache/', html)
+        self.assertIn('<img src="http://example.com/cache/', html)
+        self.assertIn('http://example.com/newsletter/test-newsletter/unsubscribe/', html)
+        self.assertNotIn('https://example.com/newsletter/test-newsletter/unsubscribe/', html)
 
 
 
@@ -357,7 +368,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.assertEmailContains(submission.newsletter.unsubscribe_url())
         self.assertEmailHasHeader(
             'List-Unsubscribe',
-            'http://example.com/newsletter/test-newsletter/unsubscribe/'
+            'https://example.com/newsletter/test-newsletter/unsubscribe/'
         )
 
     def test_delayed_sumbmission(self):
