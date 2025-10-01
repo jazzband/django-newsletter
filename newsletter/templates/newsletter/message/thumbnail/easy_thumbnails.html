@@ -1,2 +1,2 @@
 {% load easy_thumbnails_tags  %}
-<img src="{% thumbnail article.image article.image_thumbnail_size %}">
+<img src="http://{{ site.domain }}{% thumbnail article.image article.image_thumbnail_size %}">

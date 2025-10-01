@@ -9,9 +9,7 @@ from datetime import timedelta
 
 from django.contrib.sites.models import Site
 from django.core import mail
-from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.test.utils import override_settings
 from django.utils.timezone import now
 
 from newsletter.models import (
@@ -110,21 +108,28 @@ class ArticleTestCase(MailingTestCase):
         _, _, html = render_message(self.m)
         self.assertNotIn('<img', html)
 
+        image_above_regex = re.compile(r'<img src=.*very long text', re.DOTALL)
+        image_below_regex = re.compile(r'very long text.*<img src=', re.DOTALL)
+
         a.image = os.path.join('tests', 'files', 'sample.jpg')
         a.save()
         self.assertEqual(a.image_thumbnail_size(), '200x200')
         _, _, html = render_message(self.m)
-        self.assertIn('<img', html)
+        self.assertIn('<img src="http://example.com/cache/', html)
         self.assertIn('width="200" height="150"', html)
-        self.assertRegex(html, re.compile(r'<img src=.*very long text', re.DOTALL))
+        self.assertRegex(html, image_above_regex)
+        self.assertNotRegex(html, image_below_regex)
 
         a.image_thumbnail_width = 400
         a.image_below_text = True
         a.save()
         self.assertEqual(a.image_thumbnail_size(), '400x300')
         _, _, html = render_message(self.m)
+        self.assertIn('<img src="http://example.com/cache/', html)
         self.assertIn('width="400" height="300"', html)
-        self.assertRegex(html, re.compile(r'very long text.*<img src=', re.DOTALL))
+        self.assertNotRegex(html, image_above_regex)
+        self.assertRegex(html, image_below_regex)
+        print(html)
 
 
 
