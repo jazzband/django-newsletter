@@ -19,7 +19,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'imperavi',
     'tinymce',
-    'newsletter'
+    'newsletter',
+    'sorl.thumbnail',
 ]
 
 # Imperavi is not compatible with Django 1.9+

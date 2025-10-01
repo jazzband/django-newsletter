@@ -435,6 +435,7 @@ class Article(models.Model):
         verbose_name=_('image')
     )
     image_thumbnail_width = models.IntegerField(null=True, blank=True, verbose_name=_('image thumbnail width'))
+    image_below_text = models.BooleanField(default=False)
 
     # Message this article is associated with
     # TODO: Refactor post to message (post is legacy notation).

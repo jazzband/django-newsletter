@@ -246,7 +246,7 @@ class ArticleInline(BaseArticleInline):
             'fields': ('title', 'text')
         }),
         (_('Optional'), {
-            'fields': ('sortorder', 'url', 'image', 'image_thumbnail_width'),
+            'fields': ('sortorder', 'url', 'image', 'image_thumbnail_width', 'image_below_text'),
             'classes': ('collapse',)
         }),
     )
