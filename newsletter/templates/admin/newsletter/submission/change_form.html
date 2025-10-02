@@ -5,9 +5,9 @@
 
 {% block extrahead %}
 {{ block.super }}
-<script src="{% url "admin:newsletter_js18n" %}" type="text/javascript"></script>
-<script src="{% static "newsletter/admin/js/subscriber_lookup.js" %}" type="text/javascript"></script>
-<script src="{% static "newsletter/admin/js/submit_interface.js" %}" type="text/javascript"></script>
+<script src="{% url 'admin:newsletter_js18n' %}" type="text/javascript"></script>
+<script src="{% static 'newsletter/admin/js/subscriber_lookup.js' %}" type="text/javascript"></script>
+<script src="{% static 'newsletter/admin/js/submit_interface.js' %}" type="text/javascript"></script>
 {% endblock %}
 
 {% block object-tools-items %}
