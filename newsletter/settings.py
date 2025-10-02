@@ -152,3 +152,6 @@ class NewsletterSettings(Settings):
 
 
 newsletter_settings = NewsletterSettings()
+
+for name in vars(type(newsletter_settings)).keys():  # Force warnings to show up at startup
+    getattr(newsletter_settings, name)
