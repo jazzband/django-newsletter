@@ -1,8 +1,9 @@
 Changes
 =======
 
-Unreleased
-----------
+1.2 (2025-10-03)
+----------------
+
 - Dynamic subscription generation
 - Add multi-site capability (#266)
 - Add option to enable/disable unsubscribe in Newsletter
