@@ -721,7 +721,9 @@ class Submission(models.Model):
         attachments = Attachment.objects.filter(message_id=self.message.id)
 
         for attachment in attachments:
-            message.attach_file(attachment.file.path)
+            with attachment.file.open('rb') as f:
+                content = f.read()
+                message.attach(attachment.file.name, content)
 
         if html:
             message.attach_alternative(html, "text/html")
