@@ -1,6 +1,10 @@
 Changes
 =======
 
+1.2.1 (2025-12-03)
+------------------
+- Fix NotImplementedError in S3/remote storage attachment (#413)
+
 1.2 (2025-10-03)
 ----------------
 
