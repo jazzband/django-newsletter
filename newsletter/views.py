@@ -412,11 +412,11 @@ class ActionRequestView(ActionFormView):
         self.subscription.update(self.action)
 
         return redirect(
-            self.get_url_from_viewname('newsletter_action_activated')
+            self.get_url_from_viewname('newsletter:action_activated')
         )
 
     def get_success_url(self):
-        return self.get_url_from_viewname('newsletter_activation_email_sent')
+        return self.get_url_from_viewname('newsletter:activation_email_sent')
 
     def form_valid(self, form):
         self.subscription = self.get_subscription(form)
@@ -533,7 +533,7 @@ class UpdateSubscriptionView(ActionFormView):
         return kwargs
 
     def get_success_url(self):
-        return self.get_url_from_viewname('newsletter_action_activated')
+        return self.get_url_from_viewname('newsletter:action_activated')
 
     def form_valid(self, form):
         """ Get our instance, but do not save yet. """
