@@ -1,2 +1,2 @@
-django
-sorl-thumbnail
+django==5.2.8
+sorl-thumbnail==12.11.0
