@@ -34,7 +34,7 @@ class NewsletterListTestCase(WebTestCase):
     def setUp(self):
         self.newsletters = Newsletter.objects.all()
 
-        self.list_url = reverse('newsletter_list')
+        self.list_url = reverse('newsletter:list')
 
 
 class AnonymousNewsletterListTestCase(NewsletterListTestCase):
@@ -60,7 +60,7 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
         for n in self.newsletters.filter(visible=True):
             self.assertContains(response, n.title)
 
-            detail_url = reverse('newsletter_detail',
+            detail_url = reverse('newsletter:detail',
                                  kwargs={'newsletter_slug': n.slug})
             self.assertContains(response, '<a href="%s">' % detail_url)
 
@@ -71,27 +71,23 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
         for n in self.newsletters:
 
             detail_url = reverse(
-                'newsletter_detail',
+                'newsletter:detail',
                 kwargs={'newsletter_slug': n.slug}
             )
-
             subscribe_url = reverse(
-                'newsletter_subscribe_request',
+                'newsletter:subscribe_request',
                 kwargs={'newsletter_slug': n.slug}
             )
-
             unsubscribe_url = reverse(
-                'newsletter_unsubscribe_request',
+                'newsletter:unsubscribe_request',
                 kwargs={'newsletter_slug': n.slug}
             )
-
             update_url = reverse(
-                'newsletter_update_request',
+                'newsletter:update_request',
                 kwargs={'newsletter_slug': n.slug}
             )
-
             archive_url = reverse(
-                'newsletter_archive',
+                'newsletter:archive',
                 kwargs={'newsletter_slug': n.slug}
             )
 
@@ -143,7 +139,7 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
         n = Newsletter.objects.filter(visible=False)[0]
 
         detail_url = reverse(
-            'newsletter_detail',
+            'newsletter:detail',
             kwargs={'newsletter_slug': n.slug}
         )
 
@@ -295,44 +291,44 @@ class SubscribeTestCase(WebTestCase, MailTestCase):
         self.n.site.set(get_default_sites())
 
         self.subscribe_url = \
-            reverse('newsletter_subscribe_request',
+            reverse('newsletter:subscribe_request',
                     kwargs={'newsletter_slug': self.n.slug})
         self.subscribe_confirm_url = \
-            reverse('newsletter_subscribe_confirm',
+            reverse('newsletter:subscribe_confirm',
                     kwargs={'newsletter_slug': self.n.slug})
         self.subscribe_email_sent_url = \
-            reverse('newsletter_activation_email_sent',
+            reverse('newsletter:activation_email_sent',
                     kwargs={'newsletter_slug': self.n.slug,
                             'action': 'subscribe'})
         self.subscribe_activated_url = \
-            reverse('newsletter_action_activated',
+            reverse('newsletter:action_activated',
                     kwargs={'newsletter_slug': self.n.slug,
                             'action': 'subscribe'})
 
         self.update_url = \
-            reverse('newsletter_update_request',
+            reverse('newsletter:update_request',
                     kwargs={'newsletter_slug': self.n.slug})
         self.update_email_sent_url = \
-            reverse('newsletter_activation_email_sent',
+            reverse('newsletter:activation_email_sent',
                     kwargs={'newsletter_slug': self.n.slug,
                             'action': 'update'})
         self.update_activated_url = \
-            reverse('newsletter_action_activated',
+            reverse('newsletter:action_activated',
                     kwargs={'newsletter_slug': self.n.slug,
                             'action': 'update'})
 
         self.unsubscribe_url = \
-            reverse('newsletter_unsubscribe_request',
+            reverse('newsletter:unsubscribe_request',
                     kwargs={'newsletter_slug': self.n.slug})
         self.unsubscribe_confirm_url = \
-            reverse('newsletter_unsubscribe_confirm',
+            reverse('newsletter:unsubscribe_confirm',
                     kwargs={'newsletter_slug': self.n.slug})
         self.unsubscribe_email_sent_url = \
-            reverse('newsletter_activation_email_sent',
+            reverse('newsletter:activation_email_sent',
                     kwargs={'newsletter_slug': self.n.slug,
                             'action': 'unsubscribe'})
         self.unsubscribe_activated_url = \
-            reverse('newsletter_action_activated',
+            reverse('newsletter:action_activated',
                     kwargs={'newsletter_slug': self.n.slug,
                             'action': 'unsubscribe'})
 
@@ -1211,7 +1207,7 @@ class AnonymousSubscribeTestCase(
                                     email=self.testemail)
         subscription.save()
 
-        activate_url = reverse('newsletter_update', kwargs={
+        activate_url = reverse('newsletter:update', kwargs={
             'newsletter_slug': self.n.slug,
             'action': 'update',
             'email': subscription.email
