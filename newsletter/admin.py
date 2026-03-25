@@ -315,6 +315,13 @@ class MessageAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
     @xframe_options_sameorigin
     def preview_text(self, request, object_id):
         message = self._getobj(request, object_id)
+
+        if not message.text_template:
+            raise Http404(_(
+                'No text template associated with the newsletter this '
+                'message belongs to.'
+            ))
+
         text = render_message(message, site=get_current_site(request))[1]
         return HttpResponse(text, content_type='text/plain')
 

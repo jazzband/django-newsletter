@@ -37,8 +37,10 @@
     <iframe src ="{% url "admin:newsletter_message_preview_html" message.id %}" width="960px" height="720px"></iframe>
     {% endif %}
 
+    {% if message.newsletter.send_text %}
     <h4>{% trans "Text" %}</h4>
     <iframe src ="{% url "admin:newsletter_message_preview_text" message.id %}" width="960px" height="720px"></iframe>
+    {% endif %}
 </div>
 <br/>
 <br/>
