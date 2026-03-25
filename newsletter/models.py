@@ -9,7 +9,7 @@ from email.utils import formataddr
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.db import models
 from django.template.loader import select_template
 from django.utils.functional import cached_property
@@ -27,6 +27,39 @@ from .utils import (
 logger = logging.getLogger(__name__)
 
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
+
+
+def build_email_message(subject, text, html, from_email, to, headers=None):
+    """
+    Build an appropriate email message based on available content.
+
+    Returns EmailMultiAlternatives when both text and html are provided,
+    or EmailMessage when only one format is available.
+    """
+    if text and html:
+        message = EmailMultiAlternatives(
+            subject, text,
+            from_email=from_email,
+            to=to,
+            headers=headers,
+        )
+        message.attach_alternative(html, "text/html")
+    elif html:
+        message = EmailMessage(
+            subject, html,
+            from_email=from_email,
+            to=to,
+            headers=headers,
+        )
+        message.content_subtype = 'html'
+    else:
+        message = EmailMessage(
+            subject, text,
+            from_email=from_email,
+            to=to,
+            headers=headers,
+        )
+    return message
 
 
 class Newsletter(models.Model):
@@ -59,12 +92,23 @@ class Newsletter(models.Model):
         help_text=_('Whether or not to send HTML versions of e-mails.')
     )
 
+    send_text = models.BooleanField(
+        default=True, verbose_name=_('send text'),
+        help_text=_('Whether or not to send text versions of e-mails.')
+    )
+
     enable_unsubscribe = models.BooleanField(
         default=True, verbose_name=_('enable unsubscribe'),
         help_text = _('Enable unsubscribe links in e-mails.')
     )
 
     objects = models.Manager()
+
+    def clean(self):
+        if not self.send_html and not self.send_text:
+            raise ValidationError(
+                _('At least one of "send html" or "send text" must be enabled.')
+            )
 
     def get_templates(self, action):
         """
@@ -89,10 +133,14 @@ class Newsletter(models.Model):
             tpl_root + '%(action)s_subject.txt' % tpl_subst,
         ])
 
-        text_template = select_template([
-            tpl_root + '%(newsletter)s/%(action)s.txt' % tpl_subst,
-            tpl_root + '%(action)s.txt' % tpl_subst,
-        ])
+        if self.send_text:
+            text_template = select_template([
+                tpl_root + '%(newsletter)s/%(action)s.txt' % tpl_subst,
+                tpl_root + '%(action)s.txt' % tpl_subst,
+            ])
+        else:
+            # Text templates are not required
+            text_template = None
 
         if self.send_html:
             html_template = select_template([
@@ -364,16 +412,14 @@ class Subscription(models.Model):
         )
 
         subject = subject_template.render(context).strip()
-        text = text_template.render(context)
+        text = text_template.render(context) if text_template else None
         html = html_template.render(context) if html_template else None
 
-        message = EmailMultiAlternatives(
-            subject, text,
+        message = build_email_message(
+            subject, text, html,
             from_email=self.newsletter.get_sender(),
             to=[self.email]
         )
-        if html:
-            message.attach_alternative(html, "text/html")
 
         message.send()
 
@@ -621,10 +667,11 @@ def render_message(message, date=None, site=None, submission=None, subscription=
         attachment_links=attachment_links
     )
     subject = message.subject_template.render(context)
-    text = message.text_template.render(context)
+    text = message.text_template.render(context) \
+        if message.text_template else None
     html = message.html_template.render(context) \
         if message.html_template else None
-    return subject.strip(), text.strip(), html and html.strip()
+    return subject.strip(), text and text.strip(), html and html.strip()
 
 
 class Submission(models.Model):
@@ -711,8 +758,8 @@ class Submission(models.Model):
             subscription=subscription
         )
 
-        message = EmailMultiAlternatives(
-            subject, text,
+        message = build_email_message(
+            subject, text, html,
             from_email=self.newsletter.get_sender(),
             to=[subscription.get_recipient()],
             headers=self.extra_headers,
@@ -724,10 +771,8 @@ class Submission(models.Model):
             with attachment.file.open('rb') as f:
                 content = f.read()
                 message.attach(attachment.file.name, content)
-
-        if html:
-            message.attach_alternative(html, "text/html")
         return message
+
 
     def send_message(self, subscription):
         logger.debug(

@@ -568,6 +568,71 @@ class TextOnlyEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
         self.assertEmailHasNoAlternatives()
 
 
+class HtmlOnlyEmailsTestCase(MailingTestCase, AllEmailsTestsMixin):
+    """
+    TestCase for testing whether e-mails sent for newsletter
+    with send_html=True and send_text=False are HTML only.
+    """
+
+    def get_newsletter_kwargs(self):
+        kwargs = super().get_newsletter_kwargs()
+        kwargs.update(send_html=True, send_text=False)
+        return kwargs
+
+    def assertSentEmailIsProper(self, action):
+        """
+        Assert that there's exactly one email in outbox,
+        that it has HTML content type and no alternatives.
+        """
+        self.assertEqual(len(mail.outbox), NUM_SUBSCRIBED)
+
+        for my_email in mail.outbox:
+            # Email should be HTML content type (not multipart)
+            self.assertEqual(my_email.content_subtype, 'html')
+            # No alternatives since we're sending a single format
+            self.assertEmailHasNoAlternatives()
+
+
+class NewsletterValidationTestCase(MailTestCase):
+    """
+    TestCase for testing Newsletter validation:
+    at least one of send_html or send_text must be enabled.
+    """
+
+    def test_both_disabled_raises_error(self):
+        newsletter = Newsletter(
+            title='Test', slug='test-validation',
+            sender='Test', email='test@test.com',
+            send_html=False, send_text=False,
+        )
+        with self.assertRaises(ValidationError):
+            newsletter.clean()
+
+    def test_html_only_is_valid(self):
+        newsletter = Newsletter(
+            title='Test', slug='test-html-only',
+            sender='Test', email='test@test.com',
+            send_html=True, send_text=False,
+        )
+        newsletter.clean()  # Should not raise
+
+    def test_text_only_is_valid(self):
+        newsletter = Newsletter(
+            title='Test', slug='test-text-only',
+            sender='Test', email='test@test.com',
+            send_html=False, send_text=True,
+        )
+        newsletter.clean()  # Should not raise
+
+    def test_both_enabled_is_valid(self):
+        newsletter = Newsletter(
+            title='Test', slug='test-both',
+            sender='Test', email='test@test.com',
+            send_html=True, send_text=True,
+        )
+        newsletter.clean()  # Should not raise
+
+
 template_overrides = (
     'newsletter/message/test-newsletter-with-overrides/' + action + suff
     for action, suff in itertools.product(

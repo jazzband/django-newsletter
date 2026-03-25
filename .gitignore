@@ -19,5 +19,6 @@ venv/
 coverage.xml
 .tox
 .venv/
+*.sqlite3
 cache/
 CLAUDE.md
