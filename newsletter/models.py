@@ -5,9 +5,9 @@ import importlib
 from datetime import datetime
 from abc import abstractmethod, ABC
 
+from email.utils import formataddr
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.db import models
@@ -481,6 +481,7 @@ class Article(models.Model):
         verbose_name=_('image')
     )
     image_thumbnail_width = models.IntegerField(null=True, blank=True, verbose_name=_('image thumbnail width'))
+    image_below_text = models.BooleanField(default=False)
 
     # Message this article is associated with
     # TODO: Refactor post to message (post is legacy notation).
@@ -638,12 +639,16 @@ class SubscriptionGenerator(ABC):
 
 def get_render_context(message=None, date=None, site=None, newsletter=None, submission=None, subscription=None,
                        attachment_links=False):
+    site = site or (submission and submission.get_site()) or Site.objects.get_current()
+    site_http = 'https' if newsletter_settings.USE_HTTPS else 'http'
     return {
         'message': message,
         'newsletter': newsletter or (message and message.newsletter),
         'subscription': subscription,
         'submission': submission,
-        'site': site or (submission and submission.get_site()) or Site.objects.get_current(),
+        'site': site,
+        'site_http': site_http,
+        'site_url': f'{site_http}://{site.domain}',
         'date': date or now(),
         'attachment_links': attachment_links,
         'STATIC_URL': settings.STATIC_URL,
@@ -691,16 +696,16 @@ class Submission(models.Model):
     @cached_property
     def extra_headers(self):
         return {
-            'List-Unsubscribe': 'http://{}{}'.format(
+            'List-Unsubscribe': '{}://{}{}'.format(
+                'https' if newsletter_settings.USE_HTTPS else 'http',
                 self.get_site().domain,
                 reverse('newsletter_unsubscribe_request',
                         args=[self.message.newsletter.slug])
             ),
         }
 
-    def submit(self):
+    def get_subscriptions(self) -> list[Subscription]:
         subscriptions = list(self.subscriptions.filter(subscribed=True).all())
-
         if subscription_generator := self.newsletter.get_subscription_generator():
             already_subscribed = {s.email for s in subscriptions}
             unsubscribed = {s.email for s in self.newsletter.subscription_set.filter(unsubscribed=True).all()}
@@ -716,7 +721,10 @@ class Submission(models.Model):
                     Subscription(newsletter=self.newsletter, name=name, email=email, subscribed=True)
                 )
                 already_subscribed.add(email)
+        return subscriptions
 
+    def submit(self):
+        subscriptions = self.get_subscriptions()
         logger.info(
             gettext("Submitting %(submission)s to %(count)d people"),
             {'submission': self, 'count': len(subscriptions)}
@@ -742,7 +750,7 @@ class Submission(models.Model):
             self.sending = False
             self.save()
 
-    def send_message(self, subscription):
+    def get_message(self, subscription):
         subject, text, html = render_message(
             self.message,
             date=self.publish_date,
@@ -760,16 +768,21 @@ class Submission(models.Model):
         attachments = Attachment.objects.filter(message_id=self.message.id)
 
         for attachment in attachments:
-            message.attach_file(attachment.file.path)
+            with attachment.file.open('rb') as f:
+                content = f.read()
+                message.attach(attachment.file.name, content)
+        return message
 
+
+    def send_message(self, subscription):
+        logger.debug(
+            gettext('Submitting message to: %s.'),
+            subscription
+        )
+
+        message = self.get_message(subscription)
         try:
-            logger.debug(
-                gettext('Submitting message to: %s.'),
-                subscription
-            )
-
             message.send()
-
         except Exception as e:
             # TODO: Test coverage for this branch.
             logger.error(
@@ -894,7 +907,4 @@ class Submission(models.Model):
 
 
 def get_address(name, email):
-    if name:
-        return f'{name} <{email}>'
-    else:
-        return '%s' % email
+    return formataddr((name, email)) if name else email

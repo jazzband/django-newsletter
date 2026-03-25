@@ -12,8 +12,7 @@
 
 import os
 import sys
-from pkg_resources import get_distribution
-
+from importlib.metadata import version
 
 # Determine whether rendering on RTD
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -82,7 +81,8 @@ copyright = '2013, Mathijs de Bruin'
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-release = get_distribution('django-newsletter').version
+
+release = version("django-newsletter")
 # for example take major/minor
 version = '.'.join(release.split('.')[:2])
 

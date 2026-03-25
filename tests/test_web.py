@@ -6,7 +6,6 @@ from unittest.mock import patch, PropertyMock
 
 from datetime import datetime, timedelta
 
-from django.contrib.sites.models import Site
 from django.core import mail
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -559,7 +558,7 @@ class AnonymousSubscribeTestCase(
         self.assertEqual(len(mail.outbox), 1)
 
         activate_url = subscription.subscribe_activate_url()
-        full_activate_url = f'http://{self.site.domain}{activate_url}'
+        full_activate_url = f'https://{self.site.domain}{activate_url}'
 
         self.assertEmailContains(full_activate_url)
 
@@ -894,7 +893,7 @@ class AnonymousSubscribeTestCase(
         self.assertEqual(len(mail.outbox), 1)
 
         activate_url = subscription.unsubscribe_activate_url()
-        full_activate_url = f'http://{self.site.domain}{activate_url}'
+        full_activate_url = f'https://{self.site.domain}{activate_url}'
 
         self.assertEmailContains(full_activate_url)
 
@@ -1051,7 +1050,7 @@ class AnonymousSubscribeTestCase(
         self.assertEqual(len(mail.outbox), 1)
 
         activate_url = subscription.update_activate_url()
-        full_activate_url = f'http://{self.site.domain}{activate_url}'
+        full_activate_url = f'https://{self.site.domain}{activate_url}'
 
         self.assertEmailContains(full_activate_url)
 

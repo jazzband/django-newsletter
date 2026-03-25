@@ -1,5 +1,6 @@
 import itertools
 import os
+import re
 
 from unittest import mock
 import unittest
@@ -9,11 +10,12 @@ from datetime import timedelta
 from django.contrib.sites.models import Site
 from django.core import mail
 from django.core.exceptions import ValidationError
-
 from django.utils.timezone import now
+from django.test.utils import override_settings
 
 from newsletter.models import (
-    Newsletter, Subscription, Submission, Message, Article, get_default_sites, Attachment, SubscriptionGenerator
+    Newsletter, Subscription, Submission, Message, Article, Attachment, SubscriptionGenerator,
+    get_default_sites, render_message
 )
 from newsletter.utils import ACTIONS
 
@@ -102,12 +104,44 @@ class ArticleTestCase(MailingTestCase):
                 self.assertTrue(a.sortorder > last)
             last = a.sortorder
 
-    def test_image_thumbnail_size(self):
+    def test_image_thumbnail(self):
+        a = self.make_article()
+        _, _, html = render_message(self.m)
+        self.assertNotIn('<img', html)
+
+        image_above_regex = re.compile(r'<img src=.*very long text', re.DOTALL)
+        image_below_regex = re.compile(r'very long text.*<img src=', re.DOTALL)
+
+        a.image = os.path.join('tests', 'files', 'sample.jpg')
+        a.save()
+        self.assertEqual(a.image_thumbnail_size(), '200x200')
+        _, _, html = render_message(self.m)
+        self.assertIn('<img src="https://example.com/cache/', html)
+        self.assertIn('width="200" height="150"', html)
+        self.assertRegex(html, image_above_regex)
+        self.assertNotRegex(html, image_below_regex)
+
+        a.image_thumbnail_width = 400
+        a.image_below_text = True
+        a.save()
+        self.assertEqual(a.image_thumbnail_size(), '400x300')
+        _, _, html = render_message(self.m)
+        self.assertIn('<img src="https://example.com/cache/', html)
+        self.assertIn('width="400" height="300"', html)
+        self.assertNotRegex(html, image_above_regex)
+        self.assertRegex(html, image_below_regex)
+
+    @override_settings(NEWSLETTER_USE_HTTPS=False)
+    def test_http(self):
         a = self.make_article()
         a.image = os.path.join('tests', 'files', 'sample.jpg')
-        self.assertEqual(a.image_thumbnail_size(), '200x200')
-        a.image_thumbnail_width = 400
-        self.assertEqual(a.image_thumbnail_size(), '400x300')
+        a.save()
+        _, _, html = render_message(self.m)
+        self.assertNotIn('<img src="https://example.com/cache/', html)
+        self.assertIn('<img src="http://example.com/cache/', html)
+        self.assertIn('http://example.com/newsletter/test-newsletter/unsubscribe/', html)
+        self.assertNotIn('https://example.com/newsletter/test-newsletter/unsubscribe/', html)
+
 
 
 class MessageTestCase(MailingTestCase):
@@ -334,7 +368,7 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.assertEmailContains(submission.newsletter.unsubscribe_url())
         self.assertEmailHasHeader(
             'List-Unsubscribe',
-            'http://example.com/newsletter/test-newsletter/unsubscribe/'
+            'https://example.com/newsletter/test-newsletter/unsubscribe/'
         )
 
     def test_delayed_sumbmission(self):
