@@ -71,6 +71,7 @@ class NewsletterSettings(Settings):
     settings_prefix = 'NEWSLETTER'
 
     DEFAULT_CONFIRM_EMAIL = True
+    DEFAULT_THUMBNAIL_QUALITY = 95
 
     @property
     def DEFAULT_CONFIRM_EMAIL_SUBSCRIBE(self):

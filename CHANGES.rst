@@ -3,6 +3,7 @@ Changes
 
 Unreleased
 ----------
+- Add NEWSLETTER_THUMBNAIL_QUALITY setting (defaults to 95)
 - Fix image_thumbnail_size to keep dimensions when image_thumbnail_width is not set
 
 1.2.1 (2025-12-03)
