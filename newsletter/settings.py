@@ -8,7 +8,8 @@ from .utils import Singleton
 
 SUPPORTED_THUMBNAILERS = {
     'sorl-thumbnail': 'newsletter/message/thumbnail/sorl_thumbnail.html',
-    'easy-thumbnails': 'newsletter/message/thumbnail/easy_thumbnails.html'
+    'easy-thumbnails': 'newsletter/message/thumbnail/easy_thumbnails.html',
+    'no-thumbnail': 'newsletter/message/thumbnail/no_thumbnail.html',
 }
 
 

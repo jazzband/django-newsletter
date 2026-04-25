@@ -131,6 +131,42 @@ class ArticleTestCase(MailingTestCase):
         self.assertNotRegex(html, image_above_regex)
         self.assertRegex(html, image_below_regex)
 
+    @override_settings(NEWSLETTER_THUMBNAIL='no-thumbnail')
+    def test_image_no_thumbnail(self):
+        a = self.make_article()
+        a.image = os.path.join('tests', 'files', 'sample.jpg')
+        a.save()
+        _, _, html = render_message(self.m)
+        # Should use original image URL, not a cache URL
+        self.assertNotIn('/cache/', html)
+        self.assertIn(a.image.url, html)
+        self.assertIn('width="200" height="150"', html)
+
+        a.image_thumbnail_width = 400
+        a.save()
+        _, _, html = render_message(self.m)
+        self.assertNotIn('/cache/', html)
+        self.assertIn(a.image.url, html)
+        self.assertIn('width="400" height="300"', html)
+
+    def test_image_use_original(self):
+        a = self.make_article()
+        a.image = os.path.join('tests', 'files', 'sample.jpg')
+        a.image_use_original = True
+        a.save()
+        _, _, html = render_message(self.m)
+        # Should use original image URL, not a cache URL
+        self.assertNotIn('/cache/', html)
+        self.assertIn(a.image.url, html)
+        self.assertIn('width="200" height="150"', html)
+
+        a.image_thumbnail_width = 400
+        a.save()
+        _, _, html = render_message(self.m)
+        self.assertNotIn('/cache/', html)
+        self.assertIn(a.image.url, html)
+        self.assertIn('width="400" height="300"', html)
+
     @override_settings(NEWSLETTER_USE_HTTPS=False)
     def test_http(self):
         a = self.make_article()
@@ -141,7 +177,6 @@ class ArticleTestCase(MailingTestCase):
         self.assertIn('<img src="http://example.com/cache/', html)
         self.assertIn('http://example.com/newsletter/test-newsletter/unsubscribe/', html)
         self.assertNotIn('https://example.com/newsletter/test-newsletter/unsubscribe/', html)
-
 
 
 class MessageTestCase(MailingTestCase):

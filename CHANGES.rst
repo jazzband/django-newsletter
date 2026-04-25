@@ -3,6 +3,8 @@ Changes
 
 Unreleased
 ----------
+- Add no-thumbnail as supported thumbnailer
+- Add image_use_original field to skip thumbnailing (Need to update your message.html template to use it)
 - Add NEWSLETTER_THUMBNAIL_QUALITY setting (defaults to 95)
 - Fix image_thumbnail_size to keep dimensions when image_thumbnail_width is not set
 

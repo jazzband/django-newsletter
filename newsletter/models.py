@@ -19,7 +19,7 @@ from django.utils.timezone import now
 from django.urls import reverse
 
 from .fields import DynamicImageField
-from .settings import newsletter_settings
+from .settings import newsletter_settings, SUPPORTED_THUMBNAILERS
 from .utils import (
     make_activation_code, get_default_sites, ACTIONS
 )
@@ -435,6 +435,7 @@ class Article(models.Model):
         verbose_name=_('image')
     )
     image_thumbnail_width = models.IntegerField(null=True, blank=True, verbose_name=_('image thumbnail width'))
+    image_use_original = models.BooleanField(default=False, verbose_name=_('use original image'))
     image_below_text = models.BooleanField(default=False)
 
     # Message this article is associated with
@@ -453,13 +454,28 @@ class Article(models.Model):
     def __str__(self):
         return self.title
 
-    def image_thumbnail_size(self):
+    def thumbnail_template(self):
+        if self.image_use_original:
+            return SUPPORTED_THUMBNAILERS['no-thumbnail']
+        return newsletter_settings.THUMBNAIL_TEMPLATE
+
+    def _image_thumbnail_dimensions(self):
         if self.image and self.image.width > 0:
             w = self.image_thumbnail_width or 200
             h = self.image.height * w // self.image.width
         else:
             w, h = 200, 200
+        return w, h
+
+    def image_thumbnail_size(self):
+        w, h = self._image_thumbnail_dimensions()
         return f'{w}x{h}'
+
+    def image_thumbnail_size_width(self):
+        return self._image_thumbnail_dimensions()[0]
+
+    def image_thumbnail_size_height(self):
+        return self._image_thumbnail_dimensions()[1]
 
     def save(self, **kwargs):
         if self.sortorder is None:

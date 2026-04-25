@@ -9,6 +9,9 @@ if newsletter_settings.THUMBNAIL == 'sorl-thumbnail':
 elif newsletter_settings.THUMBNAIL == 'easy-thumbnails':
     from easy_thumbnails.fields import ThumbnailerImageField
     ParentClass = ThumbnailerImageField
+elif newsletter_settings.THUMBNAIL == 'no-thumbnail':
+    from django.db.models import ImageField
+    ParentClass = ImageField
 else:
     raise ImproperlyConfigured('Invalid NEWSLETTER_THUMBNAIL value.')
 
