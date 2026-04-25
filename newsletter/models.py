@@ -454,10 +454,11 @@ class Article(models.Model):
         return self.title
 
     def image_thumbnail_size(self):
-        w, h = 200, 200
-        if self.image and self.image.width > 0 and self.image_thumbnail_width:
-            w = self.image_thumbnail_width
-            h = self.image.height * self.image_thumbnail_width // self.image.width
+        if self.image and self.image.width > 0:
+            w = self.image_thumbnail_width or 200
+            h = self.image.height * w // self.image.width
+        else:
+            w, h = 200, 200
         return f'{w}x{h}'
 
     def save(self, **kwargs):

@@ -1,6 +1,10 @@
 Changes
 =======
 
+Unreleased
+----------
+- Fix image_thumbnail_size to keep dimensions when image_thumbnail_width is not set
+
 1.2.1 (2025-12-03)
 ------------------
 - Fix NotImplementedError in S3/remote storage attachment (#413)

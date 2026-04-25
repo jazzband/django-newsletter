@@ -114,7 +114,7 @@ class ArticleTestCase(MailingTestCase):
 
         a.image = os.path.join('tests', 'files', 'sample.jpg')
         a.save()
-        self.assertEqual(a.image_thumbnail_size(), '200x200')
+        self.assertEqual(a.image_thumbnail_size(), '200x150')
         _, _, html = render_message(self.m)
         self.assertIn('<img src="https://example.com/cache/', html)
         self.assertIn('width="200" height="150"', html)
