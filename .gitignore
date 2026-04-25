@@ -15,6 +15,7 @@ env
 django_setuptest*
 docs/_*
 .idea/
+.claude/
 venv/
 coverage.xml
 .tox
