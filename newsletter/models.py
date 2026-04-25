@@ -609,6 +609,7 @@ def get_render_context(message=None, date=None, site=None, newsletter=None, subm
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
         'thumbnail_template': newsletter_settings.THUMBNAIL_TEMPLATE,
+        'thumbnail_quality': newsletter_settings.THUMBNAIL_QUALITY,
     }
 
 

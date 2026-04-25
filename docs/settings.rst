@@ -99,6 +99,12 @@ model fields, admin fields, and template thumbnails.
 If not set, django-newsletter will fall back to Django's default ImageField
 and implement rudimentary thumbnailing with Pillow.
 
+The thumbnail jpeg quality can be set with ``NEWSLETTER_THUMBNAIL_QUALITY``.
+The value can range from 1 to 100. Defaults to 95.
+
+    NEWSLETTER_THUMBNAIL_QUALITY = 95
+
+
 Delay and batch size
 --------------------
 The delay between each email, batches en batch size can be specified with e.g.::
