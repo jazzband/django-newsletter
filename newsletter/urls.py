@@ -10,39 +10,40 @@ from .views import (
 
 register_converter(NewsletterActionsConverter, 'actions')
 
+app_name = 'newsletter'
 urlpatterns = [
     # Newsletter list and detail view
-    path('', NewsletterListView.as_view(), name='newsletter_list'),
+    path('', NewsletterListView.as_view(), name='list'),
     path(
         '<newsletter_slug>/',
-        NewsletterDetailView.as_view(), name='newsletter_detail'
+        NewsletterDetailView.as_view(), name='detail'
     ),
 
     # Action request views
     path(
         '<newsletter_slug>/subscribe/',
         SubscribeRequestView.as_view(),
-        name='newsletter_subscribe_request'
+        name='subscribe_request'
     ),
     path(
         '<newsletter_slug>/subscribe/confirm/',
         SubscribeRequestView.as_view(confirm=True),
-        name='newsletter_subscribe_confirm'
+        name='subscribe_confirm'
     ),
     path(
         '<newsletter_slug>/update/',
         UpdateRequestView.as_view(),
-        name='newsletter_update_request'
+        name='update_request'
     ),
     path(
         '<newsletter_slug>/unsubscribe/',
         UnsubscribeRequestView.as_view(),
-        name='newsletter_unsubscribe_request'
+        name='unsubscribe_request'
     ),
     path(
         '<newsletter_slug>/unsubscribe/confirm/',
         UnsubscribeRequestView.as_view(confirm=True),
-        name='newsletter_unsubscribe_confirm'
+        name='unsubscribe_confirm'
     ),
 
     # Activation email sent view
@@ -51,16 +52,16 @@ urlpatterns = [
         ActionTemplateView.as_view(
             template_name='newsletter/subscription_%(action)s_email_sent.html'
         ),
-        name='newsletter_activation_email_sent'),
+        name='activation_email_sent'),
 
     # Action confirmation views
     path(
         '<newsletter_slug>/subscription/<email>/<actions:action>/activate/<activation_code>/',
-        UpdateSubscriptionView.as_view(), name='newsletter_update_activate'
+        UpdateSubscriptionView.as_view(), name='update_activate'
     ),
     path(
         '<newsletter_slug>/subscription/<email>/<actions:action>/activate/',
-        UpdateSubscriptionView.as_view(), name='newsletter_update'
+        UpdateSubscriptionView.as_view(), name='update'
     ),
 
     # Action activation completed view
@@ -69,15 +70,15 @@ urlpatterns = [
         ActionTemplateView.as_view(
             template_name='newsletter/subscription_%(action)s_activated.html'
         ),
-        name='newsletter_action_activated'),
+        name='action_activated'),
 
     # Archive views
     path(
         '<newsletter_slug>/archive/<year>/<month>/<day>/<slug>/',
-        SubmissionArchiveDetailView.as_view(), name='newsletter_archive_detail'
+        SubmissionArchiveDetailView.as_view(), name='archive_detail'
     ),
     path(
         '<newsletter_slug>/archive/',
-        SubmissionArchiveIndexView.as_view(), name='newsletter_archive'
+        SubmissionArchiveIndexView.as_view(), name='archive'
     ),
 ]
