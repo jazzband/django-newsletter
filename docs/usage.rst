@@ -1,17 +1,50 @@
 =====
 Usage
 =====
-#) Start the development server::
+#) Start the development server:
 
        ./manage.py runserver
 
-#) Navigate to ``/admin/`` and: behold!
-#) Setup a newsletter and create an initial message.
-#) Preview the message and create submission.
-#) Queue the submission for submission.
-#) Process the submission queue::
+#) Navigate to ``/admin/newsletter/``:
 
-       ./manage.py submit_newsletter
+#) Create a newsletter by clicking the ``Add`` link in the ``Newsletters`` row:
+       #) Fill in the form fields
+       #) Click the ``SAVE`` button
+
+#) Create an initial message:
+       #) Navigate back to ``/admin/newsletter/``
+       #) Click the ``Add`` link in the ``Messages`` row
+       #) Fill in the form fields
+       #) To preview the message:
+              #) Click the ``Save and continue editing`` button at the bottom of the form
+              #) Click the ``PREVIEW`` button at the top right of the page
+              #) To return to editing the message click the ``CHANGE`` button at the top right of the page
+       #) When you have finished editing the message click the ``SAVE`` button
+
+#) Create a submission::
+       #) Navigate back to ``/admin/newsletter/``
+       #) Click the ``Add`` link in the ``Submissions`` row
+       #) Fill in the form fields
+       #) Click the ``SAVE``` button when you have finished editing the submission
+       #) On the ``Select submission to change`` page you will see that your new submission has ``Not sent.`` in the ``STATUS`` column
+
+#) Queue the submission:
+       #) In the ``SUBMISSION`` column click the name of the submission you wish to queue
+       #) Click the ``SUBMIT`` button at the top right of the ``Change submission`` page
+       #) On the ``Select submission to change`` page you will see that ``STATUS`` column has changed to ``Submitting.``
+
+#) Process the submission queue:
+       #) Use the Django ``mange.py`` command:
+
+              ./manage.py submit_newsletter
+
+       #) To automate this process set up a recurring task/cron job:
+
+              https://github.com/jazzband/django-newsletter/issues/361#issuecomment-1133546779
+
+#) Submission status:
+       #) Navigate to ``/admin/newsletter/submission/``
+       #) You will see that ``STATUS`` column has changed to ``Sent.`` 
 
 #) For a proper understanding, please take a look at the :ref:`reference`.
 
