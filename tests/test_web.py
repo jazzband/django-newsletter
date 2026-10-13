@@ -521,6 +521,13 @@ class UserSubscribeTestCase(
         )
         self.n.save()
 
+        # Just opening the page neither creates a row nor says "not subscribed".
+        response = self.client.get(self.unsubscribe_url)
+        self.assertEqual([], list(response.context['messages']))
+        self.assertFalse(
+            Subscription.objects.filter(newsletter=self.n, user=self.user).exists()
+        )
+
         response = self.client.post(self.unsubscribe_confirm_url)
         self.assertContains(response, self.n.title, status_code=200)
 

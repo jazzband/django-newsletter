@@ -306,6 +306,17 @@ class SubscriptionGeneratorTestCase(MailingTestCase):
         emails = [s.email for s in self.sub.get_subscriptions()]
         self.assertEqual(emails, ['test1@test.com', 'TEST3@test.com'])
 
+    def test_find_generator_entry(self):
+        """ Lookup is case-insensitive and creates nothing """
+        self.assertIsNone(self.n.find_generator_entry('test2@test.com'))
+        self.n.subscription_generator_class = 'tests.test_mailing.TestingSubscriptionGenerator'
+        self.n.save()
+        Subscription.objects.filter(newsletter=self.n).delete()
+        self.assertEqual(('name 2', 'test2@test.com'), self.n.find_generator_entry('test2@test.com'))
+        self.assertEqual(('name 2', 'test2@test.com'), self.n.find_generator_entry('TEST2@test.com'))
+        self.assertIsNone(self.n.find_generator_entry('other@test.com'))
+        self.assertFalse(Subscription.objects.filter(newsletter=self.n).exists())
+
     def test_nonexistent_generator_class(self):
         """ Test failure when generator class does not exist """
         try:

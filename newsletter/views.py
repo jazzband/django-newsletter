@@ -343,45 +343,38 @@ class UnsubscribeUserView(ActionUserView):
         if not self.newsletter.enable_unsubscribe:
             return HttpResponseForbidden('Unsubscribe not enabled in this newsletter')
 
-        not_subscribed = False
-
-        try:
-            instance = Subscription.objects.get(
-                newsletter=self.newsletter, user=request.user
-            )
-        except Subscription.DoesNotExist:
+        instance = Subscription.objects.filter(
+            newsletter=self.newsletter, user=request.user
+        ).first()
+        if instance:
+            not_subscribed = not instance.subscribed
+        elif not self.confirm:
+            not_subscribed = not self.newsletter.find_generator_entry(request.user.email)
+        else:
             instance = self.newsletter.create_subscription_from_generator(
                 request.user.email, user=request.user
             )
-            if not instance:
-                not_subscribed = True
-
-        if instance is not None:
-            if not instance.subscribed:
-                not_subscribed = True
-            elif self.confirm:
-                instance.subscribed = False
-                instance.save()
-
-                messages.success(
-                    request,
-                    _('You have been unsubscribed from %s.') % self.newsletter
-                )
-
-                logger.debug(
-                    _('User %(rs)s unsubscribed from %(my_newsletter)s.'),
-                    {
-                        "rs": request.user,
-                        "my_newsletter": self.newsletter
-                    }
-                )
+            not_subscribed = instance is None
 
         if not_subscribed:
             messages.info(
                 request,
                 _('You are not subscribed to %s.') % self.newsletter
             )
-
+        elif self.confirm and instance:
+            instance.subscribed = False
+            instance.save()
+            messages.success(
+                request,
+                _('You have been unsubscribed from %s.') % self.newsletter
+            )
+            logger.debug(
+                _('User %(rs)s unsubscribed from %(my_newsletter)s.'),
+                {
+                    "rs": request.user,
+                    "my_newsletter": self.newsletter
+                }
+            )
         return super().get(request, *args, **kwargs)
 
 

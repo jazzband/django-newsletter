@@ -116,14 +116,20 @@ class Newsletter(models.Model):
         else:
             return None
 
-    def create_subscription_from_generator(self, email, user=None):
+    def find_generator_entry(self, email):
         """
-        Creates a Subscription if `email` is among the generator's recipients, else returns None
+        Returns the generator's (name, email) entry for `email` (case-insensitive), or None
         """
         generator = self.get_subscription_generator()
         if not generator:
             return None
-        match = next((entry for entry in generator.generate_subscriptions(self) if entry[1].lower() == email.lower()), None)
+        return next((e for e in generator.generate_subscriptions(self) if e[1].lower() == email.lower()), None)
+
+    def create_subscription_from_generator(self, email, user=None):
+        """
+        Creates a Subscription if `email` is among the generator's recipients, else returns None
+        """
+        match = self.find_generator_entry(email)
         if not match:
             return None
         if user:
