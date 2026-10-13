@@ -259,6 +259,15 @@ class TestingSubscriptionGenerator(SubscriptionGenerator):
         ]
 
 
+class MixedCaseSubscriptionGenerator(SubscriptionGenerator):
+    def generate_subscriptions(self, newsletter):
+        return [
+            ('name 1', 'Test1@test.com'),
+            ('name 2', 'Test2@test.com'),
+            ('name 3', 'TEST3@test.com'),
+        ]
+
+
 class SubscriptionGeneratorTestCase(MailingTestCase):
     def setUp(self):
         super().setUp()
@@ -284,6 +293,18 @@ class SubscriptionGeneratorTestCase(MailingTestCase):
         self.assertTrue(submission.sent)
         self.assertEqual([m.to for m in mail.outbox],
                          [['name 1 <test1@test.com>'], ['name 2 <test2@test.com>'], ['name 4 <test4@test.com>']])
+
+    def test_generator_matches_emails_case_insensitively(self):
+        """ Stored subscriptions and opt-outs block generated emails that differ only in case """
+        self.n.subscription_generator_class = 'tests.test_mailing.MixedCaseSubscriptionGenerator'
+        self.n.save()
+        Subscription.objects.filter(newsletter=self.n).delete()
+        sub1 = Subscription.objects.create(name='name 1', email='test1@test.com', newsletter=self.n, subscribed=True)
+        Subscription.objects.create(name='name 2', email='test2@test.com', newsletter=self.n, unsubscribed=True)
+        self.sub.subscriptions.add(sub1)
+
+        emails = [s.email for s in self.sub.get_subscriptions()]
+        self.assertEqual(emails, ['test1@test.com', 'TEST3@test.com'])
 
     def test_nonexistent_generator_class(self):
         """ Test failure when generator class does not exist """

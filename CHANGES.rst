@@ -9,6 +9,7 @@ Unreleased
 - Fix image_thumbnail_size to keep dimensions when image_thumbnail_width is not set
 - Fix unsubscribing from a dynamically generated newsletter when logged in
 - Add NEWSLETTER_VALIDATE_NO_USER setting to skip checking if the email belongs to a user
+- Make dynamic subscription deduplicating case insensitive
 
 1.2.1 (2025-12-03)
 ------------------

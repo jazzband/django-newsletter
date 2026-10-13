@@ -123,7 +123,7 @@ class Newsletter(models.Model):
         generator = self.get_subscription_generator()
         if not generator:
             return None
-        match = next((entry for entry in generator.generate_subscriptions(self) if entry[1] == email), None)
+        match = next((entry for entry in generator.generate_subscriptions(self) if entry[1].lower() == email.lower()), None)
         if not match:
             return None
         if user:
@@ -695,20 +695,21 @@ class Submission(models.Model):
     def get_subscriptions(self) -> list[Subscription]:
         subscriptions = list(self.subscriptions.filter(subscribed=True).all())
         if subscription_generator := self.newsletter.get_subscription_generator():
-            already_subscribed = {s.email for s in subscriptions}
-            unsubscribed = {s.email for s in self.newsletter.subscription_set.filter(unsubscribed=True).all()}
+            already_subscribed = {s.email.lower() for s in subscriptions}
+            unsubscribed = {s.email.lower() for s in self.newsletter.subscription_set.filter(unsubscribed=True).all()}
             dynamic_subscriptions = subscription_generator.generate_subscriptions(self.newsletter)
             logger.info(
                 gettext("Dynamically generated %(count)d subscriptions"),
                 {'count': len(dynamic_subscriptions)}
             )
             for name, email in dynamic_subscriptions:
-                if email in already_subscribed or email in unsubscribed:
+                key = email.lower()
+                if key in already_subscribed or key in unsubscribed:
                     continue
                 subscriptions.append(
                     Subscription(newsletter=self.newsletter, name=name, email=email, subscribed=True)
                 )
-                already_subscribed.add(email)
+                already_subscribed.add(key)
         return subscriptions
 
     def submit(self):
