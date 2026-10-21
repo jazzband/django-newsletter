@@ -1,6 +1,7 @@
 from importlib import import_module
 import warnings
 
+import django
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 
@@ -86,6 +87,25 @@ class NewsletterSettings(Settings):
     @property
     def DEFAULT_CONFIRM_EMAIL_UPDATE(self):
         return self.CONFIRM_EMAIL
+
+    @property
+    def MAILER(self):
+        mailer = getattr(django_settings, 'NEWSLETTER_MAILER', None)
+
+        if mailer is None:
+            return None
+
+        if django.VERSION < (6, 1):
+            raise ImproperlyConfigured(
+                'NEWSLETTER_MAILER requires Django 6.1 or later.'
+            )
+
+        if mailer not in getattr(django_settings, 'MAILERS', {}):
+            raise ImproperlyConfigured(
+                "NEWSLETTER_MAILER %r is not defined in MAILERS." % mailer
+            )
+
+        return mailer
 
     @property
     def RICHTEXT_WIDGET(self):

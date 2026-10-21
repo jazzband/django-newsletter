@@ -778,8 +778,12 @@ class Submission(models.Model):
         )
 
         message = self.get_message(subscription)
+        mailer = newsletter_settings.MAILER
         try:
-            message.send()
+            if mailer:
+                message.send(using=mailer)
+            else:
+                message.send()
         except Exception as e:
             # TODO: Test coverage for this branch.
             logger.error(
