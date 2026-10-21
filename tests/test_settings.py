@@ -1,5 +1,6 @@
 import unittest
 
+import django
 from django.conf import settings
 
 from django.test import TestCase
@@ -140,4 +141,31 @@ class SettingsTestCase(TestCase):
 
         self.assertRaises(
             ImproperlyConfigured, lambda: newsletter_settings.THUMBNAIL
+        )
+
+    def test_mailer_default(self):
+        """ NEWSLETTER_MAILER defaults to None. """
+
+        self.assertIsNone(newsletter_settings.MAILER)
+
+    @unittest.skipIf(
+        django.VERSION >= (6, 1), 'Django 6.1 supports MAILERS.'
+    )
+    @override_settings(NEWSLETTER_MAILER='newsletters')
+    def test_mailer_old_django(self):
+        """ NEWSLETTER_MAILER before Django 6.1 yields ImproperlyConfigured. """
+
+        self.assertRaises(
+            ImproperlyConfigured, lambda: newsletter_settings.MAILER
+        )
+
+    @unittest.skipUnless(
+        django.VERSION >= (6, 1), 'MAILERS requires Django 6.1 or later.'
+    )
+    @override_settings(MAILERS={}, NEWSLETTER_MAILER='nowaythisexists')
+    def test_mailer_nonexistent(self):
+        """ Unknown NEWSLETTER_MAILER alias yields ImproperlyConfigured. """
+
+        self.assertRaises(
+            ImproperlyConfigured, lambda: newsletter_settings.MAILER
         )
