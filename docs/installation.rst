@@ -105,4 +105,5 @@ Installation
 To send mail, ``django-newsletter`` uses Django-provided email utilities, so
 ensure that `email settings
 <https://docs.djangoproject.com/en/stable/ref/settings/#email-backend>`_ are
-properly configured for your project.
+properly configured for your project. To send newsletters through a separate
+mailer, see ``NEWSLETTER_MAILER`` in :doc:`settings`.

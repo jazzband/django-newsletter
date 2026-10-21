@@ -10,6 +10,7 @@ Unreleased
 - Fix unsubscribing from a dynamically generated newsletter when logged in
 - Add NEWSLETTER_VALIDATE_NO_USER setting to skip checking if the email belongs to a user
 - Make dynamic subscription deduplicating case insensitive
+- Add NEWSLETTER_MAILER setting to send newsletters through a separate mailer (Django 6.1+)
 
 1.2.1 (2025-12-03)
 ------------------
