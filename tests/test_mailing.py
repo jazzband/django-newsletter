@@ -504,7 +504,11 @@ class SubmitSubmissionTestCase(MailingTestCase):
         self.sub.publish_date = now() - timedelta(seconds=1)
         self.sub.save()
 
-        self.assertRaises(ImproperlyConfigured, Submission.submit_queue)
+        with mock.patch.object(Submission, 'save') as save:
+            self.assertRaises(ImproperlyConfigured, Submission.submit_queue)
+
+        # The mailer is checked before the submission is marked as sending.
+        save.assert_not_called()
 
         self.sub.refresh_from_db()
         self.assertFalse(self.sub.sent)
