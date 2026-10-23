@@ -7,9 +7,10 @@ import unittest
 
 from datetime import timedelta
 
+import django
 from django.contrib.sites.models import Site
 from django.core import mail
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.utils.timezone import now
 from django.test.utils import override_settings
 
@@ -466,6 +467,53 @@ class SubmitSubmissionTestCase(MailingTestCase):
                 Submission.submit_queue()
 
         sleep_mock.assert_called_with(0.02)
+
+    @unittest.skipUnless(
+        django.VERSION >= (6, 1), 'MAILERS requires Django 6.1 or later.'
+    )
+    @override_settings(
+        MAILERS={
+            'default': {'BACKEND': 'django.core.mail.backends.locmem.EmailBackend'},
+            'newsletters': {'BACKEND': 'django.core.mail.backends.locmem.EmailBackend'},
+        },
+        NEWSLETTER_MAILER='newsletters',
+    )
+    def test_submit_mailer(self):
+        """ Submissions use NEWSLETTER_MAILER, activation emails don't. """
+
+        self.sub.prepared = True
+        self.sub.publish_date = now() - timedelta(seconds=1)
+        self.sub.save()
+
+        Submission.submit_queue()
+        self.s.send_activation_email('subscribe')
+
+        self.assertEqual(
+            [m.sent_using for m in mail.outbox],
+            ['newsletters'] * NUM_SUBSCRIBED + ['default']
+        )
+
+    @unittest.skipUnless(
+        django.VERSION >= (6, 1), 'MAILERS requires Django 6.1 or later.'
+    )
+    @override_settings(MAILERS={}, NEWSLETTER_MAILER='nowaythisexists')
+    def test_submit_mailer_nonexistent(self):
+        """ Unknown NEWSLETTER_MAILER alias leaves the submission unsent. """
+
+        self.sub.prepared = True
+        self.sub.publish_date = now() - timedelta(seconds=1)
+        self.sub.save()
+
+        with mock.patch.object(Submission, 'save') as save:
+            self.assertRaises(ImproperlyConfigured, Submission.submit_queue)
+
+        # The mailer is checked before the submission is marked as sending.
+        save.assert_not_called()
+
+        self.sub.refresh_from_db()
+        self.assertFalse(self.sub.sent)
+        self.assertFalse(self.sub.sending)
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_management_command(self):
         """ Test submission through management command. """

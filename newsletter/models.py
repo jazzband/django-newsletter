@@ -728,6 +728,11 @@ class Submission(models.Model):
         assert self.publish_date < now(), \
             'Something smells fishy; submission time in future.'
 
+        # Read the mailer before marking the submission as sending,
+        # so a bad NEWSLETTER_MAILER raises before the submission is saved as sending.
+        # TODO: Validate NEWSLETTER_MAILER and other settings at startup.
+        _ = newsletter_settings.MAILER
+
         self.sending = True
         self.save()
 
@@ -778,8 +783,12 @@ class Submission(models.Model):
         )
 
         message = self.get_message(subscription)
+        mailer = newsletter_settings.MAILER
         try:
-            message.send()
+            if mailer:
+                message.send(using=mailer)
+            else:
+                message.send()
         except Exception as e:
             # TODO: Test coverage for this branch.
             logger.error(

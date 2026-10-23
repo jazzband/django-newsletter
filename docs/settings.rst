@@ -132,3 +132,37 @@ The delay between each email, batches en batch size can be specified with e.g.::
 
 For both delays, sub-second delays can also be used. If the delays are not
 set, it will default to not sleeping.
+
+
+Separate mailer for newsletters
+-------------------------------
+Newsletters can go through a different mailer than the other emails. This
+needs Django 6.1 or later.
+
+Set ``NEWSLETTER_MAILER`` to an alias from Django's `MAILERS
+<https://docs.djangoproject.com/en/stable/ref/settings/#mailers>`_ setting.
+Submissions go through that mailer. Subscribe, unsubscribe and update
+confirmations still use the ``default`` mailer. For example, to send
+newsletters through Mailtrap's bulk stream::
+
+    MAILERS = {
+        'default': {...},
+        'newsletters': {
+            'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+            'OPTIONS': {
+                'host': 'bulk.smtp.mailtrap.io',
+                'port': 587,
+                'username': 'api',
+                'password': os.environ['MAILTRAP_API_TOKEN'],
+                'use_tls': True,
+            },
+        },
+    }
+
+    NEWSLETTER_MAILER = 'newsletters'
+
+With `django-anymail <https://anymail.dev/>`_, use the
+``anymail.backends.mailtrap.EmailBackend`` backend with the ``api_token``
+option and ``'api_url': 'https://bulk.api.mailtrap.io/api/'`` instead.
+
+If not set, all emails use the ``default`` mailer.
