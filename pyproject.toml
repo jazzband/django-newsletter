@@ -44,6 +44,8 @@ test = [
   "python-card-me",
   "django-tinymce",
   "django-imperavi",
+  "django-webtest",
+  "pytz",
 ]
 
 [project.urls]
