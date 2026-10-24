@@ -11,17 +11,8 @@ The following settings are required.
 
 Configure thumbnailing applications
 -----------------------------------
-To improve the user experience and performance of django-newsletter,
-a thumbnailing application is used to automatically thumbnail
-article images in newsletter messages.
-
-Currently two applications are supported by default:
-`easy-thumbnails <https://pypi.org/project/easy-thumbnails/>`_ and
-`sorl-thumbnail <https://pypi.org/project/sorl-thumbnail/>`_.
-
-First you will need to install the thumbnailing application (as per the
-applications instructions). Afterwards the thumbnailing application can be
-selected as follows::
+Article images in newsletter messages are thumbnailed by a thumbnailing
+application. Choose how images are handled with ``NEWSLETTER_THUMBNAIL``::
 
     # Using sorl-thumbnail
     NEWSLETTER_THUMBNAIL = 'sorl-thumbnail'
@@ -29,8 +20,21 @@ selected as follows::
     # Using easy-thumbnails
     NEWSLETTER_THUMBNAIL = 'easy-thumbnails'
 
-This configures django-newletter to use these applications for relevant
-model fields, admin fields, and template thumbnails.
+    # Without a thumbnailing application
+    NEWSLETTER_THUMBNAIL = 'no-thumbnail'
+
+`sorl-thumbnail <https://pypi.org/project/sorl-thumbnail/>`_ and
+`easy-thumbnails <https://pypi.org/project/easy-thumbnails/>`_ need to be
+installed and added to ``INSTALLED_APPS`` following their own instructions.
+django-newsletter then uses them for the article image model field, the admin
+widget and the thumbnails in message templates.
+
+With ``'no-thumbnail'``, article images use Django's ``ImageField`` and no
+thumbnails are generated. Messages link to the original image and scale it
+with the ``width`` and ``height`` attributes of the ``<img>`` tag.
+
+If ``NEWSLETTER_THUMBNAIL`` is not set, django-newsletter shows a warning at
+startup and uses sorl-thumbnail, which then needs to be installed.
 
 Optional Settings
 ^^^^^^^^^^^^^^^^^
@@ -82,44 +86,30 @@ installation, the widgets can be selected as follows::
 If not set, django-newsletter will fall back to Django's default TextField
 widget.
 
-.. note::
-    django-tinymce 3 and higher do not support Python 3.5.
-
-Configure thumbnailing applications
------------------------------------
-To improve the user experience and performance of django-newsletter,
-you may use various thumbnailing applications to automatically thumbnail
-article images in newsletter messages.
-
-Currently two applications are supported by default:
-`easy-thumbnails <https://pypi.org/project/easy-thumbnails/>`_ and
-`sorl-thumbnail <https://pypi.org/project/sorl-thumbnail/>`_.
-
-First you will need to install the thumbnailing application (as per the
-applications instructions). Afterwards the thumbnailing application can be
-selected as follows::
-
-    # Using sorl-thumbnail
-    NEWSLETTER_THUMBNAIL = 'sorl-thumbnail'
-
-    # Using easy-thumbnails
-    NEWSLETTER_THUMBNAIL = 'easy-thumbnails'
-
-This configures django-newletter to use these applications for relevant
-model fields, admin fields, and template thumbnails.
-
-If not set, django-newsletter will fall back to Django's default ImageField
-and implement rudimentary thumbnailing with Pillow.
-
-The thumbnail jpeg quality can be set with ``NEWSLETTER_THUMBNAIL_QUALITY``.
-The value can range from 1 to 100. Defaults to 95.
+Thumbnail quality
+-----------------
+The JPEG quality of generated thumbnails can be set from 1 to 100 with::
 
     NEWSLETTER_THUMBNAIL_QUALITY = 95
 
+Defaults to ``95``. It has no effect with ``NEWSLETTER_THUMBNAIL = 'no-thumbnail'``,
+as no thumbnails are generated.
+
+HTTPS links
+-----------
+Links in emails and in the online archive use ``https`` by default. This
+covers activation, unsubscribe and "read online" links, image URLs and the
+``List-Unsubscribe`` header. To generate ``http`` links instead, add to
+``settings.py``::
+
+    NEWSLETTER_USE_HTTPS = False
+
+If not set, django-newsletter shows a warning at startup and uses ``True``.
 
 Delay and batch size
 --------------------
-The delay between each email, batches en batch size can be specified with e.g.::
+The delay between each email, the delay between batches and the batch size
+can be specified with e.g.::
 
     # Amount of seconds to wait between each email. Here 100ms is used.
     NEWSLETTER_EMAIL_DELAY = 0.1
