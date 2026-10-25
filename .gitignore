@@ -2,6 +2,7 @@ settings_local.py
 static/newsletter/images
 portnumber
 database.sqlite
+db.sqlite3
 *.pyc
 *.pyo
 build
@@ -23,3 +24,4 @@ coverage.xml
 cache/
 CLAUDE.md
 AGENTS.md
+uv.lock
