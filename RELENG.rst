@@ -47,9 +47,12 @@ Steps
    package, uploads it to Jazzband and creates a draft GitHub release. The test
    workflow runs on the tag as well. Check on GitHub Actions that both
    succeeded before going on.
-#. Release the upload to PyPI from the project page on
-   `Jazzband <https://jazzband.co/projects/django-newsletter>`_ (project leads
-   only).
-#. Review the draft release that ``release.yml`` created on GitHub. Replace the
-   generated notes with the ``CHANGES.rst`` entry if you prefer, then publish
-   it once the package is on PyPI.
+#. Release the uploads to PyPI (project leads only). Jazzband emails the leads
+   once for each uploaded file, so expect two emails, one for the wheel and one
+   for the source distribution. Open the project page on
+   `Jazzband <https://jazzband.co/projects/django-newsletter>`_ (or follow the
+   links in the emails), check the uploads against the commits in the
+   repository, and release both.
+#. Review the draft release that ``release.yml`` created on GitHub. Its notes
+   are the entry for this version in ``CHANGES.rst``. Publish it once the
+   package is on PyPI.

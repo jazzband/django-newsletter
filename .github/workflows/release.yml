@@ -47,17 +47,51 @@ jobs:
       contents: write
 
     steps:
+      - uses: actions/checkout@v4
+
       - name: Create draft GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # Use the section of CHANGES.rst for this version as the release notes
+          version="${GITHUB_REF_NAME#v}"
+          awk -v v="$version" '
+            /^[0-9]/ { if (found) exit; found = ($1 == v); skip = found; next }
+            skip && /^-+$/ { skip = 0; next }
+            found { print }
+          ' CHANGES.rst | sed -e '/./,$!d' > notes.md
+
+          # Add the new contributors and the compare link from GitHub's
+          # generated notes, without its list of pull requests
+          if [ -s notes.md ]; then
+            { echo "## What's Changed"; cat notes.md; } > notes.tmp
+            mv notes.tmp notes.md
+            gh api "repos/$GITHUB_REPOSITORY/releases/generate-notes" \
+              -f tag_name="$GITHUB_REF_NAME" --jq .body > generated.md || true
+            awk '
+              /^## What.s Changed/ { skip = 1; next }
+              /^## / || /^\*\*Full Changelog/ { skip = 0 }
+              !skip { print }
+            ' generated.md | sed -e '/./,$!d' > extra.md
+            if [ -s extra.md ]; then
+              printf '\n' >> notes.md
+              cat extra.md >> notes.md
+            fi
+          fi
+
           flags=""
           if [[ "$GITHUB_REF_NAME" =~ [0-9](a|b|rc)[0-9]+$ ]]; then
             flags="--prerelease"
+          fi
+          if [ -s notes.md ]; then
+            notes="--notes-file notes.md"
+          else
+            echo "No CHANGES.rst section for $version, generating notes instead"
+            notes="--generate-notes"
           fi
           gh release create "$GITHUB_REF_NAME" \
             --repo "$GITHUB_REPOSITORY" \
             --verify-tag \
             --draft \
-            --generate-notes \
+            $notes \
             $flags
