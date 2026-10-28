@@ -5,7 +5,9 @@ Release engineering
 Steps to publish a new release. Versions come from git tags through
 setuptools-scm, so there is no version number to bump in the code.
 
-The translation commands need GNU gettext and the Transifex client (``tx``).
+The translation commands need GNU gettext and the `Transifex CLI
+<https://github.com/transifex/cli>`_ (``tx``), which needs a Transifex API
+token.
 
 Steps
 =====
@@ -29,7 +31,7 @@ Steps
 #. Send out an announcement to translators on Transifex.
 #. Pull in the latest translations and compile them::
 
-    $ tx pull -f
+    $ tx pull -f --minimum-perc 85
     $ cd newsletter
     $ django-admin compilemessages
 

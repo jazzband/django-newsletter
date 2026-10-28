@@ -1,15 +1,19 @@
 [main]
 host = https://www.transifex.com
-minimum-perc = 85
 
-[django-newsletter.djangojs]
-file_filter = newsletter/locale/<lang>/LC_MESSAGES/djangojs.po
-source_file = newsletter/locale/en/LC_MESSAGES/djangojs.po
-source_lang = en
-type = PO
+[o:dokterbob:p:django-newsletter:r:django]
+file_filter            = newsletter/locale/<lang>/LC_MESSAGES/django.po
+source_file            = newsletter/locale/en/LC_MESSAGES/django.po
+source_lang            = en
+type                   = PO
+replace_edited_strings = false
+keep_translations      = false
 
-[django-newsletter.django]
-file_filter = newsletter/locale/<lang>/LC_MESSAGES/django.po
-source_file = newsletter/locale/en/LC_MESSAGES/django.po
-source_lang = en
-type = PO
+[o:dokterbob:p:django-newsletter:r:djangojs]
+file_filter            = newsletter/locale/<lang>/LC_MESSAGES/djangojs.po
+source_file            = newsletter/locale/en/LC_MESSAGES/djangojs.po
+source_lang            = en
+type                   = PO
+replace_edited_strings = false
+keep_translations      = false
+
