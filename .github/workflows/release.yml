@@ -38,3 +38,26 @@ jobs:
           user: jazzband
           password: ${{ secrets.JAZZBAND_RELEASE_KEY }}
           repository-url: https://jazzband.co/projects/django-newsletter/upload
+
+  github-release:
+    if: github.repository == 'jazzband/django-newsletter'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Create draft GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          flags=""
+          if [[ "$GITHUB_REF_NAME" =~ [0-9](a|b|rc)[0-9]+$ ]]; then
+            flags="--prerelease"
+          fi
+          gh release create "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --draft \
+            --generate-notes \
+            $flags
