@@ -1,8 +1,10 @@
 Changes
 =======
 
-Unreleased
-----------
+1.3.0 (2026-10-28)
+------------------
+- Add support for Django 6.1
+- Add support for Python 3.14 and 3.15
 - Add NEWSLETTER_MAILER setting to send newsletters through a separate mailer (Django 6.1+)
 - Add NEWSLETTER_THUMBNAIL_QUALITY setting (defaults to 95)
 - Add NEWSLETTER_VALIDATE_NO_USER setting to skip checking if the email belongs to a user
