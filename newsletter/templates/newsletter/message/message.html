@@ -25,7 +25,7 @@
         <li><a href="{{ site_url }}{{ submission.get_absolute_url }}">{% trans "Read message online" %}</a></li>
         {% endif %}
         {% if newsletter.enable_unsubscribe %}
-        <li><a href="{{ site_url }}{% url 'newsletter_unsubscribe_request' newsletter.slug %}">{% trans "Unsubscribe" %}</a></li>
+        <li><a href="{{ site_url }}{% url 'newsletter:unsubscribe_request' newsletter.slug %}">{% trans "Unsubscribe" %}</a></li>
         {% endif %}
     </ul>
     {% if attachment_links %}
