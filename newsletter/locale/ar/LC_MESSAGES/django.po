@@ -12,72 +12,75 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-newsletter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-20 12:07+0000\n"
-"PO-Revision-Date: 2020-02-20 12:07+0000\n"
-"Last-Translator: dokterbob <mathijs@mathijsfietst.nl>\n"
-"Language-Team: Arabic (http://www.transifex.com/dokterbob/django-newsletter/language/ar/)\n"
+"POT-Creation-Date: 2020-10-24 20:48+0100\n"
+"PO-Revision-Date: 2010-11-30 06:53+0000\n"
+"Last-Translator: Bashar Al-Abdulhadi, 2015,2018\n"
+"Language-Team: Arabic (http://app.transifex.com/dokterbob/django-newsletter/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: addressimport/parsers.py:40
+#: newsletter/addressimport/parsers.py:40
 #, python-format
 msgid "Entry '%s' does not contain a valid e-mail address."
 msgstr "السجل  '%s' لا يتضمن عنوان بريد إلكتروني صحيح."
 
-#: addressimport/parsers.py:55
+#: newsletter/addressimport/parsers.py:55
 #, python-format
 msgid "The address file contains duplicate entries for '%s'."
 msgstr "ملف العناوين يتضمن عناوين مكرره للسجل '%s'."
 
-#: addressimport/parsers.py:69
+#: newsletter/addressimport/parsers.py:69
 msgid "Some entries are already subscribed to."
 msgstr "بعض المدخلات مشتركة سلفا في."
 
-#: addressimport/parsers.py:108
+#: newsletter/addressimport/parsers.py:108
 #, python-format
 msgid ""
 "E-mail address %(email)s too long, maximum length is %(email_length)s "
 "characters."
 msgstr "عنوان البريد الإلكتروني %(email)s طويل جدا، والحد الأقصى هو %(email_length)s حرف."
 
-#: addressimport/parsers.py:135
+#: newsletter/addressimport/parsers.py:135
 #, python-format
 msgid "Name %(name)s too long, maximum length is %(name_length)s characters."
 msgstr "الإسم %(name)s طويل جدا, الحد الأقصى هو %(name_length)s حرف."
 
-#: addressimport/parsers.py:196 addressimport/parsers.py:208
-#: addressimport/parsers.py:243 models.py:147
+#: newsletter/addressimport/parsers.py:196
+#: newsletter/addressimport/parsers.py:208
+#: newsletter/addressimport/parsers.py:243 newsletter/models.py:146
 msgid "name"
 msgstr "الاسم"
 
-#: addressimport/parsers.py:200
+#: newsletter/addressimport/parsers.py:200
 msgid "display"
 msgstr "عرض"
 
-#: addressimport/parsers.py:207
+#: newsletter/addressimport/parsers.py:207
 #, python-format
 msgid ""
 "Name column not found. The name of this column should be either 'name' or "
 "'%s'."
 msgstr "لم يتم العثور على اسم العمود. يجب أن يكون اسم هذا العمود إما 'اسم' أو '%s'."
 
-#: addressimport/parsers.py:219 addressimport/parsers.py:231
-#: addressimport/parsers.py:244 forms.py:44 forms.py:79 forms.py:134
-#: models.py:41 models.py:161
+#: newsletter/addressimport/parsers.py:219
+#: newsletter/addressimport/parsers.py:231
+#: newsletter/addressimport/parsers.py:244 newsletter/forms.py:44
+#: newsletter/forms.py:79 newsletter/forms.py:134 newsletter/models.py:41
+#: newsletter/models.py:160
 msgid "e-mail"
 msgstr "البريد الإلكتروني"
 
-#: addressimport/parsers.py:229
+#: newsletter/addressimport/parsers.py:229
 #, python-format
 msgid ""
 "E-mail column not found. The name of this column should be either 'email', "
 "'e-mail' or '%(email)s'."
 msgstr "لم يتم العثور على اسم عمود البريد الإلكتروني. يجب أن يكون اسم هذا العمود إما 'email' أو '%(email)s'."
 
-#: addressimport/parsers.py:239
+#: newsletter/addressimport/parsers.py:239
 #, python-format
 #| msgid ""
 #| "not properly determine the proper columns in the CSV-file. There uld be aeld"
@@ -88,118 +91,122 @@ msgid ""
 "'%(email)s'."
 msgstr ""
 
-#: addressimport/parsers.py:264
+#: newsletter/addressimport/parsers.py:264
 #, python-format
 msgid "Row with content '%(row)s' does not contain a name and email field."
 msgstr "الصف الذي يحتوي على '%(row)s' لا تحتوي على حقول الاسم والبريد الإلكتروني."
 
-#: addressimport/parsers.py:290
+#: newsletter/addressimport/parsers.py:290
 #, python-format
 msgid "Error reading vCard file: %s"
 msgstr "خطأ بقراءة ملف vCard: %s"
 
-#: addressimport/parsers.py:309
+#: newsletter/addressimport/parsers.py:309
 #, python-format
 msgid "Entry '%s' contains no email address."
 msgstr "السجل '%s' لا يتضمن بريد إلكتروني."
 
-#: addressimport/parsers.py:345
+#: newsletter/addressimport/parsers.py:345
 msgid "Some entries have no e-mail address."
 msgstr "بعض المدخلات لا تتضمن عنوان بريد إلكتروني."
 
-#: admin.py:79
+#: newsletter/admin.py:89
 msgid "Messages"
 msgstr "الرسائل"
 
-#: admin.py:83
-#: templates/admin/newsletter/subscription/confirmimportform.html:16
-#: templates/admin/newsletter/subscription/importform.html:16
+#: newsletter/admin.py:93
+#: newsletter/templates/admin/newsletter/subscription/confirmimportform.html:16
+#: newsletter/templates/admin/newsletter/subscription/importform.html:16
 msgid "Subscriptions"
 msgstr "الاشتراكات"
 
-#: admin.py:87
+#: newsletter/admin.py:97
 msgid "Submissions"
 msgstr "الإرساليات"
 
-#: admin.py:99 models.py:104 models.py:281 models.py:458 models.py:673
+#: newsletter/admin.py:109 newsletter/models.py:104 newsletter/models.py:280
+#: newsletter/models.py:492 newsletter/models.py:709
 msgid "newsletter"
 msgstr "قائمة التراسل"
 
-#: admin.py:117 models.py:528
+#: newsletter/admin.py:127 newsletter/models.py:561
 msgid "submission"
 msgstr "الإرسالية"
 
-#: admin.py:124
+#: newsletter/admin.py:134
 msgid "publish date"
 msgstr "تاريخ النشر"
 
-#: admin.py:154
+#: newsletter/admin.py:164
 msgid "Sent."
 msgstr "أرسلت"
 
-#: admin.py:157
+#: newsletter/admin.py:167
 msgid "Delayed submission."
 msgstr "عملية إرسال متأخرة"
 
-#: admin.py:159
+#: newsletter/admin.py:169
 msgid "Submitting."
 msgstr "جاري الإرسال"
 
-#: admin.py:161
+#: newsletter/admin.py:171
 msgid "Not sent."
 msgstr "غير مرسل"
 
-#: admin.py:162 admin.py:389 admin_forms.py:115
+#: newsletter/admin.py:172 newsletter/admin.py:427
+#: newsletter/admin_forms.py:115
 msgid "Status"
 msgstr "الوضعية"
 
-#: admin.py:169
+#: newsletter/admin.py:179
 msgid "Submission already sent."
 msgstr "عملية الإرسال تم إرسالها سلفا."
 
-#: admin.py:178
+#: newsletter/admin.py:188
 msgid "Your submission is being sent."
 msgstr "جاري تنفيذ عملية الإرسال."
 
-#: admin.py:225
+#: newsletter/admin.py:253
 msgid "Optional"
 msgstr "اختياري"
 
-#: admin.py:253 models.py:425 models.py:469 models.py:677
+#: newsletter/admin.py:290 newsletter/models.py:423 newsletter/models.py:473
+#: newsletter/models.py:503 newsletter/models.py:713
 msgid "message"
 msgstr "الرسالة"
 
-#: admin.py:258 templates/admin/newsletter/message/change_form.html:8
-#: templates/admin/newsletter/message/preview.html:13
+#: newsletter/admin.py:295
+#: newsletter/templates/admin/newsletter/message/change_form.html:8
+#: newsletter/templates/admin/newsletter/message/preview.html:13
 msgid "Preview"
 msgstr "معاينة"
 
-#: admin.py:275 views.py:611
+#: newsletter/admin.py:313 newsletter/views.py:623
 msgid ""
 "No HTML template associated with the newsletter this message belongs to."
 msgstr "لا يوجد قالب HTML مرتبط مع قائمة التراسل تعود ملكية لهذه الرسالة"
 
-#: admin.py:384 admin_forms.py:103
+#: newsletter/admin.py:422 newsletter/admin_forms.py:103
 msgid "Subscribed"
 msgstr "مشترك"
 
-#: admin.py:386 admin_forms.py:104
+#: newsletter/admin.py:424 newsletter/admin_forms.py:104
 msgid "Unsubscribed"
 msgstr "إلغاء الإشتراك"
 
-#: admin.py:388
+#: newsletter/admin.py:426
 msgid "Unactivated"
 msgstr "غير فعّال"
 
-#: admin.py:396 models.py:295
+#: newsletter/admin.py:434 newsletter/models.py:294
 msgid "subscribe date"
 msgstr "تاريخ الإشتراك"
 
-#: admin.py:403 models.py:303
+#: newsletter/admin.py:441 newsletter/models.py:302
 msgid "unsubscribe date"
 msgstr "تاريخ إلغاء الإشتراك"
 
-#: admin.py:411
+#: newsletter/admin.py:449
 #, python-format
 msgid "%d user has been successfully subscribed."
 msgid_plural "%d users have been successfully subscribed."
@@ -210,11 +217,11 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: admin.py:416
+#: newsletter/admin.py:454
 msgid "Subscribe selected users"
 msgstr "تسجيل المستخدمين المحددين"
 
-#: admin.py:423
+#: newsletter/admin.py:461
 #, python-format
 msgid "%d user has been successfully unsubscribed."
 msgid_plural "%d users have been successfully unsubscribed."
@@ -225,11 +232,11 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: admin.py:428
+#: newsletter/admin.py:466
 msgid "Unsubscribe selected users"
 msgstr "إلفاء إشتراك المستخدمين المحددين"
 
-#: admin.py:484
+#: newsletter/admin.py:522
 #, python-format
 msgid "%d subscription has been successfully added."
 msgid_plural "%d subscriptions have been successfully added."
@@ -240,405 +247,428 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: admin_forms.py:43
+#: newsletter/admin_forms.py:43
 #, python-format
 msgid "File type '%s' was not recognized."
 msgstr "لم يتم التعرف على نوع الملف '%s'."
 
-#: admin_forms.py:60
+#: newsletter/admin_forms.py:60
 #, python-format
 msgid "File extension '%s' was not recognized."
 msgstr "لم يتم التعرف على امتداد الملف '%s' ."
 
-#: admin_forms.py:64
+#: newsletter/admin_forms.py:64
 msgid "No entries could found in this file."
 msgstr "لا سجلات موجودة في هذا الملف."
 
-#: admin_forms.py:72
-#: templates/admin/newsletter/subscription/confirmimportform.html:12
-#: templates/admin/newsletter/subscription/importform.html:12
-#: templates/newsletter/common.html:6
-#: templates/newsletter/newsletter_detail.html:10
-#: templates/newsletter/newsletter_list.html:14
-#: templates/newsletter/newsletter_list.html:32
-#: templates/newsletter/subscription_activate.html:5
-#: templates/newsletter/subscription_activate.html:8
-#: templates/newsletter/subscription_subscribe_activated.html:5
-#: templates/newsletter/subscription_subscribe_activated.html:8
-#: templates/newsletter/subscription_unsubscribe_activated.html:5
-#: templates/newsletter/subscription_unsubscribe_activated.html:8
-#: templates/newsletter/subscription_update_activated.html:5
-#: templates/newsletter/subscription_update_activated.html:8
+#: newsletter/admin_forms.py:72
+#: newsletter/templates/admin/newsletter/subscription/confirmimportform.html:12
+#: newsletter/templates/admin/newsletter/subscription/importform.html:12
+#: newsletter/templates/newsletter/common.html:6
+#: newsletter/templates/newsletter/newsletter_detail.html:10
+#: newsletter/templates/newsletter/newsletter_list.html:14
+#: newsletter/templates/newsletter/newsletter_list.html:32
+#: newsletter/templates/newsletter/subscription_activate.html:5
+#: newsletter/templates/newsletter/subscription_activate.html:8
+#: newsletter/templates/newsletter/subscription_subscribe_activated.html:5
+#: newsletter/templates/newsletter/subscription_subscribe_activated.html:8
+#: newsletter/templates/newsletter/subscription_unsubscribe_activated.html:5
+#: newsletter/templates/newsletter/subscription_unsubscribe_activated.html:8
+#: newsletter/templates/newsletter/subscription_update_activated.html:5
+#: newsletter/templates/newsletter/subscription_update_activated.html:8
 msgid "Newsletter"
 msgstr "قائمة التراسل"
 
-#: admin_forms.py:75
+#: newsletter/admin_forms.py:75
 msgid "Address file"
 msgstr "ملف العنوان"
 
-#: admin_forms.py:77
+#: newsletter/admin_forms.py:77
 msgid "Ignore non-fatal errors"
 msgstr "تجاهل الأخطاء الغير فادحة"
 
-#: admin_forms.py:88
+#: newsletter/admin_forms.py:88
 msgid "You should confirm in order to continue."
 msgstr "يجب عليك التأكيد من أجل المتابعة."
 
-#: admin_forms.py:91
-#: templates/admin/newsletter/subscription/confirmimportform.html:23
-#: templates/admin/newsletter/subscription/confirmimportform.html:28
+#: newsletter/admin_forms.py:91
+#: newsletter/templates/admin/newsletter/subscription/confirmimportform.html:23
+#: newsletter/templates/admin/newsletter/subscription/confirmimportform.html:28
 msgid "Confirm import"
 msgstr "تأكيد الإستيراد"
 
-#: admin_forms.py:121 admin_forms.py:129
+#: newsletter/admin_forms.py:121 newsletter/admin_forms.py:129
 msgid "If a user has been selected this field should remain empty."
 msgstr "إذا تم تحديد مستخدم هذا الحقل يجبأن يطل فارغا."
 
-#: admin_forms.py:139
+#: newsletter/admin_forms.py:139
 msgid "Either a user must be selected or an email address must be specified."
 msgstr "إما يجب تحديد مستخدم أو يجب تحديد عنوان بريد إلكتروني."
 
-#: admin_forms.py:164
+#: newsletter/admin_forms.py:164
 msgid ""
 "This message has already been published in some other submission. Messages "
 "can only be published once."
 msgstr "وقد تم بالفعل نشر هذه الرسالة في بعض تقديمها الإرسالات الأخرى. الرسائل لا يمكن أن يتم نشرها إلا مرة واحدة."
 
-#: admin_utils.py:25
+#: newsletter/admin_utils.py:25
 #, python-format
 #| msgid "%(name)s object with primary key %(key)r does not exist."
 msgid "%(name)s object with primary key '%(key)s' does not exist."
 msgstr ""
 
-#: forms.py:59
+#: newsletter/forms.py:59
 msgid "Your e-mail address has already been subscribed to."
 msgstr " عنوان البريد الإلكتروني الخاص بك مسجل سلفا في."
 
-#: forms.py:88
+#: newsletter/forms.py:88
 msgid "This subscription has not yet been activated."
 msgstr "هذا الإشتراك لم يتم تفعيله حتى الآن."
 
-#: forms.py:106
+#: newsletter/forms.py:106
 msgid "This e-mail address has not been subscribed to."
 msgstr "هذا البريد الإلكتروني غير مسجّل في."
 
-#: forms.py:121
+#: newsletter/forms.py:121
 msgid "This subscription has already been unsubscribed from."
 msgstr "هذا الإشتراك تم إلغاء اشتراكه سلفا من."
 
-#: forms.py:142
+#: newsletter/forms.py:142
 msgid "The validation code supplied by you does not match."
 msgstr "رمز التحقق المُقدم من قبلكم غير مطابقة."
 
-#: forms.py:148
+#: newsletter/forms.py:148
 msgid "Activation code"
 msgstr "رمز التفعيل"
 
-#: management/commands/submit_newsletter.py:14
+#: newsletter/management/commands/submit_newsletter.py:14
 msgid "Submit pending messages."
 msgstr ""
 
-#: management/commands/submit_newsletter.py:30
+#: newsletter/management/commands/submit_newsletter.py:30
 msgid "Submitting queued newsletter mailings"
 msgstr "إرسال قوائم التراسل التي في قائمة الإنتظار"
 
-#: models.py:36
+#: newsletter/models.py:36
 msgid "newsletter title"
 msgstr "عنوان قائمة التراسل"
 
-#: models.py:41
+#: newsletter/models.py:41
 msgid "Sender e-mail"
 msgstr "بريد المُرسِل"
 
-#: models.py:44
+#: newsletter/models.py:44
 msgid "sender"
 msgstr "المرسل"
 
-#: models.py:44
+#: newsletter/models.py:44
 msgid "Sender name"
 msgstr "إسم المرسل"
 
-#: models.py:48
+#: newsletter/models.py:48
 msgid "visible"
 msgstr "مرئي"
 
-#: models.py:52
+#: newsletter/models.py:52
 msgid "send html"
 msgstr "أرسل HTML"
 
-#: models.py:53
+#: newsletter/models.py:53
 msgid "Whether or not to send HTML versions of e-mails."
 msgstr "نعم ام لا لإرسال إصدارات HTML من رسائل البريد الإلكتروني."
 
-#: models.py:105
+#: newsletter/models.py:105
 msgid "newsletters"
 msgstr "قوائم التراسل"
 
-#: models.py:141
+#: newsletter/models.py:140
 msgid "user"
 msgstr "مستخدم"
 
-#: models.py:147
+#: newsletter/models.py:146
 msgid "optional"
 msgstr "اختياري"
 
-#: models.py:191
+#: newsletter/models.py:190
 #, python-format
 msgid "Updated subscription %(subscription)s to %(action)s."
 msgstr "تحديث الإشتراكات  %(subscription)s لـ %(action)s."
 
-#: models.py:232
+#: newsletter/models.py:231
 msgid "Neither an email nor a username is set. This asks for inconsistency!"
 msgstr "لم يتم تعيين بريد إلكتروني او إسم مستخدم. هذا يسبب تناقض!"
 
-#: models.py:236
+#: newsletter/models.py:235
 msgid "If user is set, email must be null and vice versa."
 msgstr "إذا تم تعيين المستخدم، يجب أن يكون البريد الإلكتروني لاغيا والعكس صحيح."
 
-#: models.py:278
+#: newsletter/models.py:277
 msgid "IP address"
 msgstr "عنوان IP"
 
-#: models.py:287
+#: newsletter/models.py:286
 msgid "activation code"
 msgstr "تاريخ التفعيل"
 
-#: models.py:292
+#: newsletter/models.py:291
 msgid "subscribed"
 msgstr "مشترك"
 
-#: models.py:300
+#: newsletter/models.py:299
 msgid "unsubscribed"
 msgstr "تم إلغاء الإشتراك"
 
-#: models.py:308
+#: newsletter/models.py:307
 #, python-format
 msgid "%(name)s <%(email)s> to %(newsletter)s"
 msgstr "%(name)s <%(email)s> لـ %(newsletter)s"
 
-#: models.py:315
+#: newsletter/models.py:314
 #, python-format
 msgid "%(email)s to %(newsletter)s"
 msgstr "%(email)s لـ %(newsletter)s"
 
-#: models.py:321
+#: newsletter/models.py:320
 msgid "subscription"
 msgstr "الإشتراك"
 
-#: models.py:322
+#: newsletter/models.py:321
 msgid "subscriptions"
 msgstr "الإشتراكات"
 
-#: models.py:404
+#: newsletter/models.py:402
 msgid ""
 "Sort order determines the order in which articles are concatenated in a "
 "post."
 msgstr "أمر الترتيب يُحدد وضعية تسلسل المقالات في الإرسالية."
 
-#: models.py:406
+#: newsletter/models.py:404
 msgid "sort order"
 msgstr "أمر الترتيب"
 
-#: models.py:409 models.py:454
+#: newsletter/models.py:407 newsletter/models.py:488
 msgid "title"
 msgstr "العنوان"
 
-#: models.py:410
+#: newsletter/models.py:408
 msgid "text"
 msgstr "النص"
 
-#: models.py:413
+#: newsletter/models.py:411
 msgid "link"
 msgstr "رابط"
 
-#: models.py:419
+#: newsletter/models.py:417
 msgid "image"
 msgstr "صورة"
 
-#: models.py:431
+#: newsletter/models.py:429
 msgid "article"
 msgstr "مقالة"
 
-#: models.py:432
+#: newsletter/models.py:430
 msgid "articles"
 msgstr "مقالات"
 
-#: models.py:455
+#: newsletter/models.py:457 newsletter/models.py:469
+msgid "attachment"
+msgstr ""
+
+#: newsletter/models.py:458
+msgid "attachments"
+msgstr ""
+
+#: newsletter/models.py:461
+#, python-format
+#| msgid "%(title)s in %(newsletter)s"
+msgid "%(file_name)s on %(message)s"
+msgstr ""
+
+#: newsletter/models.py:489
 msgid "slug"
 msgstr "slug"
 
-#: models.py:462
+#: newsletter/models.py:496
 msgid "created"
 msgstr "أنشئ"
 
-#: models.py:465
+#: newsletter/models.py:499
 msgid "modified"
 msgstr "تم التعديل"
 
-#: models.py:470
+#: newsletter/models.py:504
 msgid "messages"
 msgstr "الرسائل"
 
-#: models.py:475
+#: newsletter/models.py:509
 #, python-format
 msgid "%(title)s in %(newsletter)s"
 msgstr "%(title)s في %(newsletter)s"
 
-#: models.py:529
+#: newsletter/models.py:562
 msgid "submissions"
 msgstr "الإرساليات"
 
-#: models.py:532
+#: newsletter/models.py:565
 #, python-format
 msgid "%(newsletter)s on %(publish_date)s"
 msgstr "%(newsletter)s في %(publish_date)s"
 
-#: models.py:551
+#: newsletter/models.py:584
 #, python-format
 msgid "Submitting %(submission)s to %(count)d people"
 msgstr "إرسال %(submission)s إلى %(count)d شخص"
 
-#: models.py:610
+#: newsletter/models.py:648
 #, python-format
 msgid "Submitting message to: %s."
 msgstr "إرسال الرسالى إلى: %s."
 
-#: models.py:619
+#: newsletter/models.py:657
 #, python-format
 msgid "Message %(subscription)s failed with error: %(error)s"
 msgstr "الرسالة %(subscription)s فشلت بسبب: %(error)s"
 
-#: models.py:637
+#: newsletter/models.py:675
 #, python-format
 msgid "Submission of message %s"
 msgstr "إرساليات من الرسائل %s"
 
-#: models.py:683
+#: newsletter/models.py:719
 msgid ""
 "If you select none, the system will automatically find the subscribers for "
 "you."
 msgstr "إن لم تختار أي مشترك, النظام سوف يختار مشتركين لك بشكل تلقائي."
 
-#: models.py:685
+#: newsletter/models.py:721
 msgid "recipients"
 msgstr "المستلمين"
 
-#: models.py:690
+#: newsletter/models.py:726
 msgid "publication date"
 msgstr "تاريخ النشر"
 
-#: models.py:694
+#: newsletter/models.py:730
 msgid "publish"
 msgstr "انشر"
 
-#: models.py:695
+#: newsletter/models.py:731
 msgid "Publish in archive."
 msgstr "انشر في الأرشيف."
 
-#: models.py:699
+#: newsletter/models.py:735
 msgid "prepared"
 msgstr "مجهّز"
 
-#: models.py:703
+#: newsletter/models.py:739
 msgid "sent"
 msgstr "تم الإرسال"
 
-#: models.py:707
+#: newsletter/models.py:743
 msgid "sending"
 msgstr "جاري الإرسال"
 
-#: templates/admin/newsletter/message/preview.html:5
-#: templates/admin/newsletter/message/preview.html:19
+#: newsletter/templates/admin/newsletter/message/preview.html:5
+#: newsletter/templates/admin/newsletter/message/preview.html:19
 msgid "Preview message"
 msgstr "معاينة الرسالة"
 
-#: templates/admin/newsletter/message/preview.html:9
-#: templates/admin/newsletter/subscription/confirmimportform.html:8
-#: templates/admin/newsletter/subscription/importform.html:8
+#: newsletter/templates/admin/newsletter/message/preview.html:9
+#: newsletter/templates/admin/newsletter/subscription/confirmimportform.html:8
+#: newsletter/templates/admin/newsletter/subscription/importform.html:8
 msgid "Home"
 msgstr "الرئيسية"
 
-#: templates/admin/newsletter/message/preview.html:11
+#: newsletter/templates/admin/newsletter/message/preview.html:11
 msgid "Message"
 msgstr "الرسالة"
 
-#: templates/admin/newsletter/message/preview.html:22
-#: templates/admin/newsletter/subscription/importform.html:28
+#: newsletter/templates/admin/newsletter/message/preview.html:22
+#: newsletter/templates/admin/newsletter/subscription/importform.html:28
 msgid "Change"
 msgstr "تغيير"
 
-#: templates/admin/newsletter/message/preview.html:23
-#: templates/admin/newsletter/subscription/importform.html:29
+#: newsletter/templates/admin/newsletter/message/preview.html:23
+#: newsletter/templates/admin/newsletter/subscription/importform.html:29
 msgid "Create submission"
 msgstr "إنشاء إرسالية"
 
-#: templates/admin/newsletter/message/preview.html:26
+#: newsletter/templates/admin/newsletter/message/preview.html:26
+#: newsletter/templates/newsletter/message/message.html:31
+msgid "Attachments"
+msgstr ""
+
+#: newsletter/templates/admin/newsletter/message/preview.html:31
+msgid "No Attachments"
+msgstr ""
+
+#: newsletter/templates/admin/newsletter/message/preview.html:36
 msgid "HTML"
 msgstr "HTML"
 
-#: templates/admin/newsletter/message/preview.html:30
+#: newsletter/templates/admin/newsletter/message/preview.html:40
 msgid "Text"
 msgstr "النص"
 
-#: templates/admin/newsletter/submission/change_form.html:16
+#: newsletter/templates/admin/newsletter/submission/change_form.html:16
 msgid "Submit"
 msgstr "أرسل"
 
-#: templates/admin/newsletter/subscription/change_list.html:5
+#: newsletter/templates/admin/newsletter/subscription/change_list.html:5
 msgid "Import"
 msgstr "إستيراد"
 
-#: templates/admin/newsletter/subscription/confirmimportform.html:3
-#: templates/admin/newsletter/subscription/confirmimportform.html:20
-#: templates/admin/newsletter/subscription/importform.html:3
-#: templates/admin/newsletter/subscription/importform.html:19
-#: templates/admin/newsletter/subscription/importform.html:24
+#: newsletter/templates/admin/newsletter/subscription/confirmimportform.html:3
+#: newsletter/templates/admin/newsletter/subscription/confirmimportform.html:20
+#: newsletter/templates/admin/newsletter/subscription/importform.html:3
+#: newsletter/templates/admin/newsletter/subscription/importform.html:19
+#: newsletter/templates/admin/newsletter/subscription/importform.html:24
 msgid "Import addresses"
 msgstr "إستيراد عناوين"
 
-#: templates/admin/newsletter/subscription/confirmimportform.html:40
+#: newsletter/templates/admin/newsletter/subscription/confirmimportform.html:40
 msgid "Confirm"
 msgstr "تأكيد"
 
-#: templates/admin/newsletter/subscription/importform.html:37
+#: newsletter/templates/admin/newsletter/subscription/importform.html:37
 msgid "Upload"
 msgstr "رفع"
 
-#: templates/newsletter/message/message.html:21
+#: newsletter/templates/newsletter/message/message.html:19
 msgid "Read more"
 msgstr "قراءة المزيد"
 
-#: templates/newsletter/message/message.html:27
+#: newsletter/templates/newsletter/message/message.html:24
 msgid "Read message online"
 msgstr "قراءة الرسالة من خلال المتصفح"
 
-#: templates/newsletter/message/message.html:29
-#: templates/newsletter/newsletter_detail.html:21
-#: templates/newsletter/subscription_unsubscribe.html:23
-#: templates/newsletter/subscription_unsubscribe_user.html:23
+#: newsletter/templates/newsletter/message/message.html:26
+#: newsletter/templates/newsletter/newsletter_detail.html:21
+#: newsletter/templates/newsletter/subscription_unsubscribe.html:23
+#: newsletter/templates/newsletter/subscription_unsubscribe_user.html:23
 msgid "Unsubscribe"
 msgstr "إلغاء الإشتراك"
 
-#: templates/newsletter/message/message.txt:15
+#: newsletter/templates/newsletter/message/message.txt:15
 msgid "Unsubscribe:"
 msgstr "إلغاء الإشتراك:"
 
-#: templates/newsletter/message/subscribe.html:6
+#: newsletter/templates/newsletter/message/subscribe.html:6
 #, python-format
 msgid "Subscription to %(title)s"
 msgstr "التسجيل في %(title)s"
 
-#: templates/newsletter/message/subscribe.html:10
-#: templates/newsletter/message/subscribe.txt:1
-#: templates/newsletter/message/unsubscribe.html:9
-#: templates/newsletter/message/unsubscribe.txt:1
-#: templates/newsletter/message/update.html:9
-#: templates/newsletter/message/update.txt:1
+#: newsletter/templates/newsletter/message/subscribe.html:10
+#: newsletter/templates/newsletter/message/subscribe.txt:1
+#: newsletter/templates/newsletter/message/unsubscribe.html:9
+#: newsletter/templates/newsletter/message/unsubscribe.txt:1
+#: newsletter/templates/newsletter/message/update.html:9
+#: newsletter/templates/newsletter/message/update.txt:1
 msgid "Sir/Madam"
 msgstr ""
 
-#: templates/newsletter/message/subscribe.html:10
-#: templates/newsletter/message/subscribe.txt:1
+#: newsletter/templates/newsletter/message/subscribe.html:10
+#: newsletter/templates/newsletter/message/subscribe.txt:1
 #, python-format
 msgid ""
 "Dear %(name)s,\n"
@@ -651,17 +681,17 @@ msgid ""
 "Kind regards,"
 msgstr ""
 
-#: templates/newsletter/message/subscribe_subject.txt:1
+#: newsletter/templates/newsletter/message/subscribe_subject.txt:1
 msgid "Confirm subscription"
 msgstr "تأكيد الإشتراك"
 
-#: templates/newsletter/message/unsubscribe.html:6
+#: newsletter/templates/newsletter/message/unsubscribe.html:6
 #, python-format
 msgid "Unsubscription from %(title)s"
 msgstr "إلغاء الإشتراك من %(title)s"
 
-#: templates/newsletter/message/unsubscribe.html:9
-#: templates/newsletter/message/unsubscribe.txt:1
+#: newsletter/templates/newsletter/message/unsubscribe.html:9
+#: newsletter/templates/newsletter/message/unsubscribe.txt:1
 #, python-format
 msgid ""
 "Dear %(name)s,\n"
@@ -674,17 +704,17 @@ msgid ""
 "Kind regards,"
 msgstr ""
 
-#: templates/newsletter/message/unsubscribe_subject.txt:1
+#: newsletter/templates/newsletter/message/unsubscribe_subject.txt:1
 msgid "Confirm unsubscription"
 msgstr "تأكيد إلغاء الإشتراك"
 
-#: templates/newsletter/message/update.html:6
+#: newsletter/templates/newsletter/message/update.html:6
 #, python-format
 msgid "Update of subscription to %(title)s"
 msgstr "تحديث الإشتراك في %(title)s"
 
-#: templates/newsletter/message/update.html:9
-#: templates/newsletter/message/update.txt:1
+#: newsletter/templates/newsletter/message/update.html:9
+#: newsletter/templates/newsletter/message/update.txt:1
 #, python-format
 msgid ""
 "Dear %(name)s,\n"
@@ -697,185 +727,185 @@ msgid ""
 "Kind regards,"
 msgstr ""
 
-#: templates/newsletter/message/update_subject.txt:1
+#: newsletter/templates/newsletter/message/update_subject.txt:1
 msgid "Update information"
 msgstr "تحديث البيانات"
 
-#: templates/newsletter/newsletter_detail.html:5
+#: newsletter/templates/newsletter/newsletter_detail.html:5
 msgid "Newsletter detail"
 msgstr "تفاصيل قائمة التراسل"
 
-#: templates/newsletter/newsletter_detail.html:13
-#: templates/newsletter/newsletter_list.html:16
-#: templates/newsletter/subscription_subscribe.html:23
-#: templates/newsletter/subscription_subscribe_user.html:22
+#: newsletter/templates/newsletter/newsletter_detail.html:13
+#: newsletter/templates/newsletter/newsletter_list.html:16
+#: newsletter/templates/newsletter/subscription_subscribe.html:23
+#: newsletter/templates/newsletter/subscription_subscribe_user.html:22
 msgid "Subscribe"
 msgstr "الإشتراك"
 
-#: templates/newsletter/newsletter_detail.html:17
+#: newsletter/templates/newsletter/newsletter_detail.html:17
 msgid "Update"
 msgstr "تحديث"
 
-#: templates/newsletter/newsletter_detail.html:24
+#: newsletter/templates/newsletter/newsletter_detail.html:24
 msgid "Archive"
 msgstr "أرشفة"
 
-#: templates/newsletter/newsletter_detail.html:27
-#: templates/newsletter/submission_archive.html:18
+#: newsletter/templates/newsletter/newsletter_detail.html:27
+#: newsletter/templates/newsletter/submission_archive.html:18
 msgid "Back to list"
 msgstr "العودة للقائمة"
 
-#: templates/newsletter/newsletter_list.html:5
+#: newsletter/templates/newsletter/newsletter_list.html:5
 msgid "Newsletter list"
 msgstr "قوائم التراسل"
 
-#: templates/newsletter/newsletter_list.html:27
+#: newsletter/templates/newsletter/newsletter_list.html:27
 msgid "Update subscriptions"
 msgstr "تحديث الإشتراكات"
 
-#: templates/newsletter/submission_archive.html:5
-#: templates/newsletter/submission_archive.html:10
+#: newsletter/templates/newsletter/submission_archive.html:5
+#: newsletter/templates/newsletter/submission_archive.html:10
 msgid "Newsletter archive"
 msgstr "أرشيف قائمة التراسل"
 
-#: templates/newsletter/subscription_activate.html:5
-#: templates/newsletter/subscription_activate.html:8
-#: templates/newsletter/subscription_subscribe_activated.html:5
-#: templates/newsletter/subscription_subscribe_activated.html:8
-#: templates/newsletter/subscription_unsubscribe_activated.html:5
-#: templates/newsletter/subscription_unsubscribe_activated.html:8
-#: templates/newsletter/subscription_update_activated.html:5
-#: templates/newsletter/subscription_update_activated.html:8
+#: newsletter/templates/newsletter/subscription_activate.html:5
+#: newsletter/templates/newsletter/subscription_activate.html:8
+#: newsletter/templates/newsletter/subscription_subscribe_activated.html:5
+#: newsletter/templates/newsletter/subscription_subscribe_activated.html:8
+#: newsletter/templates/newsletter/subscription_unsubscribe_activated.html:5
+#: newsletter/templates/newsletter/subscription_unsubscribe_activated.html:8
+#: newsletter/templates/newsletter/subscription_update_activated.html:5
+#: newsletter/templates/newsletter/subscription_update_activated.html:8
 msgid "activate"
 msgstr "تفعيل"
 
-#: templates/newsletter/subscription_activate.html:13
+#: newsletter/templates/newsletter/subscription_activate.html:13
 msgid "Activate"
 msgstr "تفعيل"
 
-#: templates/newsletter/subscription_subscribe.html:5
-#: templates/newsletter/subscription_subscribe.html:8
-#: templates/newsletter/subscription_subscribe_email_sent.html:5
-#: templates/newsletter/subscription_subscribe_email_sent.html:8
-#: templates/newsletter/subscription_subscribe_user.html:5
-#: templates/newsletter/subscription_subscribe_user.html:8
+#: newsletter/templates/newsletter/subscription_subscribe.html:5
+#: newsletter/templates/newsletter/subscription_subscribe.html:8
+#: newsletter/templates/newsletter/subscription_subscribe_email_sent.html:5
+#: newsletter/templates/newsletter/subscription_subscribe_email_sent.html:8
+#: newsletter/templates/newsletter/subscription_subscribe_user.html:5
+#: newsletter/templates/newsletter/subscription_subscribe_user.html:8
 msgid "Newsletter subscribe"
 msgstr "إشتراك قائمة التراسل"
 
-#: templates/newsletter/subscription_subscribe.html:11
-#: templates/newsletter/subscription_unsubscribe.html:11
-#: templates/newsletter/subscription_update.html:11
+#: newsletter/templates/newsletter/subscription_subscribe.html:11
+#: newsletter/templates/newsletter/subscription_unsubscribe.html:11
+#: newsletter/templates/newsletter/subscription_update.html:11
 msgid ""
 "Due to a technical error we were not able to submit your confirmation email."
 " This could be because your email address is invalid."
 msgstr "بسبب خطأ فني لم نكن قادرين على إرسال رسالة تأكيد التسجيل. هذا يمكن أن يكون بسبب عنوان بريدك الإلكتروني غير صحيح."
 
-#: templates/newsletter/subscription_subscribe_activated.html:10
+#: newsletter/templates/newsletter/subscription_subscribe_activated.html:10
 msgid "Your subscription has successfully been activated."
 msgstr "تم تفعيل اشتراكك بنجاح."
 
-#: templates/newsletter/subscription_subscribe_email_sent.html:10
+#: newsletter/templates/newsletter/subscription_subscribe_email_sent.html:10
 msgid ""
 "Your subscription request was successfully received and an activation email "
 "has been sent to you. In that email you will find a link which you need to "
 "follow in order to activate your subscription."
 msgstr "تم استقبال طلب إشتراكك بنجاح وتم إرسال رسالة إلكترونية تفعيل لك. في تلك الرسالة سوف تجد رابط تحتاج إلى متابعته لتفعيل اشتراكك."
 
-#: templates/newsletter/subscription_subscribe_user.html:19
+#: newsletter/templates/newsletter/subscription_subscribe_user.html:19
 msgid "Do you want to subscribe to this newsletter?"
 msgstr "هل ترغب في الاشتراك في قائمة التراسل هذه؟"
 
-#: templates/newsletter/subscription_unsubscribe.html:5
-#: templates/newsletter/subscription_unsubscribe.html:8
-#: templates/newsletter/subscription_unsubscribe_email_sent.html:5
-#: templates/newsletter/subscription_unsubscribe_email_sent.html:8
-#: templates/newsletter/subscription_unsubscribe_user.html:5
-#: templates/newsletter/subscription_unsubscribe_user.html:8
+#: newsletter/templates/newsletter/subscription_unsubscribe.html:5
+#: newsletter/templates/newsletter/subscription_unsubscribe.html:8
+#: newsletter/templates/newsletter/subscription_unsubscribe_email_sent.html:5
+#: newsletter/templates/newsletter/subscription_unsubscribe_email_sent.html:8
+#: newsletter/templates/newsletter/subscription_unsubscribe_user.html:5
+#: newsletter/templates/newsletter/subscription_unsubscribe_user.html:8
 msgid "Newsletter unsubscribe"
 msgstr "إلغاء إشتراك قائمة التراسل"
 
-#: templates/newsletter/subscription_unsubscribe_activated.html:10
+#: newsletter/templates/newsletter/subscription_unsubscribe_activated.html:10
 msgid "You have successfully been unsubscribed."
 msgstr "تم إلغاء إشتراكك بنجاح."
 
-#: templates/newsletter/subscription_unsubscribe_email_sent.html:10
+#: newsletter/templates/newsletter/subscription_unsubscribe_email_sent.html:10
 msgid ""
 "Your unsubscription request has successfully been received. An email has "
 "been sent to you with a link you need to follow in order to confirm your "
 "unsubscription."
 msgstr "تم إستقبال طلب إلغاء الاشتراك الخاص بك بنجاح. تم ارسال بريد الكتروني لك مع رابط تحتاج إلى متابعته من أجل تأكيد إلغاء الاشتراك الخاص بك."
 
-#: templates/newsletter/subscription_unsubscribe_user.html:20
+#: newsletter/templates/newsletter/subscription_unsubscribe_user.html:20
 msgid "Do you want to unsubscribe from this newsletter?"
 msgstr "هل ترغب في إلغاء الاشتراك في قائمة التراسل هذه؟"
 
-#: templates/newsletter/subscription_update.html:5
-#: templates/newsletter/subscription_update.html:8
-#: templates/newsletter/subscription_update_email_sent.html:5
-#: templates/newsletter/subscription_update_email_sent.html:8
+#: newsletter/templates/newsletter/subscription_update.html:5
+#: newsletter/templates/newsletter/subscription_update.html:8
+#: newsletter/templates/newsletter/subscription_update_email_sent.html:5
+#: newsletter/templates/newsletter/subscription_update_email_sent.html:8
 msgid "Newsletter update"
 msgstr "تحديث قائمة التراسل"
 
-#: templates/newsletter/subscription_update.html:23
+#: newsletter/templates/newsletter/subscription_update.html:23
 msgid "Update subscription"
 msgstr "تحديث الإشتراك"
 
-#: templates/newsletter/subscription_update_activated.html:10
+#: newsletter/templates/newsletter/subscription_update_activated.html:10
 msgid "Your subscription has successfully been updated."
 msgstr "تم تحديث اشتراكك بنجاح."
 
-#: templates/newsletter/subscription_update_email_sent.html:10
+#: newsletter/templates/newsletter/subscription_update_email_sent.html:10
 msgid ""
 "Your update request was successfully received and an activation email has "
 "been sent to you. In that email you will find a link which you need to "
 "follow in order to update your subscription."
 msgstr "تم استقبال طلب التحديث بنجاح وتم إرسال رسالة إلكترونية تفعيل لك. في تلك الرسالة سوف تجد رابط تحتاج إلى متابعته لتحديث اشتراكك."
 
-#: templates/widget/image.html:2
+#: newsletter/templates/widget/image.html:2
 msgid "Currently:"
 msgstr "حاليا:"
 
-#: templates/widget/image.html:4
+#: newsletter/templates/widget/image.html:4
 msgid "Change:"
 msgstr "تغيير:"
 
-#: validators.py:15
+#: newsletter/validators.py:15
 #, python-format
 msgid ""
 "The e-mail address '%(email)s' belongs to a user with an account on this "
 "site. Please log in as that user and try again."
 msgstr "عنوان البريد الإلكتروني '%(email)s' مملوك لمستخدم لديه حساب على هذا الموقع. الرجاء تسجيل الدخول بحساب مستخدم وحاول مرة أخرى."
 
-#: views.py:120
+#: newsletter/views.py:120
 msgid "Your changes have been saved."
 msgstr "تم حفظ التغييرات."
 
-#: views.py:311
+#: newsletter/views.py:311
 #, python-format
 msgid "You have been subscribed to %s."
 msgstr "تم تسجيلك في %s."
 
-#: views.py:315
+#: newsletter/views.py:315
 #, python-format
 msgid "User %(rs)s subscribed to %(my_newsletter)s."
 msgstr "المستخدم %(rs)s تم تسجيله في %(my_newsletter)s."
 
-#: views.py:325
+#: newsletter/views.py:325
 #, python-format
 msgid "You are already subscribed to %s."
 msgstr "أنت مسجل سلفا في %s."
 
-#: views.py:350
+#: newsletter/views.py:350
 #, python-format
 msgid "You have been unsubscribed from %s."
 msgstr "تم إلغاء اشتراكك سلفا من %s."
 
-#: views.py:354
+#: newsletter/views.py:354
 #, python-format
 msgid "User %(rs)s unsubscribed from %(my_newsletter)s."
 msgstr "المستخدم %(rs)s تم إلغاء إشتراكو من  %(my_newsletter)s."
 
-#: views.py:367
+#: newsletter/views.py:367
 #, python-format
 msgid "You are not subscribed to %s."
 msgstr "أنت غير مسجّل في %s."
