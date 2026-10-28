@@ -15,6 +15,7 @@ distribute-*
 env
 django_setuptest*
 docs/_*
+_docs/
 .idea/
 .claude/
 venv/
