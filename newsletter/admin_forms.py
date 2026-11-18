@@ -141,6 +141,15 @@ class SubscriptionAdminForm(forms.ModelForm):
             )
         return cleaned_data
 
+    def save(self, commit=True):
+        subscription = super().save(commit=False)
+        if subscription.pk is None:
+            subscription.unsubscribed = not subscription.subscribed
+        if commit:
+            subscription.save()
+            self.save_m2m()
+        return subscription
+
 
 class SubmissionAdminForm(forms.ModelForm):
 

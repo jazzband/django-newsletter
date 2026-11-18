@@ -2,6 +2,22 @@
 Upgrading
 =========
 
+Unreleased: subscription forms and confirmation requests
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+We have changed logged-in subscribe and unsubscribe confirmation URLs to require POST to change subscription state.
+GET requests display the confirmation page without changing the subscription.
+Integrations calling these must submit POST requests with Django's usual CSRF protection.
+The bundled confirmation templates already use POST.
+
+We have changed the newsletter list forms to identify newsletters directly, so displaying the list
+no longer requires creating subscription rows. Since a subscription row may not exist when a form is displayed,
+overridden ``newsletter/newsletter_list.html`` templates must use the hidden ``{{ form.newsletter }}`` field
+instead of ``{{ form.id }}`` for each form.
+Keep ``{{ form.subscribed }}`` in each form and include ``{{ formset.management_form }}`` once for the whole formset.
+Forms still provide ``form.instance.newsletter`` for rendering the newsletter's title and links.
+
+
 0.7: Management command instead of django-extensions cron job
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 In this version, we have deprecated support for the django-extensions cron

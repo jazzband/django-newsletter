@@ -8,22 +8,32 @@ from datetime import datetime, timedelta
 
 from django.core import mail
 from django.contrib.auth import get_user_model
+from django.contrib.sites.models import Site
+from django.db import connection
 from django.utils import timezone
 from django.utils.encoding import force_str
-from django.test.utils import override_settings
+from django.test.utils import CaptureQueriesContext, override_settings
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 
 from newsletter.models import (
     Newsletter, Subscription, Submission, Message, get_default_sites
 )
-from newsletter.forms import UpdateForm
+from newsletter.forms import UpdateForm, UpdateRequestForm, UnsubscribeRequestForm
 
 from .utils import MailTestCase, UserTestCase, WebTestCase, ComparingTestCase
 
 
 # Amount of seconds to wait to test time comparisons in submissions.
 WAIT_TIME = 1
+
+
+def subscription_writes(queries):
+    return [
+        query['sql'] for query in queries
+        if Subscription._meta.db_table in query['sql']
+        and query['sql'].split()[0].upper() in ('INSERT', 'UPDATE', 'DELETE')
+    ]
 
 
 class NewsletterListTestCase(WebTestCase):
@@ -155,6 +165,218 @@ class AnonymousNewsletterListTestCase(NewsletterListTestCase):
 class UserNewsletterListTestCase(UserTestCase,
                                  NewsletterListTestCase):
 
+    def assert_newsletter_choices(self, response):
+        visible = self.newsletters.filter(
+            visible=True, site=Site.objects.get_current()
+        )
+        forms = response.context['formset'].forms
+        self.assertEqual(
+            {form.instance.newsletter.pk for form in forms},
+            set(visible.values_list('pk', flat=True))
+        )
+        for newsletter in visible:
+            self.assertContains(
+                response,
+                '<a href="%s">%s</a>' % (
+                    newsletter.get_absolute_url(), newsletter.title
+                ),
+                html=True
+            )
+        for newsletter in self.newsletters.exclude(pk__in=visible):
+            self.assertNotContains(response, newsletter.get_absolute_url())
+
+    def test_newsletter_choices_without_subscriptions(self):
+        other_site = Site.objects.create(
+            domain='other.example.com', name='Other site'
+        )
+        newsletter = Newsletter.objects.create(
+            title='Other site newsletter', slug='other-site',
+            sender='Sender', email='sender@example.com'
+        )
+        newsletter.site.set([other_site])
+
+        response = self.app.get(self.list_url, user=self.user)
+
+        self.assert_newsletter_choices(response)
+        for form in response.context['formset'].forms:
+            self.assertFalse(form['subscribed'].value())
+        self.assertFalse(Subscription.objects.filter(user=self.user).exists())
+
+    def test_newsletter_choices_with_subscriptions(self):
+        newsletters = list(self.newsletters.filter(visible=True))
+        Subscription.objects.create(
+            newsletter=newsletters[0], user=self.user, subscribed=True
+        )
+        Subscription.objects.create(
+            newsletter=newsletters[1], user=self.user, unsubscribed=True
+        )
+
+        with CaptureQueriesContext(connection) as queries:
+            response = self.app.get(self.list_url, user=self.user)
+
+        self.assert_newsletter_choices(response)
+        self.assertEqual(subscription_writes(queries), [])
+        for form in response.context['formset'].forms:
+            self.assertEqual(
+                form['subscribed'].value(),
+                form.instance.newsletter == newsletters[0]
+            )
+
+    def test_subscribe_from_displayed_newsletters(self):
+        response = self.app.get(self.list_url, user=self.user)
+        self.assert_newsletter_choices(response)
+        newsletter = response.context['formset'].forms[0].instance.newsletter
+        response.form['form-0-subscribed'] = True
+
+        response = response.form.submit(user=self.user)
+
+        self.assert_newsletter_choices(response)
+        self.assertEqual(
+            list(Subscription.objects.filter(
+                user=self.user, subscribed=True
+            ).values_list('newsletter_id', flat=True)),
+            [newsletter.pk]
+        )
+        self.assertEqual(Subscription.objects.filter(user=self.user).count(), 1)
+        response = self.app.get(self.list_url, user=self.user)
+        self.assert_newsletter_choices(response)
+        self.assertTrue(
+            response.context['formset'].forms[0]['subscribed'].value()
+        )
+
+    def test_unsubscribe_from_displayed_newsletters(self):
+        newsletter = self.newsletters.filter(visible=True).first()
+        subscription = Subscription.objects.create(
+            newsletter=newsletter, user=self.user, subscribed=True
+        )
+        response = self.app.get(self.list_url, user=self.user)
+        self.assert_newsletter_choices(response)
+        response.form['form-0-subscribed'] = False
+
+        response = response.form.submit(user=self.user)
+
+        self.assert_newsletter_choices(response)
+        subscription.refresh_from_db()
+        self.assertFalse(subscription.subscribed)
+        self.assertTrue(subscription.unsubscribed)
+        self.assertIsNotNone(subscription.unsubscribe_date)
+
+    def test_unchanged_newsletters_do_not_create_subscriptions(self):
+        response = self.app.get(self.list_url, user=self.user)
+
+        with CaptureQueriesContext(connection) as queries:
+            response = response.form.submit(user=self.user)
+
+        self.assert_newsletter_choices(response)
+        self.assertFalse(Subscription.objects.filter(user=self.user).exists())
+        self.assertEqual(subscription_writes(queries), [])
+
+    def test_unchanged_subscription_is_not_saved(self):
+        newsletter = self.newsletters.filter(visible=True).first()
+        Subscription.objects.create(
+            newsletter=newsletter, user=self.user, subscribed=True
+        )
+        response = self.app.get(self.list_url, user=self.user)
+
+        with CaptureQueriesContext(connection) as queries:
+            response = response.form.submit(user=self.user)
+
+        self.assert_newsletter_choices(response)
+        self.assertEqual(subscription_writes(queries), [])
+
+    def test_other_users_subscription_is_not_edited(self):
+        other_user = get_user_model().objects.create_user('other')
+        newsletter = self.newsletters.filter(visible=True).first()
+        subscription = Subscription.objects.create(
+            newsletter=newsletter, user=other_user, subscribed=True
+        )
+        response = self.app.get(self.list_url, user=self.user)
+        self.assertFalse(response.context['formset'].forms[0]['subscribed'].value())
+        response.form['form-0-subscribed'] = True
+
+        response.form.submit(user=self.user)
+
+        subscription.refresh_from_db()
+        self.assertTrue(subscription.subscribed)
+        self.assertEqual(
+            Subscription.objects.filter(newsletter=newsletter).count(), 2
+        )
+
+    def test_existing_inactive_subscription_is_preserved(self):
+        newsletter = self.newsletters.filter(visible=True).first()
+        subscription = Subscription.objects.create(
+            newsletter=newsletter, user=self.user
+        )
+        original = Subscription.objects.filter(pk=subscription.pk).values().get()
+        response = self.app.get(self.list_url, user=self.user)
+        response.form['form-1-subscribed'] = True
+
+        response = response.form.submit(user=self.user)
+
+        self.assert_newsletter_choices(response)
+        self.assertEqual(
+            Subscription.objects.filter(pk=subscription.pk).values().get(),
+            original
+        )
+        self.assertEqual(Subscription.objects.filter(user=self.user).count(), 2)
+
+    def test_invalid_newsletter_choices_save_nothing(self):
+        other_site = Site.objects.create(
+            domain='other.example.com', name='Other site'
+        )
+        other_newsletter = Newsletter.objects.create(
+            title='Other site newsletter', slug='other-site',
+            sender='Sender', email='sender@example.com'
+        )
+        other_newsletter.site.set([other_site])
+        invalid_choices = [
+            self.newsletters.filter(visible=False).first().pk,
+            other_newsletter.pk,
+            self.newsletters.filter(visible=True).first().pk,
+            1000,
+        ]
+        for choice in invalid_choices:
+            with self.subTest(choice=choice):
+                response = self.app.get(self.list_url, user=self.user)
+                response.form['form-0-subscribed'] = True
+                response.form['form-1-newsletter'] = choice
+
+                with self.assertLogs('newsletter.views', 'WARNING'):
+                    response = response.form.submit(user=self.user)
+
+                self.assert_newsletter_choices(response)
+                self.assertFalse(Subscription.objects.filter(user=self.user).exists())
+
+    def test_invalid_form_count_saves_nothing(self):
+        for field in ('form-TOTAL_FORMS', 'form-INITIAL_FORMS'):
+            with self.subTest(field=field):
+                response = self.app.get(self.list_url, user=self.user)
+                response.form['form-0-subscribed'] = True
+                response.form[field] = 1
+
+                with self.assertLogs('newsletter.views', 'WARNING'):
+                    response = response.form.submit(user=self.user)
+
+                self.assert_newsletter_choices(response)
+                self.assertFalse(Subscription.objects.filter(user=self.user).exists())
+
+    def test_invalid_submission_preserves_existing_subscription(self):
+        newsletter = self.newsletters.filter(visible=True).first()
+        subscription = Subscription.objects.create(
+            newsletter=newsletter, user=self.user, subscribed=True
+        )
+        response = self.app.get(self.list_url, user=self.user)
+        response.form['form-0-subscribed'] = False
+        response.form['form-1-newsletter'] = 1000
+
+        with self.assertLogs('newsletter.views', 'WARNING'):
+            response.form.submit(user=self.user)
+
+        subscription.refresh_from_db()
+        self.assertTrue(subscription.subscribed)
+        self.assertFalse(subscription.unsubscribed)
+        self.assertEqual(Subscription.objects.filter(user=self.user).count(), 1)
+
     def get_user_subscription(self, newsletter):
         subscriptions = Subscription.objects.filter(newsletter=newsletter,
                                                     user=self.user)
@@ -196,7 +418,7 @@ class UserNewsletterListTestCase(UserTestCase,
                 form.instance.newsletter in self.newsletters,
                 f"{form.instance.newsletter} not in {self.newsletters}"
             )
-            self.assertContains(response, form['id'])
+            self.assertContains(response, form['newsletter'])
             self.assertContains(response, form['subscribed'])
 
     def test_update(self):
@@ -217,7 +439,7 @@ class UserNewsletterListTestCase(UserTestCase,
         count = 0
         for n in self.newsletters.filter(visible=True):
             params.update({
-                'form-%d-id' % count: n.id,
+                'form-%d-newsletter' % count: n.id,
                 'form-%d-subscribed' % count: '1'
             })
 
@@ -250,6 +472,7 @@ class UserNewsletterListTestCase(UserTestCase,
             self.client.post(self.list_url)
         self.assertEqual(len(messages.output), 1)
         self.assertIn("Invalid form post received", messages.output[0])
+        self.assertFalse(Subscription.objects.exists())
 
         # A post with correct management data with weird values
         # should cause the formset not to validate.
@@ -267,7 +490,7 @@ class UserNewsletterListTestCase(UserTestCase,
         for n in self.newsletters.filter(visible=True):
             params.update({
                 # Use a wrong value here
-                'form-%d-id' % count: 1000,
+                'form-%d-newsletter' % count: 1000,
                 'form-%d-subscribed' % count: '1'
             })
 
@@ -281,7 +504,7 @@ class UserNewsletterListTestCase(UserTestCase,
 
         # Assert no subscriptions have been created
         self.assertFalse(
-            Subscription.objects.filter(subscribed=True).exists())
+            Subscription.objects.exists())
 
 
 class SubscribeTestCase(WebTestCase, MailTestCase):
@@ -386,13 +609,36 @@ class UserSubscribeTestCase(
         )
         self.assertContains(response, 'id="id_submit"')
 
-        subscription = self.get_user_subscription()
-        self.assertFalse(subscription.subscribed)
+        self.assertFalse(
+            Subscription.objects.filter(newsletter=self.n, user=self.user).exists()
+        )
+
+    def test_subscribe_confirmation_get_saves_nothing(self):
+        response = self.client.get(self.subscribe_confirm_url)
+
+        self.assertContains(response, self.n.title)
+        self.assertContains(response, 'id="id_submit"')
+        self.assertFalse(
+            Subscription.objects.filter(newsletter=self.n, user=self.user).exists()
+        )
+
+    def test_unsubscribe_confirmation_get_keeps_subscription(self):
+        subscription = Subscription.objects.create(
+            newsletter=self.n, user=self.user, subscribed=True
+        )
+        with CaptureQueriesContext(connection) as queries:
+            response = self.client.get(self.unsubscribe_confirm_url)
+
+        self.assertContains(response, self.n.title)
+        subscription.refresh_from_db()
+        self.assertTrue(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
+        self.assertEqual(subscription_writes(queries), [])
 
     def test_subscribe_post(self):
         """ Test subscription confirmation. """
-        response = self.client.post(self.subscribe_confirm_url)
+        with CaptureQueriesContext(connection) as queries:
+            response = self.client.post(self.subscribe_confirm_url)
 
         self.assertContains(response, self.n.title, status_code=200)
 
@@ -402,6 +648,7 @@ class UserSubscribeTestCase(
         subscription = self.get_user_subscription()
         self.assertTrue(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
+        self.assertEqual(len(subscription_writes(queries)), 1)
 
     def test_subscribe_twice(self):
         # After subscribing, we should not be able to subscribe again
@@ -466,7 +713,8 @@ class UserSubscribeTestCase(
         subscription.unsubscribed = False
         subscription.save()
 
-        response = self.client.post(self.unsubscribe_confirm_url)
+        with CaptureQueriesContext(connection) as queries:
+            response = self.client.post(self.unsubscribe_confirm_url)
 
         self.assertContains(response, self.n.title, status_code=200)
 
@@ -476,6 +724,8 @@ class UserSubscribeTestCase(
         subscription = self.get_user_subscription()
         self.assertFalse(subscription.subscribed)
         self.assertTrue(subscription.unsubscribed)
+
+        self.assertEqual(len(subscription_writes(queries)), 1)
         self.assertLessThan(
             subscription.unsubscribe_date,
             timezone.now() + timedelta(seconds=1)
@@ -528,12 +778,22 @@ class UserSubscribeTestCase(
             Subscription.objects.filter(newsletter=self.n, user=self.user).exists()
         )
 
-        response = self.client.post(self.unsubscribe_confirm_url)
+        response = self.client.get(self.unsubscribe_confirm_url)
+        self.assertContains(response, self.n.title)
+        self.assertFalse(
+            Subscription.objects.filter(newsletter=self.n, user=self.user).exists()
+        )
+
+        with CaptureQueriesContext(connection) as queries:
+            response = self.client.post(self.unsubscribe_confirm_url)
         self.assertContains(response, self.n.title, status_code=200)
 
         subscription = self.get_user_subscription()
         self.assertFalse(subscription.subscribed)
         self.assertTrue(subscription.unsubscribed)
+        self.assertIsNone(subscription.subscribe_date)
+        self.assertIsNotNone(subscription.unsubscribe_date)
+        self.assertEqual(len(subscription_writes(queries)), 1)
 
 
 class AnonymousSubscribeTestCase(
@@ -543,6 +803,52 @@ class AnonymousSubscribeTestCase(
 
     testname = 'Test Subscriber'
     testemail = 'test@email.com'
+
+    def test_generated_request_validation_does_not_save(self):
+        self.n.subscription_generator_class = (
+            'tests.test_mailing.TestingSubscriptionGenerator'
+        )
+        self.n.save()
+
+        for form_class in (UpdateRequestForm, UnsubscribeRequestForm):
+            with self.subTest(form=form_class):
+                with CaptureQueriesContext(connection) as queries:
+                    form = form_class(
+                        {'email_field': 'test2@test.com'}, newsletter=self.n
+                    )
+                    self.assertTrue(form.is_valid(), form.errors)
+
+                self.assertIsNone(form.instance.pk)
+                self.assertFalse(Subscription.objects.exists())
+                self.assertEqual(subscription_writes(queries), [])
+
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_UNSUBSCRIBE=True)
+    def test_generated_unsubscribe_retains_activation_code(self):
+        self.n.subscription_generator_class = (
+            'tests.test_mailing.TestingSubscriptionGenerator'
+        )
+        self.n.save()
+
+        self.client.post(self.unsubscribe_url, {'email_field': 'test2@test.com'})
+
+        subscription = self.get_only_subscription(email_field='test2@test.com')
+        self.assertEmailContains(subscription.unsubscribe_activate_url())
+        self.assertTrue(subscription.activation_code)
+
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_UPDATE=False)
+    def test_generated_update_retains_code_without_email(self):
+        self.n.subscription_generator_class = (
+            'tests.test_mailing.TestingSubscriptionGenerator'
+        )
+        self.n.save()
+
+        response = self.client.post(
+            self.update_url, {'email_field': 'test2@test.com'}
+        )
+
+        subscription = self.get_only_subscription(email_field='test2@test.com')
+        self.assertRedirects(response, subscription.update_activate_url())
+        self.assertEqual(len(mail.outbox), 0)
 
     def get_only_subscription(self, **kwargs):
         """
@@ -638,12 +944,14 @@ class AnonymousSubscribeTestCase(
         with confirmation email switched off in settings.
         """
 
-        response = self.client.post(
-            self.subscribe_url, {
-                'name_field': self.testname,
-                'email_field': self.testemail
-            }
-        )
+        with CaptureQueriesContext(connection) as queries:
+            response = self.client.post(
+                self.subscribe_url, {
+                    'name_field': self.testname,
+                    'email_field': self.testemail
+                }
+            )
+        self.assertEqual(len(subscription_writes(queries)), 1)
 
         # Assure we are redirected to "subscribe activated" page.
         self.assertRedirects(response, self.subscribe_activated_url)
@@ -945,10 +1253,15 @@ class AnonymousSubscribeTestCase(
         # Then try to unsubscribe an email that is not subscribed but is generated dynamically
         self.n.subscription_generator_class = 'tests.test_mailing.TestingSubscriptionGenerator'
         self.n.save()
-        self.client.post(self.unsubscribe_url, {'email_field': test_email})
+        with CaptureQueriesContext(connection) as queries:
+            self.client.post(self.unsubscribe_url, {'email_field': test_email})
         subscription = self.n.subscription_set.filter(email_field=test_email).first()
         self.assertIsNotNone(subscription)
         self.assertTrue(subscription.unsubscribed)
+        self.assertFalse(subscription.subscribed)
+        self.assertIsNone(subscription.subscribe_date)
+        self.assertIsNotNone(subscription.unsubscribe_date)
+        self.assertEqual(len(subscription_writes(queries)), 1)
 
     @override_settings(NEWSLETTER_CONFIRM_EMAIL_UNSUBSCRIBE=False)
     def test_unsubscribe_request_post_no_email(self):

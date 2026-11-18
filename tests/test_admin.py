@@ -43,6 +43,57 @@ class AdminTestMixin:
 
 
 class AdminTestCase(AdminTestMixin, TestCase):
+    def test_subscription_add_page_creates_no_rows(self):
+        response = self.client.get(reverse('admin:newsletter_subscription_add'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Subscription.objects.exists())
+
+    def test_add_subscription_records_selected_state(self):
+        for subscribed in (True, False):
+            with self.subTest(subscribed=subscribed):
+                email = 'reader-%s@example.org' % subscribed
+                response = self.client.post(
+                    reverse('admin:newsletter_subscription_add'),
+                    {
+                        'newsletter': self.newsletter.pk,
+                        'email_field': email,
+                        'subscribed': str(subscribed),
+                        '_save': 'Save',
+                    }
+                )
+
+                self.assertEqual(response.status_code, 302)
+                subscription = Subscription.objects.get(email_field=email)
+                self.assertEqual(subscription.subscribed, subscribed)
+                self.assertEqual(subscription.unsubscribed, not subscribed)
+                self.assertEqual(bool(subscription.subscribe_date), subscribed)
+                self.assertEqual(bool(subscription.unsubscribe_date), not subscribed)
+
+    def test_edit_inactive_subscription_preserves_state(self):
+        subscription = Subscription.objects.create(
+            newsletter=self.newsletter, email='reader@example.org'
+        )
+
+        response = self.client.post(
+            reverse('admin:newsletter_subscription_change', args=[subscription.pk]),
+            {
+                'newsletter': self.newsletter.pk,
+                'email_field': subscription.email,
+                'name_field': 'Updated name',
+                'subscribed': 'False',
+                '_save': 'Save',
+            }
+        )
+
+        self.assertEqual(response.status_code, 302)
+        subscription.refresh_from_db()
+        self.assertEqual(subscription.name, 'Updated name')
+        self.assertFalse(subscription.subscribed)
+        self.assertFalse(subscription.unsubscribed)
+        self.assertIsNone(subscription.subscribe_date)
+        self.assertIsNone(subscription.unsubscribe_date)
+
     def admin_import_file(self, source_file, ignore_errors=''):
         """ Upload an address file for import to admin. """
 

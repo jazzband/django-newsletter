@@ -1,8 +1,9 @@
 from django import forms
+from django.db import transaction
 from django.forms.utils import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from .models import Subscription
+from .models import Newsletter, Subscription
 from .validators import validate_email_no_user
 
 
@@ -103,7 +104,7 @@ class UpdateRequestForm(NewsletterForm):
             )
 
         except Subscription.DoesNotExist:
-            instance = newsletter.create_subscription_from_generator(data)
+            instance = newsletter.create_subscription_from_generator(data, commit=False)
             if instance:
                 self.instance = instance
             else:
@@ -162,9 +163,65 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Subscription
-        fields = ('subscribed',)
-        # Newsletter here should become a read only field,
-        # once this is supported by Django.
+        fields = ('newsletter', 'subscribed')
+        widgets = {'newsletter': forms.HiddenInput}
 
-        # For now, use a hidden field.
-        hidden_fields = ('newsletter',)
+    def __init__(self, *args, newsletter=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['newsletter'].queryset = Newsletter.objects.filter(
+            pk=newsletter.pk
+        ) if newsletter else Newsletter.objects.none()
+
+
+class BaseUserUpdateFormSet(forms.BaseFormSet):
+    def __init__(self, *args, newsletters, user, **kwargs):
+        self.newsletters = list(newsletters)
+        self.user = user
+        self.subscriptions = {
+            subscription.newsletter_id: subscription
+            for subscription in Subscription.objects.filter(
+                newsletter__in=self.newsletters, user=user
+            )
+        }
+        kwargs['initial'] = [
+            {
+                'newsletter': newsletter.pk,
+                'subscribed': (
+                    self.subscriptions[newsletter.pk].subscribed
+                    if newsletter.pk in self.subscriptions else False
+                ),
+            }
+            for newsletter in self.newsletters
+        ]
+        super().__init__(*args, **kwargs)
+
+    def get_form_kwargs(self, index):
+        kwargs = super().get_form_kwargs(index)
+        if index is not None and index < len(self.newsletters):
+            newsletter = self.newsletters[index]
+            kwargs['newsletter'] = newsletter
+            kwargs['instance'] = self.subscriptions.get(newsletter.pk) or Subscription(
+                newsletter=newsletter, user=self.user
+            )
+        return kwargs
+
+    def clean(self):
+        super().clean()
+        if any(self.errors):
+            return
+        if (self.total_form_count() != len(self.newsletters) or
+                self.initial_form_count() != len(self.newsletters)):
+            raise ValidationError(
+                _("The newsletter list has changed. Please reload the page.")
+            )
+
+    @transaction.atomic
+    def save(self):
+        for form in self.forms:
+            if form.has_changed():
+                form.save()
+
+
+UserUpdateFormSet = forms.formset_factory(
+    UserUpdateForm, formset=BaseUserUpdateFormSet, extra=0
+)

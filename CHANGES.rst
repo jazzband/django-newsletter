@@ -1,6 +1,11 @@
 Changes
 =======
 
+Unreleased
+----------
+- Prevent unnecessary premature creation of Subscription objects
+- Require POST for logged-in confirmations. Custom newsletter list templates need updating (see upgrading notes).
+
 1.3.0 (2026-10-28)
 ------------------
 - Add support for Django 6.1

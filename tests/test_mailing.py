@@ -318,6 +318,28 @@ class SubscriptionGeneratorTestCase(MailingTestCase):
         self.assertIsNone(self.n.find_generator_entry('other@test.com'))
         self.assertFalse(Subscription.objects.filter(newsletter=self.n).exists())
 
+    def test_create_subscription_from_generator_commit(self):
+        self.n.subscription_generator_class = (
+            'tests.test_mailing.TestingSubscriptionGenerator'
+        )
+        self.n.save()
+
+        subscription = self.n.create_subscription_from_generator(
+            'test2@test.com', commit=False
+        )
+
+        self.assertIsNone(subscription.pk)
+        self.assertEqual(subscription.email, 'test2@test.com')
+        self.assertFalse(
+            self.n.subscription_set.filter(email_field='test2@test.com').exists()
+        )
+
+        subscription = self.n.create_subscription_from_generator('test2@test.com')
+
+        self.assertIsNotNone(subscription.pk)
+        self.assertTrue(subscription.subscribed)
+        self.assertIsNotNone(subscription.subscribe_date)
+
     def test_nonexistent_generator_class(self):
         """ Test failure when generator class does not exist """
         try:
