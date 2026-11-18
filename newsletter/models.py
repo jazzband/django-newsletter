@@ -134,9 +134,11 @@ class Newsletter(models.Model):
             return None
         return generator.find_subscription(self, email)
 
-    def create_subscription_from_generator(self, email, user=None):
+    def create_subscription_from_generator(self, email, user=None, commit=True):
         """
-        Creates a Subscription if `email` is among the generator's recipients, else returns None
+        Creates a Subscription if `email` is among the generator's recipients,
+        else returns None. Pass commit=False when validating a request or
+        preparing a direct opt-out.
         """
         match = self.find_generator_entry(email)
         if not match:
@@ -145,7 +147,8 @@ class Newsletter(models.Model):
             subscription = Subscription(newsletter=self, user=user, subscribed=True)
         else:
             subscription = Subscription(newsletter=self, email=email, name=match[0], subscribed=True)
-        subscription.save()
+        if commit:
+            subscription.save()
         return subscription
 
     def __str__(self):
@@ -195,6 +198,9 @@ models.signals.pre_save.connect(newsletter_presave, Newsletter)
 
 
 class Subscription(models.Model):
+    # Instances used for display or generated recipients need not be saved.
+    # Persist them only to retain an activation code between requests or to
+    # record an explicit subscription decision, including an opt-out.
     user = models.ForeignKey(
         AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('user'),
         on_delete=models.CASCADE
@@ -243,6 +249,7 @@ class Subscription(models.Model):
         if action == 'subscribe' or action == 'update':
             self.subscribed = True
         else:
+            self.subscribed = False
             self.unsubscribed = True
 
         logger.debug(

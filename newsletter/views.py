@@ -28,11 +28,9 @@ from django.utils.translation import gettext, gettext_lazy as _
 from django.utils import timezone
 from django.urls import reverse
 
-from django.forms.models import modelformset_factory
-
 from .models import Newsletter, Subscription, Submission, get_render_context
 from .forms import (
-    SubscribeRequestForm, UserUpdateForm, UpdateRequestForm,
+    SubscribeRequestForm, UserUpdateFormSet, UpdateRequestForm,
     UnsubscribeRequestForm, UpdateForm
 )
 from .settings import newsletter_settings
@@ -93,29 +91,15 @@ class NewsletterListView(NewsletterViewBase, ListView):
         """
 
         # Short-hand variable names
-        newsletters = self.get_queryset()
+        newsletters = self.get_queryset().order_by('pk')
         request = self.request
         user = request.user
 
-        SubscriptionFormSet = modelformset_factory(
-            Subscription, form=UserUpdateForm, extra=0
-        )
-
-        # Before rendering the formset, subscription objects should
-        # already exist.
-        for n in newsletters:
-            Subscription.objects.get_or_create(
-                newsletter=n, user=user
-            )
-
-        # Get all subscriptions for use in the formset
-        qs = Subscription.objects.filter(
-            newsletter__in=newsletters, user=user
-        )
-
         if request.method == 'POST':
             try:
-                formset = SubscriptionFormSet(request.POST, queryset=qs)
+                formset = UserUpdateFormSet(
+                    request.POST, newsletters=newsletters, user=user
+                )
 
                 if not formset.is_valid():
                     raise ValidationError('Update form invalid.')
@@ -139,10 +123,10 @@ class NewsletterListView(NewsletterViewBase, ListView):
                 )
 
                 # Present a pristine form
-                formset = SubscriptionFormSet(queryset=qs)
+                formset = UserUpdateFormSet(newsletters=newsletters, user=user)
 
         else:
-            formset = SubscriptionFormSet(queryset=qs)
+            formset = UserUpdateFormSet(newsletters=newsletters, user=user)
 
         return formset
 
@@ -288,8 +272,8 @@ class ActionUserView(ActionTemplateView):
         """ Add confirm to instance attributes. """
         super().process_url_data(*args, **kwargs)
 
-        # confirm is optional kwarg defaulting to False
-        self.confirm = kwargs.get('confirm', False)
+        # Displaying a confirmation page must not change subscription state.
+        self.confirm = kwargs.get('confirm', False) and self.request.method == 'POST'
 
     def post(self, request, *args, **kwargs):
         return self.get(request, *args, **kwargs)
@@ -304,15 +288,16 @@ class SubscribeUserView(ActionUserView):
 
     def get(self, request, *args, **kwargs):
         already_subscribed = False
-        instance = Subscription.objects.get_or_create(
+        instance = Subscription.objects.filter(
             newsletter=self.newsletter, user=request.user
-        )[0]
+        ).first()
 
-        if instance.subscribed:
+        if instance and instance.subscribed:
             already_subscribed = True
         elif self.confirm:
-            instance.subscribed = True
-            instance.save()
+            if instance is None:
+                instance = Subscription(newsletter=self.newsletter, user=request.user)
+            instance.update('subscribe')
 
             messages.success(
                 request,
@@ -352,7 +337,7 @@ class UnsubscribeUserView(ActionUserView):
             not_subscribed = not self.newsletter.find_generator_entry(request.user.email)
         else:
             instance = self.newsletter.create_subscription_from_generator(
-                request.user.email, user=request.user
+                request.user.email, user=request.user, commit=False
             )
             not_subscribed = instance is None
 
@@ -362,8 +347,7 @@ class UnsubscribeUserView(ActionUserView):
                 _('You are not subscribed to %s.') % self.newsletter
             )
         elif self.confirm and instance:
-            instance.subscribed = False
-            instance.save()
+            instance.update('unsubscribe')
             messages.success(
                 request,
                 _('You have been unsubscribed from %s.') % self.newsletter
@@ -426,6 +410,9 @@ class ActionRequestView(ActionFormView):
             return self.no_email_confirm(form)
 
         try:
+            # Retain the code only after validation and before emailing its link.
+            if self.subscription.pk is None or self.action == 'subscribe':
+                self.subscription.save()
             self.subscription.send_activation_email(self.action, site=get_current_site(self.request))
 
         except (SMTPException, OSError) as e:
@@ -457,7 +444,7 @@ class SubscribeRequestView(ActionRequestView):
         return kwargs
 
     def get_subscription(self, form):
-        return form.save()
+        return form.save(commit=False)
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -490,6 +477,8 @@ class UpdateRequestView(ActionRequestView):
 
     def no_email_confirm(self, form):
         """ Redirect to update subscription view. """
+        if self.subscription.pk is None:
+            self.subscription.save()
         return redirect(self.subscription.update_activate_url())
 
 
