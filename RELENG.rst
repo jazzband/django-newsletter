@@ -21,6 +21,9 @@ Steps
 #. In ``CHANGES.rst``, rename the ``Unreleased`` heading to the version and
    date, e.g. ``1.3 (2026-11-01)``. Check it against
    ``git log <last_release_tag>..HEAD``.
+#. In ``docs/upgrading.rst``, replace ``Unreleased`` in any section headings
+   with the release version used in ``CHANGES.rst``. Keep the rest of each
+   heading's text and adjust its underline to match the new length.
 #. Update the English source strings and push them to Transifex::
 
     $ cd newsletter
