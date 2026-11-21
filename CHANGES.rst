@@ -1,6 +1,10 @@
 Changes
 =======
 
+Unreleased
+----------
+- Subscription generators must implement ``find_subscription(newsletter, email)`` to look up a single address (breaking for existing generators)
+
 1.3.0 (2026-10-28)
 ------------------
 - Add support for Django 6.1

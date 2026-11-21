@@ -4,6 +4,7 @@ import time
 import importlib
 from datetime import datetime
 from abc import abstractmethod, ABC
+from typing import Optional
 
 from email.utils import formataddr
 from django.conf import settings
@@ -111,7 +112,15 @@ class Newsletter(models.Model):
                 raise ModuleNotFoundError("missing module for subscription generator class")
             module_name, class_name = self.subscription_generator_class.rsplit(".", 1)
             module = importlib.import_module(module_name)
-            self.subscription_generator = getattr(module, class_name)()
+            generator_class = getattr(module, class_name)
+            if not (isinstance(generator_class, type) and issubclass(generator_class, SubscriptionGenerator)):
+                raise TypeError(f"{self.subscription_generator_class} is not a SubscriptionGenerator")
+            if generator_class.__abstractmethods__:
+                raise TypeError(
+                    f"{self.subscription_generator_class} must implement "
+                    f"{', '.join(sorted(generator_class.__abstractmethods__))}"
+                )
+            self.subscription_generator = generator_class()
             return self.subscription_generator
         else:
             return None
@@ -123,7 +132,7 @@ class Newsletter(models.Model):
         generator = self.get_subscription_generator()
         if not generator:
             return None
-        return next((e for e in generator.generate_subscriptions(self) if e[1].lower() == email.lower()), None)
+        return generator.find_subscription(self, email)
 
     def create_subscription_from_generator(self, email, user=None):
         """
@@ -627,6 +636,18 @@ class SubscriptionGenerator(ABC):
         """
         :param newsletter: the newsletter for which we are generating the subscription list
         :return: a list of (name, email)
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def find_subscription(self, newsletter: Newsletter, email: str) -> Optional[tuple[str, str]]:
+        """
+        Looks up a single address, so that it does not take generating the whole list.
+        It must agree with `generate_subscriptions`: the same address, compared case-insensitively.
+
+        :param newsletter: the newsletter for which we are looking the address up
+        :param email: the address to look for
+        :return: the (name, email) that `generate_subscriptions` would include for it, or None
         """
         raise NotImplementedError()
 

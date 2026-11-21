@@ -34,6 +34,11 @@ Dynamically generate subscriptions
 ^^^^^^^^^^^^^^^^^
 If you want to dynamically generate the recipients of your newsletter at the time of submitting, you can configure the ``subscription_generator_class`` in the newsletter admin.
 
-This must be a full class name with package. It should inherit ``newsletter.models.SubscriptionGenerator`` and implement the method ``generate_subscriptions``, which takes a newsletter and returns a list of ``(name, email)``.
+This must be a full class name with package. It should inherit ``newsletter.models.SubscriptionGenerator`` and implement two methods:
+
+* ``generate_subscriptions``, which takes a newsletter and returns a list of ``(name, email)``.
+* ``find_subscription``, which takes a newsletter and an email and returns the ``(name, email)`` that ``generate_subscriptions`` would include for that address (compared case-insensitively), or ``None``. It is used when a visitor unsubscribes, so it should look the address up directly instead of generating the whole list.
+
+A class that does not implement both is rejected when the newsletter is saved or used.
 
 The generated subscriptions will be joined to existing ``Subscription`` objects (both subscribed and unsubscribed) to generate the list of recipients.

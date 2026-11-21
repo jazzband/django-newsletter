@@ -251,7 +251,12 @@ class CreateSubmissionTestCase(MailingTestCase):
         self.assertEqual(list(subscriptions), [self.s2])
 
 
-class TestingSubscriptionGenerator(SubscriptionGenerator):
+class ListSubscriptionGenerator(SubscriptionGenerator):
+    def find_subscription(self, newsletter, email):
+        return next((e for e in self.generate_subscriptions(newsletter) if e[1].lower() == email.lower()), None)
+
+
+class TestingSubscriptionGenerator(ListSubscriptionGenerator):
     def generate_subscriptions(self, newsletter):
         return [
             ('name 2', 'test2@test.com'),
@@ -260,7 +265,7 @@ class TestingSubscriptionGenerator(SubscriptionGenerator):
         ]
 
 
-class MixedCaseSubscriptionGenerator(SubscriptionGenerator):
+class MixedCaseSubscriptionGenerator(ListSubscriptionGenerator):
     def generate_subscriptions(self, newsletter):
         return [
             ('name 1', 'Test1@test.com'),
@@ -340,6 +345,36 @@ class SubscriptionGeneratorTestCase(MailingTestCase):
             self.fail('Should not reach this')
         except AttributeError:
             pass
+
+    def test_generator_must_be_complete_subscription_generator(self):
+        for name in ('newsletter.models.Newsletter', 'tests.test_mailing.GeneratorWithoutFind'):
+            self.n.subscription_generator_class = name
+            with self.assertRaises(TypeError, msg=name):
+                self.n.get_subscription_generator()
+        self.n.subscription_generator_class = 'tests.test_mailing.TestingSubscriptionGenerator'
+        self.assertIsNotNone(self.n.get_subscription_generator())
+
+    def test_find_generator_entry_does_not_generate_the_list(self):
+        self.n.subscription_generator_class = 'tests.test_mailing.CountingSubscriptionGenerator'
+        self.assertEqual(('name 2', 'test2@test.com'), self.n.find_generator_entry('Test2@test.com'))
+        self.assertIsNone(self.n.find_generator_entry('other@test.com'))
+        self.assertEqual(0, CountingSubscriptionGenerator.generated)
+
+
+class GeneratorWithoutFind(SubscriptionGenerator):
+    def generate_subscriptions(self, newsletter):
+        return []
+
+
+class CountingSubscriptionGenerator(SubscriptionGenerator):
+    generated = 0
+
+    def generate_subscriptions(self, newsletter):
+        CountingSubscriptionGenerator.generated += 1
+        return []
+
+    def find_subscription(self, newsletter, email):
+        return ('name 2', 'test2@test.com') if email.lower() == 'test2@test.com' else None
 
 
 class CreateSubmissionMultiSitesTestCase(CreateSubmissionTestCase):

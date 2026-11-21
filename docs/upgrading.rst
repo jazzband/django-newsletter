@@ -2,6 +2,14 @@
 Upgrading
 =========
 
+Unreleased: Subscription generators need ``find_subscription``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+We added a new method to ``SubscriptionGenerator`` called ``find_subscription`` to search if an email address is
+in the dynamically generated subscriptions. We added this method to avoid generating the whole subscription list
+to check if an email address is subscribed. Implementations of ``SubscriptionGenerator`` must implement this method,
+or it will fail when instantiating the Newsletter.
+
 0.7: Management command instead of django-extensions cron job
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 In this version, we have deprecated support for the django-extensions cron
