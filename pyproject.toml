@@ -44,6 +44,7 @@ test = [
   "python-ldap",
   "unicodecsv",
   "python-card-me",
+  "six",  # imported by python-card-me without declaring it; python-dateutil 4 no longer pulls it in
   "django-tinymce",
   "django-imperavi",
   "django-webtest",
