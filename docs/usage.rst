@@ -30,6 +30,32 @@ Replace [SLUG-OF-NEWSLETTER] with the slug of your newsletter. You do not need t
 
   <label for="id_name_field">Name:</label> <input type="text" name="name_field" maxlength="30" id="id_name_field"><span class="helptext">optional</span>
 
+Calling the Subscription Endpoint via JavaScript / AJAX (React, Axios, Fetch)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The action views support JSON requests and responses. You can submit either JSON or ``FormData`` from frontend frameworks (such as React, Vue, Axios, or Fetch)::
+
+    // Using Axios with JSON payload:
+    axios.post('/newsletter/[SLUG-OF-NEWSLETTER]/subscribe/', {
+        email: 'subscriber@example.com',
+        name: 'Optional Name'
+    }, {
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken() // if CSRF middleware is active
+        }
+    })
+    .then(response => {
+        console.log(response.data);
+        // { success: true, action: 'subscribe', message: 'Activation email sent.', redirect_url: '...' }
+    })
+    .catch(error => {
+        console.error(error.response.data);
+        // { success: false, errors: { email_field: ['...'] } }
+    });
+
+Both ``email`` and ``email_field`` (as well as ``name`` and ``name_field``) are accepted as field names.
+When an invalid submission is made with JSON or ``Accept: application/json``, the endpoint returns HTTP 400 Bad Request with a JSON object containing the validation errors.
+
 Dynamically generate subscriptions
 ^^^^^^^^^^^^^^^^^
 If you want to dynamically generate the recipients of your newsletter at the time of submitting, you can configure the ``subscription_generator_class`` in the newsletter admin.

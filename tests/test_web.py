@@ -1,5 +1,6 @@
 import time
 import pytz
+import json
 
 import unittest
 from unittest.mock import patch, PropertyMock
@@ -403,6 +404,30 @@ class UserSubscribeTestCase(
         self.assertTrue(subscription.subscribed)
         self.assertFalse(subscription.unsubscribed)
 
+    def test_subscribe_view_json(self):
+        """ Test logged in user subscription status check with JSON Accept header. """
+        response = self.client.get(
+            self.subscribe_url,
+            headers={'Accept': 'application/json'}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertFalse(data['subscribed'])
+
+    def test_subscribe_post_json(self):
+        """ Test logged in user subscription confirmation with JSON Accept header. """
+        response = self.client.post(
+            self.subscribe_confirm_url,
+            headers={'Accept': 'application/json'}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertTrue(data['subscribed'])
+
     def test_subscribe_twice(self):
         # After subscribing, we should not be able to subscribe again
         subscription = Subscription(user=self.user, newsletter=self.n)
@@ -686,6 +711,154 @@ class AnonymousSubscribeTestCase(
             self.assertIn("Connection refused", messages.output[0])
 
         self.assertTrue(response.context['error'])
+
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
+    def test_subscribe_request_post_json(self):
+        """ Post the subscription form using JSON payload. """
+        response = self.client.post(
+            self.subscribe_url,
+            json.dumps({
+                'name_field': self.testname,
+                'email_field': self.testemail
+            }),
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['action'], 'subscribe')
+        self.assertEqual(data['redirect_url'], self.subscribe_email_sent_url)
+
+        subscription = self.get_only_subscription(
+            email_field__exact=self.testemail
+        )
+        self.assertFalse(subscription.subscribed)
+        self.assertFalse(subscription.unsubscribed)
+        self.assertEqual(len(mail.outbox), 1)
+
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
+    def test_subscribe_request_post_json_alias_fields(self):
+        """ Post JSON using 'email' and 'name' aliases instead of '_field'. """
+        response = self.client.post(
+            self.subscribe_url,
+            json.dumps({
+                'name': self.testname,
+                'email': self.testemail
+            }),
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+
+        subscription = self.get_only_subscription(
+            email_field__exact=self.testemail
+        )
+        self.assertEqual(subscription.name_field, self.testname)
+
+    def test_subscribe_request_post_json_invalid(self):
+        """ Post invalid JSON subscription form should return 400 with errors. """
+        response = self.client.post(
+            self.subscribe_url,
+            json.dumps({
+                'email_field': 'invalid-email'
+            }),
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertIn('email_field', data['errors'])
+
+    def test_subscribe_request_post_malformed_json(self):
+        """ Post malformed JSON should return 400 with errors. """
+        response = self.client.post(
+            self.subscribe_url,
+            '{not valid json',
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertIn('email_field', data['errors'])
+
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=False)
+    def test_subscribe_request_post_json_no_confirm_email(self):
+        """ Post JSON when confirmation email is disabled. """
+        response = self.client.post(
+            self.subscribe_url,
+            json.dumps({
+                'email_field': self.testemail
+            }),
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['redirect_url'], self.subscribe_activated_url)
+
+        subscription = self.get_only_subscription(
+            email_field__exact=self.testemail
+        )
+        self.assertTrue(subscription.subscribed)
+        self.assertEqual(len(mail.outbox), 0)
+
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
+    def test_subscribe_request_post_json_email_error(self):
+        """ Test error returned as JSON when email backend fails. """
+        with override_settings(
+            EMAIL_BACKEND='tests.utils.FailingEmailBackend'
+        ):
+            with self.assertLogs('newsletter.views', 'ERROR'):
+                response = self.client.post(
+                    self.subscribe_url,
+                    json.dumps({
+                        'email_field': self.testemail
+                    }),
+                    content_type='application/json'
+                )
+
+        self.assertEqual(response.status_code, 500)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertIn('error', data)
+
+    @override_settings(NEWSLETTER_CONFIRM_EMAIL_SUBSCRIBE=True)
+    def test_subscribe_request_post_form_data_with_accept_json(self):
+        """ Post form-data with Accept: application/json should return JSON. """
+        response = self.client.post(
+            self.subscribe_url,
+            {
+                'email': self.testemail,
+                'name': self.testname,
+            },
+            headers={'Accept': 'application/json, text/plain, */*'}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['action'], 'subscribe')
+
+    def test_subscribe_request_post_form_data_invalid_with_accept_json(self):
+        """ Post invalid form-data with Accept: application/json should return 400 JSON. """
+        response = self.client.post(
+            self.subscribe_url,
+            {
+                'name_field': self.testname,
+            },
+            headers={'Accept': 'application/json, text/plain, */*'}
+        )
+
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertIn('email_field', data['errors'])
 
     def test_retry_subscribe(self):
         """

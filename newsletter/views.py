@@ -1,13 +1,14 @@
 import logging
 
 import datetime
+import json
 
 from smtplib import SMTPException
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.conf import settings
-from django.http.response import HttpResponseForbidden
+from django.http.response import HttpResponseForbidden, JsonResponse
 
 from django.template.response import SimpleTemplateResponse
 
@@ -262,6 +263,34 @@ class ActionTemplateView(NewsletterMixin, ActionMixin, TemplateView):
     pass
 
 
+def is_json_request(request: HttpRequest) -> bool:
+    """
+    Return True if the request indicates it expects or sends JSON:
+    - Content-Type is application/json
+    - Query parameter format=json or POST data format=json
+    - X-Requested-With header is XMLHttpRequest
+    - Accept header explicitly prefers application/json over text/html
+    """
+    content_type = getattr(request, 'content_type', '') or ''
+    if content_type.split(';')[0].strip() == 'application/json':
+        return True
+    if request.GET.get('format') == 'json':
+        return True
+    if request.method in ('POST', 'PUT'):
+        post_format = getattr(request, 'POST', {}).get('format') if hasattr(request, 'POST') else None
+        if post_format == 'json':
+            return True
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return True
+    accept = request.headers.get('accept', '')
+    if accept:
+        json_pos = accept.find('application/json')
+        html_pos = accept.find('text/html')
+        if json_pos != -1 and (html_pos == -1 or json_pos < html_pos):
+            return True
+    return False
+
+
 class ActionFormView(NewsletterMixin, ActionMixin, FormView):
     """ FormView with newsletter and action support. """
 
@@ -278,6 +307,51 @@ class ActionFormView(NewsletterMixin, ActionMixin, FormView):
                 'action': self.action
             }
         )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if self.request.method in ('POST', 'PUT'):
+            content_type = getattr(self.request, 'content_type', '') or ''
+            if content_type.split(';')[0].strip() == 'application/json':
+                try:
+                    data = json.loads(self.request.body.decode('utf-8'))
+                    if isinstance(data, dict):
+                        data = data.copy()
+                        if 'email' in data and 'email_field' not in data:
+                            data['email_field'] = data['email']
+                        if 'name' in data and 'name_field' not in data:
+                            data['name_field'] = data['name']
+                        kwargs['data'] = data
+                    else:
+                        kwargs['data'] = {}
+                except (json.JSONDecodeError, UnicodeDecodeError):
+                    kwargs['data'] = {}
+            else:
+                data = self.request.POST.copy()
+                if 'email' in data and 'email_field' not in data:
+                    data['email_field'] = data['email']
+                if 'name' in data and 'name_field' not in data:
+                    data['name_field'] = data['name']
+                kwargs['data'] = data
+        return kwargs
+
+    def form_invalid(self, form):
+        if is_json_request(self.request):
+            return JsonResponse({
+                'success': False,
+                'errors': form.errors,
+            }, status=400)
+        return super().form_invalid(form)
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        if is_json_request(self.request):
+            return JsonResponse({
+                'success': True,
+                'action': self.action,
+                'redirect_url': self.get_success_url(),
+            }, status=200)
+        return response
 
 
 class ActionUserView(ActionTemplateView):
@@ -333,6 +407,23 @@ class SubscribeUserView(ActionUserView):
                 _('You are already subscribed to %s.') % self.newsletter
             )
 
+        if is_json_request(request):
+            return JsonResponse({
+                'success': True,
+                'action': self.action,
+                'subscribed': instance.subscribed,
+                'already_subscribed': already_subscribed,
+                'message': (
+                    gettext('You are already subscribed to %s.') % self.newsletter
+                    if already_subscribed
+                    else (
+                        gettext('You have been subscribed to %s.') % self.newsletter
+                        if self.confirm
+                        else gettext('Subscription requested.')
+                    )
+                ),
+            }, status=200)
+
         return super().get(request, *args, **kwargs)
 
 
@@ -341,6 +432,11 @@ class UnsubscribeUserView(ActionUserView):
 
     def get(self, request, *args, **kwargs):
         if not self.newsletter.enable_unsubscribe:
+            if is_json_request(request):
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Unsubscribe not enabled in this newsletter',
+                }, status=403)
             return HttpResponseForbidden('Unsubscribe not enabled in this newsletter')
 
         instance = Subscription.objects.filter(
@@ -357,17 +453,13 @@ class UnsubscribeUserView(ActionUserView):
             not_subscribed = instance is None
 
         if not_subscribed:
-            messages.info(
-                request,
-                _('You are not subscribed to %s.') % self.newsletter
-            )
+            msg = _('You are not subscribed to %s.') % self.newsletter
+            messages.info(request, msg)
         elif self.confirm and instance:
             instance.subscribed = False
             instance.save()
-            messages.success(
-                request,
-                _('You have been unsubscribed from %s.') % self.newsletter
-            )
+            msg = _('You have been unsubscribed from %s.') % self.newsletter
+            messages.success(request, msg)
             logger.debug(
                 _('User %(rs)s unsubscribed from %(my_newsletter)s.'),
                 {
@@ -375,6 +467,18 @@ class UnsubscribeUserView(ActionUserView):
                     "my_newsletter": self.newsletter
                 }
             )
+        else:
+            msg = _('Unsubscription requested.')
+
+        if is_json_request(request):
+            return JsonResponse({
+                'success': True,
+                'action': self.action,
+                'subscribed': False if (self.confirm and instance) else (not not_subscribed),
+                'not_subscribed': not_subscribed,
+                'message': msg,
+            }, status=200)
+
         return super().get(request, *args, **kwargs)
 
 
@@ -408,6 +512,14 @@ class ActionRequestView(ActionFormView):
         """
         self.subscription.update(self.action)
 
+        if is_json_request(self.request):
+            return JsonResponse({
+                'success': True,
+                'action': self.action,
+                'message': gettext('Subscription updated.'),
+                'redirect_url': self.get_url_from_viewname('newsletter_action_activated'),
+            }, status=200)
+
         return redirect(
             self.get_url_from_viewname('newsletter_action_activated')
         )
@@ -437,7 +549,20 @@ class ActionRequestView(ActionFormView):
 
             # Although form was valid there was error while sending email,
             # so stay at the same url.
+            if is_json_request(self.request):
+                return JsonResponse({
+                    'success': False,
+                    'error': gettext('Error while sending activation email.'),
+                }, status=500)
             return super().form_invalid(form)
+
+        if is_json_request(self.request):
+            return JsonResponse({
+                'success': True,
+                'action': self.action,
+                'message': gettext('Activation email sent.'),
+                'redirect_url': self.get_success_url(),
+            }, status=200)
 
         return super().form_valid(form)
 
@@ -490,6 +615,13 @@ class UpdateRequestView(ActionRequestView):
 
     def no_email_confirm(self, form):
         """ Redirect to update subscription view. """
+        if is_json_request(self.request):
+            return JsonResponse({
+                'success': True,
+                'action': self.action,
+                'message': gettext('Subscription update link generated.'),
+                'redirect_url': self.subscription.update_activate_url(),
+            }, status=200)
         return redirect(self.subscription.update_activate_url())
 
 
