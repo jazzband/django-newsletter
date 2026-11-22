@@ -4,6 +4,7 @@ Changes
 Unreleased
 ----------
 - Subscription generators must implement ``find_subscription(newsletter, email)`` to look up a single address (breaking for existing generators)
+- Add JSON and AJAX request/response support for newsletter action views (#377)
 
 1.3.0 (2026-10-28)
 ------------------
