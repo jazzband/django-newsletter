@@ -3,8 +3,8 @@ Changes
 
 Unreleased
 ----------
-- Subscription generators must implement ``find_subscription(newsletter, email)`` to look up a single address (breaking for existing generators)
-- Prevent unnecessary premature creation of Subscription objects
+- Prevent unnecessary premature creation of Subscription objects when viewing newsletters
+- Improve performance of lookup in dynamically generated subscriptions. Subscription generators must implement ``find_subscription(newsletter, email)`` (breaking for existing generators)
 - Require POST for logged-in confirmations. Custom newsletter list templates need updating (see upgrading notes).
 
 1.3.0 (2026-10-28)
