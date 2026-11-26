@@ -173,8 +173,9 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
         if submission.sent or submission.prepared:
             messages.info(request, _("Submission already sent."))
             change_url = reverse(
-                'admin:newsletter_submission_change', args=[object_id]
+                'admin:%s_%s_change' % (self.opts.app_label, self.opts.model_name), args=[object_id]
             )
+
             return HttpResponseRedirect(change_url)
 
         submission.prepared = True
@@ -182,7 +183,7 @@ class SubmissionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
         messages.info(request, _("Your submission is being sent."))
 
-        changelist_url = reverse('admin:newsletter_submission_changelist')
+        changelist_url = reverse('admin:%s_%s_changelist' % (self.opts.app_label, self.opts.model_name))
         return HttpResponseRedirect(changelist_url)
 
     """ URLs """
@@ -459,7 +460,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
                     form.cleaned_data['newsletter'].pk
 
                 confirm_url = reverse(
-                    'admin:newsletter_subscription_import_confirm'
+                    'admin:%s_%s_import_confirm' % (self.opts.app_label, self.opts.model_name)
                 )
                 return HttpResponseRedirect(confirm_url)
         else:
@@ -473,9 +474,8 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
 
     def subscribers_import_confirm(self, request):
         # If no addresses are in the session, start all over.
-
         if 'addresses' not in request.session:
-            import_url = reverse('admin:newsletter_subscription_import')
+            import_url = reverse('admin:%s_%s_import' % (self.opts.app_label, self.opts.model_name))
             return HttpResponseRedirect(import_url)
 
         addresses = request.session['addresses']
@@ -508,7 +508,7 @@ class SubscriptionAdmin(NewsletterAdminLinkMixin, ExtendibleModelAdminMixin,
                 )
 
                 changelist_url = reverse(
-                    'admin:newsletter_subscription_changelist'
+                    'admin:%s_%s_changelist' % (self.opts.app_label, self.opts.model_name)
                 )
                 return HttpResponseRedirect(changelist_url)
         else:
